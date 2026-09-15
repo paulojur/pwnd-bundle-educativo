@@ -1,0 +1,1569 @@
+==================================================
+CARTAS DE AÇÃO (Vulnerabilidades, Tools, Defuses) - TOTAL: 126
+==================================================
+
+[ID: inj-1] Injeção de Boato (Rumor Injection)
+Nome Técnico: SQL Injection (SQLi)
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.5 (Pontos base: 25)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 🗣️
+[pt-BR] Descrição: Você cochicha um boato falso no campo de texto e o banco de dados acredita, entregando a lista de senhas.
+[pt-PT] Descrição: Tu cochichas um boato falso no campo de texto e a base de dados acredita, entregando a lista de palavras-passe.
+--------------------------------------------------
+[ID: inj-2] A Injeção da Vovó (Grandma's Injection)
+Nome Técnico: SQL Injection (SQLi)
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.5 (Pontos base: 45)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 👵
+[pt-BR] Descrição: OR 1=1 — Entrada de banco de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.
+[pt-PT] Descrição: OR 1=1 — Entrada de base de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.
+--------------------------------------------------
+[ID: inj-3] Sopa de Comandos (Command Soup)
+Nome Técnico: OS Command Injection
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 💻
+[pt-BR] Descrição: Insere comandos de sistema operacional em campos de formulários desprotegidos.
+[pt-PT] Descrição: Insere comandos de sistema operacional em campos de formulários desprotegidos.
+--------------------------------------------------
+[ID: inj-4] A Entidade Fantasma (The Ghost Entity)
+Nome Técnico: XXE Injection
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.5 (Pontos base: 25)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 📜
+[pt-BR] Descrição: O parser XML lê arquivos do servidor local ao processar notas fiscais digitais.
+[pt-PT] Descrição: O parser XML lê ficheiros do servidor local ao processar notas fiscais digitais.
+--------------------------------------------------
+[ID: inj-5] O Molde Quebrado (The Broken Mold)
+Nome Técnico: Server-Side Template Injection
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.2 (Pontos base: 22)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 🎨
+[pt-BR] Descrição: Comandos executados através de variáveis no motor de templates de e-mail.
+[pt-PT] Descrição: Comandos executados através de variáveis no motor de templates de e-mail.
+--------------------------------------------------
+[ID: inj-6] O Cabeçalho Falso (The Fake Header)
+Nome Técnico: HTTP Header Injection
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 1.8 (Pontos base: 18)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 📑
+[pt-BR] Descrição: Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.
+[pt-PT] Descrição: Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.
+--------------------------------------------------
+[ID: inj-7] O Operador Vazado (The Leaked Operator)
+Nome Técnico: NoSQL Injection
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.0 (Pontos base: 30)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 🍃
+[pt-BR] Descrição: Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.
+[pt-PT] Descrição: Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.
+--------------------------------------------------
+[ID: inj-8] O Mapa Invertido (The Inverted Map)
+Nome Técnico: ORM Injection
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.8 (Pontos base: 28)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 🗄️
+[pt-BR] Descrição: Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.
+[pt-PT] Descrição: Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.
+--------------------------------------------------
+[ID: inj-9] O Atalho Cego (The Blind Shortcut)
+Nome Técnico: XPath Injection
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.6 (Pontos base: 26)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 🔍
+[pt-BR] Descrição: Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.
+[pt-PT] Descrição: Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.
+--------------------------------------------------
+[ID: inj-10] O Filtro Furado (The Pierced Filter)
+Nome Técnico: LDAP Injection
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.2 (Pontos base: 32)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 🌲
+[pt-BR] Descrição: Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.
+[pt-PT] Descrição: Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.
+--------------------------------------------------
+[ID: inj-11] A Bomba-Relógio (The Time Bomb)
+Nome Técnico: Time-Based Blind SQLi
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.0 (Pontos base: 40)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: ⏱️
+[pt-BR] Descrição: Força o banco a pausar por 10 segundos para extrair caracteres de senhas hash.
+[pt-PT] Descrição: Força o banco a pausar por 10 segundos para extrair caracteres de palavras-passe hash.
+--------------------------------------------------
+[ID: inj-12] O Veneno Lento (The Slow Poison)
+Nome Técnico: Second-Order SQLi
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 3.8 (Pontos base: 38)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: ⏳
+[pt-BR] Descrição: Injeta payload no perfil do usuário que só é executado no relatório mensal do admin.
+[pt-PT] Descrição: Injeta payload no perfil do usuário que só é executado no relatório mensal do admin.
+--------------------------------------------------
+[ID: inj-13] A Esteira Quebrada (The Broken Conveyor)
+Nome Técnico: Automated Injection
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 5.0 (Pontos base: 50)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 🤖
+[pt-BR] Descrição: Pipeline automatizado extrai a base de dados inteira com zero intervenção manual.
+[pt-PT] Descrição: Pipeline automatizado extrai a base de dados inteira com zero intervenção manual.
+--------------------------------------------------
+[ID: inj-14] O Operário Zumbi (The Zombie Worker)
+Nome Técnico: Async Worker RCE
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 4.8 (Pontos base: 48)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: ⚙️
+[pt-BR] Descrição: Injeta comandos no processador assíncrono de conversão de PDFs corporativos.
+[pt-PT] Descrição: Injeta comandos no processador assíncrono de conversão de PDFs corporativos.
+--------------------------------------------------
+[ID: inj-15] O Tubo Estourado (The Burst Pipe)
+Nome Técnico: Critical Database Takeover
+Tipo: exploit | Raridade: Legendary | Borda Esquerda (Raridade): #eab308 (Dourado)
+CVSS / Pontos: 5.5 (Pontos base: 55)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 💥
+[pt-BR] Descrição: Acesso root à instância mestra do banco relacional de dados bancários.
+[pt-PT] Descrição: Acesso root à instância mestra do banco relacional de dados bancários.
+--------------------------------------------------
+[ID: inj-16] O Enxerto Tóxico (The Toxic Graft)
+Nome Técnico: DLL Search Order Hijacking
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: INJECTION | Cor do Badge: #f0883e
+Ícone: 🔌
+[pt-BR] Descrição: Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.
+[pt-PT] Descrição: Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.
+--------------------------------------------------
+[ID: bac-1] Porta Escancarada (Wide Open Door)
+Nome Técnico: Insecure Direct Object Reference (IDOR)
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 🚪
+[pt-BR] Descrição: Você muda o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor.
+[pt-PT] Descrição: Tu mudas o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor.
+--------------------------------------------------
+[ID: bac-2] O Plebeu Privilegiado (The Privileged Commoner)
+Nome Técnico: Privilege Escalation (PrivEsc)
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.5 (Pontos base: 25)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 👑
+[pt-BR] Descrição: Estagiário altera parâmetro de perfil no request e vira administrador do sistema.
+[pt-PT] Descrição: Estagiário altera parâmetro de perfil no request e vira administrador do sistema.
+--------------------------------------------------
+[ID: bac-3] O Corredor Secreto (The Secret Corridor)
+Nome Técnico: Directory Traversal
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.2 (Pontos base: 22)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 📁
+[pt-BR] Descrição: Usa ../../../etc/passwd no parâmetro de imagem para baixar arquivos do servidor.
+[pt-PT] Descrição: Usa ../../../etc/passwd no parâmetro de imagem para baixar ficheiros do servidor.
+--------------------------------------------------
+[ID: bac-4] A Fronteira Aberta (The Open Border)
+Nome Técnico: Cross-Origin Resource Sharing
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 1.8 (Pontos base: 18)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 🌐
+[pt-BR] Descrição: Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.
+[pt-PT] Descrição: Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.
+--------------------------------------------------
+[ID: bac-5] A Maçaneta Quebrada (The Broken Doorknob)
+Nome Técnico: Direct Resource Leak
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 📍
+[pt-BR] Descrição: URLs de download de faturas em PDF expostas publicamente sem chave de checagem.
+[pt-PT] Descrição: URLs de download de faturas em PDF expostas publicamente sem chave de checagem.
+--------------------------------------------------
+[ID: bac-6] O Quarto do Vizinho (The Neighbor's Room)
+Nome Técnico: Broken Object Level Auth (BOLA)
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.2 (Pontos base: 32)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: ⚽
+[pt-BR] Descrição: Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.
+[pt-PT] Descrição: Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.
+--------------------------------------------------
+[ID: bac-7] O Elevador de Serviço (The Service Elevator)
+Nome Técnico: Broken Function Level Auth
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.0 (Pontos base: 30)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 🛠️
+[pt-BR] Descrição: Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.
+[pt-PT] Descrição: Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.
+--------------------------------------------------
+[ID: bac-8] A Parede de Papel (The Paper Wall)
+Nome Técnico: Multi-Tenant Isolation Bypass
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.5 (Pontos base: 35)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 🏢
+[pt-BR] Descrição: Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.
+[pt-PT] Descrição: Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.
+--------------------------------------------------
+[ID: bac-9] A Passagem Secreta (The Secret Passage)
+Nome Técnico: Unprotected Admin Route
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.8 (Pontos base: 28)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 🔑
+[pt-BR] Descrição: Rota oculta /management/dashboard disponível sem exigência de login.
+[pt-PT] Descrição: Rota oculta /management/dashboard disponível sem exigência de login.
+--------------------------------------------------
+[ID: bac-10] O Degrau Oculto (The Hidden Step)
+Nome Técnico: JWT Role Manipulation
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.2 (Pontos base: 42)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 📜
+[pt-BR] Descrição: Altera o campo "role": "user" para "role": "superadmin" no token assinado fracamente.
+[pt-PT] Descrição: Altera o campo "role": "user" para "role": "superadmin" no token assinado fracamente.
+--------------------------------------------------
+[ID: bac-11] O Molho de Chaves (The Keyring)
+Nome Técnico: Mass Assignment / Auto-Binding
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 3.8 (Pontos base: 38)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 📦
+[pt-BR] Descrição: Envia "is_verified": true no formulário de cadastro e ganha selo de conta oficial.
+[pt-PT] Descrição: Envia "is_verified": true no formulário de cadastro e ganha selo de conta oficial.
+--------------------------------------------------
+[ID: bac-12] O Arquivo Destrancado (The Unlocked File)
+Nome Técnico: Bulk Export IDOR
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.0 (Pontos base: 40)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 📊
+[pt-BR] Descrição: Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.
+[pt-PT] Descrição: Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.
+--------------------------------------------------
+[ID: bac-13] A Catraca Livre (The Free Turnstile)
+Nome Técnico: Global Authorization Bypass
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 4.8 (Pontos base: 48)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 🛡️
+[pt-BR] Descrição: Anula totalmente a camada de controle de acesso de microsserviços na nuvem.
+[pt-PT] Descrição: Anula totalmente a camada de controle de acesso de microsserviços na nuvem.
+--------------------------------------------------
+[ID: bac-14] A Sala do Trono (The Throne Room)
+Nome Técnico: Root Organization Takeover
+Tipo: exploit | Raridade: Legendary | Borda Esquerda (Raridade): #eab308 (Dourado)
+CVSS / Pontos: 5.8 (Pontos base: 58)
+Badge: ACCESS CTRL | Cor do Badge: #c084fc
+Ícone: 👑
+[pt-BR] Descrição: Assume o controle total do painel de administração da matriz global da empresa.
+[pt-PT] Descrição: Assume o controle total do painel de administração da matriz global da empresa.
+--------------------------------------------------
+[ID: xss-1] Espelho Falso (Fake Mirror)
+Nome Técnico: Cross-Site Scripting (Reflected XSS)
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 🪞
+[pt-BR] Descrição: Você coloca um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para você.
+[pt-PT] Descrição: Tu colocas um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para tu.
+--------------------------------------------------
+[ID: xss-2] O Labirinto de Espelhos (The Mirror Maze)
+Nome Técnico: DOM-based XSS
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.2 (Pontos base: 22)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 🌀
+[pt-BR] Descrição: DOM-based XSS encadeado em rotas dinâmicas do Single Page App.
+[pt-PT] Descrição: DOM-based XSS encadeado em rotas dinâmicas do Single Page App.
+--------------------------------------------------
+[ID: xss-3] O Eco Mortal (The Deadly Echo)
+Nome Técnico: Reflected XSS
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 1.8 (Pontos base: 18)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 🔎
+[pt-BR] Descrição: Injeta script malicioso no campo de busca que é refletido sem sanitização na página.
+[pt-PT] Descrição: Injeta script malicioso no campo de busca que é refletido sem sanitização na página.
+--------------------------------------------------
+[ID: xss-4] A Sombra Enganosa (The Deceitful Shadow)
+Nome Técnico: DOM Manipulation XSS
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: ⚓
+[pt-BR] Descrição: Manipula window.location.hash para executar código JavaScript na leitura do elemento.
+[pt-PT] Descrição: Manipula window.location.hash para executar código JavaScript na leitura do elemento.
+--------------------------------------------------
+[ID: xss-5] A Ilusão de Ótica (The Optical Illusion)
+Nome Técnico: HTML Injection
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 1.5 (Pontos base: 15)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 🏷️
+[pt-BR] Descrição: Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.
+[pt-PT] Descrição: Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.
+--------------------------------------------------
+[ID: xss-6] O Reflexo Congelado (The Frozen Reflection)
+Nome Técnico: Stored XSS
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.0 (Pontos base: 30)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 💬
+[pt-BR] Descrição: Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.
+[pt-PT] Descrição: Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.
+--------------------------------------------------
+[ID: xss-7] O Quadro Amaldiçoado (The Cursed Painting)
+Nome Técnico: SVG File Upload XSS
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.8 (Pontos base: 28)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 🖼️
+[pt-BR] Descrição: Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.
+[pt-PT] Descrição: Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.
+--------------------------------------------------
+[ID: xss-8] A Máscara Rachada (The Cracked Mask)
+Nome Técnico: Attribute Injection XSS
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.5 (Pontos base: 25)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: ✂️
+[pt-BR] Descrição: Escapa da aspa do atributo input com " onfocus="alert(1) e dispara a vulnerabilidade.
+[pt-PT] Descrição: Escapa da aspa do atributo input com " onfocus="alert(1) e dispara a vulnerabilidade.
+--------------------------------------------------
+[ID: xss-9] A Tinta Invisível (The Invisible Ink)
+Nome Técnico: Markdown Parser XSS
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.2 (Pontos base: 32)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 📝
+[pt-BR] Descrição: Explora o interpretador de Markdown na caixa de texto do editor de chamados.
+[pt-PT] Descrição: Explora o interpretador de Markdown na caixa de texto do editor de chamados.
+--------------------------------------------------
+[ID: xss-10] O Espelho Narcisista (The Narcissistic Mirror)
+Nome Técnico: Reflected XSS Advanced
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.0 (Pontos base: 40)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 🪞
+[pt-BR] Descrição: Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon.
+[pt-PT] Descrição: Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon.
+--------------------------------------------------
+[ID: xss-11] O Reflexo Cego (The Blind Reflection)
+Nome Técnico: Blind Stored XSS
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.2 (Pontos base: 42)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: 🙈
+[pt-BR] Descrição: Executa código oculto no painel interno de triagem usado exclusivamente pelos administradores.
+[pt-PT] Descrição: Executa código oculto no painel interno de triagem usado exclusivamente pelos administradores.
+--------------------------------------------------
+[ID: xss-12] O Fio Transparente (The Transparent Thread)
+Nome Técnico: WebSocket XSS Hijack
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 4.8 (Pontos base: 48)
+Badge: XSS | Cor do Badge: #f472b6
+Ícone: ⚡
+[pt-BR] Descrição: Rouba tokens de sessão em tempo real através do canal aberto de WebSockets.
+[pt-PT] Descrição: Rouba tokens de sessão em tempo real através do canal aberto de WebSockets.
+--------------------------------------------------
+[ID: auth-1] Chave Mestra (Master Key)
+Nome Técnico: Authentication Bypass
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 3.0 (Pontos base: 30)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 🔑
+[pt-BR] Descrição: Você descobre uma brecha na catraca e entra direto sem precisar digitar senha ou mostrar documento.
+[pt-PT] Descrição: Tu descobres uma brecha na catraca e entra direto sem precisar digitar palavra-passe ou mostrar documento.
+--------------------------------------------------
+[ID: auth-2] Cookie Unsigned (Unsigned Cookie)
+Nome Técnico: Cookie Tampering
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 1.8 (Pontos base: 18)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 🍪
+[pt-BR] Descrição: Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.
+[pt-PT] Descrição: Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.
+--------------------------------------------------
+[ID: auth-3] A Senha do Caderno (The Notebook Password)
+Nome Técnico: Weak Reset Token
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.2 (Pontos base: 22)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: ⏳
+[pt-BR] Descrição: O token de redefinição de senha usa a hora exata em segundos e é facilmente adivinhado.
+[pt-PT] Descrição: O token de redefinição de palavra-passe usa a hora exata em segundos e é facilmente adivinhado.
+--------------------------------------------------
+[ID: auth-4] O Porteiro Esquecido (The Forgetful Bouncer)
+Nome Técnico: Persistent Session Leak
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 📌
+[pt-BR] Descrição: O token de "Lembrar de Mim" nunca expira e permite reuso infinito de sessão.
+[pt-PT] Descrição: O token de "Lembrar de Mim" nunca expira e permite reuso infinito de sessão.
+--------------------------------------------------
+[ID: auth-5] O Distintivo Falso (The Fake Badge)
+Nome Técnico: Authentication Bypass (JWT None)
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.5 (Pontos base: 35)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 🚪
+[pt-BR] Descrição: Altera o algoritmo do cabeçalho JWT para "none" e entra sem digitar senha.
+[pt-PT] Descrição: Altera o algoritmo do cabeçalho JWT para "none" e entra sem digitar palavra-passe.
+--------------------------------------------------
+[ID: auth-6] O Clone de Identidade (The Identity Clone)
+Nome Técnico: Automated Account Takeover
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.2 (Pontos base: 32)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 🤖
+[pt-BR] Descrição: Testa vazamentos de senhas conhecidas em massa contra a tela de login.
+[pt-PT] Descrição: Testa vazamentos de palavras-passe conhecidas em massa contra a tela de login.
+--------------------------------------------------
+[ID: auth-7] O Gêmeo Maligno (The Evil Twin)
+Nome Técnico: OAuth CSRF / State Fixation
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.8 (Pontos base: 28)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 🔗
+[pt-BR] Descrição: Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.
+[pt-PT] Descrição: Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.
+--------------------------------------------------
+[ID: auth-8] O Guarda Distraído (The Distracted Guard)
+Nome Técnico: Multi-Factor Auth Bypass
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.0 (Pontos base: 40)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 📱
+[pt-BR] Descrição: Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.
+[pt-PT] Descrição: Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.
+--------------------------------------------------
+[ID: auth-9] O Selo Violado (The Broken Seal)
+Nome Técnico: Alg None JWT Attack
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.2 (Pontos base: 42)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 🔓
+[pt-BR] Descrição: Anula a validação da assinatura digital do token JWT corporativo.
+[pt-PT] Descrição: Anula a validação da assinatura digital do token JWT corporativo.
+--------------------------------------------------
+[ID: auth-10] O Sósia do Executivo (The Executive's Doppelganger)
+Nome Técnico: SAML Response Tampering
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 5.0 (Pontos base: 50)
+Badge: AUTHENTICATION | Cor do Badge: #eab308
+Ícone: 🏢
+[pt-BR] Descrição: Falsifica respostas SAML/Single Sign-On assumindo o controle de qualquer usuário da empresa.
+[pt-PT] Descrição: Falsifica respostas SAML/Single Sign-On assumindo o controle de qualquer usuário da empresa.
+--------------------------------------------------
+[ID: ssrf-1] O Espião Interno (The Inside Spy)
+Nome Técnico: Server-Side Request Forgery (SSRF)
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 3.5 (Pontos base: 35)
+Badge: SSRF / CSRF | Cor do Badge: #38bdf8
+Ícone: 🕵️
+[pt-BR] Descrição: Você convence o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos arquivos.
+[pt-PT] Descrição: Tu convences o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos ficheiros.
+--------------------------------------------------
+[ID: ssrf-2] A Carta Forjada (The Forged Letter)
+Nome Técnico: Cross-Site Request Forgery
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: SSRF / CSRF | Cor do Badge: #38bdf8
+Ícone: 📩
+[pt-BR] Descrição: Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.
+[pt-PT] Descrição: Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.
+--------------------------------------------------
+[ID: ssrf-3] O Radar Subterrâneo (The Underground Radar)
+Nome Técnico: Network Scanning via SSRF
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.2 (Pontos base: 22)
+Badge: SSRF / CSRF | Cor do Badge: #38bdf8
+Ícone: 📡
+[pt-BR] Descrição: Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.
+[pt-PT] Descrição: Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.
+--------------------------------------------------
+[ID: ssrf-4] O Fantasma na Máquina (The Ghost in the Machine)
+Nome Técnico: SSRF via Webhook
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.2 (Pontos base: 32)
+Badge: SSRF / CSRF | Cor do Badge: #38bdf8
+Ícone: 👻
+[pt-BR] Descrição: O webhook de notificação enviou a chave de API interna de volta para você.
+[pt-PT] Descrição: O webhook de notificação enviou a chave de API interna de volta para tu.
+--------------------------------------------------
+[ID: ssrf-5] O Segredo do Servidor (The Server's Secret)
+Nome Técnico: AWS EC2 Metadata SSRF
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.8 (Pontos base: 38)
+Badge: SSRF / CSRF | Cor do Badge: #38bdf8
+Ícone: ☁️
+[pt-BR] Descrição: Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.
+[pt-PT] Descrição: Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.
+--------------------------------------------------
+[ID: ssrf-6] O Endereço Traiçoeiro (The Deceptive Address)
+Nome Técnico: DNS Rebinding Bypass
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.0 (Pontos base: 40)
+Badge: SSRF / CSRF | Cor do Badge: #38bdf8
+Ícone: 🔄
+[pt-BR] Descrição: Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.
+[pt-PT] Descrição: Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.
+--------------------------------------------------
+[ID: ssrf-7] O Pombo Correio (The Carrier Pigeon)
+Nome Técnico: OOB Interaction SSRF
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.2 (Pontos base: 42)
+Badge: SSRF / CSRF | Cor do Badge: #38bdf8
+Ícone: 📡
+[pt-BR] Descrição: Força o servidor a realizar requisições externas capturadas pelo Burp Collaborator.
+[pt-PT] Descrição: Força o servidor a realizar requisições externas capturadas pelo Burp Collaborator.
+--------------------------------------------------
+[ID: ssrf-8] O Mensageiro Cego (The Blind Messenger)
+Nome Técnico: Gopher SSRF to Redis RCE
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 5.2 (Pontos base: 52)
+Badge: SSRF / CSRF | Cor do Badge: #38bdf8
+Ícone: ⚡
+[pt-BR] Descrição: Usa protocolo Gopher via SSRF para gravar chave SSH no servidor Redis interno.
+[pt-PT] Descrição: Usa protocolo Gopher via SSRF para gravar chave SSH no servidor Redis interno.
+--------------------------------------------------
+[ID: bl-1] O Relógio Quebrado (The Broken Clock)
+Nome Técnico: Business Logic Error
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.0 (Pontos base: 20)
+Badge: BIZ LOGIC | Cor do Badge: #2dd4bf
+Ícone: ⏰
+[pt-BR] Descrição: Você descobre que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor.
+[pt-PT] Descrição: Tu descobres que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor.
+--------------------------------------------------
+[ID: bl-2] O Troco Infinito (The Infinite Change)
+Nome Técnico: Negative Amount Logic Flaw
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 2.2 (Pontos base: 22)
+Badge: BIZ LOGIC | Cor do Badge: #2dd4bf
+Ícone: 💸
+[pt-BR] Descrição: Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar você.
+[pt-PT] Descrição: Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar tu.
+--------------------------------------------------
+[ID: bl-3] A Pilha de Cupons (The Coupon Stack)
+Nome Técnico: Coupon Reuse Logic
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 1.8 (Pontos base: 18)
+Badge: BIZ LOGIC | Cor do Badge: #2dd4bf
+Ícone: 🎟️
+[pt-BR] Descrição: Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.
+[pt-PT] Descrição: Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.
+--------------------------------------------------
+[ID: bl-4] A Entrega Fantasma (The Ghost Delivery)
+Nome Técnico: Race Condition
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.0 (Pontos base: 30)
+Badge: BIZ LOGIC | Cor do Badge: #2dd4bf
+Ícone: 🧪
+[pt-BR] Descrição: Você clica no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.
+[pt-PT] Descrição: Tu clicas no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.
+--------------------------------------------------
+[ID: bl-5] O Centavo de Ouro (The Golden Penny)
+Nome Técnico: Floating Point Currency Flaw
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.8 (Pontos base: 28)
+Badge: BIZ LOGIC | Cor do Badge: #2dd4bf
+Ícone: 🧮
+[pt-BR] Descrição: Arredondamento de frações de centavos acumuladas em transações bancárias.
+[pt-PT] Descrição: Arredondamento de frações de centavos acumuladas em transações bancárias.
+--------------------------------------------------
+[ID: bl-6] A Amostra Grátis Eterna (The Eternal Free Sample)
+Nome Técnico: Subscription Logic Bypass
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 3.8 (Pontos base: 38)
+Badge: BIZ LOGIC | Cor do Badge: #2dd4bf
+Ícone: 🔄
+[pt-BR] Descrição: Cancela e reativa a avaliação gratuita no último segundo mantendo acesso premium infinito.
+[pt-PT] Descrição: Cancela e reativa a avaliação gratuita no último segundo mantendo acesso premium infinito.
+--------------------------------------------------
+[ID: bl-7] O Carrinho Sem Fundo (The Bottomless Cart)
+Nome Técnico: Integer Overflow in Cart
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.0 (Pontos base: 40)
+Badge: BIZ LOGIC | Cor do Badge: #2dd4bf
+Ícone: 🛒
+[pt-BR] Descrição: Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.
+[pt-PT] Descrição: Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.
+--------------------------------------------------
+[ID: bl-8] A Nota Duplicada (The Duplicated Bill)
+Nome Técnico: State Machine Duplication
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 5.0 (Pontos base: 50)
+Badge: BIZ LOGIC | Cor do Badge: #2dd4bf
+Ícone: 🏦
+[pt-BR] Descrição: Duplica transferências bancárias em lote manipulando o estado da transação.
+[pt-PT] Descrição: Duplica transferências bancárias em lote manipulando o estado da transação.
+--------------------------------------------------
+[ID: crypto-1] Cadeado de Papel (Paper Padlock)
+Nome Técnico: Weak Cryptography (MD5 / Single Hash)
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 1.5 (Pontos base: 15)
+Badge: CRYPTOGRAPHY | Cor do Badge: #39d353
+Ícone: 🔒
+[pt-BR] Descrição: A empresa trancou os segredos com uma senha boba tipo "123456" que você descobre em 2 segundos.
+[pt-PT] Descrição: A empresa trancou os segredos com uma palavra-passe boba tipo "123456" que tu descobres em 2 segundos.
+--------------------------------------------------
+[ID: crypto-2] O Cofre de Plástico (The Plastic Safe)
+Nome Técnico: Weak Hash / No Salt
+Tipo: exploit | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: 1.8 (Pontos base: 18)
+Badge: CRYPTOGRAPHY | Cor do Badge: #39d353
+Ícone: 🥖
+[pt-BR] Descrição: Senhas salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.
+[pt-PT] Descrição: Palavras-passe salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.
+--------------------------------------------------
+[ID: crypto-3] A Chave debaixo do Tapete (The Key Under the Mat)
+Nome Técnico: Embedded Secret Key
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.8 (Pontos base: 28)
+Badge: CRYPTOGRAPHY | Cor do Badge: #39d353
+Ícone: 🔑
+[pt-BR] Descrição: A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.
+[pt-PT] Descrição: A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.
+--------------------------------------------------
+[ID: crypto-4] O Diário Aberto (The Open Diary)
+Nome Técnico: Insecure Data Transmission
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 2.6 (Pontos base: 26)
+Badge: CRYPTOGRAPHY | Cor do Badge: #39d353
+Ícone: 🔓
+[pt-BR] Descrição: Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.
+[pt-PT] Descrição: Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.
+--------------------------------------------------
+[ID: crypto-5] O Oráculo Fofoqueiro (The Gossiping Oracle)
+Nome Técnico: CBC Padding Oracle
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.0 (Pontos base: 40)
+Badge: CRYPTOGRAPHY | Cor do Badge: #39d353
+Ícone: 🔮
+[pt-BR] Descrição: Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.
+[pt-PT] Descrição: Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.
+--------------------------------------------------
+[ID: crypto-6] O Padrão Repetido (The Repeating Pattern)
+Nome Técnico: AES ECB Pattern Leak
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 4.8 (Pontos base: 48)
+Badge: CRYPTOGRAPHY | Cor do Badge: #39d353
+Ícone: 🐧
+[pt-BR] Descrição: Criptografia AES no modo ECB que preserva o padrão visual dos dados confidenciais.
+[pt-PT] Descrição: Criptografia AES no modo ECB que preserva o padrão visual dos dados confidenciais.
+--------------------------------------------------
+[ID: leg-1] O Efeito Dominó (The Domino Effect)
+Nome Técnico: Multi-Stage Chained Exploit
+Tipo: exploit | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: 3.0 (Pontos base: 30)
+Badge: LEGENDARY RCE | Cor do Badge: #a855f7
+Ícone: 🔗
+[pt-BR] Descrição: Combina um XSS refletido com um IDOR para roubar o token de acesso do administrador.
+[pt-PT] Descrição: Combina um XSS refletido com um IDOR para roubar o token de acesso do administrador.
+--------------------------------------------------
+[ID: leg-2] A Tempestade Perfeita (The Perfect Storm)
+Nome Técnico: SSRF to Internal Admin Chain
+Tipo: exploit | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: 4.2 (Pontos base: 42)
+Badge: LEGENDARY RCE | Cor do Badge: #a855f7
+Ícone: ⚙️
+[pt-BR] Descrição: Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.
+[pt-PT] Descrição: Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.
+--------------------------------------------------
+[ID: leg-3] O Apocalipse Primaveril (The Spring Apocalypse)
+Nome Técnico: Remote Code Execution (RCE)
+Tipo: exploit | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: 5.0 (Pontos base: 50)
+Badge: LEGENDARY RCE | Cor do Badge: #a855f7
+Ícone: 🌱
+[pt-BR] Descrição: Explora vulnerabilidade no framework Java Spring para executar comandos no servidor de produção.
+[pt-PT] Descrição: Explora vulnerabilidade no framework Java Spring para executar comandos no servidor de produção.
+--------------------------------------------------
+[ID: leg-4] O Mestre dos Títeres (The Puppet Master)
+Nome Técnico: Remote Code Execution (RCE)
+Tipo: exploit | Raridade: Legendary | Borda Esquerda (Raridade): #eab308 (Dourado)
+CVSS / Pontos: 5.0 (Pontos base: 50)
+Badge: LEGENDARY RCE | Cor do Badge: #a855f7
+Ícone: 🎮
+[pt-BR] Descrição: O prêmio supremo! Você assume o controle total do computador da empresa como se estivesse sentado na cadeira deles.
+[pt-PT] Descrição: O prêmio supremo! Tu assumes o controle total do computador da empresa como se estivesse sentado na cadeira deles.
+--------------------------------------------------
+[ID: leg-5] O Boneco de Marionete (The Marionette)
+Nome Técnico: Remote Code Execution (RCE root)
+Tipo: exploit | Raridade: Legendary | Borda Esquerda (Raridade): #eab308 (Dourado)
+CVSS / Pontos: 5.2 (Pontos base: 52)
+Badge: LEGENDARY RCE | Cor do Badge: #a855f7
+Ícone: 🧸
+[pt-BR] Descrição: Mãos etéreas controlando o rack de servidores. Ao ser reportada, força oponentes a descartarem Tools.
+[pt-PT] Descrição: Mãos etéreas controlando o rack de servidores. Ao ser reportada, força oponentes a descartarem Tools.
+--------------------------------------------------
+[ID: leg-6] A Caixa de Pandora (Pandora's Box)
+Nome Técnico: Log4Shell / Java Deserialization
+Tipo: exploit | Raridade: Legendary | Borda Esquerda (Raridade): #eab308 (Dourado)
+CVSS / Pontos: 5.5 (Pontos base: 55)
+Badge: LEGENDARY RCE | Cor do Badge: #a855f7
+Ícone: 💀
+[pt-BR] Descrição: Log4Shell! Chamas de código consumindo a infraestrutura de nuvem com RCE instantâneo.
+[pt-PT] Descrição: Log4Shell! Chamas de código consumindo a infraestrutura de nuvem com RCE instantâneo.
+--------------------------------------------------
+[ID: tool-burp-1] Canivete Suíço Hacker ()
+Nome Técnico: Burp Suite Pro
+Tipo: tool | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🧰
+[pt-BR] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+[pt-PT] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+--------------------------------------------------
+[ID: tool-burp-2] Burp Suite Pro ()
+Nome Técnico: Burp Suite Pro
+Tipo: tool | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🧰
+[pt-BR] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+[pt-PT] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+--------------------------------------------------
+[ID: tool-nmap-1] Nmap + ffuf ()
+Nome Técnico: Network & Fuzzing Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).
+[pt-PT] Descrição: PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).
+--------------------------------------------------
+[ID: tool-nmap-2] Nmap + ffuf ()
+Nome Técnico: Network & Fuzzing Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.
+[pt-PT] Descrição: PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.
+--------------------------------------------------
+[ID: tool-zap] OWASP ZAP ()
+Nome Técnico: Automated Vulnerability Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: ⚡
+[pt-BR] Descrição: Baixe 2 vulnerabilidades na mesma ação de Exploit.
+[pt-PT] Descrição: Baixe 2 vulnerabilidades na mesma ação de Exploit.
+--------------------------------------------------
+[ID: tool-postman] Postman API Suite ()
+Nome Técnico: API Testing Environment
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🚀
+[pt-BR] Descrição: Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.
+[pt-PT] Descrição: Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.
+--------------------------------------------------
+[ID: tool-devtools-1] Lupa de Varredura ()
+Nome Técnico: Browser DevTools
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔍
+[pt-BR] Descrição: PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.
+[pt-PT] Descrição: PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.
+--------------------------------------------------
+[ID: tool-devtools-2] Browser DevTools ()
+Nome Técnico: Browser DevTools
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔍
+[pt-BR] Descrição: PASSIVA: Amplificador de vulnerabilidades client-side no navegador.
+[pt-PT] Descrição: PASSIVA: Amplificador de vulnerabilidades client-side no navegador.
+--------------------------------------------------
+[ID: tool-sqlmap] SQLMap Automator ()
+Nome Técnico: Database Injection Tool
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛢️
+[pt-BR] Descrição: Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.
+[pt-PT] Descrição: Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.
+--------------------------------------------------
+[ID: tool-collaborator] Burp Collaborator ()
+Nome Técnico: Out-of-band Auditor
+Tipo: tool | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.
+[pt-PT] Descrição: PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.
+--------------------------------------------------
+[ID: tool-cyberchef] CyberChef ()
+Nome Técnico: Cyber Swiss Army Knife
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🍳
+[pt-BR] Descrição: ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.
+[pt-PT] Descrição: ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.
+--------------------------------------------------
+[ID: tool-jwt-tool] JWT Tool ()
+Nome Técnico: Token Engineering Harness
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔐
+[pt-BR] Descrição: PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.
+[pt-PT] Descrição: PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.
+--------------------------------------------------
+[ID: tool-burp-1-c2] Canivete Suíço Hacker ()
+Nome Técnico: Burp Suite Pro
+Tipo: tool | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🧰
+[pt-BR] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+[pt-PT] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+--------------------------------------------------
+[ID: tool-burp-2-c2] Burp Suite Pro ()
+Nome Técnico: Burp Suite Pro
+Tipo: tool | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🧰
+[pt-BR] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+[pt-PT] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+--------------------------------------------------
+[ID: tool-nmap-1-c2] Nmap + ffuf ()
+Nome Técnico: Network & Fuzzing Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).
+[pt-PT] Descrição: PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).
+--------------------------------------------------
+[ID: tool-nmap-2-c2] Nmap + ffuf ()
+Nome Técnico: Network & Fuzzing Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.
+[pt-PT] Descrição: PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.
+--------------------------------------------------
+[ID: tool-zap-c2] OWASP ZAP ()
+Nome Técnico: Automated Vulnerability Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: ⚡
+[pt-BR] Descrição: Baixe 2 vulnerabilidades na mesma ação de Exploit.
+[pt-PT] Descrição: Baixe 2 vulnerabilidades na mesma ação de Exploit.
+--------------------------------------------------
+[ID: tool-postman-c2] Postman API Suite ()
+Nome Técnico: API Testing Environment
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🚀
+[pt-BR] Descrição: Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.
+[pt-PT] Descrição: Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.
+--------------------------------------------------
+[ID: tool-devtools-1-c2] Lupa de Varredura ()
+Nome Técnico: Browser DevTools
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔍
+[pt-BR] Descrição: PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.
+[pt-PT] Descrição: PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.
+--------------------------------------------------
+[ID: tool-devtools-2-c2] Browser DevTools ()
+Nome Técnico: Browser DevTools
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔍
+[pt-BR] Descrição: PASSIVA: Amplificador de vulnerabilidades client-side no navegador.
+[pt-PT] Descrição: PASSIVA: Amplificador de vulnerabilidades client-side no navegador.
+--------------------------------------------------
+[ID: tool-sqlmap-c2] SQLMap Automator ()
+Nome Técnico: Database Injection Tool
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛢️
+[pt-BR] Descrição: Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.
+[pt-PT] Descrição: Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.
+--------------------------------------------------
+[ID: tool-collaborator-c2] Burp Collaborator ()
+Nome Técnico: Out-of-band Auditor
+Tipo: tool | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.
+[pt-PT] Descrição: PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.
+--------------------------------------------------
+[ID: tool-cyberchef-c2] CyberChef ()
+Nome Técnico: Cyber Swiss Army Knife
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🍳
+[pt-BR] Descrição: ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.
+[pt-PT] Descrição: ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.
+--------------------------------------------------
+[ID: tool-jwt-tool-c2] JWT Tool ()
+Nome Técnico: Token Engineering Harness
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔐
+[pt-BR] Descrição: PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.
+[pt-PT] Descrição: PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.
+--------------------------------------------------
+[ID: tool-burp-1-c3] Canivete Suíço Hacker ()
+Nome Técnico: Burp Suite Pro
+Tipo: tool | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🧰
+[pt-BR] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+[pt-PT] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+--------------------------------------------------
+[ID: tool-burp-2-c3] Burp Suite Pro ()
+Nome Técnico: Burp Suite Pro
+Tipo: tool | Raridade: Epic | Borda Esquerda (Raridade): #a855f7 (Roxo)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🧰
+[pt-BR] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+[pt-PT] Descrição: Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.
+--------------------------------------------------
+[ID: tool-nmap-1-c3] Nmap + ffuf ()
+Nome Técnico: Network & Fuzzing Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).
+[pt-PT] Descrição: PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).
+--------------------------------------------------
+[ID: tool-nmap-2-c3] Nmap + ffuf ()
+Nome Técnico: Network & Fuzzing Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.
+[pt-PT] Descrição: PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.
+--------------------------------------------------
+[ID: tool-zap-c3] OWASP ZAP ()
+Nome Técnico: Automated Vulnerability Scanner
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: ⚡
+[pt-BR] Descrição: Baixe 2 vulnerabilidades na mesma ação de Exploit.
+[pt-PT] Descrição: Baixe 2 vulnerabilidades na mesma ação de Exploit.
+--------------------------------------------------
+[ID: tool-postman-c3] Postman API Suite ()
+Nome Técnico: API Testing Environment
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🚀
+[pt-BR] Descrição: Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.
+[pt-PT] Descrição: Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.
+--------------------------------------------------
+[ID: tool-devtools-1-c3] Lupa de Varredura ()
+Nome Técnico: Browser DevTools
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔍
+[pt-BR] Descrição: PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.
+[pt-PT] Descrição: PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.
+--------------------------------------------------
+[ID: tool-devtools-2-c3] Browser DevTools ()
+Nome Técnico: Browser DevTools
+Tipo: tool | Raridade: Common | Borda Esquerda (Raridade): #8b949e (Cinza)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔍
+[pt-BR] Descrição: PASSIVA: Amplificador de vulnerabilidades client-side no navegador.
+[pt-PT] Descrição: PASSIVA: Amplificador de vulnerabilidades client-side no navegador.
+--------------------------------------------------
+[ID: tool-sqlmap-c3] SQLMap Automator ()
+Nome Técnico: Database Injection Tool
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛢️
+[pt-BR] Descrição: Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.
+[pt-PT] Descrição: Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.
+--------------------------------------------------
+[ID: tool-collaborator-c3] Burp Collaborator ()
+Nome Técnico: Out-of-band Auditor
+Tipo: tool | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📡
+[pt-BR] Descrição: PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.
+[pt-PT] Descrição: PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.
+--------------------------------------------------
+[ID: tool-cyberchef-c3] CyberChef ()
+Nome Técnico: Cyber Swiss Army Knife
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🍳
+[pt-BR] Descrição: ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.
+[pt-PT] Descrição: ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.
+--------------------------------------------------
+[ID: tool-jwt-tool-c3] JWT Tool ()
+Nome Técnico: Token Engineering Harness
+Tipo: tool | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🔐
+[pt-BR] Descrição: PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.
+[pt-PT] Descrição: PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.
+--------------------------------------------------
+[ID: defuse-deck-1] Safeguard (Bypass) ()
+Nome Técnico: Bypass Card
+Tipo: defuse | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛡️
+[pt-BR] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+[pt-PT] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+--------------------------------------------------
+[ID: defuse-deck-2] Safeguard (Bypass) ()
+Nome Técnico: Bypass Card
+Tipo: defuse | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛡️
+[pt-BR] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+[pt-PT] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+--------------------------------------------------
+[ID: defuse-deck-3] Safeguard (Bypass) ()
+Nome Técnico: Bypass Card
+Tipo: defuse | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛡️
+[pt-BR] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+[pt-PT] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+--------------------------------------------------
+[ID: defuse-deck-4] Safeguard (Bypass) ()
+Nome Técnico: Bypass Card
+Tipo: defuse | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛡️
+[pt-BR] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+[pt-PT] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+--------------------------------------------------
+[ID: defuse-deck-5] Safeguard (Bypass) ()
+Nome Técnico: Bypass Card
+Tipo: defuse | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛡️
+[pt-BR] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+[pt-PT] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+--------------------------------------------------
+[ID: defuse-deck-6] Safeguard (Bypass) ()
+Nome Técnico: Bypass Card
+Tipo: defuse | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛡️
+[pt-BR] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+[pt-PT] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+--------------------------------------------------
+[ID: defuse-deck-7] Safeguard (Bypass) ()
+Nome Técnico: Bypass Card
+Tipo: defuse | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛡️
+[pt-BR] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+[pt-PT] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+--------------------------------------------------
+[ID: defuse-deck-8] Safeguard (Bypass) ()
+Nome Técnico: Bypass Card
+Tipo: defuse | Raridade: Rare | Borda Esquerda (Raridade): #38bdf8 (Azul)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 🛡️
+[pt-BR] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+[pt-PT] Descrição: Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.
+--------------------------------------------------
+[ID: defuse-deck-9] CVE Assignment Protection ()
+Nome Técnico: CVE Assignment (Defuse)
+Tipo: defuse | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📜
+[pt-BR] Descrição: PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.
+[pt-PT] Descrição: PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.
+--------------------------------------------------
+[ID: defuse-deck-10] CVE Assignment Protection ()
+Nome Técnico: CVE Assignment (Defuse)
+Tipo: defuse | Raridade: Uncommon | Borda Esquerda (Raridade): #39d353 (Verde)
+CVSS / Pontos: N/A (Pontos base: 0)
+Ícone: 📜
+[pt-BR] Descrição: PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.
+[pt-PT] Descrição: PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.
+--------------------------------------------------
+
+==================================================
+PROGRAMAS - TOTAL: 24
+==================================================
+
+[ID: shopall-1] ShopAll Global
+Tipo da Empresa: E-Commerce Multinacional
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: ALL
+[pt-BR] Descrição: Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.
+[pt-PT] Descrição: Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.
+--------------------------------------------------
+[ID: shopall-2] ShopAll Global
+Tipo da Empresa: E-Commerce Multinacional
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: ALL
+[pt-BR] Descrição: Escopo amplo. Permitido disputar Duplicate Report em tempo real!
+[pt-PT] Descrição: Escopo amplo. Permitido disputar Duplicate Report em tempo real!
+--------------------------------------------------
+[ID: shopall-3] ShopAll Global
+Tipo da Empresa: E-Commerce Multinacional
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: ALL
+[pt-BR] Descrição: Plataforma gigante com alta rotatividade de pesquisadores.
+[pt-PT] Descrição: Plataforma gigante com alta rotatividade de pesquisadores.
+--------------------------------------------------
+[ID: banksafe-1] BankSafe Financial
+Tipo da Empresa: Instituição Financeira Digital
+Velocidade de Patch: Rápida
+Bounty Range: +$2.5k Bónus Fixos | Bônus Fixo: 2500
+Classes Permitidas: Authentication, Cryptographic Failures, Broken Access Control, Injection
+[pt-BR] Descrição: Escopo restrito a APIs, Autenticação e Criptografia. Pagamentos elevados!
+[pt-PT] Descrição: Escopo restrito a APIs, Autenticação e Criptografia. Pagamentos elevados!
+--------------------------------------------------
+[ID: banksafe-2] BankSafe Financial
+Tipo da Empresa: Instituição Financeira Digital
+Velocidade de Patch: Rápida
+Bounty Range: +$2.5k Bónus Fixos | Bônus Fixo: 2500
+Classes Permitidas: Authentication, Cryptographic Failures, Broken Access Control, Injection
+[pt-BR] Descrição: Escopo restrito a APIs e Autenticação bancária de alta liquidez.
+[pt-PT] Descrição: Escopo restrito a APIs e Autenticação bancária de alta liquidez.
+--------------------------------------------------
+[ID: govportal-1] GovPortal Legacy
+Tipo da Empresa: Sistema Governamental Legado
+Velocidade de Patch: Lenta
+Bounty Range: +$0 Bónus Fixos | Bônus Fixo: 0
+Classes Permitidas: Broken Access Control
+[pt-BR] Descrição: Demora para corrigir (patch lento). Ideal para acumular combos longos!
+[pt-PT] Descrição: Demora para corrigir (patch lento). Ideal para acumular combos longos!
+--------------------------------------------------
+[ID: govportal-2] GovPortal Legacy
+Tipo da Empresa: Sistema Governamental Legado
+Velocidade de Patch: Lenta
+Bounty Range: +$0 Bónus Fixos | Bônus Fixo: 0
+Classes Permitidas: Broken Access Control
+[pt-BR] Descrição: Sistema legado em servidores locais antigos com ritmo de patch lento.
+[pt-PT] Descrição: Sistema legado em servidores locais antigos com ritmo de patch lento.
+--------------------------------------------------
+[ID: healthlock-1] HealthLock EHR
+Tipo da Empresa: Prontuário Médico Digital
+Velocidade de Patch: Rápida
+Bounty Range: +$2.5k Bónus Fixos | Bônus Fixo: 2500
+Classes Permitidas: Cryptographic Failures, Authentication, SSRF, Broken Access Control
+[pt-BR] Descrição: Focado em sigilo de dados sensíveis e criptografia de registros hospitalares.
+[pt-PT] Descrição: Focado em sigilo de dados sensíveis e criptografia de registros hospitalares.
+--------------------------------------------------
+[ID: healthlock-2] HealthLock EHR
+Tipo da Empresa: Prontuário Médico Digital
+Velocidade de Patch: Rápida
+Bounty Range: +$2.5k Bónus Fixos | Bônus Fixo: 2500
+Classes Permitidas: Cryptographic Failures, Authentication, SSRF, Broken Access Control
+[pt-BR] Descrição: Sistema hospitalar privado sob constante auditoria de conformidade.
+[pt-PT] Descrição: Sistema hospitalar privado sob constante auditoria de conformidade.
+--------------------------------------------------
+[ID: cloudnine-1] CloudNine Cloud Services
+Tipo da Empresa: Provedor de Infraestrutura em Nuvem
+Velocidade de Patch: Extrema
+Bounty Range: +$4.0k Bónus Fixos | Bônus Fixo: 4000
+Classes Permitidas: SSRF, Injection, Legendary
+[pt-BR] Descrição: Recompensas astronômicas para RCE, SSRF e vulnerabilidades de infraestrutura. Alto risco de Patch!
+[pt-PT] Descrição: Recompensas astronômicas para RCE, SSRF e vulnerabilidades de infraestrutura. Alto risco de Patch!
+--------------------------------------------------
+[ID: socialbee-1] SocialBee Media
+Tipo da Empresa: Rede Social Global
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: Cross-Site Scripting, Business Logic, Broken Access Control
+[pt-BR] Descrição: Focado em vulnerabilidades de privacidade, XSS e lógica de engajamento social.
+[pt-PT] Descrição: Focado em vulnerabilidades de privacidade, XSS e lógica de engajamento social.
+--------------------------------------------------
+[ID: socialbee-2] SocialBee Media
+Tipo da Empresa: Rede Social Global
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: Cross-Site Scripting, Business Logic, Broken Access Control
+[pt-BR] Descrição: Plataforma social de alto tráfego com foco em permissões de perfil.
+[pt-PT] Descrição: Plataforma social de alto tráfego com foco em permissões de perfil.
+--------------------------------------------------
+[ID: socialbee-3] SocialBee Media
+Tipo da Empresa: Rede Social Global
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: Cross-Site Scripting, Business Logic, Broken Access Control
+[pt-BR] Descrição: Inúmeras sub-plataformas integradas suscetíveis a roubo de cookies e manipulação.
+[pt-PT] Descrição: Inúmeras sub-plataformas integradas suscetíveis a roubo de cookies e manipulação.
+--------------------------------------------------
+[ID: gameverse-1] GameVerse MMO
+Tipo da Empresa: Plataforma Massiva de Jogos
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: Business Logic, Injection, Cross-Site Scripting
+[pt-BR] Descrição: Injeção de itens, manipulação de saldo virtual e exploits em WebSockets.
+[pt-PT] Descrição: Injeção de itens, manipulação de saldo virtual e exploits em WebSockets.
+--------------------------------------------------
+[ID: gameverse-2] GameVerse MMO
+Tipo da Empresa: Plataforma Massiva de Jogos
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: Business Logic, Injection, Cross-Site Scripting
+[pt-BR] Descrição: Servidores de jogos síncronos expostos a exploração de lógica de mercado.
+[pt-PT] Descrição: Servidores de jogos síncronos expostos a exploração de lógica de mercado.
+--------------------------------------------------
+[ID: educonnect-1] EduConnect LMS
+Tipo da Empresa: Plataforma Educacional
+Velocidade de Patch: Lenta
+Bounty Range: +$0 Bónus Fixos | Bônus Fixo: 0
+Classes Permitidas: ALL
+[pt-BR] Descrição: Ambiente seguro para iniciantes praticarem. Quase sem risco de Patch instantâneo.
+[pt-PT] Descrição: Ambiente seguro para iniciantes praticarem. Quase sem risco de Patch instantâneo.
+--------------------------------------------------
+[ID: educonnect-2] EduConnect LMS
+Tipo da Empresa: Plataforma Educacional
+Velocidade de Patch: Lenta
+Bounty Range: +$0 Bónus Fixos | Bônus Fixo: 0
+Classes Permitidas: ALL
+[pt-BR] Descrição: Sistema acadêmico comunitário com tolerância prolongada de patches.
+[pt-PT] Descrição: Sistema acadêmico comunitário com tolerância prolongada de patches.
+--------------------------------------------------
+[ID: cryptox-1] CryptoX Exchange
+Tipo da Empresa: Corretora de Criptomoedas
+Velocidade de Patch: Rápida
+Bounty Range: +$4.0k Bónus Fixos | Bônus Fixo: 4000
+Classes Permitidas: Authentication, Cryptographic Failures, Business Logic, Legendary
+[pt-BR] Descrição: Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.
+[pt-PT] Descrição: Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.
+--------------------------------------------------
+[ID: aicore-1] AI Core Systems
+Tipo da Empresa: Infraestrutura de IA Generativa
+Velocidade de Patch: Extrema
+Bounty Range: +$4.0k Bónus Fixos | Bônus Fixo: 4000
+Classes Permitidas: Injection, SSRF, Legendary
+[pt-BR] Descrição: Clusters de treinamento de modelos de linguagem vulneráveis a Prompt Injection e RCE.
+[pt-PT] Descrição: Clusters de treinamento de modelos de linguagem vulneráveis a Prompt Injection e RCE.
+--------------------------------------------------
+[ID: paygateway-1] PayGateway Prime
+Tipo da Empresa: Processadora de Pagamentos
+Velocidade de Patch: Rápida
+Bounty Range: +$2.5k Bónus Fixos | Bônus Fixo: 2500
+Classes Permitidas: Broken Access Control, Authentication, Injection
+[pt-BR] Descrição: Gateway financeiro global conectando cartões de crédito e Pix.
+[pt-PT] Descrição: Gateway financeiro global conectando cartões de crédito e Pix.
+--------------------------------------------------
+[ID: paygateway-2] PayGateway Prime
+Tipo da Empresa: Processadora de Pagamentos
+Velocidade de Patch: Rápida
+Bounty Range: +$2.5k Bónus Fixos | Bônus Fixo: 2500
+Classes Permitidas: Broken Access Control, Authentication, Injection
+[pt-BR] Descrição: Processador financeiro com rigorosos controles de auditoria de cartões.
+[pt-PT] Descrição: Processador financeiro com rigorosos controles de auditoria de cartões.
+--------------------------------------------------
+[ID: deliverydash-1] DeliveryDash App
+Tipo da Empresa: Plataforma Logística e Entregas
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: Business Logic, Broken Access Control, Cross-Site Scripting
+[pt-BR] Descrição: Aplicativo de entregas urbanas com vulnerabilidades de cupom e IDOR de pedidos.
+[pt-PT] Descrição: Aplicativo de entregas urbanas com vulnerabilidades de cupom e IDOR de pedidos.
+--------------------------------------------------
+[ID: deliverydash-2] DeliveryDash App
+Tipo da Empresa: Plataforma Logística e Entregas
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: Business Logic, Broken Access Control, Cross-Site Scripting
+[pt-BR] Descrição: Rede logística de entregas rápidas suscetível a manipulação de pedidos.
+[pt-PT] Descrição: Rede logística de entregas rápidas suscetível a manipulação de pedidos.
+--------------------------------------------------
+[ID: deliverydash-3] DeliveryDash App
+Tipo da Empresa: Plataforma Logística e Entregas
+Velocidade de Patch: Moderada
+Bounty Range: +$1.0k Bónus Fixos | Bônus Fixo: 1000
+Classes Permitidas: Business Logic, Broken Access Control, Cross-Site Scripting
+[pt-BR] Descrição: Frequentes vulnerabilidades de lógica em promoções e cupons da plataforma.
+[pt-PT] Descrição: Frequentes vulnerabilidades de lógica em promoções e cupons da plataforma.
+--------------------------------------------------
+
+==================================================
+ARQUÉTIPOS - TOTAL: 6
+==================================================
+
+[ID: n00b] n00b
+Mão Máxima: 6 | Reports por Turno: 1
+Modificador de Bounty: 1
+Ícone: 🌱 | Cor (Tema): #39d353
+[pt-BR] Título: O Iniciante Dedicado
+[pt-PT] Título: O Iniciante Dedicado
+[pt-BR] Estilo: Engine Builder: Ganha +1 habilidade passiva constante a cada report enviado com sucesso.
+[pt-PT] Estilo: Engine Builder: Ganha +1 habilidade passiva constante a cada report enviado com sucesso.
+[pt-BR] Poderes:
+  - Inicia simples
+  - Escalabilidade contínua de recursos
+  - +1 compra de carta por report
+[pt-PT] Poderes:
+  - Inicia simples
+  - Escalabilidade contínua de recursos
+  - +1 compra de carta por report
+--------------------------------------------------
+[ID: old-guard] The Old Guard
+Mão Máxima: 9 | Reports por Turno: 1
+Modificador de Bounty: 1.2
+Ícone: 🧠 | Cor (Tema): #c084fc
+[pt-BR] Título: O Veterano de C/ASM
+[pt-PT] Título: O Veterano de C/ASM
+[pt-BR] Estilo: Mão Expandida: Pode segurar até 9 cartas, perfeito para montar combos devastadores de alta severidade.
+[pt-PT] Estilo: Mão Expandida: Pode segurar até 9 cartas, perfeito para montar combos devastadores de alta severidade.
+[pt-BR] Poderes:
+  - Limite de mão: 9 cartas
+  - Bónus de +20% em vulnerabilidades Críticas
+  - Submissão única por ronda
+[pt-PT] Poderes:
+  - Limite de mão: 9 cartas
+  - Bónus de +20% em vulnerabilidades Críticas
+  - Submissão única por ronda
+--------------------------------------------------
+[ID: bug-hunter] Bug Hunter
+Mão Máxima: 6 | Reports por Turno: 1
+Modificador de Bounty: 1
+Ícone: ⚡ | Cor (Tema): #f0883e
+[pt-BR] Título: O Caçador em Escala
+[pt-PT] Título: O Caçador em Escala
+[pt-BR] Estilo: Submissão em Dois Lotes: Ao realizar Report, divide a Zona de Exploits em 2 lotes independentes no mesmo Active Program.
+[pt-PT] Estilo: Submissão em Dois Lotes: Ao realizar Report, divide a Zona de Exploits em 2 lotes independentes no mesmo Active Program.
+[pt-BR] Poderes:
+  - 2 Lotes em 1 Report
+  - +50% de bónus se submeter 5+ vulnerabilidades no total
+  - Restrito a CVSS ≤ 6.0
+[pt-PT] Poderes:
+  - 2 Lotes em 1 Report
+  - +50% de bónus se submeter 5+ vulnerabilidades no total
+  - Restrito a CVSS ≤ 6.0
+--------------------------------------------------
+[ID: social-engineer] Social Engineer
+Mão Máxima: 6 | Reports por Turno: 1
+Modificador de Bounty: 1
+Ícone: 🎭 | Cor (Tema): #58a6ff
+[pt-BR] Título: O Manipulador Social
+[pt-PT] Título: O Manipulador Social
+[pt-BR] Estilo: Caos Redirecionado: Pode escolher nominalmente qual adversário sofrerá o impacto de cartas de Evento jogadas.
+[pt-PT] Estilo: Caos Redirecionado: Pode escolher nominalmente qual adversário sofrerá o impacto de cartas de Evento jogadas.
+[pt-BR] Poderes:
+  - Redireciona cartas de evento
+  - Força descartes de oponentes
+  - Alta interação PvP
+[pt-PT] Poderes:
+  - Redireciona cartas de evento
+  - Força descartes de oponentes
+  - Alta interação PvP
+--------------------------------------------------
+[ID: red-teamer] Red Teamer
+Mão Máxima: 6 | Reports por Turno: 1
+Modificador de Bounty: 0.7
+Ícone: ⚔️ | Cor (Tema): #f85149
+[pt-BR] Título: O Operador Ofensivo
+[pt-PT] Título: O Operador Ofensivo
+[pt-BR] Estilo: Sem Limites: Ignora todas as restrições de escopo dos programas (paga -30% nos bounties obtidos).
+[pt-PT] Estilo: Sem Limites: Ignora todas as restrições de escopo dos programas (paga -30% nos bounties obtidos).
+[pt-BR] Poderes:
+  - Ignora escopo de programas
+  - Explora qualquer vulnerabilidade em qualquer alvo
+  - Flexibilidade total
+[pt-PT] Poderes:
+  - Ignora escopo de programas
+  - Explora qualquer vulnerabilidade em qualquer alvo
+  - Flexibilidade total
+--------------------------------------------------
+[ID: pentester] The Pentester
+Mão Máxima: 6 | Reports por Turno: 1
+Modificador de Bounty: 1
+Ícone: 🛡️ | Cor (Tema): #38bdf8
+[pt-BR] Título: O Auditor Metódico
+[pt-PT] Título: O Auditor Metódico
+[pt-BR] Estilo: Imunidade Profissional: Imune a cartas de disrupção como Duplicate Report! e Triage Delay!.
+[pt-PT] Estilo: Imunidade Profissional: Imune a cartas de disrupção como Duplicate Report! e Triage Delay!.
+[pt-BR] Poderes:
+  - Imunidade a Duplicate Report!
+  - Imunidade a Triage Delay!
+  - Fluxo estável de caixa
+[pt-PT] Poderes:
+  - Imunidade a Duplicate Report!
+  - Imunidade a Triage Delay!
+  - Fluxo estável de caixa
+--------------------------------------------------
+
+==================================================
+EVENTOS - TOTAL: 24
+==================================================
+
+[ID: evt-01] Blue Team Hunt! ()
+Nome Técnico: Proactive Threat Hunting
+Tipo de Efeito: patch | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 🕵️
+[pt-BR] Descrição: O time de defesa entra em ação proativa! Todos os jogadores ativos devem descartar a vulnerabilidade de maior CVSS que possuírem exposta na mesa.
+[pt-PT] Descrição: O time de defesa entra em ação proativa! Todos os jogadores ativos devem descartar a vulnerabilidade de maior CVSS que possuírem exposta na mesa.
+--------------------------------------------------
+[ID: evt-02] Duplicate Report! ()
+Nome Técnico: Duplicated Vulnerability Submission
+Tipo de Efeito: duplicate | Alvo: Escolha 1 Oponente
+Ícone: 📝
+[pt-BR] Descrição: Alguém reportou a vulnerabilidade minutos antes! Escolha 1 oponente com vulnerabilidades na mesa: ele descarta a vulnerabilidade de maior CVSS exposta.
+[pt-PT] Descrição: Alguém reportou a vulnerabilidade minutos antes! Escolha 1 oponente com vulnerabilidades na mesa: ele descarta a vulnerabilidade de maior CVSS exposta.
+--------------------------------------------------
+[ID: evt-03] Out of Scope! ()
+Nome Técnico: Out of Scope Boundary Rejection
+Tipo de Efeito: scope | Alvo: Tu (Autor do Report)
+Ícone: ❌
+[pt-BR] Descrição: Seu reporte gerou alerta no comitê de escopo! Você fica impedido de realizar a ação Exploit (baixar vulnerabilidades) no seu próximo turno.
+[pt-PT] Descrição: Teu reporte gerou alerta no comitê de escopo! Tu ficas impedido de realizar a ação Exploit (baixar vulnerabilidades) no teu próximo turno.
+--------------------------------------------------
+[ID: evt-04] Legal Threat! ()
+Nome Técnico: Cease & Desist
+Tipo de Efeito: delay | Alvo: Escolha 1 Oponente
+Ícone: ⚖️
+[pt-BR] Descrição: AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele fica impedido de realizar a ação Report pela próxima rodada.
+[pt-PT] Descrição: AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele fica impedido de realizar a ação Report pela próxima ronda.
+--------------------------------------------------
+[ID: evt-05] Triage Delay! ()
+Nome Técnico: Corporate Backlog Delay
+Tipo de Efeito: delay | Alvo: Tu (Autor do Report)
+Ícone: ⏳
+[pt-BR] Descrição: Equipe corporativa em backlog! As cartas da sua mão devem jogar expostas (reveladas para a mesa) até o seu próximo turno.
+[pt-PT] Descrição: Equipe corporativa em backlog! As cartas da tua mão devem jogar expostas (reveladas para a mesa) até o teu próximo turno.
+--------------------------------------------------
+[ID: evt-06] Bug Bounty Mediation ()
+Nome Técnico: Consensus Bounty Settlement
+Tipo de Efeito: bounty | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 🤝
+[pt-BR] Descrição: Acordo de mediação global! Todos os jogadores ativos recebem $1.500 imediatamente na Bounty Track.
+[pt-PT] Descrição: Acordo de mediação global! Todos os jogadores ativos recebem $1.500 imediatamente na Bounty Track.
+--------------------------------------------------
+[ID: evt-07] Zero Day Disclosure ()
+Nome Técnico: Discard Pile Rescue
+Tipo de Efeito: meta | Alvo: Jogador em Último Lugar
+Ícone: 🔓
+[pt-BR] Descrição: Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 carta de vulnerabilidade da pilha de descarte para a mão.
+[pt-PT] Descrição: Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 carta de vulnerabilidade da pilha de descarte para a mão.
+--------------------------------------------------
+[ID: evt-08] Scope Expansion! ()
+Nome Técnico: Corporate Scope Window Expansion
+Tipo de Efeito: scope | Alvo: Tu (Autor do Report)
+Ícone: 🌐
+[pt-BR] Descrição: A empresa expandiu o programa! No seu próximo turno, você pode jogar qualquer vulnerabilidade na mesa ignorando as restrições de escopo.
+[pt-PT] Descrição: A empresa expandiu o programa! No teu próximo turno, tu podes jogar qualquer vulnerabilidade na mesa ignorando as restrições de escopo.
+--------------------------------------------------
+[ID: evt-09] Public Disclosure! ()
+Nome Técnico: Public Zero-Day Exfiltration
+Tipo de Efeito: bounty | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 📢
+[pt-BR] Descrição: Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem $1.000 de compensação imediata.
+[pt-PT] Descrição: Vazamento público! Todos os jogadores descartam tuas vulnerabilidades expostas na mesa, mas recebem $1.000 de compensação imediata.
+--------------------------------------------------
+[ID: evt-10] Bounty Increase! ()
+Nome Técnico: Double Bounty Multiplier
+Tipo de Efeito: bounty | Alvo: Tu (Autor do Report)
+Ícone: 💰
+[pt-BR] Descrição: Verba de emergência liberada! O seu próximo Report aprovado terá um bônus financeiro adicional de +50%.
+[pt-PT] Descrição: Verba de emergência liberada! O teu próximo Report aprovado terá um bónus financeiro adicional de +50%.
+--------------------------------------------------
+[ID: evt-11] WAF Deployed! ()
+Nome Técnico: Web Application Firewall Block
+Tipo de Efeito: meta | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 🛡️
+[pt-BR] Descrição: Filtro de WAF ativado! Vulnerabilidades da classe Injection não podem ser baixadas na mesa por 1 rodada completa.
+[pt-PT] Descrição: Filtro de WAF ativado! Vulnerabilidades da classe Injection não podem ser baixadas na mesa por 1 ronda completa.
+--------------------------------------------------
+[ID: evt-12] DNS Hijack! ()
+Nome Técnico: Compulsory Target Switch
+Tipo de Efeito: meta | Alvo: Escolha 1 Oponente
+Ícone: 🌐
+[pt-BR] Descrição: Sequestro de tráfego! Escolha 1 oponente: o programa ativo dele é descartado e substituído por uma carta do topo do mercado.
+[pt-PT] Descrição: Sequestro de tráfego! Escolha 1 oponente: o programa ativo dele é descartado e substituído por uma carta do topo do mercado.
+--------------------------------------------------
+[ID: evt-13] Responsible Disclosure! ()
+Nome Técnico: Instant Free Submission Window
+Tipo de Efeito: bounty | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 📄
+[pt-BR] Descrição: Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rolar o D8 (sem risco de Patch Deployed!), respeitando a ordem da mesa.
+[pt-PT] Descrição: Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rodar o D8 (sem risco de Patch Deployed!), respeitando a ordem da mesa.
+--------------------------------------------------
+[ID: evt-14] Honeypot Triggered! ()
+Nome Técnico: Decoy Server Trap
+Tipo de Efeito: delay | Alvo: Escolha 1 Oponente
+Ícone: 🍯
+[pt-BR] Descrição: Armadilha de servidor honeypot! Escolha 1 oponente: ele é forçado a descartar 2 cartas aleatórias da própria mão.
+[pt-PT] Descrição: Armadilha de servidor honeypot! Escolha 1 oponente: ele é forçado a descartar 2 cartas aleatórias da própria mão.
+--------------------------------------------------
+[ID: evt-15] CVE Assignment Delayed! ()
+Nome Técnico: Defuse Blockade Window
+Tipo de Efeito: delay | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: ⏳
+[pt-BR] Descrição: Burocracia na atribuição de CVE! Cartas de Defesa (Bypass) ficam bloqueadas por 1 rodada completa (efeito imediato, vale contra patches do mesmo turno).
+[pt-PT] Descrição: Burocracia na atribuição de CVE! Cartas de Defesa (Bypass) ficam bloqueadas por 1 ronda completa (efeito imediato, vale contra patches do mesmo turno).
+--------------------------------------------------
+[ID: evt-16] Bug Collision! ()
+Nome Técnico: Lowest CVSS Discard Event
+Tipo de Efeito: duplicate | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 💥
+[pt-BR] Descrição: Colisão de relatórios no mercado! Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta em suas mesas.
+[pt-PT] Descrição: Colisão de relatórios no mercado! Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta em tuas mesas.
+--------------------------------------------------
+[ID: evt-17] Hall of Fame Update! ()
+Nome Técnico: Underdog Catch-Up Boost
+Tipo de Efeito: meta | Alvo: Jogador em Último Lugar
+Ícone: 🏆
+[pt-BR] Descrição: Reconhecimento na comunidade! O jogador em último lugar na Bounty Track compra 2 Tool Cards do Main Deck.
+[pt-PT] Descrição: Reconhecimento na comunidade! O jogador em último lugar na Bounty Track compra 2 Tool Cards do Main Deck.
+--------------------------------------------------
+[ID: evt-18] Rate Limited! ()
+Nome Técnico: Network Traffic Restriction
+Tipo de Efeito: delay | Alvo: Todos os Jogadores
+Ícone: 🛑
+[pt-BR] Descrição: Restrição de tráfego na rede! Todos os jogadores ficam impedidos de realizar a ação Recon (comprar cartas) no seu próximo turno.
+[pt-PT] Descrição: Restrição de tráfego na rede! Todos os jogadores ficam impedidos de realizar a ação Recon (comprar cartas) no seu próximo turno.
+--------------------------------------------------
+[ID: evt-19] 2FA Enforced! ()
+Nome Técnico: Auth Class Lockdown
+Tipo de Efeito: meta | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 🔐
+[pt-BR] Descrição: Autenticação em dois fatores ativada! Vulnerabilidades da classe Authentication ficam bloqueadas de serem baixadas por 1 rodada.
+[pt-PT] Descrição: Autenticação em dois fatores ativada! Vulnerabilidades da classe Authentication ficam bloqueadas de serem baixadas por 1 ronda.
+--------------------------------------------------
+[ID: evt-20] Bug Bounty Conference! ()
+Nome Técnico: Global Networking Event
+Tipo de Efeito: meta | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 🎪
+[pt-BR] Descrição: Confraternização da comunidade! Todos os jogadores compram 2 cartas do Main Deck imediatamente.
+[pt-PT] Descrição: Confraternização da comunidade! Todos os jogadores compram 2 cartas do Main Deck imediatamente.
+--------------------------------------------------
+[ID: evt-21] Data Breach! ()
+Nome Técnico: Hand Inspection & Discard
+Tipo de Efeito: duplicate | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 🔓
+[pt-BR] Descrição: Auditoria de dados! Todos revelam a mão. Quem tiver mais vulnerabilidades de severidade Critical descarta metade delas.
+[pt-PT] Descrição: Auditoria de dados! Todos revelam a mão. Quem tiver mais vulnerabilidades de severidade Critical descarta metade delas.
+--------------------------------------------------
+[ID: evt-22] Security Audit! ()
+Nome Técnico: Compliance Audit Cycle
+Tipo de Efeito: meta | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 📅
+[pt-BR] Descrição: Varredura geral de conformidade! Todos os jogadores revelam a mão e descartam a carta de maior CVSS.
+[pt-PT] Descrição: Varredura geral de conformidade! Todos os jogadores revelam a mão e descartam a carta de maior CVSS.
+--------------------------------------------------
+[ID: evt-23] Swag Drop! ()
+Nome Técnico: Consolation Gear Reward
+Tipo de Efeito: meta | Alvo: Todos os Jogadores (Imune ao Social Engineer)
+Ícone: 🎁
+[pt-BR] Descrição: Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool Card) do Main Deck.
+[pt-PT] Descrição: Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool Card) do Main Deck.
+--------------------------------------------------
+[ID: evt-24] Bounty Ético (Ethical Bounty)
+Nome Técnico: Coordinated Vulnerability Disclosure
+Tipo de Efeito: bounty | Alvo: Todos os Pesquisadores
+Ícone: 🏅
+[pt-BR] Descrição: Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta rodada recebe +$2k de bônus de credibilidade ética. (A ética compensa. A sua reputação é a sua ferramenta mais valiosa.)
+[pt-PT] Descrição: Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta ronda recebe +$2k de bónus de credibilidade ética. (A ética compensa. A tua reputação é a tua ferramenta mais valiosa.)
+--------------------------------------------------

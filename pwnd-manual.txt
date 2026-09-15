@@ -834,6 +834,14 @@ Todos os Jogadores
 Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool
  Card) do Main Deck.
 
+24
+
+Bounty Ético 🏅
+
+Todos os Pesquisadores
+
+Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta ronda recebe +$2k de bónus de credibilidade ética.
+
 Invasão de Eventos nas Rodadas Finais (Rodada 7)
 
 No início da Rodada 7, todo o remanescente do Event Deck é recolhido e embaralhado

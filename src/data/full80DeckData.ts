@@ -13,7 +13,7 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     rarity: 'Common',
     icon: '🗣️',
     simpleDescription: 'Você cochicha um boato falso no campo de texto e o banco de dados acredita, entregando a lista de senhas.',
-    ptDescription: 'Tu cochichas um boato falso no campo de texto e o base de dados acredita, entregando a lista de palavras-passe.'
+    ptDescription: 'Tu cochichas um boato falso no campo de texto e a base de dados acredita, entregando a lista de palavras-passe.'
   },
   {
     id: 'inj-2',
@@ -989,7 +989,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Epic',
     icon: '🧰',
-    simpleDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.'
+    simpleDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.',
+    ptDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.'
   },
   {
     id: 'tool-burp-2',
@@ -999,7 +1000,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Epic',
     icon: '🧰',
-    simpleDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.'
+    simpleDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.',
+    ptDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.'
   },
   {
     id: 'tool-nmap-1',
@@ -1009,7 +1011,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Common',
     icon: '📡',
-    simpleDescription: 'PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).'
+    simpleDescription: 'PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).',
+    ptDescription: 'PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).'
   },
   {
     id: 'tool-nmap-2',
@@ -1019,7 +1022,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Common',
     icon: '📡',
-    simpleDescription: 'PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.'
+    simpleDescription: 'PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.',
+    ptDescription: 'PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.'
   },
   {
     id: 'tool-zap',
@@ -1029,7 +1033,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Common',
     icon: '⚡',
-    simpleDescription: 'Baixe 2 vulnerabilidades na mesma ação de Exploit.'
+    simpleDescription: 'Baixe 2 vulnerabilidades na mesma ação de Exploit.',
+    ptDescription: 'Baixe 2 vulnerabilidades na mesma ação de Exploit.'
   },
   {
     id: 'tool-postman',
@@ -1039,7 +1044,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Common',
     icon: '🚀',
-    simpleDescription: 'Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.'
+    simpleDescription: 'Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.',
+    ptDescription: 'Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.'
   },
   {
     id: 'tool-devtools-1',
@@ -1049,7 +1055,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Common',
     icon: '🔍',
-    simpleDescription: 'PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.'
+    simpleDescription: 'PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.',
+    ptDescription: 'PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.'
   },
   {
     id: 'tool-devtools-2',
@@ -1059,7 +1066,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Common',
     icon: '🔍',
-    simpleDescription: 'PASSIVA: Amplificador de vulnerabilidades client-side no navegador.'
+    simpleDescription: 'PASSIVA: Amplificador de vulnerabilidades client-side no navegador.',
+    ptDescription: 'PASSIVA: Amplificador de vulnerabilidades client-side no navegador.'
   },
   {
     id: 'tool-sqlmap',
@@ -1069,7 +1077,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '🛢️',
-    simpleDescription: 'Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.'
+    simpleDescription: 'Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.',
+    ptDescription: 'Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.'
   },
   {
     id: 'tool-collaborator',
@@ -1079,7 +1088,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '📡',
-    simpleDescription: 'PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.'
+    simpleDescription: 'PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.',
+    ptDescription: 'PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.'
   },
   {
     id: 'tool-cyberchef',
@@ -1089,7 +1099,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '🍳',
-    simpleDescription: 'ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.'
+    simpleDescription: 'ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.',
+    ptDescription: 'ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.'
   },
   {
     id: 'tool-jwt-tool',
@@ -1099,7 +1110,8 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '🔐',
-    simpleDescription: 'PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.'
+    simpleDescription: 'PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.',
+    ptDescription: 'PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.'
   }
 ];
 
@@ -1113,7 +1125,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
+    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-2',
@@ -1123,7 +1136,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
+    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-3',
@@ -1133,7 +1147,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
+    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-4',
@@ -1143,7 +1158,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
+    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-5',
@@ -1153,7 +1169,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
+    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-6',
@@ -1163,7 +1180,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
+    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-7',
@@ -1173,7 +1191,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
+    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-8',
@@ -1183,7 +1202,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
+    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-9',
@@ -1193,7 +1213,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '📜',
-    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
+    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.',
+    ptDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
   },
   {
     id: 'defuse-deck-10',
@@ -1203,7 +1224,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '📜',
-    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
+    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.',
+    ptDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
   }
 ];
 

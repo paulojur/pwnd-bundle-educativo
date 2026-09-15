@@ -63,11 +63,14 @@ export const ARCHETYPES: Archetype[] = [
     id: 'n00b',
     name: 'n00b',
     title: 'O Iniciante Dedicado',
+    ptTitle: 'O Iniciante Dedicado',
     playstyle: 'Engine Builder: Ganha +1 habilidade passiva constante a cada report enviado com sucesso.',
+    ptPlaystyle: 'Engine Builder: Ganha +1 habilidade passiva constante a cada report enviado com sucesso.',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 1.0,
     specialPowers: ['Inicia simples', 'Escalabilidade contínua de recursos', '+1 compra de carta por report'],
+    ptSpecialPowers: ['Inicia simples', 'Escalabilidade contínua de recursos', '+1 compra de carta por report'],
     avatarIcon: '🌱',
     color: '#39d353'
   },
@@ -75,11 +78,14 @@ export const ARCHETYPES: Archetype[] = [
     id: 'old-guard',
     name: 'The Old Guard',
     title: 'O Veterano de C/ASM',
+    ptTitle: 'O Veterano de C/ASM',
     playstyle: 'Mão Expandida: Pode segurar até 9 cartas, perfeito para montar combos devastadores de alta severidade.',
+    ptPlaystyle: 'Mão Expandida: Pode segurar até 9 cartas, perfeito para montar combos devastadores de alta severidade.',
     maxHandSize: 9,
     reportsPerTurn: 1,
     bountyModifier: 1.2,
     specialPowers: ['Limite de mão: 9 cartas', 'Bónus de +20% em vulnerabilidades Críticas', 'Submissão única por ronda'],
+    ptSpecialPowers: ['Limite de mão: 9 cartas', 'Bónus de +20% em vulnerabilidades Críticas', 'Submissão única por ronda'],
     avatarIcon: '🧠',
     color: '#c084fc'
   },
@@ -87,11 +93,14 @@ export const ARCHETYPES: Archetype[] = [
     id: 'bug-hunter',
     name: 'Bug Hunter',
     title: 'O Caçador em Escala',
+    ptTitle: 'O Caçador em Escala',
     playstyle: 'Submissão em Dois Lotes: Ao realizar Report, divide a Zona de Exploits em 2 lotes independentes no mesmo Active Program.',
+    ptPlaystyle: 'Submissão em Dois Lotes: Ao realizar Report, divide a Zona de Exploits em 2 lotes independentes no mesmo Active Program.',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 1.0,
     specialPowers: ['2 Lotes em 1 Report', '+50% de bónus se submeter 5+ vulnerabilidades no total', 'Restrito a CVSS ≤ 6.0'],
+    ptSpecialPowers: ['2 Lotes em 1 Report', '+50% de bónus se submeter 5+ vulnerabilidades no total', 'Restrito a CVSS ≤ 6.0'],
     avatarIcon: '⚡',
     color: '#f0883e'
   },
@@ -99,11 +108,14 @@ export const ARCHETYPES: Archetype[] = [
     id: 'social-engineer',
     name: 'Social Engineer',
     title: 'O Manipulador Social',
+    ptTitle: 'O Manipulador Social',
     playstyle: 'Caos Redirecionado: Pode escolher nominalmente qual adversário sofrerá o impacto de cartas de Evento jogadas.',
+    ptPlaystyle: 'Caos Redirecionado: Pode escolher nominalmente qual adversário sofrerá o impacto de cartas de Evento jogadas.',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 1.0,
     specialPowers: ['Redireciona cartas de evento', 'Força descartes de oponentes', 'Alta interação PvP'],
+    ptSpecialPowers: ['Redireciona cartas de evento', 'Força descartes de oponentes', 'Alta interação PvP'],
     avatarIcon: '🎭',
     color: '#58a6ff'
   },
@@ -111,11 +123,14 @@ export const ARCHETYPES: Archetype[] = [
     id: 'red-teamer',
     name: 'Red Teamer',
     title: 'O Operador Ofensivo',
+    ptTitle: 'O Operador Ofensivo',
     playstyle: 'Sem Limites: Ignora todas as restrições de escopo dos programas (paga -30% nos bounties obtidos).',
+    ptPlaystyle: 'Sem Limites: Ignora todas as restrições de escopo dos programas (paga -30% nos bounties obtidos).',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 0.7,
     specialPowers: ['Ignora escopo de programas', 'Explora qualquer vulnerabilidade em qualquer alvo', 'Flexibilidade total'],
+    ptSpecialPowers: ['Ignora escopo de programas', 'Explora qualquer vulnerabilidade em qualquer alvo', 'Flexibilidade total'],
     avatarIcon: '⚔️',
     color: '#f85149'
   },
@@ -123,11 +138,14 @@ export const ARCHETYPES: Archetype[] = [
     id: 'pentester',
     name: 'The Pentester',
     title: 'O Auditor Metódico',
+    ptTitle: 'O Auditor Metódico',
     playstyle: 'Imunidade Profissional: Imune a cartas de disrupção como Duplicate Report! e Triage Delay!.',
+    ptPlaystyle: 'Imunidade Profissional: Imune a cartas de disrupção como Duplicate Report! e Triage Delay!.',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 1.0,
     specialPowers: ['Imunidade a Duplicate Report!', 'Imunidade a Triage Delay!', 'Fluxo estável de caixa'],
+    ptSpecialPowers: ['Imunidade a Duplicate Report!', 'Imunidade a Triage Delay!', 'Fluxo estável de caixa'],
     avatarIcon: '🛡️',
     color: '#38bdf8'
   }
@@ -146,7 +164,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.'
+    description: 'Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.',
+    ptDescription: 'Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.'
   },
   {
     id: 'shopall-2',
@@ -156,7 +175,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Escopo amplo. Permitido disputar Duplicate Report em tempo real!'
+    description: 'Escopo amplo. Permitido disputar Duplicate Report em tempo real!',
+    ptDescription: 'Escopo amplo. Permitido disputar Duplicate Report em tempo real!'
   },
   {
     id: 'shopall-3',
@@ -166,7 +186,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Plataforma gigante com alta rotatividade de pesquisadores.'
+    description: 'Plataforma gigante com alta rotatividade de pesquisadores.',
+    ptDescription: 'Plataforma gigante com alta rotatividade de pesquisadores.'
   },
 
   // --- 2. BankSafe Financial (2 cópias) ---
@@ -178,7 +199,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Rápida',
     bountyRange: '+$2.5k Bónus Fixos',
     flatBountyBonus: 2500,
-    description: 'Escopo restrito a APIs, Autenticação e Criptografia. Pagamentos elevados!'
+    description: 'Escopo restrito a APIs, Autenticação e Criptografia. Pagamentos elevados!',
+    ptDescription: 'Escopo restrito a APIs, Autenticação e Criptografia. Pagamentos elevados!'
   },
   {
     id: 'banksafe-2',
@@ -188,7 +210,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Rápida',
     bountyRange: '+$2.5k Bónus Fixos',
     flatBountyBonus: 2500,
-    description: 'Escopo restrito a APIs e Autenticação bancária de alta liquidez.'
+    description: 'Escopo restrito a APIs e Autenticação bancária de alta liquidez.',
+    ptDescription: 'Escopo restrito a APIs e Autenticação bancária de alta liquidez.'
   },
 
   // --- 3. GovPortal Legacy (2 cópias) ---
@@ -200,7 +223,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Lenta',
     bountyRange: '+$0 Bónus Fixos',
     flatBountyBonus: 0,
-    description: 'Demora para corrigir (patch lento). Ideal para acumular combos longos!'
+    description: 'Demora para corrigir (patch lento). Ideal para acumular combos longos!',
+    ptDescription: 'Demora para corrigir (patch lento). Ideal para acumular combos longos!'
   },
   {
     id: 'govportal-2',
@@ -210,7 +234,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Lenta',
     bountyRange: '+$0 Bónus Fixos',
     flatBountyBonus: 0,
-    description: 'Sistema legado em servidores locais antigos com ritmo de patch lento.'
+    description: 'Sistema legado em servidores locais antigos com ritmo de patch lento.',
+    ptDescription: 'Sistema legado em servidores locais antigos com ritmo de patch lento.'
   },
 
   // --- 4. HealthLock EHR (2 cópias) ---
@@ -222,7 +247,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Rápida',
     bountyRange: '+$2.5k Bónus Fixos',
     flatBountyBonus: 2500,
-    description: 'Focado em sigilo de dados sensíveis e criptografia de registros hospitalares.'
+    description: 'Focado em sigilo de dados sensíveis e criptografia de registros hospitalares.',
+    ptDescription: 'Focado em sigilo de dados sensíveis e criptografia de registros hospitalares.'
   },
   {
     id: 'healthlock-2',
@@ -232,7 +258,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Rápida',
     bountyRange: '+$2.5k Bónus Fixos',
     flatBountyBonus: 2500,
-    description: 'Sistema hospitalar privado sob constante auditoria de conformidade.'
+    description: 'Sistema hospitalar privado sob constante auditoria de conformidade.',
+    ptDescription: 'Sistema hospitalar privado sob constante auditoria de conformidade.'
   },
 
   // --- 5. CloudNine Cloud Services (1 cópia) ---
@@ -244,7 +271,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Extrema',
     bountyRange: '+$4.0k Bónus Fixos',
     flatBountyBonus: 4000,
-    description: 'Recompensas astronômicas para RCE, SSRF e vulnerabilidades de infraestrutura. Alto risco de Patch!'
+    description: 'Recompensas astronômicas para RCE, SSRF e vulnerabilidades de infraestrutura. Alto risco de Patch!',
+    ptDescription: 'Recompensas astronômicas para RCE, SSRF e vulnerabilidades de infraestrutura. Alto risco de Patch!'
   },
 
   // --- 6. SocialBee Media (3 cópias) ---
@@ -256,7 +284,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Focado em vulnerabilidades de privacidade, XSS e lógica de engajamento social.'
+    description: 'Focado em vulnerabilidades de privacidade, XSS e lógica de engajamento social.',
+    ptDescription: 'Focado em vulnerabilidades de privacidade, XSS e lógica de engajamento social.'
   },
   {
     id: 'socialbee-2',
@@ -266,7 +295,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Plataforma social de alto tráfego com foco em permissões de perfil.'
+    description: 'Plataforma social de alto tráfego com foco em permissões de perfil.',
+    ptDescription: 'Plataforma social de alto tráfego com foco em permissões de perfil.'
   },
   {
     id: 'socialbee-3',
@@ -276,7 +306,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Inúmeras sub-plataformas integradas suscetíveis a roubo de cookies e manipulação.'
+    description: 'Inúmeras sub-plataformas integradas suscetíveis a roubo de cookies e manipulação.',
+    ptDescription: 'Inúmeras sub-plataformas integradas suscetíveis a roubo de cookies e manipulação.'
   },
 
   // --- 7. GameVerse MMO (2 cópias) ---
@@ -288,7 +319,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Injeção de itens, manipulação de saldo virtual e exploits em WebSockets.'
+    description: 'Injeção de itens, manipulação de saldo virtual e exploits em WebSockets.',
+    ptDescription: 'Injeção de itens, manipulação de saldo virtual e exploits em WebSockets.'
   },
   {
     id: 'gameverse-2',
@@ -298,7 +330,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Servidores de jogos síncronos expostos a exploração de lógica de mercado.'
+    description: 'Servidores de jogos síncronos expostos a exploração de lógica de mercado.',
+    ptDescription: 'Servidores de jogos síncronos expostos a exploração de lógica de mercado.'
   },
 
   // --- 8. EduConnect LMS (2 cópias) ---
@@ -310,7 +343,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Lenta',
     bountyRange: '+$0 Bónus Fixos',
     flatBountyBonus: 0,
-    description: 'Ambiente seguro para iniciantes praticarem. Quase sem risco de Patch instantâneo.'
+    description: 'Ambiente seguro para iniciantes praticarem. Quase sem risco de Patch instantâneo.',
+    ptDescription: 'Ambiente seguro para iniciantes praticarem. Quase sem risco de Patch instantâneo.'
   },
   {
     id: 'educonnect-2',
@@ -320,7 +354,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Lenta',
     bountyRange: '+$0 Bónus Fixos',
     flatBountyBonus: 0,
-    description: 'Sistema acadêmico comunitário com tolerância prolongada de patches.'
+    description: 'Sistema acadêmico comunitário com tolerância prolongada de patches.',
+    ptDescription: 'Sistema acadêmico comunitário com tolerância prolongada de patches.'
   },
 
   // --- 9. CryptoX Exchange (1 cópia) ---
@@ -332,7 +367,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Rápida',
     bountyRange: '+$4.0k Bónus Fixos',
     flatBountyBonus: 4000,
-    description: 'Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.'
+    description: 'Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.',
+    ptDescription: 'Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.'
   },
 
   // --- 10. AI Core Systems (1 cópia) ---
@@ -344,7 +380,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Extrema',
     bountyRange: '+$4.0k Bónus Fixos',
     flatBountyBonus: 4000,
-    description: 'Clusters de treinamento de modelos de linguagem vulneráveis a Prompt Injection e RCE.'
+    description: 'Clusters de treinamento de modelos de linguagem vulneráveis a Prompt Injection e RCE.',
+    ptDescription: 'Clusters de treinamento de modelos de linguagem vulneráveis a Prompt Injection e RCE.'
   },
 
   // --- 11. PayGateway Prime (2 cópias) ---
@@ -356,7 +393,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Rápida',
     bountyRange: '+$2.5k Bónus Fixos',
     flatBountyBonus: 2500,
-    description: 'Gateway financeiro global conectando cartões de crédito e Pix.'
+    description: 'Gateway financeiro global conectando cartões de crédito e Pix.',
+    ptDescription: 'Gateway financeiro global conectando cartões de crédito e Pix.'
   },
   {
     id: 'paygateway-2',
@@ -366,7 +404,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Rápida',
     bountyRange: '+$2.5k Bónus Fixos',
     flatBountyBonus: 2500,
-    description: 'Processador financeiro com rigorosos controles de auditoria de cartões.'
+    description: 'Processador financeiro com rigorosos controles de auditoria de cartões.',
+    ptDescription: 'Processador financeiro com rigorosos controles de auditoria de cartões.'
   },
 
   // --- 12. DeliveryDash App (3 cópias) ---
@@ -378,7 +417,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Aplicativo de entregas urbanas com vulnerabilidades de cupom e IDOR de pedidos.'
+    description: 'Aplicativo de entregas urbanas com vulnerabilidades de cupom e IDOR de pedidos.',
+    ptDescription: 'Aplicativo de entregas urbanas com vulnerabilidades de cupom e IDOR de pedidos.'
   },
   {
     id: 'deliverydash-2',
@@ -388,7 +428,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Rede logística de entregas rápidas suscetível a manipulação de pedidos.'
+    description: 'Rede logística de entregas rápidas suscetível a manipulação de pedidos.',
+    ptDescription: 'Rede logística de entregas rápidas suscetível a manipulação de pedidos.'
   },
   {
     id: 'deliverydash-3',
@@ -398,7 +439,8 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Frequentes vulnerabilidades de lógica em promoções e cupons da plataforma.'
+    description: 'Frequentes vulnerabilidades de lógica em promoções e cupons da plataforma.',
+    ptDescription: 'Frequentes vulnerabilidades de lógica em promoções e cupons da plataforma.'
   }
 ];
 

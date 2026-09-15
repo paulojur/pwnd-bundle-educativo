@@ -48,13 +48,13 @@ export const FULL_24_EVENTS: EventCardData[] = [
   {
     id: 'evt-04',
     number: '04',
-    name: 'License Expired!',
-    technicalReference: 'Software License Expiration',
-    icon: '🔑',
+    name: 'Legal Threat!',
+    technicalReference: 'Cease & Desist',
+    icon: '⚖️',
     targetText: 'Escolha 1 Oponente',
-    simpleDescription: 'Licença de software expirada! Escolha 1 oponente: ele deve remover 1 carga de uma Tool do seu Rack (ou descartá-la).',
-    ptDescription: 'Licença de software expirada! Escolha 1 oponente: ele deve remover 1 carga de uma Tool do teu Rack (ou descartá-la).',
-    effectType: 'meta'
+    simpleDescription: 'AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele fica impedido de realizar a ação Report pela próxima rodada.',
+    ptDescription: 'AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele fica impedido de realizar a ação Report pela próxima ronda.',
+    effectType: 'delay'
   },
   {
     id: 'evt-05',
@@ -151,8 +151,8 @@ export const FULL_24_EVENTS: EventCardData[] = [
     technicalReference: 'Instant Free Submission Window',
     icon: '📄',
     targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report gratuito fora de turno (respeitando a ordem da mesa).',
-    ptDescription: 'Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report gratuito fora de turno (respeitando a ordem da mesa).',
+    simpleDescription: 'Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rolar o D8 (sem risco de Patch Deployed!), respeitando a ordem da mesa.',
+    ptDescription: 'Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rodar o D8 (sem risco de Patch Deployed!), respeitando a ordem da mesa.',
     effectType: 'bounty'
   },
   {
@@ -202,13 +202,13 @@ export const FULL_24_EVENTS: EventCardData[] = [
   {
     id: 'evt-18',
     number: '18',
-    name: 'Patch Tuesday!',
-    technicalReference: 'Global Security Patch Cycle',
-    icon: '📅',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Dia mundial de correções corporativas! Todos os jogadores removem 1 carga de todas as Tools instaladas em seus Racks.',
-    ptDescription: 'Dia mundial de correções corporativas! Todos os jogadores removem 1 carga de todas as Tools instaladas em teus Racks.',
-    effectType: 'patch'
+    name: 'Rate Limited!',
+    technicalReference: 'Network Traffic Restriction',
+    icon: '🛑',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'Restrição de tráfego na rede! Todos os jogadores ficam impedidos de realizar a ação Recon (comprar cartas) no seu próximo turno.',
+    ptDescription: 'Restrição de tráfego na rede! Todos os jogadores ficam impedidos de realizar a ação Recon (comprar cartas) no seu próximo turno.',
+    effectType: 'delay'
   },
   {
     id: 'evt-19',
@@ -268,13 +268,40 @@ export const FULL_24_EVENTS: EventCardData[] = [
   {
     id: 'evt-24',
     number: '24',
-    name: 'Disclosure Responsável',
-    enName: 'Responsible Disclosure',
+    name: 'Bounty Ético',
+    enName: 'Ethical Bounty',
     technicalReference: 'Coordinated Vulnerability Disclosure',
-    icon: '🛡️',
+    icon: '🏅',
     targetText: 'Todos os Pesquisadores',
-    simpleDescription: 'Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta ronda recebe +$2k de bónus de credibilidade ética. (A ética compensa. A tua reputação é a tua ferramenta mais valiosa.)',
+    simpleDescription: 'Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta rodada recebe +$2k de bônus de credibilidade ética. (A ética compensa. A sua reputação é a sua ferramenta mais valiosa.)',
     ptDescription: 'Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta ronda recebe +$2k de bónus de credibilidade ética. (A ética compensa. A tua reputação é a tua ferramenta mais valiosa.)',
     effectType: 'bounty'
   }
 ];
+
+// PARKED — aguardando aprovação do usuário
+/*
+{
+    id: 'evt-parked-01',
+    number: '04',
+    name: 'License Expired!',
+    technicalReference: 'Software License Expiration',
+    icon: '🔑',
+    targetText: 'Escolha 1 Oponente',
+    simpleDescription: 'Licença de software expirada! Escolha 1 oponente: ele deve remover 1 carga de uma Tool do seu Rack (ou descartá-la).',
+    ptDescription: 'Licença de software expirada! Escolha 1 oponente: ele deve remover 1 carga de uma Tool do teu Rack (ou descartá-la).',
+    effectType: 'meta'
+  }
+,
+{
+    id: 'evt-parked-02',
+    number: '18',
+    name: 'Patch Tuesday!',
+    technicalReference: 'Global Security Patch Cycle',
+    icon: '📅',
+    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
+    simpleDescription: 'Dia mundial de correções corporativas! Todos os jogadores removem 1 carga de todas as Tools instaladas em seus Racks.',
+    ptDescription: 'Dia mundial de correções corporativas! Todos os jogadores removem 1 carga de todas as Tools instaladas em seus Racks.',
+    effectType: 'patch'
+  }
+*/

@@ -994,10 +994,10 @@
                             Visual & Slots</span></a></li>
                 <li><a href="#glossario" class="toc-link"><span class="toc-num">17</span><span
                             class="toc-label">Glossário</span></a></li>
-                            <li><a href="#conduta" class="toc-link"><span class="toc-num">18</span><span
-                            class="toc-label">Código de Conduta</span></a></li>
+                <li><a href="#conduta" class="toc-link"><span class="toc-num">18</span><span class="toc-label">Código de
+                            Conduta</span></a></li>
             </ul>
-          </nav>
+        </nav>
 
         <main>
 
@@ -1064,7 +1064,7 @@
                             jogadas durante a <strong>Janela de Caos (Opcional)</strong> do próprio turno. Comprar carta
                             de Evento via Recon (no lugar das 2 cartas do Main Deck) é poder exclusivo do Social
                             Engineer.</p>
-                        <span class="count">23 cartas de Caos</span>
+                        <span class="count">24 cartas de Caos</span>
                     </div>
                     <div class="card-type defuse">
                         <h4>Safeguards (Bypass + CVE)</h4>
@@ -1165,7 +1165,8 @@
                         <strong>36 Tool
                             Cards</strong> (12 tipos × 3 cópias) e <strong>4 Safeguards</strong> (2 Bypass + 2 CVE
                         Assignment Protection) — total exato de <strong>120 cartas no deck de compra</strong>. As Bypass
-                        restantes voltam para a caixa. Forme o deck central.</li>
+                        restantes voltam para a caixa. Forme o deck central.
+                    </li>
                     <li><strong>Event Deck:</strong> baralha as <strong>24 Event Cards</strong> e coloque o baralho
                         fechado no slot indicado do Tabuleiro Central.</li>
                     <li><strong>Program Market:</strong> revele <strong>3 Program Cards</strong> nas 3 posições do
@@ -1432,10 +1433,16 @@
                         carta) e está encerrando o turno silenciosamente, tu jogas com <strong>VANTAGEM</strong>. Role
                         <strong>2 dados D8</strong> e escolha o menor resultado (o mais seguro para tu).
                     </li>
-                    <li><strong>Noisy Report (No momento do Report):</strong> Ao reportar com barulho, role <strong>1 dado D8</strong> NO MOMENTO DO REPORT, ANTES de esvaziar a Zona de Exploits e ANTES de receber qualquer payout.
+                    <li><strong>Noisy Report (No momento do Report):</strong> Ao reportar com barulho, role <strong>1
+                            dado D8</strong> NO MOMENTO DO REPORT, ANTES de esvaziar a Zona de Exploits e ANTES de
+                        receber qualquer payout.
                         <ul>
-                            <li><strong>Se o D8 falhar</strong> (resultado atingir o limite de Patch Speed): o Report <strong>NÃO pontua</strong>, tu sofres PATCH DEPLOYED! (descarta todos os exploits da Zona) e <strong>NÃO</strong> recebe a recompensa.</li>
-                            <li><strong>Se o D8 passar:</strong> o Report pontua normalmente, tu recebes o payout da Bounty Track e esvazia a Zona.</li>
+                            <li><strong>Se o D8 falhar</strong> (resultado atingir o limite de Patch Speed): o Report
+                                <strong>NÃO pontua</strong>, tu sofres PATCH DEPLOYED! (descarta todos os exploits da
+                                Zona) e <strong>NÃO</strong> recebe a recompensa.
+                            </li>
+                            <li><strong>Se o D8 passar:</strong> o Report pontua normalmente, tu recebes o payout da
+                                Bounty Track e esvazia a Zona.</li>
                         </ul>
                     </li>
                 </ul>
@@ -1568,7 +1575,7 @@
                     <li>Eventos globais aplicam teus efeitos a todos os participantes simultaneamente.</li>
                 </ul>
 
-                <h3>Relação dos 23 Eventos de Caos</h3>
+                <h3>Relação dos 24 Eventos de Caos</h3>
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -1709,7 +1716,7 @@
                                 <td><strong>Rate Limited!</strong> 🛑</td>
                                 <td><span class="highlight">Todos os Jogadores</span></td>
                                 <td>Restrição de tráfego na rede! Todos os jogadores ficam impedidos de realizar a ação
-                                    Recon (comprar cartas) no teu próximo turno.</td>
+                                    Recon (comprar cartas) no seu próximo turno.</td>
                             </tr>
                             <tr>
                                 <td>19</td>
@@ -1746,6 +1753,12 @@
                                 <td><span class="highlight">Todos os Jogadores</span></td>
                                 <td>Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool
                                     Card) do Main Deck.</td>
+                            </tr>
+                            <tr>
+                                <td>24</td>
+                                <td><strong>Bounty Ético</strong> 🏅</td>
+                                <td><span class="highlight">Todos os Pesquisadores</span></td>
+                                <td>Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta ronda recebe +$2k de bónus de credibilidade ética.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -2312,13 +2325,17 @@
 
                 <h3>O Cabeçalho da Vulnerability Card</h3>
                 <p>O cabeçalho de cada Vulnerability Card segue a estrutura:<br>
-                <strong>[CHIP DE CLASSE] [CVSS] [EXPLOIT]</strong></p>
+                    <strong>[CHIP DE CLASSE] [CVSS] [EXPLOIT]</strong>
+                </p>
                 <ul>
-                    <li><strong>CHIP DE CLASSE</strong> (canto superior esquerdo): selo colorido com a sigla da classe técnica (INJ, BAC, XSS, AUTH, SSRF, LOGIC, CRYPTO, LEGENDARY). A cor do chip identifica a classe e deve corresponder à régua de escopo do Program Card ativo.</li>
+                    <li><strong>CHIP DE CLASSE</strong> (canto superior esquerdo): selo colorido com a sigla da classe
+                        técnica (INJ, BAC, XSS, AUTH, SSRF, LOGIC, CRYPTO, LEGENDARY). A cor do chip identifica a classe
+                        e deve corresponder à régua de escopo do Program Card ativo.</li>
                     <li><strong>CVSS</strong> (centro): valor de severidade da vulnerabilidade.</li>
                     <li><strong>EXPLOIT</strong> (canto superior direito): rótulo de tipo da carta.</li>
                 </ul>
-                <p>A borda lateral esquerda codifica a RARIDADE da carta (Cinza = Comum, Verde = Incomum, Azul = Rara, Roxa = Épica, Dourada = Lendária), não a classe técnica.</p>
+                <p>A borda lateral esquerda codifica a RARIDADE da carta (Cinza = Comum, Verde = Incomum, Azul = Rara,
+                    Roxa = Épica, Dourada = Lendária), não a classe técnica.</p>
                 <h3>Molduras por Tipo de Carta (63×88mm, Retrato Padrão Poker)</h3>
                 <div class="table-wrap">
                     <table>
@@ -2480,7 +2497,7 @@
                         10% da recompensa calculada.</dd>
 
                     <dt>Event Deck</dt>
-                    <dd>Baralho central de 23 cartas de Caos que introduzem eventos táticos e reviravoltas na partida.
+                    <dd>Baralho central de 24 cartas de Caos que introduzem eventos táticos e reviravoltas na partida.
                         Na Ronda 7, é fundido ao Main Deck.</dd>
 
                     <dt>Exploit</dt>
@@ -2555,16 +2572,17 @@
                 </dl>
             </section>
 
-        
+
             <!-- ================= 18 CÓDIGO DE CONDUTA ================= -->
             <section id="conduta">
-                <h2 class="sec"><span class="num">18</span> CÓDIGO DE CONDUTA — BUG BOUNTY É LEGAL, NÃO É HACKING ILEGAL</h2>
+                <h2 class="sec"><span class="num">18</span> CÓDIGO DE CONDUTA — BUG BOUNTY É LEGAL, NÃO É HACKING ILEGAL
+                </h2>
                 <div class="desc-box" style="margin-top:1.5rem;">
                     <p>PWND! simula o mundo do bug bounty: programas autorizados onde empresas
-                    pagam por vulnerabilidades encontradas dentro de um escopo definido. Tudo
-                    no jogo acontece num ambiente fictício e controlado.</p>
+                        pagam por vulnerabilidades encontradas dentro de um escopo definido. Tudo
+                        no jogo acontece num ambiente fictício e controlado.</p>
                 </div>
-                
+
                 <h3 class="subsec" style="margin-top:2rem;">Regras de ouro do pesquisador ético:</h3>
                 <ol style="margin-bottom:2rem;">
                     <li>Só testas sistemas que te autorizaram explicitamente</li>
@@ -2573,10 +2591,10 @@
                     <li>Não acedes a dados além do necessário para provar o impacto</li>
                     <li>Não vendes informação de vulnerabilidades a terceiros</li>
                 </ol>
-                
+
                 <p>No jogo vs. na vida real: cada decisão que tomas na mesa tem um equivalente
-                real com consequências legais. PWND! é uma porta de entrada para a conversa
-                sobre segurança digital responsável, não um manual de técnicas de ataque.</p>
+                    real com consequências legais. PWND! é uma porta de entrada para a conversa
+                    sobre segurança digital responsável, não um manual de técnicas de ataque.</p>
             </section>
 
         </main>
