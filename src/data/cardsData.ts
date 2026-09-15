@@ -36,17 +36,21 @@ export interface ProgramCard {
   bountyRange: string;
   flatBountyBonus: number;
   description: string;
+  ptDescription?: string;
 }
 
 export interface Archetype {
   id: string;
   name: string;
   title: string;
+  ptTitle?: string;
   playstyle: string;
+  ptPlaystyle?: string;
   maxHandSize: number;
   reportsPerTurn: number;
   bountyModifier: number; // E.g., 0.7 for Red Teamer (-30%)
   specialPowers: string[];
+  ptSpecialPowers?: string[];
   avatarIcon: string;
   color: string;
 }
