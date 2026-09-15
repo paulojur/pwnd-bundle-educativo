@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CARDS_V2, CardV2 } from '../data/cardsDataV2';
 import { ARCHETYPES, PROGRAM_CARDS } from '../data/cardsData';
 import { FULL_80_VULNERABILITIES, FULL_12_TOOLS, FULL_3_DEFUSES } from '../data/full80DeckData';
-import { FULL_23_EVENTS, EventCardData } from '../data/full23EventsData';
+import { FULL_24_EVENTS, EventCardData } from '../data/full24EventsData';
 import { Printer, X, Filter, FileText } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 import { getCardStyle, getSlotStyle } from '../utils/pnp-dimensions';
@@ -123,7 +123,7 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
 
   // CHUNKING EM GRUPOS DE EXATAMENTE 9 CARTAS POR FOLHA A4 (3 COLUNAS x 3 LINHAS - RETRATO 63x88mm)
   const cardPages = chunkArray(displayedCards, 9);
-  const eventPages = chunkArray(FULL_23_EVENTS, 9);
+  const eventPages = chunkArray(FULL_24_EVENTS, 9);
   const archetypePages = chunkArray(ARCHETYPES, 9);
   const programPages = chunkArray(PROGRAM_CARDS, 9);
 
@@ -222,7 +222,7 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
               boxShadow: activeCategory === 'events' ? '0 0 10px rgba(248, 81, 73, 0.4)' : 'none'
             }}
           >
-            🚨 Baralho de Eventos de Caos (23 Cartas / 3 Folhas)
+            🚨 Baralho de Eventos de Caos (24 Cartas / 3 Folhas)
           </button>
 
           <button
@@ -461,7 +461,7 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
             </div>
           )}
 
-          {/* ABA DEDICADA: BARALHO DE EVENTOS DE CAOS (23 CARTAS EM 3 FOLHAS A4) */}
+          {/* ABA DEDICADA: BARALHO DE EVENTOS DE CAOS (24 Cartas EM 3 FOLHAS A4) */}
           {activeCategory === 'events' && (
             <div>
               {eventPages.map((pageEvents, pageIdx) => (

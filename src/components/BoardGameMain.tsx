@@ -6,7 +6,6 @@ import { FullTableView } from './FullTableView';
 import { ActionPointsBar } from './ActionPointsBar';
 import { DiceRoller } from './DiceRoller';
 import { MultiplayerLobbyModal } from './MultiplayerLobbyModal';
-import { GameSetupWizard } from './GameSetupWizard';
 import { EventCardModal } from './EventCardModal';
 import { PrintAndPlayModal } from './PrintAndPlayModal';
 import { ARCHETYPES, PROGRAM_CARDS, ProgramCard } from '../data/cardsData';
@@ -45,7 +44,6 @@ const BoardGameContent: React.FC = () => {
     myRole,
     isMyTurn,
     gameMode,
-    isSetupWizardOpen,
     activeEventCard,
     patchAlertModal,
     alertServerName,
@@ -53,7 +51,6 @@ const BoardGameContent: React.FC = () => {
     diceRollReason,
     setMyRole,
     setGameMode,
-    completeSetup,
     closeEventModal,
     handleDiceRollResult,
     selectNewProgram,
@@ -315,12 +312,6 @@ const BoardGameContent: React.FC = () => {
           />
         </>
       )}
-
-      {/* FASE DE PREPARAÇÃO DA MESA (GAME SETUP WIZARD - MANUAL V1.0 SEÇÃO 3) */}
-      <GameSetupWizard
-        isOpen={isSetupWizardOpen}
-        onCompleteSetup={completeSetup}
-      />
 
       {/* EVENT CARD MODAL (DISPARO DE CAOS) */}
       <EventCardModal

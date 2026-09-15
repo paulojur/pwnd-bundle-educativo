@@ -2,6 +2,7 @@ export interface EventCardData {
   id: string;
   number: string;
   name: string;
+  enName?: string;
   technicalReference: string;
   icon: string;
   targetText: string;
@@ -9,7 +10,7 @@ export interface EventCardData {
   effectType: 'patch' | 'duplicate' | 'scope' | 'legal' | 'delay' | 'bounty' | 'meta';
 }
 
-export const FULL_23_EVENTS: EventCardData[] = [
+export const FULL_24_EVENTS: EventCardData[] = [
   {
     id: 'evt-01',
     number: '01',
@@ -36,8 +37,8 @@ export const FULL_23_EVENTS: EventCardData[] = [
     name: 'Out of Scope!',
     technicalReference: 'Out of Scope Boundary Rejection',
     icon: '❌',
-    targetText: 'Você (Autor do Report)',
-    simpleDescription: 'Seu reporte gerou alerta no comitê de escopo! Você fica impedido de realizar a ação Exploit (baixar vulnerabilidades) no seu próximo turno.',
+    targetText: 'Tu (Autor do Report)',
+    simpleDescription: 'Teu reporte gerou alerta no comitê de escopo! Tu ficas impedido de realizar a ação Exploit (baixar vulnerabilidades) no teu próximo turno.',
     effectType: 'scope'
   },
   {
@@ -47,7 +48,7 @@ export const FULL_23_EVENTS: EventCardData[] = [
     technicalReference: 'Software License Expiration',
     icon: '🔑',
     targetText: 'Escolha 1 Oponente',
-    simpleDescription: 'Licença de software expirada! Escolha 1 oponente: ele deve remover 1 carga de uma Tool do seu Rack (ou descartá-la).',
+    simpleDescription: 'Licença de software expirada! Escolha 1 oponente: ele deve remover 1 carga de uma Tool do teu Rack (ou descartá-la).',
     effectType: 'meta'
   },
   {
@@ -56,8 +57,8 @@ export const FULL_23_EVENTS: EventCardData[] = [
     name: 'Triage Delay!',
     technicalReference: 'Corporate Backlog Delay',
     icon: '⏳',
-    targetText: 'Você (Autor do Report)',
-    simpleDescription: 'Equipe corporativa em backlog! As cartas da sua mão devem jogar expostas (reveladas para a mesa) até o seu próximo turno.',
+    targetText: 'Tu (Autor do Report)',
+    simpleDescription: 'Equipe corporativa em backlog! As cartas da tua mão devem jogar expostas (reveladas para a mesa) até o teu próximo turno.',
     effectType: 'delay'
   },
   {
@@ -86,8 +87,8 @@ export const FULL_23_EVENTS: EventCardData[] = [
     name: 'Scope Expansion!',
     technicalReference: 'Corporate Scope Window Expansion',
     icon: '🌐',
-    targetText: 'Você (Autor do Report)',
-    simpleDescription: 'A empresa expandiu o programa! No seu próximo turno, você pode jogar qualquer vulnerabilidade na mesa ignorando as restrições de escopo.',
+    targetText: 'Tu (Autor do Report)',
+    simpleDescription: 'A empresa expandiu o programa! No teu próximo turno, tu podes jogar qualquer vulnerabilidade na mesa ignorando as restrições de escopo.',
     effectType: 'scope'
   },
   {
@@ -97,7 +98,7 @@ export const FULL_23_EVENTS: EventCardData[] = [
     technicalReference: 'Public Zero-Day Exfiltration',
     icon: '📢',
     targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem $1.000 de compensação imediata.',
+    simpleDescription: 'Vazamento público! Todos os jogadores descartam tuas vulnerabilidades expostas na mesa, mas recebem $1.000 de compensação imediata.',
     effectType: 'bounty'
   },
   {
@@ -106,8 +107,8 @@ export const FULL_23_EVENTS: EventCardData[] = [
     name: 'Bounty Increase!',
     technicalReference: 'Double Bounty Multiplier',
     icon: '💰',
-    targetText: 'Você (Autor do Report)',
-    simpleDescription: 'Verba de emergência liberada! O seu próximo Report aprovado terá um bônus financeiro adicional de +50%.',
+    targetText: 'Tu (Autor do Report)',
+    simpleDescription: 'Verba de emergência liberada! O teu próximo Report aprovado terá um bónus financeiro adicional de +50%.',
     effectType: 'bounty'
   },
   {
@@ -117,7 +118,7 @@ export const FULL_23_EVENTS: EventCardData[] = [
     technicalReference: 'Web Application Firewall Block',
     icon: '🛡️',
     targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Filtro de WAF ativado! Vulnerabilidades da classe Injection não podem ser baixadas na mesa por 1 rodada completa.',
+    simpleDescription: 'Filtro de WAF ativado! Vulnerabilidades da classe Injection não podem ser baixadas na mesa por 1 ronda completa.',
     effectType: 'meta'
   },
   {
@@ -157,7 +158,7 @@ export const FULL_23_EVENTS: EventCardData[] = [
     technicalReference: 'Defuse Blockade Window',
     icon: '⏳',
     targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Burocracia na atribuição de CVE! Cartas de Defesa (Bypass) ficam bloqueadas por 1 rodada completa (efeito imediato, vale contra patches do mesmo turno).',
+    simpleDescription: 'Burocracia na atribuição de CVE! Cartas de Defesa (Bypass) ficam bloqueadas por 1 ronda completa (efeito imediato, vale contra patches do mesmo turno).',
     effectType: 'delay'
   },
   {
@@ -167,7 +168,7 @@ export const FULL_23_EVENTS: EventCardData[] = [
     technicalReference: 'Lowest CVSS Discard Event',
     icon: '💥',
     targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Colisão de relatórios no mercado! Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta em suas mesas.',
+    simpleDescription: 'Colisão de relatórios no mercado! Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta em tuas mesas.',
     effectType: 'duplicate'
   },
   {
@@ -187,7 +188,7 @@ export const FULL_23_EVENTS: EventCardData[] = [
     technicalReference: 'Global Security Patch Cycle',
     icon: '📅',
     targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Dia mundial de correções corporativas! Todos os jogadores removem 1 carga de todas as Tools instaladas em seus Racks.',
+    simpleDescription: 'Dia mundial de correções corporativas! Todos os jogadores removem 1 carga de todas as Tools instaladas em teus Racks.',
     effectType: 'patch'
   },
   {
@@ -197,7 +198,7 @@ export const FULL_23_EVENTS: EventCardData[] = [
     technicalReference: 'Auth Class Lockdown',
     icon: '🔐',
     targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Autenticação em dois fatores ativada! Vulnerabilidades da classe Authentication ficam bloqueadas de serem baixadas por 1 rodada.',
+    simpleDescription: 'Autenticação em dois fatores ativada! Vulnerabilidades da classe Authentication ficam bloqueadas de serem baixadas por 1 ronda.',
     effectType: 'meta'
   },
   {
@@ -239,5 +240,16 @@ export const FULL_23_EVENTS: EventCardData[] = [
     targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
     simpleDescription: 'Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool Card) do Main Deck.',
     effectType: 'meta'
+  },
+  {
+    id: 'evt-24',
+    number: '24',
+    name: 'Disclosure Responsável',
+    enName: 'Responsible Disclosure',
+    technicalReference: 'Coordinated Vulnerability Disclosure',
+    icon: '🛡️',
+    targetText: 'Todos os Pesquisadores',
+    simpleDescription: 'Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta ronda recebe +$2k de bónus de credibilidade ética. (A ética compensa. A tua reputação é a tua ferramenta mais valiosa.)',
+    effectType: 'bounty'
   }
 ];

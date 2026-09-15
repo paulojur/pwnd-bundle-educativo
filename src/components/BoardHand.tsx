@@ -143,7 +143,7 @@ export const BoardHand: React.FC = () => {
           {playerHand.map(card => {
             const isSelected = selectedCardIds.includes(card.id);
             const scopeStatus = checkScopeStatus(card);
-            const classInfo = getClassBadgeInfo(card.technicalReference, card.name);
+            const classInfo = getClassBadgeInfo(card.id, card.technicalReference, card.name);
 
             // Borda temática por tipo de baralho
             const deckBorderColor =

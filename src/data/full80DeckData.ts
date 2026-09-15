@@ -6,816 +6,976 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
   {
     id: 'inj-1',
     name: 'Injeção de Boato',
+    enName: 'Rumor Injection',
     technicalReference: 'SQL Injection (SQLi)',
     type: 'exploit',
     points: 25,
     rarity: 'Common',
     icon: '🗣️',
-    simpleDescription: 'Você cochicha um boato falso no campo de texto e o banco de dados acredita, entregando a lista de senhas.'
+    simpleDescription: 'Você cochicha um boato falso no campo de texto e o banco de dados acredita, entregando a lista de senhas.',
+    ptDescription: 'Tu cochichas um boato falso no campo de texto e o base de dados acredita, entregando a lista de palavras-passe.'
   },
   {
     id: 'inj-2',
     name: 'A Injeção da Vovó',
+    enName: 'Grandma\'s Injection',
     technicalReference: 'SQL Injection (SQLi)',
     type: 'exploit',
     points: 45,
     rarity: 'Rare',
     icon: '👵',
-    simpleDescription: 'OR 1=1 — Entrada de banco de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.'
+    simpleDescription: 'OR 1=1 — Entrada de banco de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.',
+    ptDescription: 'OR 1=1 — Entrada de base de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.'
   },
   {
     id: 'inj-3',
-    name: 'OS Command Input',
+    name: 'Sopa de Comandos',
+    enName: 'Command Soup',
     technicalReference: 'OS Command Injection',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '💻',
-    simpleDescription: 'Insere comandos de sistema operacional em campos de formulários desprotegidos.'
+    simpleDescription: 'Insere comandos de sistema operacional em campos de formulários desprotegidos.',
+    ptDescription: 'Insere comandos de sistema operacional em campos de formulários desprotegidos.'
   },
   {
     id: 'inj-4',
-    name: 'XML External Entity (XXE)',
+    name: 'A Entidade Fantasma',
+    enName: 'The Ghost Entity',
     technicalReference: 'XXE Injection',
     type: 'exploit',
     points: 25,
     rarity: 'Common',
     icon: '📜',
-    simpleDescription: 'O parser XML lê arquivos do servidor local ao processar notas fiscais digitais.'
+    simpleDescription: 'O parser XML lê arquivos do servidor local ao processar notas fiscais digitais.',
+    ptDescription: 'O parser XML lê ficheiros do servidor local ao processar notas fiscais digitais.'
   },
   {
     id: 'inj-5',
-    name: 'Template Injection (SSTI)',
+    name: 'O Molde Quebrado',
+    enName: 'The Broken Mold',
     technicalReference: 'Server-Side Template Injection',
     type: 'exploit',
     points: 22,
     rarity: 'Common',
     icon: '🎨',
-    simpleDescription: 'Comandos executados através de variáveis no motor de templates de e-mail.'
+    simpleDescription: 'Comandos executados através de variáveis no motor de templates de e-mail.',
+    ptDescription: 'Comandos executados através de variáveis no motor de templates de e-mail.'
   },
   {
     id: 'inj-6',
-    name: 'Header Injection',
+    name: 'O Cabeçalho Falso',
+    enName: 'The Fake Header',
     technicalReference: 'HTTP Header Injection',
     type: 'exploit',
     points: 18,
     rarity: 'Common',
     icon: '📑',
-    simpleDescription: 'Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.'
+    simpleDescription: 'Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.',
+    ptDescription: 'Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.'
   },
   {
     id: 'inj-7',
-    name: 'NoSQL Operator Leak',
+    name: 'O Operador Vazado',
+    enName: 'The Leaked Operator',
     technicalReference: 'NoSQL Injection',
     type: 'exploit',
     points: 30,
     rarity: 'Uncommon',
     icon: '🍃',
-    simpleDescription: 'Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.'
+    simpleDescription: 'Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.',
+    ptDescription: 'Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.'
   },
   {
     id: 'inj-8',
-    name: 'ORM Leakage',
+    name: 'O Mapa Invertido',
+    enName: 'The Inverted Map',
     technicalReference: 'ORM Injection',
     type: 'exploit',
     points: 28,
     rarity: 'Uncommon',
     icon: '🗄️',
-    simpleDescription: 'Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.'
+    simpleDescription: 'Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.',
+    ptDescription: 'Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.'
   },
   {
     id: 'inj-9',
-    name: 'XPath Injection',
+    name: 'O Atalho Cego',
+    enName: 'The Blind Shortcut',
     technicalReference: 'XPath Injection',
     type: 'exploit',
     points: 26,
     rarity: 'Uncommon',
     icon: '🔍',
-    simpleDescription: 'Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.'
+    simpleDescription: 'Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.',
+    ptDescription: 'Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.'
   },
   {
     id: 'inj-10',
-    name: 'LDAP Filter Bypass',
+    name: 'O Filtro Furado',
+    enName: 'The Pierced Filter',
     technicalReference: 'LDAP Injection',
     type: 'exploit',
     points: 32,
     rarity: 'Uncommon',
     icon: '🌲',
-    simpleDescription: 'Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.'
+    simpleDescription: 'Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.',
+    ptDescription: 'Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.'
   },
   {
     id: 'inj-11',
-    name: 'Blind SQLi via Time',
+    name: 'A Bomba-Relógio',
+    enName: 'The Time Bomb',
     technicalReference: 'Time-Based Blind SQLi',
     type: 'exploit',
     points: 40,
     rarity: 'Rare',
     icon: '⏱️',
-    simpleDescription: 'Força o banco a pausar por 10 segundos para extrair caracteres de senhas hash.'
+    simpleDescription: 'Força o banco a pausar por 10 segundos para extrair caracteres de senhas hash.',
+    ptDescription: 'Força o banco a pausar por 10 segundos para extrair caracteres de palavras-passe hash.'
   },
   {
     id: 'inj-12',
-    name: 'Second-Order Injection',
+    name: 'O Veneno Lento',
+    enName: 'The Slow Poison',
     technicalReference: 'Second-Order SQLi',
     type: 'exploit',
     points: 38,
     rarity: 'Rare',
     icon: '⏳',
-    simpleDescription: 'Injeta payload no perfil do usuário que só é executado no relatório mensal do admin.'
+    simpleDescription: 'Injeta payload no perfil do usuário que só é executado no relatório mensal do admin.',
+    ptDescription: 'Injeta payload no perfil do usuário que só é executado no relatório mensal do admin.'
   },
   {
     id: 'inj-13',
-    name: 'Automated SQLi Pipeline',
+    name: 'A Esteira Quebrada',
+    enName: 'The Broken Conveyor',
     technicalReference: 'Automated Injection',
     type: 'exploit',
     points: 50,
     rarity: 'Epic',
     icon: '🤖',
-    simpleDescription: 'Pipeline automatizado extrai a base de dados inteira com zero intervenção manual.'
+    simpleDescription: 'Pipeline automatizado extrai a base de dados inteira com zero intervenção manual.',
+    ptDescription: 'Pipeline automatizado extrai a base de dados inteira com zero intervenção manual.'
   },
   {
     id: 'inj-14',
-    name: 'Command Injection Worker',
+    name: 'O Operário Zumbi',
+    enName: 'The Zombie Worker',
     technicalReference: 'Async Worker RCE',
     type: 'exploit',
     points: 48,
     rarity: 'Epic',
     icon: '⚙️',
-    simpleDescription: 'Injeta comandos no processador assíncrono de conversão de PDFs corporativos.'
+    simpleDescription: 'Injeta comandos no processador assíncrono de conversão de PDFs corporativos.',
+    ptDescription: 'Injeta comandos no processador assíncrono de conversão de PDFs corporativos.'
   },
   {
     id: 'inj-15',
-    name: 'Zero-Day SQLi Master',
+    name: 'O Tubo Estourado',
+    enName: 'The Burst Pipe',
     technicalReference: 'Critical Database Takeover',
     type: 'exploit',
     points: 55,
     rarity: 'Legendary',
     icon: '💥',
-    simpleDescription: 'Acesso root à instância mestra do banco relacional de dados bancários.'
+    simpleDescription: 'Acesso root à instância mestra do banco relacional de dados bancários.',
+    ptDescription: 'Acesso root à instância mestra do banco relacional de dados bancários.'
   },
   {
     id: 'inj-16',
-    name: 'DLL Injection Pipeline',
+    name: 'O Enxerto Tóxico',
+    enName: 'The Toxic Graft',
     technicalReference: 'DLL Search Order Hijacking',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '🔌',
-    simpleDescription: 'Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.'
+    simpleDescription: 'Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.',
+    ptDescription: 'Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.'
   },
 
   // --- 2. BROKEN ACCESS CONTROL (14 CARTAS: 5 Common, 4 Uncommon, 3 Rare, 1 Epic, 1 Legendary) ---
   {
     id: 'bac-1',
     name: 'Porta Escancarada',
+    enName: 'Wide Open Door',
     technicalReference: 'Insecure Direct Object Reference (IDOR)',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '🚪',
-    simpleDescription: 'Você muda o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor.'
+    simpleDescription: 'Você muda o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor.',
+    ptDescription: 'Tu mudas o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor.'
   },
   {
     id: 'bac-2',
     name: 'O Plebeu Privilegiado',
+    enName: 'The Privileged Commoner',
     technicalReference: 'Privilege Escalation (PrivEsc)',
     type: 'exploit',
     points: 25,
     rarity: 'Common',
     icon: '👑',
-    simpleDescription: 'Estagiário altera parâmetro de perfil no request e vira administrador do sistema.'
+    simpleDescription: 'Estagiário altera parâmetro de perfil no request e vira administrador do sistema.',
+    ptDescription: 'Estagiário altera parâmetro de perfil no request e vira administrador do sistema.'
   },
   {
     id: 'bac-3',
-    name: 'Path Traversal',
+    name: 'O Corredor Secreto',
+    enName: 'The Secret Corridor',
     technicalReference: 'Directory Traversal',
     type: 'exploit',
     points: 22,
     rarity: 'Common',
     icon: '📁',
-    simpleDescription: 'Usa ../../../etc/passwd no parâmetro de imagem para baixar arquivos do servidor.'
+    simpleDescription: 'Usa ../../../etc/passwd no parâmetro de imagem para baixar arquivos do servidor.',
+    ptDescription: 'Usa ../../../etc/passwd no parâmetro de imagem para baixar ficheiros do servidor.'
   },
   {
     id: 'bac-4',
-    name: 'CORS Misconfiguration',
+    name: 'A Fronteira Aberta',
+    enName: 'The Open Border',
     technicalReference: 'Cross-Origin Resource Sharing',
     type: 'exploit',
     points: 18,
     rarity: 'Common',
     icon: '🌐',
-    simpleDescription: 'Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.'
+    simpleDescription: 'Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.',
+    ptDescription: 'Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.'
   },
   {
     id: 'bac-5',
-    name: 'Insecure Direct Pointer',
+    name: 'A Maçaneta Quebrada',
+    enName: 'The Broken Doorknob',
     technicalReference: 'Direct Resource Leak',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '📍',
-    simpleDescription: 'URLs de download de faturas em PDF expostas publicamente sem chave de checagem.'
+    simpleDescription: 'URLs de download de faturas em PDF expostas publicamente sem chave de checagem.',
+    ptDescription: 'URLs de download de faturas em PDF expostas publicamente sem chave de checagem.'
   },
   {
     id: 'bac-6',
-    name: 'BOLA no Ângulo',
+    name: 'O Quarto do Vizinho',
+    enName: 'The Neighbor\'s Room',
     technicalReference: 'Broken Object Level Auth (BOLA)',
     type: 'exploit',
     points: 32,
     rarity: 'Uncommon',
     icon: '⚽',
-    simpleDescription: 'Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.'
+    simpleDescription: 'Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.',
+    ptDescription: 'Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.'
   },
   {
     id: 'bac-7',
-    name: 'BFLA (Function Level)',
+    name: 'O Elevador de Serviço',
+    enName: 'The Service Elevator',
     technicalReference: 'Broken Function Level Auth',
     type: 'exploit',
     points: 30,
     rarity: 'Uncommon',
     icon: '🛠️',
-    simpleDescription: 'Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.'
+    simpleDescription: 'Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.',
+    ptDescription: 'Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.'
   },
   {
     id: 'bac-8',
-    name: 'Tenant Data Leak',
+    name: 'A Parede de Papel',
+    enName: 'The Paper Wall',
     technicalReference: 'Multi-Tenant Isolation Bypass',
     type: 'exploit',
     points: 35,
     rarity: 'Uncommon',
     icon: '🏢',
-    simpleDescription: 'Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.'
+    simpleDescription: 'Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.',
+    ptDescription: 'Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.'
   },
   {
     id: 'bac-9',
-    name: 'Hardcoded Admin Route',
+    name: 'A Passagem Secreta',
+    enName: 'The Secret Passage',
     technicalReference: 'Unprotected Admin Route',
     type: 'exploit',
     points: 28,
     rarity: 'Uncommon',
     icon: '🔑',
-    simpleDescription: 'Rota oculta /management/dashboard disponível sem exigência de login.'
+    simpleDescription: 'Rota oculta /management/dashboard disponível sem exigência de login.',
+    ptDescription: 'Rota oculta /management/dashboard disponível sem exigência de login.'
   },
   {
     id: 'bac-10',
-    name: 'PrivEsc via JWT Claim',
+    name: 'O Degrau Oculto',
+    enName: 'The Hidden Step',
     technicalReference: 'JWT Role Manipulation',
     type: 'exploit',
     points: 42,
     rarity: 'Rare',
     icon: '📜',
-    simpleDescription: 'Altera o campo "role": "user" para "role": "superadmin" no token assinado fracamente.'
+    simpleDescription: 'Altera o campo "role": "user" para "role": "superadmin" no token assinado fracamente.',
+    ptDescription: 'Altera o campo "role": "user" para "role": "superadmin" no token assinado fracamente.'
   },
   {
     id: 'bac-11',
-    name: 'Mass Assignment Flaw',
+    name: 'O Molho de Chaves',
+    enName: 'The Keyring',
     technicalReference: 'Mass Assignment / Auto-Binding',
     type: 'exploit',
     points: 38,
     rarity: 'Rare',
     icon: '📦',
-    simpleDescription: 'Envia "is_verified": true no formulário de cadastro e ganha selo de conta oficial.'
+    simpleDescription: 'Envia "is_verified": true no formulário de cadastro e ganha selo de conta oficial.',
+    ptDescription: 'Envia "is_verified": true no formulário de cadastro e ganha selo de conta oficial.'
   },
   {
     id: 'bac-12',
-    name: 'IDOR em Relatórios',
+    name: 'O Arquivo Destrancado',
+    enName: 'The Unlocked File',
     technicalReference: 'Bulk Export IDOR',
     type: 'exploit',
     points: 40,
     rarity: 'Rare',
     icon: '📊',
-    simpleDescription: 'Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.'
+    simpleDescription: 'Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.',
+    ptDescription: 'Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.'
   },
   {
     id: 'bac-13',
-    name: 'Bypass Completo de ACL',
+    name: 'A Catraca Livre',
+    enName: 'The Free Turnstile',
     technicalReference: 'Global Authorization Bypass',
     type: 'exploit',
     points: 48,
     rarity: 'Epic',
     icon: '🛡️',
-    simpleDescription: 'Anula totalmente a camada de controle de acesso de microsserviços na nuvem.'
+    simpleDescription: 'Anula totalmente a camada de controle de acesso de microsserviços na nuvem.',
+    ptDescription: 'Anula totalmente a camada de controle de acesso de microsserviços na nuvem.'
   },
   {
     id: 'bac-14',
-    name: 'Master Admin Hijack',
+    name: 'A Sala do Trono',
+    enName: 'The Throne Room',
     technicalReference: 'Root Organization Takeover',
     type: 'exploit',
     points: 58,
     rarity: 'Legendary',
     icon: '👑',
-    simpleDescription: 'Assume o controle total do painel de administração da matriz global da empresa.'
+    simpleDescription: 'Assume o controle total do painel de administração da matriz global da empresa.',
+    ptDescription: 'Assume o controle total do painel de administração da matriz global da empresa.'
   },
 
   // --- 3. CROSS-SITE SCRIPTING (12 CARTAS: 5 Common, 4 Uncommon, 2 Rare, 1 Epic, 0 Legendary) ---
   {
     id: 'xss-1',
     name: 'Espelho Falso',
+    enName: 'Fake Mirror',
     technicalReference: 'Cross-Site Scripting (Reflected XSS)',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '🪞',
-    simpleDescription: 'Você coloca um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para você.'
+    simpleDescription: 'Você coloca um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para você.',
+    ptDescription: 'Tu colocas um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para tu.'
   },
   {
     id: 'xss-2',
     name: 'O Labirinto de Espelhos',
+    enName: 'The Mirror Maze',
     technicalReference: 'DOM-based XSS',
     type: 'exploit',
     points: 22,
     rarity: 'Common',
     icon: '🌀',
-    simpleDescription: 'DOM-based XSS encadeado em rotas dinâmicas do Single Page App.'
+    simpleDescription: 'DOM-based XSS encadeado em rotas dinâmicas do Single Page App.',
+    ptDescription: 'DOM-based XSS encadeado em rotas dinâmicas do Single Page App.'
   },
   {
     id: 'xss-3',
-    name: 'Reflected XSS em Busca',
+    name: 'O Eco Mortal',
+    enName: 'The Deadly Echo',
     technicalReference: 'Reflected XSS',
     type: 'exploit',
     points: 18,
     rarity: 'Common',
     icon: '🔎',
-    simpleDescription: 'Injeta script malicioso no campo de busca que é refletido sem sanitização na página.'
+    simpleDescription: 'Injeta script malicioso no campo de busca que é refletido sem sanitização na página.',
+    ptDescription: 'Injeta script malicioso no campo de busca que é refletido sem sanitização na página.'
   },
   {
     id: 'xss-4',
-    name: 'DOM XSS via Hash',
+    name: 'A Sombra Enganosa',
+    enName: 'The Deceitful Shadow',
     technicalReference: 'DOM Manipulation XSS',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '⚓',
-    simpleDescription: 'Manipula window.location.hash para executar código JavaScript na leitura do elemento.'
+    simpleDescription: 'Manipula window.location.hash para executar código JavaScript na leitura do elemento.',
+    ptDescription: 'Manipula window.location.hash para executar código JavaScript na leitura do elemento.'
   },
   {
     id: 'xss-5',
-    name: 'HTML Payload Injection',
+    name: 'A Ilusão de Ótica',
+    enName: 'The Optical Illusion',
     technicalReference: 'HTML Injection',
     type: 'exploit',
     points: 15,
     rarity: 'Common',
     icon: '🏷️',
-    simpleDescription: 'Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.'
+    simpleDescription: 'Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.',
+    ptDescription: 'Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.'
   },
   {
     id: 'xss-6',
-    name: 'Stored XSS em Comentários',
+    name: 'O Reflexo Congelado',
+    enName: 'The Frozen Reflection',
     technicalReference: 'Stored XSS',
     type: 'exploit',
     points: 30,
     rarity: 'Uncommon',
     icon: '💬',
-    simpleDescription: 'Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.'
+    simpleDescription: 'Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.',
+    ptDescription: 'Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.'
   },
   {
     id: 'xss-7',
-    name: 'XSS via Upload SVG',
+    name: 'O Quadro Amaldiçoado',
+    enName: 'The Cursed Painting',
     technicalReference: 'SVG File Upload XSS',
     type: 'exploit',
     points: 28,
     rarity: 'Uncommon',
     icon: '🖼️',
-    simpleDescription: 'Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.'
+    simpleDescription: 'Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.',
+    ptDescription: 'Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.'
   },
   {
     id: 'xss-8',
-    name: 'Attribute Breakout',
+    name: 'A Máscara Rachada',
+    enName: 'The Cracked Mask',
     technicalReference: 'Attribute Injection XSS',
     type: 'exploit',
     points: 25,
     rarity: 'Uncommon',
     icon: '✂️',
-    simpleDescription: 'Escapa da aspa do atributo input com " onfocus="alert(1) e dispara a vulnerabilidade.'
+    simpleDescription: 'Escapa da aspa do atributo input com " onfocus="alert(1) e dispara a vulnerabilidade.',
+    ptDescription: 'Escapa da aspa do atributo input com " onfocus="alert(1) e dispara a vulnerabilidade.'
   },
   {
     id: 'xss-9',
-    name: 'Markdown Script Exec',
+    name: 'A Tinta Invisível',
+    enName: 'The Invisible Ink',
     technicalReference: 'Markdown Parser XSS',
     type: 'exploit',
     points: 32,
     rarity: 'Uncommon',
     icon: '📝',
-    simpleDescription: 'Explora o interpretador de Markdown na caixa de texto do editor de chamados.'
+    simpleDescription: 'Explora o interpretador de Markdown na caixa de texto do editor de chamados.',
+    ptDescription: 'Explora o interpretador de Markdown na caixa de texto do editor de chamados.'
   },
   {
     id: 'xss-10',
     name: 'O Espelho Narcisista',
+    enName: 'The Narcissistic Mirror',
     technicalReference: 'Reflected XSS Advanced',
     type: 'exploit',
     points: 40,
     rarity: 'Rare',
     icon: '🪞',
-    simpleDescription: 'Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon.'
+    simpleDescription: 'Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon.',
+    ptDescription: 'Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon.'
   },
   {
     id: 'xss-11',
-    name: 'Blind XSS no Admin',
+    name: 'O Reflexo Cego',
+    enName: 'The Blind Reflection',
     technicalReference: 'Blind Stored XSS',
     type: 'exploit',
     points: 42,
     rarity: 'Rare',
     icon: '🙈',
-    simpleDescription: 'Executa código oculto no painel interno de triagem usado exclusivamente pelos administradores.'
+    simpleDescription: 'Executa código oculto no painel interno de triagem usado exclusivamente pelos administradores.',
+    ptDescription: 'Executa código oculto no painel interno de triagem usado exclusivamente pelos administradores.'
   },
   {
     id: 'xss-12',
-    name: 'WebSocket Session Hijack',
+    name: 'O Fio Transparente',
+    enName: 'The Transparent Thread',
     technicalReference: 'WebSocket XSS Hijack',
     type: 'exploit',
     points: 48,
     rarity: 'Epic',
     icon: '⚡',
-    simpleDescription: 'Rouba tokens de sessão em tempo real através do canal aberto de WebSockets.'
+    simpleDescription: 'Rouba tokens de sessão em tempo real através do canal aberto de WebSockets.',
+    ptDescription: 'Rouba tokens de sessão em tempo real através do canal aberto de WebSockets.'
   },
 
   // --- 4. AUTHENTICATION & SESSION FLAWS (10 CARTAS: 4 Common, 3 Uncommon, 2 Rare, 1 Epic, 0 Legendary) ---
   {
     id: 'auth-1',
     name: 'Chave Mestra',
+    enName: 'Master Key',
     technicalReference: 'Authentication Bypass',
     type: 'exploit',
     points: 30,
     rarity: 'Common',
     icon: '🔑',
-    simpleDescription: 'Você descobre uma brecha na catraca e entra direto sem precisar digitar senha ou mostrar documento.'
+    simpleDescription: 'Você descobre uma brecha na catraca e entra direto sem precisar digitar senha ou mostrar documento.',
+    ptDescription: 'Tu descobres uma brecha na catraca e entra direto sem precisar digitar palavra-passe ou mostrar documento.'
   },
   {
     id: 'auth-2',
     name: 'Cookie Unsigned',
+    enName: 'Unsigned Cookie',
     technicalReference: 'Cookie Tampering',
     type: 'exploit',
     points: 18,
     rarity: 'Common',
     icon: '🍪',
-    simpleDescription: 'Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.'
+    simpleDescription: 'Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.',
+    ptDescription: 'Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.'
   },
   {
     id: 'auth-3',
-    name: 'Reset Token Previsível',
+    name: 'A Senha do Caderno',
+    enName: 'The Notebook Password',
     technicalReference: 'Weak Reset Token',
     type: 'exploit',
     points: 22,
     rarity: 'Common',
     icon: '⏳',
-    simpleDescription: 'O token de redefinição de senha usa a hora exata em segundos e é facilmente adivinhado.'
+    simpleDescription: 'O token de redefinição de senha usa a hora exata em segundos e é facilmente adivinhado.',
+    ptDescription: 'O token de redefinição de palavra-passe usa a hora exata em segundos e é facilmente adivinhado.'
   },
   {
     id: 'auth-4',
-    name: 'Remember Me Leak',
+    name: 'O Porteiro Esquecido',
+    enName: 'The Forgetful Bouncer',
     technicalReference: 'Persistent Session Leak',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '📌',
-    simpleDescription: 'O token de "Lembrar de Mim" nunca expira e permite reuso infinito de sessão.'
+    simpleDescription: 'O token de "Lembrar de Mim" nunca expira e permite reuso infinito de sessão.',
+    ptDescription: 'O token de "Lembrar de Mim" nunca expira e permite reuso infinito de sessão.'
   },
   {
     id: 'auth-5',
-    name: 'A Porta dos Fundos',
+    name: 'O Distintivo Falso',
+    enName: 'The Fake Badge',
     technicalReference: 'Authentication Bypass (JWT None)',
     type: 'exploit',
     points: 35,
     rarity: 'Uncommon',
     icon: '🚪',
-    simpleDescription: 'Altera o algoritmo do cabeçalho JWT para "none" e entra sem digitar senha.'
+    simpleDescription: 'Altera o algoritmo do cabeçalho JWT para "none" e entra sem digitar senha.',
+    ptDescription: 'Altera o algoritmo do cabeçalho JWT para "none" e entra sem digitar palavra-passe.'
   },
   {
     id: 'auth-6',
-    name: 'Credential Stuffing',
+    name: 'O Clone de Identidade',
+    enName: 'The Identity Clone',
     technicalReference: 'Automated Account Takeover',
     type: 'exploit',
     points: 32,
     rarity: 'Uncommon',
     icon: '🤖',
-    simpleDescription: 'Testa vazamentos de senhas conhecidas em massa contra a tela de login.'
+    simpleDescription: 'Testa vazamentos de senhas conhecidas em massa contra a tela de login.',
+    ptDescription: 'Testa vazamentos de palavras-passe conhecidas em massa contra a tela de login.'
   },
   {
     id: 'auth-7',
-    name: 'OAuth State Poisoning',
+    name: 'O Gêmeo Maligno',
+    enName: 'The Evil Twin',
     technicalReference: 'OAuth CSRF / State Fixation',
     type: 'exploit',
     points: 28,
     rarity: 'Uncommon',
     icon: '🔗',
-    simpleDescription: 'Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.'
+    simpleDescription: 'Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.',
+    ptDescription: 'Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.'
   },
   {
     id: 'auth-8',
-    name: 'MFA Race Condition',
+    name: 'O Guarda Distraído',
+    enName: 'The Distracted Guard',
     technicalReference: 'Multi-Factor Auth Bypass',
     type: 'exploit',
     points: 40,
     rarity: 'Rare',
     icon: '📱',
-    simpleDescription: 'Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.'
+    simpleDescription: 'Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.',
+    ptDescription: 'Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.'
   },
   {
     id: 'auth-9',
-    name: 'JWT Signature None',
+    name: 'O Selo Violado',
+    enName: 'The Broken Seal',
     technicalReference: 'Alg None JWT Attack',
     type: 'exploit',
     points: 42,
     rarity: 'Rare',
     icon: '🔓',
-    simpleDescription: 'Anula a validação da assinatura digital do token JWT corporativo.'
+    simpleDescription: 'Anula a validação da assinatura digital do token JWT corporativo.',
+    ptDescription: 'Anula a validação da assinatura digital do token JWT corporativo.'
   },
   {
     id: 'auth-10',
-    name: 'SSO Hijacking Master',
+    name: 'O Sósia do Executivo',
+    enName: 'The Executive\'s Doppelganger',
     technicalReference: 'SAML Response Tampering',
     type: 'exploit',
     points: 50,
     rarity: 'Epic',
     icon: '🏢',
-    simpleDescription: 'Falsifica respostas SAML/Single Sign-On assumindo o controle de qualquer usuário da empresa.'
+    simpleDescription: 'Falsifica respostas SAML/Single Sign-On assumindo o controle de qualquer usuário da empresa.',
+    ptDescription: 'Falsifica respostas SAML/Single Sign-On assumindo o controle de qualquer usuário da empresa.'
   },
 
   // --- 5. SSRF / CSRF (8 CARTAS: 3 Common, 2 Uncommon, 2 Rare, 1 Epic, 0 Legendary) ---
   {
     id: 'ssrf-1',
     name: 'O Espião Interno',
+    enName: 'The Inside Spy',
     technicalReference: 'Server-Side Request Forgery (SSRF)',
     type: 'exploit',
     points: 35,
     rarity: 'Common',
     icon: '🕵️',
-    simpleDescription: 'Você convence o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos arquivos.'
+    simpleDescription: 'Você convence o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos arquivos.',
+    ptDescription: 'Tu convences o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos ficheiros.'
   },
   {
     id: 'ssrf-2',
-    name: 'CSRF em Ações Críticas',
+    name: 'A Carta Forjada',
+    enName: 'The Forged Letter',
     technicalReference: 'Cross-Site Request Forgery',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '📩',
-    simpleDescription: 'Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.'
+    simpleDescription: 'Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.',
+    ptDescription: 'Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.'
   },
   {
     id: 'ssrf-3',
-    name: 'Internal Port Scanner',
+    name: 'O Radar Subterrâneo',
+    enName: 'The Underground Radar',
     technicalReference: 'Network Scanning via SSRF',
     type: 'exploit',
     points: 22,
     rarity: 'Common',
     icon: '📡',
-    simpleDescription: 'Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.'
+    simpleDescription: 'Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.',
+    ptDescription: 'Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.'
   },
   {
     id: 'ssrf-4',
-    name: 'Fantasma na Máquina',
+    name: 'O Fantasma na Máquina',
+    enName: 'The Ghost in the Machine',
     technicalReference: 'SSRF via Webhook',
     type: 'exploit',
     points: 32,
     rarity: 'Uncommon',
     icon: '👻',
-    simpleDescription: 'O webhook de notificação enviou a chave de API interna de volta para você.'
+    simpleDescription: 'O webhook de notificação enviou a chave de API interna de volta para você.',
+    ptDescription: 'O webhook de notificação enviou a chave de API interna de volta para tu.'
   },
   {
     id: 'ssrf-5',
-    name: 'Cloud Metadata Leak',
+    name: 'O Segredo do Servidor',
+    enName: 'The Server\'s Secret',
     technicalReference: 'AWS EC2 Metadata SSRF',
     type: 'exploit',
     points: 38,
     rarity: 'Uncommon',
     icon: '☁️',
-    simpleDescription: 'Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.'
+    simpleDescription: 'Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.',
+    ptDescription: 'Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.'
   },
   {
     id: 'ssrf-6',
-    name: 'DNS Rebinding Attack',
+    name: 'O Endereço Traiçoeiro',
+    enName: 'The Deceptive Address',
     technicalReference: 'DNS Rebinding Bypass',
     type: 'exploit',
     points: 40,
     rarity: 'Rare',
     icon: '🔄',
-    simpleDescription: 'Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.'
+    simpleDescription: 'Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.',
+    ptDescription: 'Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.'
   },
   {
     id: 'ssrf-7',
-    name: 'Out-of-band SSRF',
+    name: 'O Pombo Correio',
+    enName: 'The Carrier Pigeon',
     technicalReference: 'OOB Interaction SSRF',
     type: 'exploit',
     points: 42,
     rarity: 'Rare',
     icon: '📡',
-    simpleDescription: 'Força o servidor a realizar requisições externas capturadas pelo Burp Collaborator.'
+    simpleDescription: 'Força o servidor a realizar requisições externas capturadas pelo Burp Collaborator.',
+    ptDescription: 'Força o servidor a realizar requisições externas capturadas pelo Burp Collaborator.'
   },
   {
     id: 'ssrf-8',
-    name: 'Redis Unauth via Gopher',
+    name: 'O Mensageiro Cego',
+    enName: 'The Blind Messenger',
     technicalReference: 'Gopher SSRF to Redis RCE',
     type: 'exploit',
     points: 52,
     rarity: 'Epic',
     icon: '⚡',
-    simpleDescription: 'Usa protocolo Gopher via SSRF para gravar chave SSH no servidor Redis interno.'
+    simpleDescription: 'Usa protocolo Gopher via SSRF para gravar chave SSH no servidor Redis interno.',
+    ptDescription: 'Usa protocolo Gopher via SSRF para gravar chave SSH no servidor Redis interno.'
   },
 
   // --- 6. BUSINESS LOGIC ERRORS (8 CARTAS: 3 Common, 2 Uncommon, 2 Rare, 1 Epic, 0 Legendary) ---
   {
     id: 'bl-1',
     name: 'O Relógio Quebrado',
+    enName: 'The Broken Clock',
     technicalReference: 'Business Logic Error',
     type: 'exploit',
     points: 20,
     rarity: 'Common',
     icon: '⏰',
-    simpleDescription: 'Você descobre que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor.'
+    simpleDescription: 'Você descobre que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor.',
+    ptDescription: 'Tu descobres que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor.'
   },
   {
     id: 'bl-2',
-    name: 'Preço Negativo na Carteira',
+    name: 'O Troco Infinito',
+    enName: 'The Infinite Change',
     technicalReference: 'Negative Amount Logic Flaw',
     type: 'exploit',
     points: 22,
     rarity: 'Common',
     icon: '💸',
-    simpleDescription: 'Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar você.'
+    simpleDescription: 'Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar você.',
+    ptDescription: 'Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar tu.'
   },
   {
     id: 'bl-3',
-    name: 'Coupon Stacking Exploit',
+    name: 'A Pilha de Cupons',
+    enName: 'The Coupon Stack',
     technicalReference: 'Coupon Reuse Logic',
     type: 'exploit',
     points: 18,
     rarity: 'Common',
     icon: '🎟️',
-    simpleDescription: 'Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.'
+    simpleDescription: 'Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.',
+    ptDescription: 'Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.'
   },
   {
     id: 'bl-4',
-    name: 'Glicor por um Fio',
+    name: 'A Entrega Fantasma',
+    enName: 'The Ghost Delivery',
     technicalReference: 'Race Condition',
     type: 'exploit',
     points: 30,
     rarity: 'Uncommon',
     icon: '🧪',
-    simpleDescription: 'Você clica no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.'
+    simpleDescription: 'Você clica no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.',
+    ptDescription: 'Tu clicas no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.'
   },
   {
     id: 'bl-5',
-    name: 'Rounding Error Overflow',
+    name: 'O Centavo de Ouro',
+    enName: 'The Golden Penny',
     technicalReference: 'Floating Point Currency Flaw',
     type: 'exploit',
     points: 28,
     rarity: 'Uncommon',
     icon: '🧮',
-    simpleDescription: 'Arredondamento de frações de centavos acumuladas em transações bancárias.'
+    simpleDescription: 'Arredondamento de frações de centavos acumuladas em transações bancárias.',
+    ptDescription: 'Arredondamento de frações de centavos acumuladas em transações bancárias.'
   },
   {
     id: 'bl-6',
-    name: 'Infinite Trial Loop',
+    name: 'A Amostra Grátis Eterna',
+    enName: 'The Eternal Free Sample',
     technicalReference: 'Subscription Logic Bypass',
     type: 'exploit',
     points: 38,
     rarity: 'Rare',
     icon: '🔄',
-    simpleDescription: 'Cancela e reativa a avaliação gratuita no último segundo mantendo acesso premium infinito.'
+    simpleDescription: 'Cancela e reativa a avaliação gratuita no último segundo mantendo acesso premium infinito.',
+    ptDescription: 'Cancela e reativa a avaliação gratuita no último segundo mantendo acesso premium infinito.'
   },
   {
     id: 'bl-7',
-    name: 'Cart Quantity Overflow',
+    name: 'O Carrinho Sem Fundo',
+    enName: 'The Bottomless Cart',
     technicalReference: 'Integer Overflow in Cart',
     type: 'exploit',
     points: 40,
     rarity: 'Rare',
     icon: '🛒',
-    simpleDescription: 'Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.'
+    simpleDescription: 'Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.',
+    ptDescription: 'Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.'
   },
   {
     id: 'bl-8',
-    name: 'Unverified Transfer Duplication',
+    name: 'A Nota Duplicada',
+    enName: 'The Duplicated Bill',
     technicalReference: 'State Machine Duplication',
     type: 'exploit',
     points: 50,
     rarity: 'Epic',
     icon: '🏦',
-    simpleDescription: 'Duplica transferências bancárias em lote manipulando o estado da transação.'
+    simpleDescription: 'Duplica transferências bancárias em lote manipulando o estado da transação.',
+    ptDescription: 'Duplica transferências bancárias em lote manipulando o estado da transação.'
   },
 
   // --- 7. CRYPTOGRAPHIC FAILURES (6 CARTAS: 2 Common, 2 Uncommon, 1 Rare, 1 Epic, 0 Legendary) ---
   {
     id: 'crypto-1',
     name: 'Cadeado de Papel',
+    enName: 'Paper Padlock',
     technicalReference: 'Weak Cryptography (MD5 / Single Hash)',
     type: 'exploit',
     points: 15,
     rarity: 'Common',
     icon: '🔒',
-    simpleDescription: 'A empresa trancou os segredos com uma senha boba tipo "123456" que você descobre em 2 segundos.'
+    simpleDescription: 'A empresa trancou os segredos com uma senha boba tipo "123456" que você descobre em 2 segundos.',
+    ptDescription: 'A empresa trancou os segredos com uma palavra-passe boba tipo "123456" que tu descobres em 2 segundos.'
   },
   {
     id: 'crypto-2',
-    name: 'Criptografia de Pão Duro',
+    name: 'O Cofre de Plástico',
+    enName: 'The Plastic Safe',
     technicalReference: 'Weak Hash / No Salt',
     type: 'exploit',
     points: 18,
     rarity: 'Common',
     icon: '🥖',
-    simpleDescription: 'Senhas salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.'
+    simpleDescription: 'Senhas salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.',
+    ptDescription: 'Palavras-passe salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.'
   },
   {
     id: 'crypto-3',
-    name: 'Hardcoded Private Key',
+    name: 'A Chave debaixo do Tapete',
+    enName: 'The Key Under the Mat',
     technicalReference: 'Embedded Secret Key',
     type: 'exploit',
     points: 28,
     rarity: 'Uncommon',
     icon: '🔑',
-    simpleDescription: 'A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.'
+    simpleDescription: 'A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.',
+    ptDescription: 'A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.'
   },
   {
     id: 'crypto-4',
-    name: 'Cleartext Sensitive Data',
+    name: 'O Diário Aberto',
+    enName: 'The Open Diary',
     technicalReference: 'Insecure Data Transmission',
     type: 'exploit',
     points: 26,
     rarity: 'Uncommon',
     icon: '🔓',
-    simpleDescription: 'Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.'
+    simpleDescription: 'Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.',
+    ptDescription: 'Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.'
   },
   {
     id: 'crypto-5',
-    name: 'Padding Oracle Attack',
+    name: 'O Oráculo Fofoqueiro',
+    enName: 'The Gossiping Oracle',
     technicalReference: 'CBC Padding Oracle',
     type: 'exploit',
     points: 40,
     rarity: 'Rare',
     icon: '🔮',
-    simpleDescription: 'Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.'
+    simpleDescription: 'Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.',
+    ptDescription: 'Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.'
   },
   {
     id: 'crypto-6',
-    name: 'ECB Mode Key Leak',
+    name: 'O Padrão Repetido',
+    enName: 'The Repeating Pattern',
     technicalReference: 'AES ECB Pattern Leak',
     type: 'exploit',
     points: 48,
     rarity: 'Epic',
     icon: '🐧',
-    simpleDescription: 'Criptografia AES no modo ECB que preserva o padrão visual dos dados confidenciais.'
+    simpleDescription: 'Criptografia AES no modo ECB que preserva o padrão visual dos dados confidenciais.',
+    ptDescription: 'Criptografia AES no modo ECB que preserva o padrão visual dos dados confidenciais.'
   },
 
   // --- 8. LEGENDARY / MULTI-STAGE EXPLOITS (6 CARTAS: 0 Common, 1 Uncommon, 1 Rare, 1 Epic, 3 Legendary) ---
   {
     id: 'leg-1',
-    name: 'Chain Attack Alpha',
+    name: 'O Efeito Dominó',
+    enName: 'The Domino Effect',
     technicalReference: 'Multi-Stage Chained Exploit',
     type: 'exploit',
     points: 30,
     rarity: 'Uncommon',
     icon: '🔗',
-    simpleDescription: 'Combina um XSS refletido com um IDOR para roubar o token de acesso do administrador.'
+    simpleDescription: 'Combina um XSS refletido com um IDOR para roubar o token de acesso do administrador.',
+    ptDescription: 'Combina um XSS refletido com um IDOR para roubar o token de acesso do administrador.'
   },
   {
     id: 'leg-2',
-    name: 'Chain Attack Beta',
+    name: 'A Tempestade Perfeita',
+    enName: 'The Perfect Storm',
     technicalReference: 'SSRF to Internal Admin Chain',
     type: 'exploit',
     points: 42,
     rarity: 'Rare',
     icon: '⚙️',
-    simpleDescription: 'Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.'
+    simpleDescription: 'Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.',
+    ptDescription: 'Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.'
   },
   {
     id: 'leg-3',
-    name: 'Spring4Shell RCE',
+    name: 'O Apocalipse Primaveril',
+    enName: 'The Spring Apocalypse',
     technicalReference: 'Remote Code Execution (RCE)',
     type: 'exploit',
     points: 50,
     rarity: 'Epic',
     icon: '🌱',
-    simpleDescription: 'Explora vulnerabilidade no framework Java Spring para executar comandos no servidor de produção.'
+    simpleDescription: 'Explora vulnerabilidade no framework Java Spring para executar comandos no servidor de produção.',
+    ptDescription: 'Explora vulnerabilidade no framework Java Spring para executar comandos no servidor de produção.'
   },
   {
     id: 'leg-4',
-    name: 'Controle Remoto Total',
+    name: 'O Mestre dos Títeres',
+    enName: 'The Puppet Master',
     technicalReference: 'Remote Code Execution (RCE)',
     type: 'exploit',
     points: 50,
     rarity: 'Legendary',
     icon: '🎮',
-    simpleDescription: 'O prêmio supremo! Você assume o controle total do computador da empresa como se estivesse sentado na cadeira deles.'
+    simpleDescription: 'O prêmio supremo! Você assume o controle total do computador da empresa como se estivesse sentado na cadeira deles.',
+    ptDescription: 'O prêmio supremo! Tu assumes o controle total do computador da empresa como se estivesse sentado na cadeira deles.'
   },
   {
     id: 'leg-5',
-    name: 'Boneco de Marionete',
+    name: 'O Boneco de Marionete',
+    enName: 'The Marionette',
     technicalReference: 'Remote Code Execution (RCE root)',
     type: 'exploit',
     points: 52,
     rarity: 'Legendary',
     icon: '🧸',
-    simpleDescription: 'Mãos etéreas controlando o rack de servidores. Ao ser reportada, força oponentes a descartarem Tools.'
+    simpleDescription: 'Mãos etéreas controlando o rack de servidores. Ao ser reportada, força oponentes a descartarem Tools.',
+    ptDescription: 'Mãos etéreas controlando o rack de servidores. Ao ser reportada, força oponentes a descartarem Tools.'
   },
   {
     id: 'leg-6',
-    name: 'Deserialização Macabra',
+    name: 'A Caixa de Pandora',
+    enName: 'Pandora\'s Box',
     technicalReference: 'Log4Shell / Java Deserialization',
     type: 'exploit',
     points: 55,
     rarity: 'Legendary',
     icon: '💀',
-    simpleDescription: 'Log4Shell! Chamas de código consumindo a infraestrutura de nuvem com RCE instantâneo.'
+    simpleDescription: 'Log4Shell! Chamas de código consumindo a infraestrutura de nuvem com RCE instantâneo.',
+    ptDescription: 'Log4Shell! Chamas de código consumindo a infraestrutura de nuvem com RCE instantâneo.'
   }
 ];
 
@@ -859,7 +1019,7 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Common',
     icon: '📡',
-    simpleDescription: 'PASSIVA: Aumenta sua capacidade de varredura no Recon para comprar 3 cartas.'
+    simpleDescription: 'PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.'
   },
   {
     id: 'tool-zap',
@@ -929,7 +1089,7 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '🍳',
-    simpleDescription: 'ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da sua escolha.'
+    simpleDescription: 'ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.'
   },
   {
     id: 'tool-jwt-tool',
@@ -939,7 +1099,7 @@ export const FULL_12_TOOLS: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '🔐',
-    simpleDescription: 'PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bônus financeiro.'
+    simpleDescription: 'PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.'
   }
 ];
 
@@ -953,7 +1113,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém suas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-2',
@@ -963,7 +1123,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém suas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-3',
@@ -973,7 +1133,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém suas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-4',
@@ -983,7 +1143,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém suas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-5',
@@ -993,7 +1153,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém suas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-6',
@@ -1003,7 +1163,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém suas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-7',
@@ -1013,7 +1173,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém suas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-8',
@@ -1023,7 +1183,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém suas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
   },
   {
     id: 'defuse-deck-9',
@@ -1033,7 +1193,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '📜',
-    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no seu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a você. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
+    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
   },
   {
     id: 'defuse-deck-10',
@@ -1043,7 +1203,7 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Uncommon',
     icon: '📜',
-    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no seu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a você. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
+    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
   }
 ];
 

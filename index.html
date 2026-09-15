@@ -84,8 +84,8 @@
             border-radius: 12px;
             width: 100%;
             max-width: 330px;
+            aspect-ratio: 63 / 88;
             height: auto;
-            min-height: 440px;
             box-sizing: border-box;
             padding: 16px;
             display: flex;
@@ -162,6 +162,24 @@
             margin-bottom: 4px;
         }
 
+        .dense-text {
+            font-size: 11.5px;
+            line-height: 1.25;
+        }
+
+        .dense-text h4 {
+            margin: 6px 0 2px 0;
+            font-size: 11.5px;
+        }
+
+        .dense-text ul {
+            padding-left: 12px;
+        }
+
+        .dense-text li {
+            margin-bottom: 2px;
+        }
+
         .highlight {
             color: var(--accent-orange);
             font-weight: bold;
@@ -194,6 +212,7 @@
             }
 
             .print-btn,
+            .start-btn,
             h1 {
                 display: none;
             }
@@ -247,6 +266,20 @@
                 margin-bottom: 3px;
             }
 
+            .dense-text {
+                font-size: 7.2pt;
+                line-height: 1.15;
+            }
+
+            .dense-text h4 {
+                font-size: 7.5pt;
+                margin: 4px 0 2px 0;
+            }
+
+            .dense-text li {
+                margin-bottom: 1px;
+            }
+
             .card-header {
                 padding-bottom: 4px;
                 margin-bottom: 6px;
@@ -293,8 +326,9 @@
                 </p>
                 <h4>SETUP (4 PASSOS)</h4>
                 <ol>
-                    <li>Distribua 1 Arquétipo e <strong>6 cartas</strong> de Mão Inicial (5 do Deck principal + 1
-                        Bypass) para cada jogador.</li>
+                    <li>Distribua 1 Arquétipo e <strong>5 cartas</strong> do Deck principal para a mão de cada jogador +
+                        1 carta Bypass garantida, que deve ser posicionada no Slot Safeguard do Player Mat (não conta
+                        como carta de mão).</li>
                     <li>Abra 3 cartas de Programa no Market.</li>
                     <li>Cada um escolhe um Active Program e põe no Player Mat.</li>
                     <li>Posicione o Bypass inicial no Slot Safeguard.</li>
@@ -316,11 +350,11 @@
                         ou trocar de programa), <strong>Exploit</strong> (alocar 1 vulnerabilidade) ou
                         <strong>Report</strong> (submeter vulnerabilidades).
                     </li>
-                    <li><strong>Custo do Sucesso:</strong> se o seu Report foi aprovado, receba o payout e compre 1
+                    <li><strong>Custo do Sucesso:</strong> se o teu Report foi aprovado, receba o payout e compre 1
                         evento (obrigatório).</li>
-                    <li><strong>Janela de Caos (Opcional):</strong> jogue eventos guardados do seu mat.</li>
+                    <li><strong>Janela de Caos (Opcional):</strong> jogue eventos guardados do teu mat.</li>
                     <li><strong>Patch Speed Check:</strong> se houver vulnerabilidades na mesa ao fim do turno, role
-                        os dados (detalhes no Card 06). Se o patch disparar, você sofre o Patch Deployed!</li>
+                        os dados (detalhes no Card 06). Se o patch disparar, tu sofres o Patch Deployed!</li>
                     <li><strong>Fim:</strong> passa a vez.</li>
                 </ol>
             </div>
@@ -338,7 +372,7 @@
                 <ul>
                     <li><strong>RECON:</strong> (A) Saque 2 cartas do Deck. No fim do turno, se passar de 6 (9 Old
                         Guard), descarte o excesso. OU (B) Troque de Alvo (descarte o alvo atual e as vulnerabilidades
-                        da sua Zona de Exploits e pegue um novo programa do Market).</li>
+                        da tua Zona de Exploits e pegue um novo programa do Market).</li>
                     <li><strong>EXPLOIT:</strong> Jogue 1 vulnerabilidade na Zona. <em>A cor do selo da vulnerabilidade
                             precisa estar na régua de cores do programa!</em></li>
                 </ul>
@@ -359,16 +393,16 @@
             </div>
             <div class="card-body">
                 <h4>AÇÃO PRINCIPAL: REPORT</h4>
-                <p>Entregue as vulnerabilidades da Zona! <strong>(Rodada 5+ OU Tiers Alto/Crítico exigem combo de 2+
+                <p>Entregue as vulnerabilidades da Zona! <strong>(Ronda 5+ OU Tiers Alto/Crítico exigem combo de 2+
                         vulnerabilidades)</strong>.
                 </p>
                 <h4>PAYOUT (Soma Direta)</h4>
-                <p>Valor da vulnerabilidade + Bônus do Prog.</p>
+                <p>Valor da vulnerabilidade + Bónus do Prog.</p>
                 <ul>
                     <li>Some o payout ao saldo da Bounty Track.</li>
                     <li><em>Ex:</em> Rara ($4k) + Prog ($2.5k) = $6.500 no saldo!</li>
                 </ul>
-                <p><span class="alert-red">Duplicate Report:</span> Se alguém já reportou o mesmo bug exato, seu payout
+                <p><span class="alert-red">Duplicate Report:</span> Se alguém já reportou o mesmo bug exato, teu payout
                     cai para apenas 10%!</p>
             </div>
             <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
@@ -382,12 +416,12 @@
             </div>
             <div class="card-body">
                 <h4>CUSTO DO SUCESSO</h4>
-                <p>Sempre que um Report for aprovado, você deve comprar 1 evento antes de terminar o turno. Os eventos
+                <p>Sempre que um Report for aprovado, tu deves comprar 1 evento antes de terminar o turno. Os eventos
                     podem ser de dois tipos:</p>
                 <ul>
                     <li><strong>Imediato:</strong> Resolve na hora da compra.</li>
-                    <li><strong>Guardável:</strong> Resolva na hora ou guarde na sua área do mat (limite 2). Só podem
-                        ser jogados na sua <em>Janela de Caos</em>. Guardar nunca anula a obrigação da compra!</li>
+                    <li><strong>Guardável:</strong> Resolva na hora ou guarde na tua área do mat (limite 2). Só podem
+                        ser jogados na tua <em>Janela de Caos</em>. Guardar nunca anula a obrigação da compra!</li>
                 </ul>
             </div>
             <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
@@ -400,15 +434,16 @@
                 <div class="card-number">06 / 09</div>
             </div>
             <div class="card-body">
-                <p>O patch é o relógio do programa: ele só dispara se você deixar vulnerabilidades na mesa sem reportar
+                <p>O patch é o relógio do programa: ele só dispara se tu deixares vulnerabilidades na mesa sem reportar
                     ao fim do turno.</p>
                 <p><strong>Stealth Mode:</strong> no fim do turno, se houver vulnerabilidades na mesa não reportadas,
                     role 2 D8 e fique com o menor resultado. Se ele acionar o limiar do programa, sofre o Patch
                     Deployed!</p>
                 <p><strong>Noisy Report (exceção):</strong> role 1 D8 no momento do Report, antes de esvaziar a Zona.
-                    <span class="alert-red">Se falhar, o Report não pontua e você sofre o Patch Deployed!</span>
+                    <span class="alert-red">Se falhar, o Report não pontua e tu sofres o Patch Deployed!</span>
                 </p>
-                <p><strong>Escapando do patch:</strong> o Bypass (ativo no Slot Safeguard) anula o Patch Deployed 100%. Alguns arquétipos (Red
+                <p><strong>Escapando do patch:</strong> o Bypass (ativo no Slot Safeguard) anula o Patch Deployed 100%.
+                    Alguns arquétipos (Red
                     Teamer e Pentester) só tomam patch tirando 8.</p>
 
                 <h4>LIMIARES DE PATCH</h4>
@@ -447,16 +482,22 @@
                 <div class="card-title">Arquétipos</div>
                 <div class="card-number">08 / 09</div>
             </div>
-            <div class="card-body">
+            <div class="card-body dense-text">
                 <h4>PODERES ASSIMÉTRICOS</h4>
                 <ul>
-                    <li><strong>n00b:</strong> após cada Report, olhe as 3 primeiras cartas do deck e escolha 1 Tool. Passiva instala na hora (rack cheio: descarte 1 Tool instalada para abrir vaga). Ativa usa na hora, descartando após o uso. Não pode guardar para depois. Se não houver Tool, embaralhe as 3 de volta.</li>
+                    <li><strong>n00b:</strong> após Report, olhe as 3 primeiras cartas do deck central e escolha 1 Tool
+                        se
+                        houver. <strong>Passiva</strong> instala na hora (pode descartar instaladas).
+                        <strong>Ativa</strong>
+                        usa na hora, descartando após o uso. Não pode guardar para depois. Se não houver Tool, baralha
+                        as 3 de volta.
+                    </li>
                     <li><strong>Old Guard:</strong> limite de mão de 9 cartas (os demais jogadores, 6).</li>
                     <li><strong>Bug Hunter:</strong> só reporta vulnerabilidades Comum e Incomum. Cada carta além da
                         primeira no mesmo Report soma +$500 ao payout.</li>
                     <li><strong>Social Engineer:</strong> na Recon, pode comprar 1 carta de Evento no lugar das 2
-                        cartas. Qualquer evento que o mire pode ser redirecionado a outro jogador (exceto ajuda ao
-                        último colocado). A partir da Rodada 7, não compra mais eventos, mas segue redirecionando os que
+                        cartas. Pode redirecionar eventos que o mire. A partir da Ronda 7, não compra mais eventos, mas
+                        pode redirecionar os que
                         o miram.</li>
                     <li><strong>Red Teamer:</strong> imune a escopo, payout -30%, só toma Patch tirando 8.</li>
                     <li><strong>Pentester:</strong> imune a Duplicate Report e Triage Delay, só toma Patch tirando 8.
