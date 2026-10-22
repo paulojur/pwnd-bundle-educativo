@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>PWND! Central Mat - Hacker Edition</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Fira Code', Consolas, monospace;
+      background-color: #ffffff;
+      color: #000000;
+      width: 297mm;
+      height: 210mm;
+      box-sizing: border-box;
+      overflow: hidden; 
+      
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+
+    .hacker-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-weight: 400; 
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .mat-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 16mm 15mm; 
+      justify-content: space-between;
+    }
+
+    /* ÁREAS COMUNS DAS CARTAS */
+    .card-slot {
+      min-width: 63.5mm;
+      max-width: 63.5mm;
+      min-height: 88.9mm;
+      max-height: 88.9mm;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .slot-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #000;
+      padding: 0 5px;
+    }
+
+    /* 1) MIDDLE ROW (DECKS & INFO AREA) */
+    .middle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center; 
+      height: 88.9mm;
+      width: 100%;
+    }
+
+    .decks-area {
+      display: flex;
+      gap: 15mm;
+      padding-left: 8mm; 
+    }
+
+    .card-slot.deck {
+      background-color: #f2f2f2;
+      border: 3px solid #000;
+      box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 4px #000;
+    }
+
+    /* INFO AREA */
+    .info-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-left: 10mm;
+      padding-right: 10mm;
+    }
+
+    .round-tracker-container {
+      width: 100%;
+      max-width: 130mm;
+      height: 22mm;
+      display: flex;
+      align-items: center;
+      border: 3px solid #000;
+      background-color: #f9f9f9;
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    .track-title {
+      font-size: 12px;
+      text-align: center;
+      width: 25mm;
+      line-height: 1.1;
+      padding: 0 2px;
+      border-right: 3px solid #000;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .round-track {
+      flex: 1;
+      display: flex;
+      height: 100%;
+    }
+
+    .step {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-right: 2px solid #000;
+      font-weight: 700;
+      font-size: 16px;
+      color: #ccc;
+      position: relative;
+    }
+    .step:last-child { border-right: none !important; }
+    .step.active { color: #000; }
+    .step.danger { background-image: repeating-linear-gradient(45deg, #fff 0, #fff 2px, #e5e5e5 2px, #e5e5e5 4px); color: #000; }
+    .step.final { background-color: #000; color: #fff; }
+
+    .step-label {
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      font-size: 6px;
+      color: #000;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .step.final .step-label { color: #fff; }
+
+    /* 2) BOTTOM ROW (PROGRAM MARKET) */
+    .market-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10mm;
+      height: 88.9mm;
+      width: 100%;
+    }
+
+    .market-title {
+      font-size: 22px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .market-slots {
+      display: flex;
+      gap: 10mm;
+    }
+
+    .card-slot.market-slot {
+      border: 2px dashed #666;
+      background-color: #fafafa;
+    }
+
+    /* BOUNTY TRACK (BORDER) */
+    .bounty-track {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .bt-corner {
+      position: absolute;
+      width: 16mm; height: 16mm;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; font-weight: bold;
+      text-align: center;
+      line-height: 1.1;
+      outline: 1px solid #000;
+    }
+    .bt-bl { bottom: 0; left: 0; }
+    .bt-tl { top: 0; left: 0; }
+    .bt-tr { top: 0; right: 0; }
+    .bt-br { bottom: 0; right: 0; }
+
+    .bt-edge {
+      position: absolute;
+      display: flex;
+    }
+    .bt-edge > div {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      outline: 1px solid #000;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 8.5px; font-weight: bold;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .zone-1 { background-color: #fff; color: #000; }
+    .zone-2 { background-color: #eee; color: #000; }
+    .zone-3 { background-image: repeating-linear-gradient(45deg, #fff 0, #fff 2px, #ddd 2px, #ddd 4px); color: #000; }
+    .zone-4 { background-color: #222; color: #fff !important; }
+    .zone-4 span { color: #fff; }
+
+    .bt-left {
+      bottom: 16mm; left: 0;
+      width: 16mm; height: calc(100% - 32mm);
+      flex-direction: column-reverse;
+    }
+    .bt-top {
+      top: 0; left: 16mm;
+      width: calc(100% - 32mm); height: 16mm;
+      flex-direction: row;
+    }
+    .bt-right {
+      top: 16mm; right: 0;
+      width: 16mm; height: calc(100% - 32mm);
+      flex-direction: column;
+    }
+    .bt-bottom {
+      bottom: 0; left: 16mm;
+      width: calc(100% - 32mm); height: 16mm;
+      flex-direction: row-reverse;
+    }
+    
+    .bt-edge > div > span { display: inline-block; }
+    .bt-left > div > span { transform: rotate(90deg); }
+    .bt-right > div > span { transform: rotate(-90deg); }
+  </style>
+</head>
+<body>
+
+  <div class="mat-container">
+    
+    <!-- 1) MIDDLE ROW (DECKS & INFO AREA) -->
+    <div class="middle-row">
+      <!-- DECKS -->
+      <div class="decks-area">
+        <div class="card-slot deck">
+          <span class="hacker-title slot-title">MAIN<br>DECK</span>
+        </div>
+        <div class="card-slot deck">
+          <span class="hacker-title slot-title">EVENT<br>DECK</span>
+        </div>
+      </div>
+
+      <!-- INFO AREA (Round Tracker) -->
+      <div class="info-area">
+        <div class="round-tracker-container">
+          <div class="track-title hacker-title">ROUND</div>
+          <div class="round-track">
+            <div class="step active"><span class="step-label">R1</span>1</div>
+            <div class="step active"><span class="step-label">R2</span>2</div>
+            <div class="step active"><span class="step-label">R3</span>3</div>
+            <div class="step active"><span class="step-label">R4</span>4</div>
+            <div class="step active"><span class="step-label">R5</span>5</div>
+            <div class="step active"><span class="step-label">R6</span>6</div>
+            <div class="step danger"><span class="step-label">R7</span>7</div>
+            <div class="step final"><span class="step-label">R8</span>8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2) BOTTOM ROW (PROGRAM MARKET) -->
+    <div class="market-row">
+      <div class="market-title hacker-title">PROGRAM MARKET</div>
+      
+      <div class="market-slots">
+        <div class="card-slot market-slot">
+          <span class="hacker-title slot-title" style="color: #999;">SLOT 1</span>
+        </div>
+        <div class="card-slot market-slot">
+          <span class="hacker-title slot-title" style="color: #999;">SLOT 2</span>
+        </div>
+        <div class="card-slot market-slot">
+          <span class="hacker-title slot-title" style="color: #999;">SLOT 3</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const track = document.createElement('div');
+    track.className = 'bounty-track';
+
+    function getZone(v) {
+      if (v <= 11.0) return 'zone-1';
+      if (v <= 20.0) return 'zone-2';
+      if (v <= 33.0) return 'zone-3';
+      return 'zone-4';
+    }
+
+    function createCorner(cls, val, num) {
+      const c = document.createElement('div');
+      c.className = `bt-corner ${cls} ${getZone(num)}`;
+      c.innerHTML = val;
+      return c;
+    }
+
+    function createEdge(cls, startVal, numBoxes) {
+      const e = document.createElement('div');
+      e.className = `bt-edge ${cls}`;
+      for(let i = 0; i < numBoxes; i++) {
+        const b = document.createElement('div');
+        let v = startVal + i * 0.5;
+        let text = v === 0 ? "0" : (Number.isInteger(v) ? `${v}k` : `${v}`);
+        if (v === 40) text = "40k";
+        b.innerHTML = `<span>${text}</span>`;
+        b.className = getZone(v);
+        e.appendChild(b);
+      }
+      return e;
+    }
+
+    track.appendChild(createCorner('bt-bl', '0<br>START', 0));
+    track.appendChild(createEdge('bt-left', 0.5, 16));
+    track.appendChild(createCorner('bt-tl', '8.5k', 8.5));
+    track.appendChild(createEdge('bt-top', 9, 23));
+    track.appendChild(createCorner('bt-tr', '20.5k', 20.5));
+    track.appendChild(createEdge('bt-right', 21, 16));
+    track.appendChild(createCorner('bt-br', '29.0k', 29));
+    track.appendChild(createEdge('bt-bottom', 29.5, 22));
+
+    document.body.appendChild(track);
+  </script>
+</body>
+</html>

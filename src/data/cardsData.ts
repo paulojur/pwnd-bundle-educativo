@@ -8,6 +8,7 @@ export type VulnerabilityClass =
   | 'SSRF'
   | 'Business Logic'
   | 'Cryptographic Failures'
+  | 'APT'
   | 'Legendary';
 
 export type SeverityLevel = 'Low' | 'Medium' | 'High' | 'Critical';
@@ -44,6 +45,8 @@ export interface Archetype {
   name: string;
   title: string;
   ptTitle?: string;
+  presentation?: string;
+  ptPresentation?: string;
   playstyle: string;
   ptPlaystyle?: string;
   maxHandSize: number;
@@ -64,8 +67,10 @@ export const ARCHETYPES: Archetype[] = [
     name: 'n00b',
     title: 'O Iniciante Dedicado',
     ptTitle: 'O Iniciante Dedicado',
-    playstyle: 'Engine Builder: Ganha +1 habilidade passiva constante a cada report enviado com sucesso.',
-    ptPlaystyle: 'Engine Builder: Ganha +1 habilidade passiva constante a cada report enviado com sucesso.',
+    presentation: '"Alguém novo nessa vida de bug bounty, mas tô vendo oportunidade por toda parte. Toda grande carreira por aí começou rodando o primeiro scan."',
+    ptPresentation: '"Alguém novo nessa vida de bug bounty, mas tô vendo oportunidade por toda parte. Toda grande carreira por aí começou rodando o primeiro scan."',
+    playstyle: 'Garimpeiro de Ferramentas: após cada Report bem-sucedido, olho as 3 primeiras cartas do Tool Deck e escolho 1.',
+    ptPlaystyle: 'Garimpeiro de Ferramentas: após cada Report bem-sucedido, olho as 3 primeiras cartas do Tool Deck e escolho 1.',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 1.0,
@@ -77,15 +82,17 @@ export const ARCHETYPES: Archetype[] = [
   {
     id: 'old-guard',
     name: 'The Old Guard',
-    title: 'O Veterano de C/ASM',
-    ptTitle: 'O Veterano de C/ASM',
-    playstyle: 'Mão Expandida: Pode segurar até 9 cartas, perfeito para montar combos devastadores de alta severidade.',
-    ptPlaystyle: 'Mão Expandida: Pode segurar até 9 cartas, perfeito para montar combos devastadores de alta severidade.',
-    maxHandSize: 9,
+    title: 'Hacker Raiz',
+    ptTitle: 'Hacker Raiz',
+    presentation: '"Décadas atrás eu quebrava isso decorando pointers. Mão grande, paciência de quem escreveu memcpy com o pé. Não pergunte!"',
+    ptPresentation: '"Décadas atrás eu quebrava isso decorando pointers. Mão grande, paciência de quem escreveu memcpy com o pé. Não pergunte!"',
+    playstyle: 'Especialista Sênior: cada carta Épica ou Lendária incluída no Report vale +$500 extra no payout. Limite de mão aumentado para 8 cartas.',
+    ptPlaystyle: 'Especialista Sênior: cada carta Épica ou Lendária incluída no Report vale +$500 extra no payout. Limite de mão aumentado para 8 cartas.',
+    maxHandSize: 8,
     reportsPerTurn: 1,
-    bountyModifier: 1.2,
-    specialPowers: ['Limite de mão: 9 cartas', 'Bónus de +20% em vulnerabilidades Críticas', 'Submissão única por ronda'],
-    ptSpecialPowers: ['Limite de mão: 9 cartas', 'Bónus de +20% em vulnerabilidades Críticas', 'Submissão única por ronda'],
+    bountyModifier: 1.0,
+    specialPowers: ['Limite de mão: 8 cartas', '+$500 por carta Épica ou Lendária no Report', 'Foco em falhas de alto impacto'],
+    ptSpecialPowers: ['Limite de mão: 8 cartas', '+$500 por carta Épica ou Lendária no Report', 'Foco em falhas de alto impacto'],
     avatarIcon: '🧠',
     color: '#c084fc'
   },
@@ -94,13 +101,15 @@ export const ARCHETYPES: Archetype[] = [
     name: 'Bug Hunter',
     title: 'O Caçador em Escala',
     ptTitle: 'O Caçador em Escala',
-    playstyle: 'Submissão em Dois Lotes: Ao realizar Report, divide a Zona de Exploits em 2 lotes independentes no mesmo Active Program.',
-    ptPlaystyle: 'Submissão em Dois Lotes: Ao realizar Report, divide a Zona de Exploits em 2 lotes independentes no mesmo Active Program.',
+    presentation: '"Não busco o bug perfeito, busco os dez. Volume é qualidade por aqui. Escala é estratégia. Dez reportes ontem, dez amanhã."',
+    ptPresentation: '"Não busco o bug perfeito, busco os dez. Volume é qualidade por aqui. Escala é estratégia. Dez reportes ontem, dez amanhã."',
+    playstyle: 'Volume Attack: cada carta além da primeira no mesmo Report soma +$500 ao payout.\nRestrito a vulnerabilidades Comum e Incomum.\nEficiência em Volume: concluir um Report com 3 vulnerabilidades simultâneas concede 1 Token de Reputação (🐝).',
+    ptPlaystyle: 'Volume Attack: cada carta além da primeira no mesmo Report soma +$500 ao payout.\nRestrito a vulnerabilidades Comum e Incomum.\nEficiência em Volume: concluir um Report com 3 vulnerabilidades simultâneas concede 1 Token de Reputação (🐝).',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 1.0,
-    specialPowers: ['2 Lotes em 1 Report', '+50% de bónus se submeter 5+ vulnerabilidades no total', 'Restrito a CVSS ≤ 6.0'],
-    ptSpecialPowers: ['2 Lotes em 1 Report', '+50% de bónus se submeter 5+ vulnerabilidades no total', 'Restrito a CVSS ≤ 6.0'],
+    specialPowers: ['+$500 por carta além da 1ª no Report', 'Report com 3 cartas = 1 Reputação (🐝)', 'Restrito a Comum e Incomum'],
+    ptSpecialPowers: ['+$500 por carta além da 1ª no Report', 'Report com 3 cartas = 1 Reputação (🐝)', 'Restrito a Comum e Incomum'],
     avatarIcon: '⚡',
     color: '#f0883e'
   },
@@ -109,13 +118,15 @@ export const ARCHETYPES: Archetype[] = [
     name: 'Social Engineer',
     title: 'O Manipulador Social',
     ptTitle: 'O Manipulador Social',
-    playstyle: 'Caos Redirecionado: Pode escolher nominalmente qual adversário sofrerá o impacto de cartas de Evento jogadas.',
-    ptPlaystyle: 'Caos Redirecionado: Pode escolher nominalmente qual adversário sofrerá o impacto de cartas de Evento jogadas.',
+    presentation: '"Eu não hackeio sistemas, hackeio pessoas. E todo mundo bebe o café que eu sirvo."',
+    ptPresentation: '"Eu não hackeio sistemas, hackeio pessoas. E todo mundo bebe o café que eu sirvo."',
+    playstyle: 'Caos Redirecionado (uma vez por rodada): ao ser alvo de um Evento individual negativo, transfira o efeito para outro oponente.\nPhishing (uma vez por rodada, ação livre): puxe 1 carta aleatória da mão de um oponente e entregue 1 carta da sua mão para ele.',
+    ptPlaystyle: 'Caos Redirecionado (uma vez por ronda): ao ser alvo de um Evento individual negativo, transfere o efeito para outro oponente.\nPhishing (uma vez por ronda, ação livre): puxa 1 carta aleatória da mão de um oponente e entrega 1 carta da tua mão para ele.',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 1.0,
-    specialPowers: ['Redireciona cartas de evento', 'Força descartes de oponentes', 'Alta interação PvP'],
-    ptSpecialPowers: ['Redireciona cartas de evento', 'Força descartes de oponentes', 'Alta interação PvP'],
+    specialPowers: ['Redireciona cartas de evento maléficas', 'Phishing: troca 1 carta com rival', 'Alta interação de mesa'],
+    ptSpecialPowers: ['Redireciona cartas de evento maléficas', 'Phishing: troca 1 carta com rival', 'Alta interação de mesa'],
     avatarIcon: '🎭',
     color: '#58a6ff'
   },
@@ -124,13 +135,15 @@ export const ARCHETYPES: Archetype[] = [
     name: 'Red Teamer',
     title: 'O Operador Ofensivo',
     ptTitle: 'O Operador Ofensivo',
-    playstyle: 'Sem Limites: Ignora todas as restrições de escopo dos programas (paga -30% nos bounties obtidos).',
-    ptPlaystyle: 'Sem Limites: Ignora todas as restrições de escopo dos programas (paga -30% nos bounties obtidos).',
+    presentation: '"Escopo é sugestão, não contrato. Qualquer alvo, qualquer hora, mas meu preço é o dobro."',
+    ptPresentation: '"Escopo é sugestão, não contrato. Qualquer alvo, qualquer hora, mas meu preço é o dobro."',
+    playstyle: 'Sem Limites: ignoro as restrições de escopo dos programas e posso explorar qualquer vulnerabilidade em qualquer alvo.\nCusto Operacional: subtraia $1.500 do payout total de cada Report.',
+    ptPlaystyle: 'Sem Limites: ignoro as restrições de escopo dos programas e posso explorar qualquer vulnerabilidade em qualquer alvo.\nCusto Operacional: subtrai $1.500 do payout total de cada Report.',
     maxHandSize: 6,
     reportsPerTurn: 1,
-    bountyModifier: 0.7,
-    specialPowers: ['Ignora escopo de programas', 'Explora qualquer vulnerabilidade em qualquer alvo', 'Flexibilidade total'],
-    ptSpecialPowers: ['Ignora escopo de programas', 'Explora qualquer vulnerabilidade em qualquer alvo', 'Flexibilidade total'],
+    bountyModifier: 1.0,
+    specialPowers: ['Ignora escopo de programas', 'Explora qualquer vulnerabilidade em qualquer alvo', 'Custo Operacional (-$1.500 por Report)'],
+    ptSpecialPowers: ['Ignora escopo de programas', 'Explora qualquer vulnerabilidade em qualquer alvo', 'Custo Operacional (-$1.500 por Report)'],
     avatarIcon: '⚔️',
     color: '#f85149'
   },
@@ -139,13 +152,15 @@ export const ARCHETYPES: Archetype[] = [
     name: 'The Pentester',
     title: 'O Auditor Metódico',
     ptTitle: 'O Auditor Metódico',
-    playstyle: 'Imunidade Profissional: Imune a cartas de disrupção como Duplicate Report! e Triage Delay!.',
-    ptPlaystyle: 'Imunidade Profissional: Imune a cartas de disrupção como Duplicate Report! e Triage Delay!.',
+    presentation: '"Faço o que ninguém tem paciência: o mesmo teste, setenta vezes, com planilha. Checklist preenchido, vida tranquila. Sistema auditado."',
+    ptPresentation: '"Faço o que ninguém tem paciência: o mesmo teste, setenta vezes, com planilha. Checklist preenchido, vida tranquila. Sistema auditado."',
+    playstyle: 'Auditor Metódico: imune a Duplicate Report! e a Triage Delay!.\nRelatório Estruturado: ganhe +$500 por cada classe técnica diferente no seu Report além da primeira (máximo de +$1.000).',
+    ptPlaystyle: 'Auditor Metódico: imune a Duplicate Report! e a Triage Delay!.\nRelatório Estruturado: ganha +$500 por cada classe técnica diferente no teu Report além da primeira (máximo de +$1.000).',
     maxHandSize: 6,
     reportsPerTurn: 1,
     bountyModifier: 1.0,
-    specialPowers: ['Imunidade a Duplicate Report!', 'Imunidade a Triage Delay!', 'Fluxo estável de caixa'],
-    ptSpecialPowers: ['Imunidade a Duplicate Report!', 'Imunidade a Triage Delay!', 'Fluxo estável de caixa'],
+    specialPowers: ['Imunidade a Duplicate Report!', 'Imunidade a Triage Delay!', 'Relatório Estruturado (+$500 por classe diferente)'],
+    ptSpecialPowers: ['Imunidade a Duplicate Report!', 'Imunidade a Triage Delay!', 'Relatório Estruturado (+$500 por classe diferente)'],
     avatarIcon: '🛡️',
     color: '#38bdf8'
   }
@@ -173,10 +188,10 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     companyType: 'E-Commerce Multinacional',
     allowedClasses: 'ALL',
     patchSpeed: 'Moderada',
-    bountyRange: '+$1.0k Bónus Fixos',
+    bountyRange: '+$1.0k Bônus Fixos',
     flatBountyBonus: 1000,
-    description: 'Escopo amplo. Permitido disputar Duplicate Report em tempo real!',
-    ptDescription: 'Escopo amplo. Permitido disputar Duplicate Report em tempo real!'
+    description: 'Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.',
+    ptDescription: 'Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.'
   },
   {
     id: 'shopall-3',
@@ -267,7 +282,7 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     id: 'cloudnine-1',
     name: 'CloudNine Cloud Services',
     companyType: 'Provedor de Infraestrutura em Nuvem',
-    allowedClasses: ['SSRF', 'Injection', 'Legendary'],
+    allowedClasses: ['SSRF', 'Injection', 'APT'],
     patchSpeed: 'Extrema',
     bountyRange: '+$4.0k Bónus Fixos',
     flatBountyBonus: 4000,
@@ -275,36 +290,36 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     ptDescription: 'Recompensas astronômicas para RCE, SSRF e vulnerabilidades de infraestrutura. Alto risco de Patch!'
   },
 
-  // --- 6. SocialBee Media (3 cópias) ---
+  // --- 6. SocialHive Media (3 cópias) ---
   {
     id: 'socialbee-1',
-    name: 'SocialBee Media',
+    name: 'SocialHive Media',
     companyType: 'Rede Social Global',
     allowedClasses: ['Cross-Site Scripting', 'Business Logic', 'Broken Access Control'],
     patchSpeed: 'Moderada',
-    bountyRange: '+$1.0k Bónus Fixos',
+    bountyRange: '+$1.0k Bônus Fixos',
     flatBountyBonus: 1000,
     description: 'Focado em vulnerabilidades de privacidade, XSS e lógica de engajamento social.',
     ptDescription: 'Focado em vulnerabilidades de privacidade, XSS e lógica de engajamento social.'
   },
   {
     id: 'socialbee-2',
-    name: 'SocialBee Media',
+    name: 'SocialHive Media',
     companyType: 'Rede Social Global',
     allowedClasses: ['Cross-Site Scripting', 'Business Logic', 'Broken Access Control'],
     patchSpeed: 'Moderada',
-    bountyRange: '+$1.0k Bónus Fixos',
+    bountyRange: '+$1.0k Bônus Fixos',
     flatBountyBonus: 1000,
     description: 'Plataforma social de alto tráfego com foco em permissões de perfil.',
     ptDescription: 'Plataforma social de alto tráfego com foco em permissões de perfil.'
   },
   {
     id: 'socialbee-3',
-    name: 'SocialBee Media',
+    name: 'SocialHive Media',
     companyType: 'Rede Social Global',
     allowedClasses: ['Cross-Site Scripting', 'Business Logic', 'Broken Access Control'],
     patchSpeed: 'Moderada',
-    bountyRange: '+$1.0k Bónus Fixos',
+    bountyRange: '+$1.0k Bônus Fixos',
     flatBountyBonus: 1000,
     description: 'Inúmeras sub-plataformas integradas suscetíveis a roubo de cookies e manipulação.',
     ptDescription: 'Inúmeras sub-plataformas integradas suscetíveis a roubo de cookies e manipulação.'
@@ -363,9 +378,9 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     id: 'cryptox-1',
     name: 'CryptoX Exchange',
     companyType: 'Corretora de Criptomoedas',
-    allowedClasses: ['Authentication', 'Cryptographic Failures', 'Business Logic', 'Legendary'],
-    patchSpeed: 'Rápida',
-    bountyRange: '+$4.0k Bónus Fixos',
+    allowedClasses: ['Authentication', 'Cryptographic Failures', 'Business Logic', 'APT'],
+    patchSpeed: 'Extrema',
+    bountyRange: '+$4.0k Bônus Fixos',
     flatBountyBonus: 4000,
     description: 'Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.',
     ptDescription: 'Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.'
@@ -376,7 +391,7 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     id: 'aicore-1',
     name: 'AI Core Systems',
     companyType: 'Infraestrutura de IA Generativa',
-    allowedClasses: ['Injection', 'SSRF', 'Legendary'],
+    allowedClasses: ['Injection', 'SSRF', 'APT'],
     patchSpeed: 'Extrema',
     bountyRange: '+$4.0k Bónus Fixos',
     flatBountyBonus: 4000,
@@ -413,35 +428,179 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     id: 'deliverydash-1',
     name: 'DeliveryDash App',
     companyType: 'Plataforma Logística e Entregas',
-    allowedClasses: ['Business Logic', 'Broken Access Control', 'Cross-Site Scripting'],
+    allowedClasses: ['Business Logic', 'Broken Access Control', 'SSRF'],
     patchSpeed: 'Moderada',
-    bountyRange: '+$1.0k Bónus Fixos',
+    bountyRange: '+$1.0k Bônus Fixos',
     flatBountyBonus: 1000,
-    description: 'Aplicativo de entregas urbanas com vulnerabilidades de cupom e IDOR de pedidos.',
-    ptDescription: 'Aplicativo de entregas urbanas com vulnerabilidades de cupom e IDOR de pedidos.'
+    description: 'Aplicativo de entregas urbanas com vulnerabilidades de cupom, IDOR e SSRF em webhooks.',
+    ptDescription: 'Aplicativo de entregas urbanas com vulnerabilidades de cupom, IDOR e SSRF em webhooks.'
   },
   {
     id: 'deliverydash-2',
     name: 'DeliveryDash App',
     companyType: 'Plataforma Logística e Entregas',
-    allowedClasses: ['Business Logic', 'Broken Access Control', 'Cross-Site Scripting'],
+    allowedClasses: ['Business Logic', 'Broken Access Control', 'SSRF'],
     patchSpeed: 'Moderada',
     bountyRange: '+$1.0k Bónus Fixos',
     flatBountyBonus: 1000,
-    description: 'Rede logística de entregas rápidas suscetível a manipulação de pedidos.',
-    ptDescription: 'Rede logística de entregas rápidas suscetível a manipulação de pedidos.'
+    description: 'Rede logística de entregas rápidas suscetível a manipulação de pedidos e SSRF interno.',
+    ptDescription: 'Rede logística de entregas rápidas suscetível a manipulação de pedidos e SSRF interno.'
   },
   {
     id: 'deliverydash-3',
     name: 'DeliveryDash App',
     companyType: 'Plataforma Logística e Entregas',
-    allowedClasses: ['Business Logic', 'Broken Access Control', 'Cross-Site Scripting'],
+    allowedClasses: ['Business Logic', 'Broken Access Control', 'SSRF'],
     patchSpeed: 'Moderada',
-    bountyRange: '+$1.0k Bónus Fixos',
+    bountyRange: '+$1.0k Bônus Fixos',
     flatBountyBonus: 1000,
-    description: 'Frequentes vulnerabilidades de lógica em promoções e cupons da plataforma.',
-    ptDescription: 'Frequentes vulnerabilidades de lógica em promoções e cupons da plataforma.'
+    description: 'Frequentes vulnerabilidades de lógica em promoções e requisições forjadas de rastreamento.',
+    ptDescription: 'Frequentes vulnerabilidades de lógica em promoções e requisições forjadas de rastreamento.'
+  },
+  // --- 13. BioGen Genomics (2 cópias) ---
+  {
+    id: 'biogen-1',
+    name: 'BioGen Genomics',
+    companyType: 'Biotecnologia & Pesquisa Clínica',
+    allowedClasses: ['Cryptographic Failures', 'Broken Access Control', 'SSRF'],
+    patchSpeed: 'Rápida',
+    bountyRange: '+$2.5k Bônus Fixos',
+    flatBountyBonus: 2500,
+    description: 'Pesquisa genômica confidencial. Foco em servidores internos de sequenciamento e controle de prontuários.',
+    ptDescription: 'Investigação genómica confidencial. Foco em servidores internos e controlo de acesso.'
+  },
+  {
+    id: 'biogen-2',
+    name: 'BioGen Genomics',
+    companyType: 'Biotecnologia & Pesquisa Clínica',
+    allowedClasses: ['Cryptographic Failures', 'Broken Access Control', 'SSRF'],
+    patchSpeed: 'Rápida',
+    bountyRange: '+$2.5k Bônus Fixos',
+    flatBountyBonus: 2500,
+    description: 'Pesquisa genômica confidencial. Foco em servidores internos de sequenciamento e controle de prontuários.',
+    ptDescription: 'Investigação genómica confidencial. Foco em servidores internos e controlo de acesso.'
+  },
+
+  // --- 14. Veloce AutoTech (2 cópias) ---
+  {
+    id: 'veloce-1',
+    name: 'Veloce AutoTech',
+    companyType: 'Firmware Automotivo & IoT',
+    allowedClasses: ['Injection', 'Business Logic', 'Authentication'],
+    patchSpeed: 'Extrema',
+    bountyRange: '+$4.0k Bônus Fixos',
+    flatBountyBonus: 4000,
+    description: 'Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de elite.',
+    ptDescription: 'Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de topo.'
+  },
+  {
+    id: 'veloce-2',
+    name: 'Veloce AutoTech',
+    companyType: 'Firmware Automotivo & IoT',
+    allowedClasses: ['Injection', 'Business Logic', 'Authentication'],
+    patchSpeed: 'Extrema',
+    bountyRange: '+$4.0k Bônus Fixos',
+    flatBountyBonus: 4000,
+    description: 'Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de elite.',
+    ptDescription: 'Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de topo.'
+  },
+
+  // --- 15. Voltz PowerGrid (2 cópias) ---
+  {
+    id: 'voltz-1',
+    name: 'Voltz PowerGrid',
+    companyType: 'Infraestrutura Crítica & SCADA',
+    allowedClasses: ['Injection', 'Broken Access Control'],
+    patchSpeed: 'Lenta',
+    bountyRange: '+$0 Bônus Fixos',
+    flatBountyBonus: 0,
+    description: 'Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.',
+    ptDescription: 'Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.'
+  },
+  {
+    id: 'voltz-2',
+    name: 'Voltz PowerGrid',
+    companyType: 'Infraestrutura Crítica & SCADA',
+    allowedClasses: ['Injection', 'Broken Access Control'],
+    patchSpeed: 'Lenta',
+    bountyRange: '+$0 Bônus Fixos',
+    flatBountyBonus: 0,
+    description: 'Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.',
+    ptDescription: 'Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.'
+  },
+
+  // --- 16. PulseStream Media (2 cópias) ---
+  {
+    id: 'pulsestream-1',
+    name: 'PulseStream Media',
+    companyType: 'Mídia Digital & Distribuição DRM',
+    allowedClasses: ['Cross-Site Scripting', 'Business Logic', 'Cryptographic Failures'],
+    patchSpeed: 'Moderada',
+    bountyRange: '+$1.0k Bônus Fixos',
+    flatBountyBonus: 1000,
+    description: 'Distribuição de streaming. Foco em falhas de DRM, portal web e validação de assinaturas.',
+    ptDescription: 'Distribuição de streaming. Foco em falhas de DRM, portal web e validação de subscrições.'
+  },
+  {
+    id: 'pulsestream-2',
+    name: 'PulseStream Media',
+    companyType: 'Mídia Digital & Distribuição DRM',
+    allowedClasses: ['Cross-Site Scripting', 'Business Logic', 'Cryptographic Failures'],
+    patchSpeed: 'Moderada',
+    bountyRange: '+$1.0k Bônus Fixos',
+    flatBountyBonus: 1000,
+    description: 'Distribuição de streaming. Foco em falhas de DRM, portal web e validação de assinaturas.',
+    ptDescription: 'Distribuição de streaming. Foco em falhas de DRM, portal web e validação de subscrições.'
+  },
+
+  // --- 17. AeroOrbit Avionics (2 cópias) ---
+  {
+    id: 'aeroorbit-1',
+    name: 'AeroOrbit Avionics',
+    companyType: 'Tecnologia Aeroespacial & Satélites',
+    allowedClasses: ['SSRF', 'Authentication', 'Cryptographic Failures'],
+    patchSpeed: 'Extrema',
+    bountyRange: '+$4.0k Bônus Fixos',
+    flatBountyBonus: 4000,
+    description: 'Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.',
+    ptDescription: 'Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.'
+  },
+  {
+    id: 'aeroorbit-2',
+    name: 'AeroOrbit Avionics',
+    companyType: 'Tecnologia Aeroespacial & Satélites',
+    allowedClasses: ['SSRF', 'Authentication', 'Cryptographic Failures'],
+    patchSpeed: 'Extrema',
+    bountyRange: '+$4.0k Bônus Fixos',
+    flatBountyBonus: 4000,
+    description: 'Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.',
+    ptDescription: 'Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.'
+  },
+
+  // --- 18. TaxCore Federal (2 cópias) ---
+  {
+    id: 'taxcore-1',
+    name: 'TaxCore Federal',
+    companyType: 'Administração Tributária Pública',
+    allowedClasses: ['Business Logic', 'Broken Access Control', 'Authentication'],
+    patchSpeed: 'Moderada',
+    bountyRange: '+$1.0k Bônus Fixos',
+    flatBountyBonus: 1000,
+    description: 'Sistema fiscal e emissão de notas eletrônicas. Auditoria em regras de cálculo e autorizações.',
+    ptDescription: 'Sistema fiscal e emissão de faturas eletrónicas. Auditoria em regras de cálculo e autorizações.'
+  },
+  {
+    id: 'taxcore-2',
+    name: 'TaxCore Federal',
+    companyType: 'Administração Tributária Pública',
+    allowedClasses: ['Business Logic', 'Broken Access Control', 'Authentication'],
+    patchSpeed: 'Moderada',
+    bountyRange: '+$1.0k Bônus Fixos',
+    flatBountyBonus: 1000,
+    description: 'Sistema fiscal e emissão de notas eletrônicas. Auditoria em regras de cálculo e autorizações.',
+    ptDescription: 'Sistema fiscal e emissão de faturas eletrónicas. Auditoria em regras de cálculo e autorizações.'
   }
+
 ];
 
 // ----------------------------------------------------
@@ -469,7 +628,7 @@ export const MASTER_DECK: Card[] = [
     vulnClass: 'Injection',
     cvss: 9.1,
     severity: 'Critical',
-    toolRequirements: ['Burp Suite', 'SQLMap'],
+    toolRequirements: ['Interceptor Pro', 'Injection Lab'],
     effectDescription: 'Ao reportar com sucesso, examine as 3 cartas do topo do deck e adicione 1 à mão.',
     flavorText: "' OR '1'='1 — Entrando como se fosse da família.",
     artConcept: 'Biblioteca gótica vazando linhas de código reluzentes por trincas.',
@@ -482,7 +641,7 @@ export const MASTER_DECK: Card[] = [
     vulnClass: 'SSRF',
     cvss: 8.6,
     severity: 'High',
-    toolRequirements: ['Burp Suite', 'Burp Collaborator'],
+    toolRequirements: ['Interceptor Pro', 'Echo Beacon'],
     effectDescription: 'Permite visualizar a mão completa de um oponente por 1 ronda inteira.',
     flavorText: 'http://169.254.169.254/latest/meta-data/iam/security-credentials/',
     artConcept: 'Silhueta de sobretudo observando um rack de servidores.',
@@ -492,10 +651,10 @@ export const MASTER_DECK: Card[] = [
     id: 'vuln-4',
     name: 'Boneco de Marionete',
     type: 'vulnerability',
-    vulnClass: 'Legendary',
+    vulnClass: 'APT',
     cvss: 10.0,
     severity: 'Critical',
-    toolRequirements: ['Burp Suite', 'Nmap + ffuf', 'Commix'],
+    toolRequirements: ['Interceptor Pro', 'PortSweep', 'Command Harness'],
     effectDescription: 'Ao ser reportada, força todos os oponentes a descartarem imediatamente 1 Tool Card de maior valor.',
     flavorText: 'Remote Code Execution como root. O servidor é meu novo fantoche.',
     artConcept: 'Mãos etéreas segurando fios de fibra óptica conectados a um rack.',
@@ -508,7 +667,7 @@ export const MASTER_DECK: Card[] = [
     vulnClass: 'Broken Access Control',
     cvss: 6.5,
     severity: 'Medium',
-    toolRequirements: ['Postman'],
+    toolRequirements: ['Endpoint Lab'],
     effectDescription: 'Replica o valor de recompensa base da última vulnerabilidade reportada nesta ronda por qualquer jogador.',
     flavorText: 'Mudar o id=1024 para id=1 e virar o CEO.',
     artConcept: 'Estagiário sentado na cadeira presidencial com iluminação de néon.',
@@ -534,7 +693,7 @@ export const MASTER_DECK: Card[] = [
     vulnClass: 'Authentication',
     cvss: 8.2,
     severity: 'High',
-    toolRequirements: ['JWT Tool'],
+    toolRequirements: ['Token Cracker'],
     effectDescription: 'Permite transferir todas as vulnerabilidades acumuladas para um novo programa corporativo sem penalidade de reporte.',
     flavorText: 'alg: "none" no cabeçalho JWT. Quem precisa de palavra-passe?',
     artConcept: 'Entrada de serviço iluminada em verde neon em um edifício blindado.',
@@ -547,7 +706,7 @@ export const MASTER_DECK: Card[] = [
     vulnClass: 'Cryptographic Failures',
     cvss: 5.9,
     severity: 'Medium',
-    toolRequirements: ['CyberChef'],
+    toolRequirements: ['Hex Kitchen'],
     effectDescription: 'Reduz o valor de severidade CVSS de uma carta de um oponente em 2.0 pontos (mínimo 1.0).',
     flavorText: 'MD5 sem salt para palavras-passe bancárias em 2026.',
     artConcept: 'Cadeado plástico de brinquedo trancando o cofre de um banco.',
@@ -560,7 +719,7 @@ export const MASTER_DECK: Card[] = [
     vulnClass: 'Business Logic',
     cvss: 7.7,
     severity: 'High',
-    toolRequirements: ['Burp Suite'],
+    toolRequirements: ['Interceptor Pro'],
     effectDescription: 'Race Condition! Concede o direito de executar duas ações de Exploit no mesmo turno.',
     flavorText: '50 requisições simultâneas de saque antes do saldo atualizar.',
     artConcept: 'Cronômetro antigo com ponteiros desincronizados girando em sentidos opostos.',
@@ -573,7 +732,7 @@ export const MASTER_DECK: Card[] = [
     vulnClass: 'SSRF',
     cvss: 8.9,
     severity: 'High',
-    toolRequirements: ['Burp Collaborator', 'Postman'],
+    toolRequirements: ['Echo Beacon', 'Endpoint Lab'],
     effectDescription: 'SSRF via Webhook. Força um oponente a descartar uma carta aleatória da mão e adiciona essa carta à tua mão.',
     flavorText: 'O webhook de notificação enviou a chave de API de volta para mim.',
     artConcept: 'Entidade espectral de luz emanando de um conector de fibra óptica.',
@@ -586,7 +745,7 @@ export const MASTER_DECK: Card[] = [
     vulnClass: 'Broken Access Control',
     cvss: 8.4,
     severity: 'High',
-    toolRequirements: ['Postman', 'Burp Suite'],
+    toolRequirements: ['Endpoint Lab', 'Interceptor Pro'],
     effectDescription: 'Permite alterar a rota da API para extrair relatórios confidenciais de outros pesquisadores.',
     flavorText: 'GET /api/v1/users/admin/export_all.json',
     artConcept: 'Bola de futebol digital rasgando uma rede de firewall.',
@@ -596,10 +755,10 @@ export const MASTER_DECK: Card[] = [
     id: 'vuln-12',
     name: 'Deserialização Macabra',
     type: 'vulnerability',
-    vulnClass: 'Legendary',
+    vulnClass: 'APT',
     cvss: 9.8,
     severity: 'Critical',
-    toolRequirements: ['Burp Suite', 'CyberChef', 'Commix'],
+    toolRequirements: ['Interceptor Pro', 'Hex Kitchen', 'Command Harness'],
     effectDescription: 'Ganha bónus de 3x em programas Java/Enterprise. Se o programa for CloudNine, dobra a recompensa final.',
     flavorText: 'Log4Shell ressurgindo das cinzas do datacenter.',
     artConcept: 'Chamas verdes consumindo servidores em formato de dragão de código.',
@@ -608,39 +767,39 @@ export const MASTER_DECK: Card[] = [
 
   // --- TOOL CARDS ---
   {
-    id: 'tool-burp-pro',
-    name: 'Burp Suite Pro',
+    id: 'tool-interceptor-pro',
+    name: 'Interceptor Pro',
     type: 'tool',
     effectDescription: '🔴 Ativa: Ferramenta Universal. Substitui qualquer ferramenta específica exigida ao baixar vulnerabilidades.',
     flavorText: 'A arma definitiva do pesquisador ofensivo.',
-    artConcept: 'Terminal alaranjado com abas Repeater, Intruder e Decoder.',
+    artConcept: 'Terminal tático com fluxos de requisição HTTP interceptados e manipulados em tempo real.',
     rarity: 'Epic'
   },
   {
-    id: 'tool-nmap-ffuf',
-    name: 'Nmap + ffuf',
+    id: 'tool-portsweep',
+    name: 'PortSweep',
     type: 'tool',
     effectDescription: '🟢 Passiva: Bónus de Recon. Concede a compra de 3 cartas na ação Recon em vez de 2.',
-    flavorText: 'Fuzzing de diretórios a 10.000 req/sec.',
+    flavorText: 'Varredura completa de portas e serviços a alta velocidade.',
     artConcept: 'Radar circular varrendo blocos de IP em terminal verde.',
     rarity: 'Common'
   },
   {
-    id: 'tool-owasp-zap',
-    name: 'OWASP ZAP',
+    id: 'tool-spiderscan',
+    name: 'SpiderScan',
     type: 'tool',
     effectDescription: '🔴 Ativa: Automação de varredura. Permite baixar uma vulnerabilidade de severidade Low/Medium com custo de ferramentas zerado.',
-    flavorText: 'Scanner open-source gratuito para a comunidade.',
-    artConcept: 'Raio elétrico azul sobreposto ao escudo OWASP.',
+    flavorText: 'Scanner automatizado para mapeamento contínuo de vulnerabilidades.',
+    artConcept: 'Feixe de laser azul inspecionando uma teia de rotas web.',
     rarity: 'Common'
   },
   {
-    id: 'tool-postman',
-    name: 'Postman API Suite',
+    id: 'tool-endpoint-lab',
+    name: 'Endpoint Lab',
     type: 'tool',
     effectDescription: '🔴 Ativa: Testes de API. Reduz em 1 o custo de ativação de vulnerabilidades de Broken Access Control.',
-    flavorText: 'Collections preparadas para auditores de API.',
-    artConcept: 'Astronauta laranja navegando por payloads JSON.',
+    flavorText: 'Suíte de testes de rotas e requisições HTTP para auditoria de APIs.',
+    artConcept: 'Console moderno com rotas REST e payloads JSON iluminados em ciano.',
     rarity: 'Common'
   },
   {
@@ -648,53 +807,53 @@ export const MASTER_DECK: Card[] = [
     name: 'Browser DevTools',
     type: 'tool',
     effectDescription: '🟢 Passiva: Amplificador Client-Side. Vulnerabilidades de classe XSS e DOM agregam +50% de valor no momento do Report.',
-    flavorText: 'F12 é tudo o que tu precisas.',
+    flavorText: 'F12 é tudo o que você precisa.',
     artConcept: 'Console JavaScript com mensagens em destaque amarelo e verde.',
     rarity: 'Common'
   },
   {
-    id: 'tool-sqlmap',
-    name: 'SQLMap Automator',
+    id: 'tool-injection-lab',
+    name: 'Injection Lab',
     type: 'tool',
     effectDescription: '🔴 Ativa: Automação SQL. Anula os requisitos de ferramentas secundárias para vulnerabilidades de Injection (incluindo Command Injection).',
-    flavorText: 'python sqlmap.py -u "target" --dbs --dump',
-    artConcept: 'Bomba de petróleo digital perfurando tabelas SQL.',
+    flavorText: 'Injeção automatizada e extração de esquemas de banco de dados.',
+    artConcept: 'Broca digital perfurando estruturas tabulares de banco de dados.',
     rarity: 'Uncommon'
   },
   {
-    id: 'tool-burp-collaborator',
-    name: 'Burp Collaborator',
+    id: 'tool-echo-beacon',
+    name: 'Echo Beacon',
     type: 'tool',
-    effectDescription: '🟢 Passiva: Monitoramento OOB. Concede 1 carta de ferramenta do descarte toda vez que um oponente reportar um SSRF.',
-    flavorText: 'Pingback recebido de servidor interno.',
-    artConcept: 'Antena parabólica captando sinais de rádio no ciberespaço.',
+    effectDescription: 'PASSIVA: Ao reportar qualquer vulnerabilidade da classe SSRF ou com a tag [NOISY], compre 1 carta do Main Deck.',
+    flavorText: 'Sinal de retorno capturado de servidor interno isolado.',
+    artConcept: 'Receptor de alta sensibilidade captando sinais no ciberespaço.',
     rarity: 'Rare'
   },
   {
-    id: 'tool-cyberchef',
-    name: 'CyberChef',
+    id: 'tool-hex-kitchen',
+    name: 'Hex Kitchen',
     type: 'tool',
     effectDescription: '🔴 Ativa: Canivete Suíço. Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta de tua escolha do baralho.',
-    flavorText: 'The Cyber Swiss Army Knife.',
-    artConcept: 'Livro de receitas de hacker com símbolos Hex e Base64.',
+    flavorText: 'Laboratório definitivo de conversão, decodificação e análise de dados.',
+    artConcept: 'Bancada digital com matrizes de caracteres Hex, Base64 e cifras criptográficas.',
     rarity: 'Uncommon'
   },
   {
-    id: 'tool-jwt-tool',
-    name: 'JWT Tool',
+    id: 'tool-token-cracker',
+    name: 'Token Cracker',
     type: 'tool',
     effectDescription: '🟢 Passiva: Engenharia de Tokens. Vulnerabilidades da categoria Authentication concedem +50% de pontuação extra no Report.',
-    flavorText: 'Decodificando tokens HS256 / RS256.',
+    flavorText: 'Decodificação e assinatura de tokens de autenticação.',
     artConcept: 'Chave dourada reluzente com gravação binária.',
     rarity: 'Uncommon'
   },
   {
-    id: 'tool-commix',
-    name: 'Commix',
+    id: 'tool-command-harness',
+    name: 'Command Harness',
     type: 'tool',
     effectDescription: '🟢 Passiva: Command Injection Harness. Vulnerabilidades de Command Injection ou RCE recebem +30% de bónus adicional de bounty.',
-    flavorText: 'Automated OS Command Injection.',
-    artConcept: 'Prompt de comando executando whoami.',
+    flavorText: 'Injeção direta de comandos no interpretador do sistema operacional.',
+    artConcept: 'Prompt de comando executando whoami em terminal seguro.',
     rarity: 'Rare'
   },
 
@@ -768,7 +927,7 @@ export const MASTER_DECK: Card[] = [
     id: 'event-legal-threat',
     name: 'Legal Threat!',
     type: 'event',
-    effectDescription: 'AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Impede tu de realizar a ação REPORT por 2 rondas.',
+    effectDescription: 'AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele deve pagar $1.500 da sua Bounty Track para advogados de defesa, ou fica impedido de realizar a ação Report no seu próximo turno.',
     flavorText: 'Notificação extrajudicial por teste não autorizado.',
     artConcept: 'Martelo de juiz com cabos de rede quebrados.',
     rarity: 'Rare'

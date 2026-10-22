@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>PWND! Player Mat - Hacker Edition</title>
+  
+  <!-- Importando fontes hackers absurdamente nítidas e temáticas do Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      /* Base: Fira Code (A fonte mais usada por programadores modernos) */
+      font-family: 'Fira Code', Consolas, monospace;
+      background-color: #ffffff;
+      color: #000000;
+      width: 297mm;
+      height: 210mm;
+      box-sizing: border-box;
+      overflow: hidden; 
+      
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* FONTE DOS TÍTULOS GRANDES: Share Tech Mono (Vibe Cyberpunk/Netrunner) */
+    .hacker-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-weight: 400; /* Essa fonte só tem peso 400, não precisa de bold e renderiza perfeita */
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* 1) BOUNTY TRACK */
+    .track-container {
+      position: absolute;
+      top: 3mm;
+      left: 10mm;
+      width: 277mm; 
+      height: 25mm; 
+      display: flex;
+      align-items: center;
+    }
+
+    .track-title-vert {
+      font-size: 13px; /* Aumentei um tiquinho pra compensar a fonte nova */
+      text-align: center;
+      width: 15mm;
+      line-height: 1;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      margin-right: 2mm;
+    }
+
+    .track-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bounty-track {
+      display: flex;
+      width: 100%;
+      height: 14mm;
+      border: 3px solid #000;
+    }
+
+    .step {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-right: 2px solid #000;
+      font-weight: 700;
+      font-size: 9px;
+      text-align: center;
+    }
+    .step:last-child { border-right: none !important; }
+    .step span.k { font-size: 11px; }
+
+    .zone-limit { border-right: 4px solid #000 !important; }
+    
+    .zone-1 { background-color: #fff; }
+    .zone-2 { background-color: #f2f2f2; }
+    .zone-3 { background-image: repeating-linear-gradient(45deg, #fff 0, #fff 2px, #e5e5e5 2px, #e5e5e5 4px); }
+    
+    .zone-4 { 
+      background-color: #000; 
+      color: #fff; 
+      border-right-color: #fff !important; 
+    }
+
+    .zone-brackets {
+      display: flex;
+      width: 100%;
+      height: 7mm;
+    }
+    
+    .bracket {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      font-size: 9px;
+      font-weight: 700;
+      border-top: 2px solid #000;
+      border-left: 2px solid #000;
+      border-right: 2px solid #000;
+      height: 60%;
+      margin-top: 2mm;
+      position: relative;
+    }
+    .bracket span {
+      background-color: #fff;
+      padding: 0 4px;
+      position: absolute;
+      top: -7px;
+      color: #000;
+    }
+
+    .br-z1 { flex: 9; }
+    .br-z2 { flex: 5; margin-left: 2px; }
+    .br-z3 { flex: 7; margin-left: 2px; }
+    .br-z4 { flex: 7; margin-left: 2px; }
+
+
+    /* 2) ESQUERDA: Slots em Cascata */
+    .left-slots {
+      position: absolute;
+      top: 30mm;
+      left: 0; 
+      width: 25mm; 
+      height: 178mm;
+      display: flex;
+      flex-direction: column;
+      gap: 2mm; 
+    }
+
+    .edge-slot-left {
+      width: 100%;
+      flex: 1; 
+      border: 3px solid #000;
+      border-left: none; 
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 2mm;
+    }
+
+    .edge-slot-left .label-vert {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 13px;
+      color: #000;
+    }
+
+
+    /* 3) DIREITA: Event Cards */
+    .right-slots {
+      position: absolute;
+      top: 30mm;
+      right: 0; 
+      width: 25mm; 
+      height: 178mm; 
+      display: flex;
+      flex-direction: column;
+    }
+
+    .edge-slot-right {
+      width: 100%;
+      height: 88.9mm; 
+      border: 3px solid #000;
+      border-right: none; 
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 2mm;
+    }
+
+    .edge-slot-right .label-vert {
+      writing-mode: vertical-rl;
+      font-size: 13px;
+      color: #000;
+    }
+
+
+    /* 4) MEIO: Tools Rack e Zona de Exploits */
+    .center-area {
+      position: absolute;
+      top: 30mm;
+      left: 30mm; 
+      width: 237mm; 
+      height: 178mm;
+      display: flex;
+      flex-direction: column;
+      gap: 2mm;
+    }
+
+    /* Tools Rack Horizontal */
+    .tools-rack-container {
+      display: flex;
+      height: 88.9mm; 
+      align-items: center;
+      width: 100%;
+    }
+
+    .vertical-title {
+      font-size: 18px; /* Título maior com a fonte cyber */
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      text-align: center;
+      margin-right: 4mm;
+      color: #333;
+    }
+
+    .rack-slots {
+      display: flex;
+      justify-content: center; 
+      gap: 12mm; 
+      flex: 1;
+    }
+
+    .tool-slot {
+      width: 63.5mm; 
+      height: 88.9mm; 
+      border: 2px solid #000;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+      color: #666;
+    }
+
+    /* Zona de Exploits */
+    .exploits-zone-container {
+      display: flex;
+      height: 88.9mm;
+      align-items: center;
+    }
+
+    .exploits-box {
+      flex: 1;
+      height: 100%;
+      border: 3px dashed #000;
+      border-radius: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: #666;
+      letter-spacing: 5px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- 1) BOUNTY TRACK (TOPO) -->
+  <div class="track-container">
+    <div class="track-title-vert hacker-title">BOUNTY TRACK</div>
+    <div class="track-wrapper">
+      <div class="bounty-track">
+        <!-- ZONA 1 (9) -->
+        <div class="step zone-1"><span class="k">0</span></div>
+        <div class="step zone-1"><span class="k">1.5k</span></div>
+        <div class="step zone-1"><span class="k">3k</span></div>
+        <div class="step zone-1"><span class="k">4.5k</span></div>
+        <div class="step zone-1"><span class="k">6k</span></div>
+        <div class="step zone-1"><span class="k">7.5k</span></div>
+        <div class="step zone-1"><span class="k">9k</span></div>
+        <div class="step zone-1"><span class="k">10.5k</span></div>
+        <div class="step zone-1 zone-limit"><span class="k">11k</span></div>
+        
+        <!-- ZONA 2 (5) -->
+        <div class="step zone-2"><span class="k">12k</span></div>
+        <div class="step zone-2"><span class="k">14k</span></div>
+        <div class="step zone-2"><span class="k">16k</span></div>
+        <div class="step zone-2"><span class="k">18k</span></div>
+        <div class="step zone-2 zone-limit"><span class="k">20k</span></div>
+
+        <!-- ZONA 3 (7) -->
+        <div class="step zone-3"><span class="k">22k</span></div>
+        <div class="step zone-3"><span class="k">24k</span></div>
+        <div class="step zone-3"><span class="k">26k</span></div>
+        <div class="step zone-3"><span class="k">28k</span></div>
+        <div class="step zone-3"><span class="k">30k</span></div>
+        <div class="step zone-3"><span class="k">32k</span></div>
+        <div class="step zone-3 zone-limit"><span class="k">33k</span></div>
+
+        <!-- ZONA 4 (7) -->
+        <div class="step zone-4"><span class="k">34k</span></div>
+        <div class="step zone-4"><span class="k">35k</span></div>
+        <div class="step zone-4"><span class="k">36k</span></div>
+        <div class="step zone-4"><span class="k">37k</span></div>
+        <div class="step zone-4"><span class="k">38k</span></div>
+        <div class="step zone-4"><span class="k">39k</span></div>
+        <div class="step zone-4"><span class="k">40k</span></div>
+      </div>
+      <!-- BRACKETS DE INFORMAÇÃO -->
+      <div class="zone-brackets">
+        <div class="bracket br-z1"><span>TIER 1 (PENALTY: -1.5k)</span></div>
+        <div class="bracket br-z2"><span>TIER 2 (PENALTY: -3k)</span></div>
+        <div class="bracket br-z3"><span>TIER 3 (PENALTY: -4.5k)</span></div>
+        <div class="bracket br-z4"><span>TIER 4 (PENALTY: -6k)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2) ESQUERDA (SLOTS VAZADOS) -->
+  <div class="left-slots">
+    <div class="edge-slot-left">
+      <div class="label-vert hacker-title">ARCHETYPE</div>
+    </div>
+    <div class="edge-slot-left">
+      <div class="label-vert hacker-title">PROGRAM</div>
+    </div>
+    <div class="edge-slot-left">
+      <div class="label-vert hacker-title">SAFEGUARD</div>
+    </div>
+  </div>
+
+  <!-- 4) CENTRO (TOOLS + EXPLOITS) -->
+  <div class="center-area">
+    
+    <!-- Lado de Cima: TOOLS RACK -->
+    <div class="tools-rack-container">
+      <div class="vertical-title hacker-title">TOOLS RACK</div>
+      <div class="rack-slots">
+        <div class="tool-slot"><span class="hacker-title">TOOL 1</span></div>
+        <div class="tool-slot"><span class="hacker-title">TOOL 2</span></div>
+        <div class="tool-slot"><span class="hacker-title">TOOL 3</span></div>
+      </div>
+    </div>
+
+    <!-- Lado de Baixo: ZONA DE EXPLOITS -->
+    <div class="exploits-zone-container">
+      <div class="vertical-title hacker-title">EXPLOITS</div>
+      <div class="exploits-box hacker-title">
+        ZONA DE EXPLOITS
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 3) DIREITA (EVENTS VAZADOS) -->
+  <div class="right-slots">
+    <div class="edge-slot-right">
+      <div class="label-vert hacker-title">EVENT 1</div>
+    </div>
+    <div class="edge-slot-right">
+      <div class="label-vert hacker-title">EVENT 2</div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -22,12 +22,15 @@ export const Header: React.FC<HeaderProps> = ({ toggleTerminal, terminalOpen }) 
             <ShieldAlert size={22} color="#fff" />
           </div>
           <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '3px', textTransform: 'uppercase' }}>
-              Bug Bounty Chaos
+            <div style={{ fontSize: '11px', fontWeight: '600', color: 'var(--cyber-blue)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2px' }}>
+              The Bug Bounty Chaos
             </div>
-            <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#fff', letterSpacing: '-1px', lineHeight: '1' }}>
-              PWND!
+            <h1 style={{ fontSize: '24px', fontWeight: '900', color: '#fff', letterSpacing: '-1px', lineHeight: '1', margin: '0 0 3px 0' }}>
+              PWNED!
             </h1>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontStyle: 'italic', color: 'var(--text-muted)' }}>
+              Find it. Report it. Get paid.
+            </div>
           </div>
         </div>
 

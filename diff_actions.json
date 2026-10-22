@@ -1,0 +1,287 @@
+[
+  {
+    "id": "tool-burp-2",
+    "diffs": {
+      "description": {
+        "truth": "ATIVA: INTERCEPTION - anule um Event Card maléfico direcionado a você (não funciona contra PATCH DEPLOYED!).",
+        "pnp": "ATIVA: INTERCEPTION — Anule um Event Card maléfico direcionado a você (não funciona contra PATCH DEPLOYED!)."
+      }
+    }
+  },
+  {
+    "id": "tool-nmap-1",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compra 3 cartas em vez de 2). Uma vez por turno.",
+        "pnp": "PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2)."
+      }
+    }
+  },
+  {
+    "id": "tool-nmap-2",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compra 3 cartas em vez de 2). Uma vez por turno.",
+        "pnp": "PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas."
+      }
+    }
+  },
+  {
+    "id": "tool-zap",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: Na sua primeira ação de Exploit do turno, desça 2 vulnerabilidades em vez de 1.",
+        "pnp": "Baixe 2 vulnerabilidades na mesma ação de Exploit."
+      }
+    }
+  },
+  {
+    "id": "tool-postman",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: Baixe 1 Vulnerability Card da classe BAC em qualquer programa.",
+        "pnp": "Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa."
+      }
+    }
+  },
+  {
+    "id": "tool-devtools-1",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: +$500 por carta da classe XSS no Report.",
+        "pnp": "PASSIVA: +$500 por carta da classe XSS no seu Report."
+      }
+    }
+  },
+  {
+    "id": "tool-devtools-2",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: Seu limite de mão aumenta em 1 carta.",
+        "pnp": "PASSIVA: Amplificador de vulnerabilidades client-side no navegador."
+      }
+    }
+  },
+  {
+    "id": "tool-sqlmap",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: Baixe 1 Vulnerability Card da classe INJ em qualquer programa.",
+        "pnp": "Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa."
+      }
+    }
+  },
+  {
+    "id": "tool-collaborator",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: Resgate 1 TOOL do descarte toda vez que um oponente reportar SSRF. 1x por turno.",
+        "pnp": "PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF."
+      }
+    }
+  },
+  {
+    "id": "tool-cyberchef",
+    "diffs": {
+      "description": {
+        "truth": "ATIVA: Decodifique o tráfego — olhe as 3 primeiras cartas do Event Deck, descarte 1 delas e devolva as demais em qualquer ordem.",
+        "pnp": "ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha."
+      }
+    }
+  },
+  {
+    "id": "tool-jwt-tool",
+    "diffs": {
+      "description": {
+        "truth": "PASSIVA: +$500 por carta da classe AUTH no Report.",
+        "pnp": "PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro."
+      }
+    }
+  },
+  {
+    "id": "tool-burp-1-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-burp-2-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-nmap-1-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-nmap-2-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-zap-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-postman-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-devtools-1-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-devtools-2-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-sqlmap-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-collaborator-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-cyberchef-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-jwt-tool-c2",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-burp-1-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-burp-2-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-nmap-1-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-nmap-2-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-zap-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-postman-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-devtools-1-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-devtools-2-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-sqlmap-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-collaborator-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-cyberchef-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "tool-jwt-tool-c3",
+    "issue": "NAO_ENCONTRADO_NO_CODIGO"
+  },
+  {
+    "id": "defuse-deck-1",
+    "diffs": {
+      "name": {
+        "truth": "Bypass",
+        "pnp": "Safeguard (Bypass)"
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-2",
+    "diffs": {
+      "name": {
+        "truth": "Bypass",
+        "pnp": "Safeguard (Bypass)"
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-3",
+    "diffs": {
+      "name": {
+        "truth": "Bypass",
+        "pnp": "Safeguard (Bypass)"
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-4",
+    "diffs": {
+      "name": {
+        "truth": "Bypass",
+        "pnp": "Safeguard (Bypass)"
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-5",
+    "diffs": {
+      "name": {
+        "truth": "Bypass",
+        "pnp": "Safeguard (Bypass)"
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-6",
+    "diffs": {
+      "name": {
+        "truth": "Bypass",
+        "pnp": "Safeguard (Bypass)"
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-7",
+    "diffs": {
+      "name": {
+        "truth": "Bypass",
+        "pnp": "Safeguard (Bypass)"
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-8",
+    "diffs": {
+      "name": {
+        "truth": "Bypass",
+        "pnp": "Safeguard (Bypass)"
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-9",
+    "diffs": {
+      "description": {
+        "truth": "PROTEÇÃO DE ESCOPO (uso único): anula os Event Cards Duplicate Report!, Out of Scope! e DNS Hijack! direcionados a você. Não protege contra PATCH DEPLOYED!.",
+        "pnp": "PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!."
+      }
+    }
+  },
+  {
+    "id": "defuse-deck-10",
+    "diffs": {
+      "description": {
+        "truth": "PROTEÇÃO DE ESCOPO (uso único): anula os Event Cards Duplicate Report!, Out of Scope! e DNS Hijack! direcionados a você. Não protege contra PATCH DEPLOYED!.",
+        "pnp": "PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!."
+      }
+    }
+  }
+]

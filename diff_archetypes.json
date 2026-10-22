@@ -1,0 +1,44 @@
+[
+  {
+    "id": "n00b",
+    "playstyle": {
+      "truth": "Garimpeiro de Ferramentas — a cada Report bem-sucedido, em vez de comprar a Tool do topo, OLHE as 3 primeiras do Tool Deck e ESCOLHA 1.",
+      "pnp": "Garimpeiro de Ferramentas: após cada Report bem-sucedido, olho as 3 primeiras cartas do Tool Deck e escolho 1."
+    }
+  },
+  {
+    "id": "old-guard",
+    "playstyle": {
+      "truth": "Veterano de C/ASM — limite de mão 9 cartas e +$500 por cada carta Épica ou Lendária no Report.",
+      "pnp": "Especialista Sênior: cada carta Épica ou Lendária incluída no Report vale +$500 extra no payout."
+    }
+  },
+  {
+    "id": "bug-hunter",
+    "playstyle": {
+      "truth": "Caçador em Escala — só reporta vulnerabilidades Comum e Incomum; cada carta além da primeira no mesmo Report soma +$500 ao payout.",
+      "pnp": "Volume Attack: cada carta além da primeira no mesmo Report soma +$500 ao payout.\\nRestrito a vulnerabilidades Comum e Incomum."
+    }
+  },
+  {
+    "id": "social-engineer",
+    "playstyle": {
+      "truth": "Caos Redirecionado (uma vez por rodada) — quando um Event Card maléfico for ativado CONTRA você (ou POR você), escolha outro jogador válido para sofrer o efeito no lugar. Eventos de alvo \"Todos os Jogadores\" e eventos com imunidade declarada não são redirecionáveis.",
+      "pnp": "Caos Redirecionado (uma vez por RODADA): quando um Event Card maléfico for ativado contra mim (ou por mim), escolho outro jogador válido para sofrer o efeito no lugar.\\nEventos com alvo \"Todos os Jogadores\" e eventos com imunidade declarada não são redirecionáveis."
+    }
+  },
+  {
+    "id": "red-teamer",
+    "playstyle": {
+      "truth": "Sem Limites: Operador Ofensivo — ignora as restrições de escopo dos programas; recebe -30% em todos os payouts (aplica a Regra de Arredondamento).",
+      "pnp": "Sem Limites: ignoro as restrições de escopo dos programas e posso explorar qualquer vulnerabilidade em qualquer alvo.\\nRecebo -30% em todos os payouts (aplica a Regra de Arredondamento)."
+    }
+  },
+  {
+    "id": "pentester",
+    "playstyle": {
+      "truth": "Auditor Metódico — imune a Duplicate Report! e Triage Delay!.",
+      "pnp": "Auditor Metódico: imune a Duplicate Report! e a Triage Delay!."
+    }
+  }
+]

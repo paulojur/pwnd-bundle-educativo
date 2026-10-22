@@ -2,535 +2,491 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PWND! — Quick Rules Cards (80/20)</title>
-    <style>
-        :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --text-main: #c9d1d9;
-            --accent-green: #39d353;
-            --accent-orange: #f0883e;
-            --accent-purple: #c084fc;
-            --accent-red: #f85149;
-            --accent-blue: #58a6ff;
-            --border-color: #30363d;
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWNED! - Quick Rules V1.3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-main);
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+  <style>
+    /* ── Tela ─────────────────────────────────────────────── */
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --green: #39d353;
+      --orange: #f0883e;
+      --red: #f85149;
+      --blue: #58a6ff;
+      --purple: #c084fc;
+      --text: #c9d1d9;
+      --white: #ffffff;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
 
-        @media (max-width: 600px) {
-            body {
-                padding: 20px 10px;
-            }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-            h1 {
-                font-size: 24px;
-            }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
 
-            .print-btn {
-                width: 100%;
-                text-align: center;
-            }
-        }
+    .screen-header {
+      text-align: center;
+    }
 
-        h1 {
-            color: var(--accent-green);
-            font-family: var(--font-mono);
-            margin-bottom: 30px;
-            text-align: center;
-        }
+    .screen-header h1 {
+      font-family: var(--mono);
+      color: var(--green);
+      font-size: 26px;
+      letter-spacing: 1px;
+    }
 
-        .print-btn {
-            background-color: var(--accent-green);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            font-weight: bold;
-            font-family: var(--font-mono);
-            cursor: pointer;
-            border-radius: 4px;
-            margin-bottom: 40px;
-            font-size: 16px;
-        }
+    .screen-header p {
+      font-size: 13px;
+      color: #6e7681;
+      margin-top: 4px;
+    }
 
-        .print-btn:hover {
-            background-color: #2ea043;
-        }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            width: 100%;
-        }
+    .btn {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: bold;
+      padding: 9px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+    }
 
-        .card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            width: 100%;
-            max-width: 330px;
-            aspect-ratio: 63 / 88;
-            height: auto;
-            box-sizing: border-box;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            position: relative;
-            overflow: hidden;
-            margin: 0 auto;
-        }
+    .btn-print {
+      background: var(--green);
+      color: #000;
+    }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue), var(--accent-green));
-        }
+    .btn-game {
+      background: var(--orange);
+      color: #000;
+      box-shadow: 0 0 12px rgba(240, 136, 62, .4);
+    }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-        }
+    .btn-print:hover {
+      background: #2ea043;
+    }
 
-        .card-title {
-            font-family: var(--font-mono);
-            font-size: 15px;
-            font-weight: 800;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    /* ── Folha A4 ─────────────────────────────────────────── */
+    .sheet {
+      width: 210mm;
+      min-height: 260mm;
+      /* deixa respirar na tela; corta no print */
+      background: #fff;
+      color: #111;
+      border-radius: 6px;
+      padding: 12mm 14mm 10mm;
+      font-family: var(--sans);
+      font-size: 11.5px;
+      line-height: 1.4;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .6);
+    }
 
-        .card-number {
-            font-family: var(--font-mono);
-            font-size: 14px;
-            color: var(--accent-purple);
-            font-weight: bold;
-            background: rgba(192, 132, 252, 0.1);
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
+    /* cabeçalho da folha */
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 2.5px solid #111;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
 
-        .card-body {
-            font-size: 12.5px;
-            line-height: 1.35;
-            flex-grow: 1;
-        }
+    .sheet-head .title {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #111;
+    }
 
-        .card-body p {
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
+    .sheet-head .sub {
+      font-size: 11px;
+      color: #555;
+    }
 
-        .card-body h4 {
-            color: var(--accent-blue);
-            margin: 8px 0 4px 0;
-            font-size: 12px;
-        }
+    /* grid dos blocos */
+    .blocks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px 12px;
+    }
 
-        .card-body ul,
-        .card-body ol {
-            margin: 0;
-            padding-left: 16px;
-            margin-bottom: 8px;
-        }
+    /* bloco individual */
+    .block {
+      border: 1.2px solid #ccc;
+      border-radius: 5px;
+      padding: 6px 8px;
+    }
 
-        .card-body li {
-            margin-bottom: 4px;
-        }
+    .block.full {
+      grid-column: 1 / -1;
+    }
 
-        .dense-text {
-            font-size: 11.5px;
-            line-height: 1.25;
-        }
+    .block-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 3px;
+    }
 
-        .dense-text h4 {
-            margin: 6px 0 2px 0;
-            font-size: 11.5px;
-        }
+    .block h2 {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 4px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 2px;
+    }
 
-        .dense-text ul {
-            padding-left: 12px;
-        }
+    .block ul {
+      list-style: none;
+      padding: 0;
+    }
 
-        .dense-text li {
-            margin-bottom: 2px;
-        }
+    .block ul li {
+      padding-left: 10px;
+      position: relative;
+      margin-bottom: 2px;
+    }
 
-        .highlight {
-            color: var(--accent-orange);
-            font-weight: bold;
-        }
+    .block ul li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: #888;
+    }
 
-        .alert-red {
-            color: var(--accent-red);
-            font-weight: bold;
-        }
+    .block p {
+      margin-bottom: 3px;
+    }
 
-        .alert-green {
-            color: var(--accent-green);
-            font-weight: bold;
-        }
+    strong {
+      font-weight: 700;
+      color: #111;
+    }
 
-        .card-footer {
-            font-family: var(--font-mono);
-            font-size: 9px;
-            color: #6e7681;
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-            padding-top: 10px;
-            margin-top: auto;
-        }
+    .em {
+      font-style: italic;
+      color: #444;
+    }
 
-        @media print {
-            body {
-                background: none;
-                padding: 0;
-            }
+    /* cores semânticas */
+    .red {
+      color: #b91c1c;
+      font-weight: 700;
+    }
 
-            .print-btn,
-            .start-btn,
-            h1 {
-                display: none;
-            }
+    .grn {
+      color: #15803d;
+      font-weight: 700;
+    }
 
-            .cards-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-            }
+    .orn {
+      color: #c2410c;
+      font-weight: 700;
+    }
 
-            .card {
-                width: 63mm;
-                height: 88mm;
-                padding: 4mm;
-                border: 1px solid #000;
-                border-radius: 3mm;
-                box-shadow: none;
-                break-inside: avoid;
-            }
+    .blu {
+      color: #1d4ed8;
+      font-weight: 700;
+    }
 
-            .card::before {
-                display: none;
-            }
+    /* tabela de limiares */
+    .patch-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 3px;
+    }
 
-            .card-title {
-                font-size: 9pt;
-                margin: 0;
-            }
+    .patch-table th {
+      background: #f0f0f0;
+      font-weight: 700;
+      padding: 2px 5px;
+      text-align: left;
+      border: 1px solid #ccc;
+    }
 
-            .card-number {
-                font-size: 7pt;
-                padding: 2px 4px;
-            }
+    .patch-table td {
+      padding: 2px 5px;
+      border: 1px solid #e0e0e0;
+    }
 
-            .card-body {
-                font-size: 7.5pt;
-                line-height: 1.2;
-            }
+    /* sequência numerada */
+    .seq {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 2px;
+    }
 
-            .card-body h4 {
-                font-size: 8pt;
-                margin: 6px 0 2px 0;
-            }
+    .seq-item {
+      display: flex;
+      gap: 5px;
+      align-items: baseline;
+    }
 
-            .card-body ul,
-            .card-body ol {
-                padding-left: 12px;
-                margin-bottom: 6px;
-            }
+    .seq-num {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #555;
+      flex-shrink: 0;
+      width: 14px;
+    }
 
-            .card-body li {
-                margin-bottom: 3px;
-            }
+    /* rodapé da folha */
+    .sheet-foot {
+      border-top: 1px solid #ccc;
+      margin-top: 8px;
+      padding-top: 4px;
+      font-size: 9.5px;
+      color: #888;
+      text-align: center;
+      font-family: var(--mono);
+    }
 
-            .dense-text {
-                font-size: 7.2pt;
-                line-height: 1.15;
-            }
+    /* ── PRINT ────────────────────────────────────────────── */
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+        display: block;
+      }
 
-            .dense-text h4 {
-                font-size: 7.5pt;
-                margin: 4px 0 2px 0;
-            }
+      .screen-header,
+      .btn-row {
+        display: none !important;
+      }
 
-            .dense-text li {
-                margin-bottom: 1px;
-            }
+      .sheet {
+        width: 210mm;
+        min-height: 0;
+        height: auto;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 10mm 12mm 8mm;
+        font-size: 11px;
+      }
 
-            .card-header {
-                padding-bottom: 4px;
-                margin-bottom: 6px;
-            }
-
-            .card-footer {
-                font-size: 5pt;
-                padding-top: 4px;
-                margin-top: 6px;
-                border-top: 1px solid #ccc;
-            }
-        }
-    </style>
+      .block {
+        border-color: #bbb;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <h1>PWND! — Quick Rules Cards</h1>
-    <div style="display: flex; gap: 15px; margin-bottom: 40px;">
-        <button id="print-btn" class="print-btn" style="margin-bottom: 0;" onclick="window.print()">🖨️ Imprimir Cartas
-            (A4)</button>
-        <a href="/game.html?autoStart=true" class="start-btn"
-            style="background-color: var(--accent-orange); color: #000; padding: 10px 20px; font-weight: bold; font-family: var(--font-mono); text-decoration: none; border-radius: 4px; font-size: 16px; box-shadow: 0 0 10px rgba(240, 136, 62, 0.5);">🚀
-            Começar Jogo</a>
+  <!-- ── Cabeçalho de tela (some no print) ─────────────── -->
+  <header class="screen-header">
+    <h1>PWNED! - Quick Rules V1.3</h1>
+    <p>Consulte em 30 segundos durante a partida · 1 página A4</p>
+  </header>
+
+  <div class="btn-row">
+    <button id="print-btn" class="btn btn-print" onclick="window.print()">🖨️ Imprimir (A4)</button>
+    <a href="/game.html?autoStart=true" class="btn btn-game">🚀 Começar Jogo</a>
+  </div>
+
+  <script>
+    // Ocultar botão de impressão fora do localhost
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      document.getElementById('print-btn').style.display = 'none';
+    }
+  </script>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOLHA A4
+  ══════════════════════════════════════════════════════════ -->
+  <div class="sheet" role="main" aria-label="Quick Rules PWNED! V1.3">
+
+    <div class="sheet-head">
+      <span class="title">PWNED! - Quick Rules</span>
+      <span class="sub">V1.4 &nbsp;|&nbsp; 👥 2 a 6 Jogadores &nbsp;|&nbsp; ⏳ 45–90 min &nbsp;|&nbsp; 8 Rodadas</span>
     </div>
 
-    <script>
-        // Ocultar botão de impressão em produção
-        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-            document.getElementById('print-btn').style.display = 'none';
-        }
-    </script>
+    <div class="blocks">
 
-    <div class="cards-grid">
+      <!-- ① OBJETIVO & VITÓRIA -->
+      <div class="block">
+        <div class="block-label">Bloco 1</div>
+        <h2>🎯 OBJETIVO & VITÓRIA</h2>
+        <ul>
+          <li><span class="grn">$40.000 na Bounty Track</span> → <strong>vitória instantânea</strong>!</li>
+          <li><strong>Fim da 8ª rodada:</strong> maior saldo vence (cada Token de Reputação 🐝 soma <strong>+$500</strong> · cada
+            Token de Alerta 🐞 desconta <strong>-$500</strong>).</li>
+          <li><strong>Arredondamento:</strong> cálculos fora da grade arredondam pro $500 mais próximo (empate vai pra
+            baixo).</li>
+        </ul>
+      </div>
 
-        <!-- CARD 1 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Objetivo & Setup</div>
-                <div class="card-number">01 / 09</div>
-            </div>
-            <div class="card-body">
-                <p><strong>Objetivo:</strong> O primeiro pesquisador a alcançar $40.000 na Bounty Track vence a partida.
-                </p>
-                <h4>SETUP (4 PASSOS)</h4>
-                <ol>
-                    <li>Distribua 1 Arquétipo e <strong>5 cartas</strong> do Deck principal para a mão de cada jogador +
-                        1 carta Bypass garantida, que deve ser posicionada no Slot Safeguard do Player Mat (não conta
-                        como carta de mão).</li>
-                    <li>Abra 3 cartas de Programa no Market.</li>
-                    <li>Cada um escolhe um Active Program e põe no Player Mat.</li>
-                    <li>Posicione o Bypass inicial no Slot Safeguard.</li>
-                </ol>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
+      <!-- ② SETUP -->
+      <div class="block">
+        <div class="block-label">Bloco 2</div>
+        <h2>⚙️ SETUP RÁPIDO</h2>
+        <ul>
+          <li><strong>Sua Mão:</strong> 5 cartas do Main Deck + 1 Bypass no slot SAFEGUARD (2 Bypass + 2 CVE embaralhadas no Main Deck; excedentes na caixa). The Old Guard comporta até 8 cartas.</li>
+          <li><strong>Decks:</strong> Main Deck (84) · Tool Deck (36) · Event Deck (24).</li>
+          <li><strong>Mesa:</strong> 3 programas abertos no mercado · 18 Tokens de Reputação (🐝) · 18 Tokens de Alerta (🐞) · 3 dados D6.</li>
+        </ul>
+      </div>
+
+      <!-- ③ SEU TURNO - 3 AÇÕES -->
+      <div class="block full">
+        <div class="block-label">Bloco 3</div>
+        <h2>🔄 SEU TURNO - 3 AÇÕES</h2>
+        <ul>
+          <li><strong>RECON (1 ação):</strong> compre 2 cartas do Main Deck <span class="em">OU</span> troque de
+            programa (descarta os exploits da mesa).</li>
+          <li><strong>EXPLOIT (1 ação):</strong> baixe 1 vulnerabilidade do escopo do programa ativo (badges de classe).
+            Limite: 3 na mesa.</li>
+          <li><strong>REPORT (2 ações - sempre a última):</strong> declare o envio, faça o Patch Check (Bloco 4) e
+            receba o Payout! O turno encerra imediatamente.</li>
+        </ul>
+        <p style="margin-top:4px;"><strong>⚡ AÇÃO LIVRE:</strong> instalar Tool nos slots (descarte 1 carta da mão · máx.
+          3 instaladas). Ativas usam 1x e descartam; Passivas são contínuas.</p>
+      </div>
+
+      <!-- ④ DADOS - PATCH CHECK -->
+      <div class="block">
+        <div class="block-label">Bloco 4</div>
+        <h2>🎲 O DADO (PATCH CHECK)</h2>
+        <ul>
+          <li><strong>Reportou no turno (NOISY):</strong> role <strong>2D6 e some</strong> antes do payout.</li>
+          <li><strong>Só desceu vulns (STEALTH):</strong> role <strong>3D6 e descarte o maior</strong> (se houver vuln
+            <span class="red">[NOISY]</span> na mesa, força 2D6).
+          </li>
+          <li>Zona vazia = <span class="em">nenhum check.</span></li>
+          <li><strong>Teste:</strong> soma igual ou maior ao limiar = <span class="red">PATCH DEPLOYED!</span> Menor =
+            <strong>Sucesso!</strong>
+          </li>
+        </ul>
+        <table class="patch-table">
+          <thead>
+            <tr>
+              <th>Velocidade</th>
+              <th>Limiar (2D6)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lenta</td>
+              <td>10+</td>
+            </tr>
+            <tr>
+              <td>Moderada</td>
+              <td>9+</td>
+            </tr>
+            <tr>
+              <td>Rápida</td>
+              <td>8+</td>
+            </tr>
+            <tr>
+              <td>Extrema</td>
+              <td>7+</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ⑤ PATCH DEPLOYED! -->
+      <div class="block">
+        <div class="block-label">Bloco 5</div>
+        <h2>💥 SE FALHAR (PATCH DEPLOYED!)</h2>
+        <ul>
+          <li>Você <span class="red">PERDE</span> todos os exploits da mesa e o programa ativo.</li>
+          <li>Receba <strong>1 Token de Alerta (🐞)</strong> + compre <strong>1 carta de consolação</strong> do Main Deck.</li>
+          <li><strong>Bypass (Safeguard):</strong> descarte para salvar exploits e programa, concluindo o Report (recebe
+            1 Alerta, mas sem Tool nem consolação).</li>
+          <li><strong>Alarme Crítico (2 Alertas):</strong> ao acumular 2 Tokens de Alerta, perca <span
+              class="red">−$2.000</span> na Bounty Track e descarte ambos.</li>
+          <li><strong>Modo Furtivo:</strong> passou o turno sem Report, sem Patch e com a Zona de Exploits vazia → <strong>remove
+              1 Token de Alerta.</strong></li>
+        </ul>
+      </div>
+
+      <!-- ⑥ REPORT BEM-SUCEDIDO -->
+      <div class="block full">
+        <div class="block-label">Bloco 6</div>
+        <h2>✅ SE PASSAR (REPORT BEM-SUCEDIDO) - sempre nesta ordem</h2>
+        <div class="seq">
+          <div class="seq-item"><span class="seq-num">1)</span><span><strong>Payout:</strong> receba na Bounty Track o
+              valor das vulns + bônus de programa (+1 Token de Reputação se tiver Épica ou Lendária).</span></div>
+          <div class="seq-item"><span class="seq-num">2)</span><span><strong>Ferramenta:</strong> compre <strong>1 Tool</strong> para a mão.</span></div>
+          <div class="seq-item"><span class="seq-num">3)</span><span><strong>Evento de Caos:</strong> compre <strong>1
+                Event Card</strong> e <span class="red">ATIVE-A IMEDIATAMENTE.</span></span></div>
+          <div class="seq-item"><span class="seq-num">4)</span><span><strong>Reset:</strong> descarte as vulns
+              reportadas e pegue <strong>1 novo programa do mercado.</strong></span></div>
         </div>
+      </div>
 
-        <!-- CARD 2 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">O Turno</div>
-                <div class="card-number">02 / 09</div>
-            </div>
-            <div class="card-body">
-                <h4>ESTRUTURA DO TURNO</h4>
-                <ol>
-                    <li><strong>Ação Principal:</strong> escolha exatamente uma. <strong>Recon</strong> (comprar cartas
-                        ou trocar de programa), <strong>Exploit</strong> (alocar 1 vulnerabilidade) ou
-                        <strong>Report</strong> (submeter vulnerabilidades).
-                    </li>
-                    <li><strong>Custo do Sucesso:</strong> se o teu Report foi aprovado, receba o payout e compre 1
-                        evento (obrigatório).</li>
-                    <li><strong>Janela de Caos (Opcional):</strong> jogue eventos guardados do teu mat.</li>
-                    <li><strong>Patch Speed Check:</strong> se houver vulnerabilidades na mesa ao fim do turno, role
-                        os dados (detalhes no Card 06). Se o patch disparar, tu sofres o Patch Deployed!</li>
-                    <li><strong>Fim:</strong> passa a vez.</li>
-                </ol>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
-        </div>
+      <!-- ⑦ TOKENS: REPUTAÇÃO & ALERTA -->
+      <div class="block">
+        <div class="block-label">Bloco 7</div>
+        <h2>🐝 REPUTAÇÃO & 🐞 ALERTA</h2>
+        <ul>
+          <li><strong>Reputação (+ Prestígio):</strong> ganhe em Reports Épica/Lendária ou poderes. Gaste <strong>2
+              Tokens</strong> para rerrolar 1 dado. Cada Reputação soma <strong>+$500</strong> no fim do jogo.</li>
+          <li><strong>Alerta (- Risco):</strong> ganhe ao tomar Patch. A cada 2 Alertas perde
+            <strong>−$2.000</strong>. Cada Alerta restante no fim desconta <strong>-$500</strong> no saldo final.
+          </li>
+        </ul>
+      </div>
 
-        <!-- CARD 3 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Recon & Exploit</div>
-                <div class="card-number">03 / 09</div>
-            </div>
-            <div class="card-body">
-                <h4>AÇÕES PRINCIPAIS (Escolha 1)</h4>
-                <ul>
-                    <li><strong>RECON:</strong> (A) Saque 2 cartas do Deck. No fim do turno, se passar de 6 (9 Old
-                        Guard), descarte o excesso. OU (B) Troque de Alvo (descarte o alvo atual e as vulnerabilidades
-                        da tua Zona de Exploits e pegue um novo programa do Market).</li>
-                    <li><strong>EXPLOIT:</strong> Jogue 1 vulnerabilidade na Zona. <em>A cor do selo da vulnerabilidade
-                            precisa estar na régua de cores do programa!</em></li>
-                </ul>
-                <h4>FERRAMENTAS (Ação Livre)</h4>
-                <p>Instale Tools descartando 1 carta qualquer da mão (não precisa ser uma vulnerabilidade).
-                    <em>Ativas:</em> Uso imediato (descarte após o uso).
-                    <em>Passivas:</em> Efeito contínuo.
-                </p>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
-        </div>
+      <!-- ⑧ REGRAS DE BOLSO -->
+      <div class="block">
+        <div class="block-label">Bloco 8</div>
+        <h2>⚖️ REGRAS DE BOLSO</h2>
+        <ul>
+          <li><strong>Roubo de Rival:</strong> Report com 2 Lendárias ou 3 Épicas rouba <strong>1 Token de Reputação</strong> de um
+            oponente (se houver).</li>
+          <li><strong>Modo Duelo (2 jogadores):</strong> ao concluir um Report, pode descartar até 2 programas do mercado e repor antes de escolher o novo.</li>
+          <li><strong>Safeguards Extras:</strong> obtidas durante a partida acumulam no tabuleiro sem limite de
+            instalação.</li>
+          <li><strong>Seu Poder:</strong> consulte sua carta de Arquétipo antes de cada turno.</li>
+        </ul>
+      </div>
 
-        <!-- CARD 4 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Report & Payout</div>
-                <div class="card-number">04 / 09</div>
-            </div>
-            <div class="card-body">
-                <h4>AÇÃO PRINCIPAL: REPORT</h4>
-                <p>Entregue as vulnerabilidades da Zona! <strong>(Ronda 5+ OU Tiers Alto/Crítico exigem combo de 2+
-                        vulnerabilidades)</strong>.
-                </p>
-                <h4>PAYOUT (Soma Direta)</h4>
-                <p>Valor da vulnerabilidade + Bónus do Prog.</p>
-                <ul>
-                    <li>Some o payout ao saldo da Bounty Track.</li>
-                    <li><em>Ex:</em> Rara ($4k) + Prog ($2.5k) = $6.500 no saldo!</li>
-                </ul>
-                <p><span class="alert-red">Duplicate Report:</span> Se alguém já reportou o mesmo bug exato, teu payout
-                    cai para apenas 10%!</p>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
-        </div>
+    </div><!-- /blocks -->
 
-        <!-- CARD 5 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Eventos & Caos</div>
-                <div class="card-number">05 / 09</div>
-            </div>
-            <div class="card-body">
-                <h4>CUSTO DO SUCESSO</h4>
-                <p>Sempre que um Report for aprovado, tu deves comprar 1 evento antes de terminar o turno. Os eventos
-                    podem ser de dois tipos:</p>
-                <ul>
-                    <li><strong>Imediato:</strong> Resolve na hora da compra.</li>
-                    <li><strong>Guardável:</strong> Resolva na hora ou guarde na tua área do mat (limite 2). Só podem
-                        ser jogados na tua <em>Janela de Caos</em>. Guardar nunca anula a obrigação da compra!</li>
-                </ul>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
-        </div>
-
-        <!-- CARD 6 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Patch Speed Check</div>
-                <div class="card-number">06 / 09</div>
-            </div>
-            <div class="card-body">
-                <p>O patch é o relógio do programa: ele só dispara se tu deixares vulnerabilidades na mesa sem reportar
-                    ao fim do turno.</p>
-                <p><strong>Stealth Mode:</strong> no fim do turno, se houver vulnerabilidades na mesa não reportadas,
-                    role 2 D8 e fique com o menor resultado. Se ele acionar o limiar do programa, sofre o Patch
-                    Deployed!</p>
-                <p><strong>Noisy Report (exceção):</strong> role 1 D8 no momento do Report, antes de esvaziar a Zona.
-                    <span class="alert-red">Se falhar, o Report não pontua e tu sofres o Patch Deployed!</span>
-                </p>
-                <p><strong>Escapando do patch:</strong> o Bypass (ativo no Slot Safeguard) anula o Patch Deployed 100%.
-                    Alguns arquétipos (Red
-                    Teamer e Pentester) só tomam patch tirando 8.</p>
-
-                <h4>LIMIARES DE PATCH</h4>
-                <p>Lenta (8) • Moderada (7-8) • Rápida (6-8) • Extrema (5-8)</p>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
-        </div>
-
-        <!-- CARD 7 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Safeguards & Penalidades</div>
-                <div class="card-number">07 / 09</div>
-            </div>
-            <div class="card-body">
-                <h4>SAFEGUARDS (Reação)</h4>
-                <ul>
-                    <li><strong>Bypass:</strong> Anula o Patch Deployed 100%.</li>
-                    <li><strong>CVE Protection:</strong> Anula Duplicate Report/DNS Hijack/Out of Scope.</li>
-                </ul>
-                <h4>PATCH DEPLOYED! (Penalidade)</h4>
-                <p>Perde as vulnerabilidades da Zona, perde o Programa e toma recuo (piso $0):</p>
-                <ul>
-                    <li><span class="alert-green">Verde:</span> recua $1.500 | <span class="highlight">Amarela:</span>
-                        recua $3.000</li>
-                    <li><span class="highlight" style="color: #c2410c;">Laranja:</span> recua $4.500 | <span
-                            class="alert-red">Vermelha:</span> recua $6.000</li>
-                </ul>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
-        </div>
-
-        <!-- CARD 8 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Arquétipos</div>
-                <div class="card-number">08 / 09</div>
-            </div>
-            <div class="card-body dense-text">
-                <h4>PODERES ASSIMÉTRICOS</h4>
-                <ul>
-                    <li><strong>n00b:</strong> após Report, olhe as 3 primeiras cartas do deck central e escolha 1 Tool
-                        se
-                        houver. <strong>Passiva</strong> instala na hora (pode descartar instaladas).
-                        <strong>Ativa</strong>
-                        usa na hora, descartando após o uso. Não pode guardar para depois. Se não houver Tool, baralha
-                        as 3 de volta.
-                    </li>
-                    <li><strong>Old Guard:</strong> limite de mão de 9 cartas (os demais jogadores, 6).</li>
-                    <li><strong>Bug Hunter:</strong> só reporta vulnerabilidades Comum e Incomum. Cada carta além da
-                        primeira no mesmo Report soma +$500 ao payout.</li>
-                    <li><strong>Social Engineer:</strong> na Recon, pode comprar 1 carta de Evento no lugar das 2
-                        cartas. Pode redirecionar eventos que o mire. A partir da Ronda 7, não compra mais eventos, mas
-                        pode redirecionar os que
-                        o miram.</li>
-                    <li><strong>Red Teamer:</strong> imune a escopo, payout -30%, só toma Patch tirando 8.</li>
-                    <li><strong>Pentester:</strong> imune a Duplicate Report e Triage Delay, só toma Patch tirando 8.
-                    </li>
-                </ul>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
-        </div>
-
-        <!-- CARD 9 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Ref. Rápida & Vitória</div>
-                <div class="card-number">09 / 09</div>
-            </div>
-            <div class="card-body">
-                <h4 style="color:var(--accent-green)">VITÓRIA IMEDIATA</h4>
-                <p><strong>Atingiu $40.000 (ou mais), venceu!</strong> Ao cruzar o limite de uma Zona, anuncie a cor em
-                    voz alta.</p>
-
-                <h4>RECOMPENSAS-BASE (VULNS)</h4>
-                <ul>
-                    <li>Cinza (Comum): +$1.500</li>
-                    <li>🟢 Incomum: +$2.500</li>
-                    <li>🔵 Rara: +$4.000</li>
-                    <li>🟣 Épica: +$5.000</li>
-                    <li>🟡 Lendária: +$6.000</li>
-                </ul>
-            </div>
-            <div class="card-footer">QUICK RULES (80/20) • PWND!</div>
-        </div>
-
+    <div class="sheet-foot">
+      PWNED! Quick Rules V1.4 &nbsp;·&nbsp; Manual de Referência: pwned-manual-sucesso-v1.html &nbsp;·&nbsp; Golpe 22
     </div>
+
+  </div><!-- /sheet -->
+
 </body>
 
 </html>

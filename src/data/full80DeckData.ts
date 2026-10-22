@@ -12,8 +12,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 25,
     rarity: 'Common',
     icon: '🗣️',
-    simpleDescription: 'Você cochicha um boato falso no campo de texto e o banco de dados acredita, entregando a lista de senhas.',
-    ptDescription: 'Tu cochichas um boato falso no campo de texto e a base de dados acredita, entregando a lista de palavras-passe.'
+    simpleDescription: "Você cochicha um boato falso no campo de texto e o banco de dados acredita, entregando a lista de senhas.",
+    ptDescription: "Tu cochichas um boato falso no campo de texto e a base de dados acredita, entregando a lista de palavras-passe."
   },
   {
     id: 'inj-2',
@@ -24,8 +24,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 45,
     rarity: 'Rare',
     icon: '👵',
-    simpleDescription: 'OR 1=1 — Entrada de banco de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.',
-    ptDescription: 'OR 1=1 — Entrada de base de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.'
+    simpleDescription: "OR 1=1 — Entrada de banco de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.",
+    ptDescription: "OR 1=1 — Entrada de base de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck."
   },
   {
     id: 'inj-3',
@@ -36,8 +36,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '💻',
-    simpleDescription: 'Insere comandos de sistema operacional em campos de formulários desprotegidos.',
-    ptDescription: 'Insere comandos de sistema operacional em campos de formulários desprotegidos.'
+    simpleDescription: "Insere comandos de sistema operacional em campos de formulários desprotegidos.",
+    ptDescription: "Insere comandos de sistema operacional em campos de formulários desprotegidos."
   },
   {
     id: 'inj-4',
@@ -48,8 +48,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 25,
     rarity: 'Common',
     icon: '📜',
-    simpleDescription: 'O parser XML lê arquivos do servidor local ao processar notas fiscais digitais.',
-    ptDescription: 'O parser XML lê ficheiros do servidor local ao processar notas fiscais digitais.'
+    simpleDescription: "O parser XML lê arquivos do servidor local ao processar notas fiscais digitais.",
+    ptDescription: "O parser XML lê ficheiros do servidor local ao processar notas fiscais digitais."
   },
   {
     id: 'inj-5',
@@ -60,8 +60,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 22,
     rarity: 'Common',
     icon: '🎨',
-    simpleDescription: 'Comandos executados através de variáveis no motor de templates de e-mail.',
-    ptDescription: 'Comandos executados através de variáveis no motor de templates de e-mail.'
+    simpleDescription: "Comandos executados através de variáveis no motor de templates de e-mail.",
+    ptDescription: "Comandos executados através de variáveis no motor de templates de e-mail."
   },
   {
     id: 'inj-6',
@@ -72,8 +72,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 18,
     rarity: 'Common',
     icon: '📑',
-    simpleDescription: 'Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.',
-    ptDescription: 'Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.'
+    simpleDescription: "Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.",
+    ptDescription: "Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário."
   },
   {
     id: 'inj-7',
@@ -84,8 +84,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 30,
     rarity: 'Uncommon',
     icon: '🍃',
-    simpleDescription: 'Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.',
-    ptDescription: 'Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.'
+    simpleDescription: "Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.",
+    ptDescription: "Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário."
   },
   {
     id: 'inj-8',
@@ -96,8 +96,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 28,
     rarity: 'Uncommon',
     icon: '🗄️',
-    simpleDescription: 'Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.',
-    ptDescription: 'Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.'
+    simpleDescription: "Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.",
+    ptDescription: "Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas."
   },
   {
     id: 'inj-9',
@@ -108,8 +108,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 26,
     rarity: 'Uncommon',
     icon: '🔍',
-    simpleDescription: 'Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.',
-    ptDescription: 'Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.'
+    simpleDescription: "Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.",
+    ptDescription: "Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa."
   },
   {
     id: 'inj-10',
@@ -120,8 +120,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 32,
     rarity: 'Uncommon',
     icon: '🌲',
-    simpleDescription: 'Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.',
-    ptDescription: 'Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.'
+    simpleDescription: "Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.",
+    ptDescription: "Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard."
   },
   {
     id: 'inj-11',
@@ -132,8 +132,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 40,
     rarity: 'Rare',
     icon: '⏱️',
-    simpleDescription: 'Força o banco a pausar por 10 segundos para extrair caracteres de senhas hash.',
-    ptDescription: 'Força o banco a pausar por 10 segundos para extrair caracteres de palavras-passe hash.'
+    simpleDescription: "Força o banco a pausar por 10 segundos para extrair caracteres de senhas hash.",
+    ptDescription: "Força o banco a pausar por 10 segundos para extrair caracteres de palavras-passe hash."
   },
   {
     id: 'inj-12',
@@ -144,8 +144,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 38,
     rarity: 'Rare',
     icon: '⏳',
-    simpleDescription: 'Injeta payload no perfil do usuário que só é executado no relatório mensal do admin.',
-    ptDescription: 'Injeta payload no perfil do usuário que só é executado no relatório mensal do admin.'
+    simpleDescription: "CORINGA DE ESCOPO: Esta vulnerabilidade conta como dentro do escopo do seu programa ativo, mesmo que ele não permita a sua classe.",
+    ptDescription: "CORINGA DE ESCOPO: Esta vulnerabilidade conta como dentro do escopo do seu programa ativo, mesmo que ele não permita a sua classe."
   },
   {
     id: 'inj-13',
@@ -156,8 +156,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 50,
     rarity: 'Epic',
     icon: '🤖',
-    simpleDescription: 'Pipeline automatizado extrai a base de dados inteira com zero intervenção manual.',
-    ptDescription: 'Pipeline automatizado extrai a base de dados inteira com zero intervenção manual.'
+    simpleDescription: "[NOISY] BÔNUS CRÍTICO: Receba +$1.000 adicionais no payout deste Report.",
+    ptDescription: "[NOISY] BÔNUS CRÍTICO: Receba +$1.000 adicionais no payout deste Report."
   },
   {
     id: 'inj-14',
@@ -168,8 +168,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 48,
     rarity: 'Epic',
     icon: '⚙️',
-    simpleDescription: 'Injeta comandos no processador assíncrono de conversão de PDFs corporativos.',
-    ptDescription: 'Injeta comandos no processador assíncrono de conversão de PDFs corporativos.'
+    simpleDescription: "[NOISY] PROCESSO ZUMBI: Ao reportar com sucesso, compre 1 carta do Main Deck imediatamente.",
+    ptDescription: "[NOISY] PROCESSO ZUMBI: Ao reportar com sucesso, compra 1 carta do Main Deck imediatamente."
   },
   {
     id: 'inj-15',
@@ -180,8 +180,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 55,
     rarity: 'Legendary',
     icon: '💥',
-    simpleDescription: 'Acesso root à instância mestra do banco relacional de dados bancários.',
-    ptDescription: 'Acesso root à instância mestra do banco relacional de dados bancários.'
+    simpleDescription: "[NOISY] ESTOURO: Ao reportar com sucesso, o vazamento transborda: compre 2 cartas do Main Deck e force 1 oponente à escolha a descartar 1 carta da mão.",
+    ptDescription: "[NOISY] ESTOURO: Ao reportar com sucesso, o vazamento transborda: compre 2 cartas do Main Deck e force 1 oponente à escolha a descartar 1 carta da mão."
   },
   {
     id: 'inj-16',
@@ -192,8 +192,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '🔌',
-    simpleDescription: 'Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.',
-    ptDescription: 'Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.'
+    simpleDescription: "Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.",
+    ptDescription: "Carrega bibliotecas DLL maliciosas no caminho de execução do software legado."
   },
 
   // --- 2. BROKEN ACCESS CONTROL (14 CARTAS: 5 Common, 4 Uncommon, 3 Rare, 1 Epic, 1 Legendary) ---
@@ -206,8 +206,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '🚪',
-    simpleDescription: 'Você muda o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor.',
-    ptDescription: 'Tu mudas o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor.'
+    simpleDescription: "Você muda o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor.",
+    ptDescription: "Tu mudas o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do diretor."
   },
   {
     id: 'bac-2',
@@ -218,8 +218,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 25,
     rarity: 'Common',
     icon: '👑',
-    simpleDescription: 'Estagiário altera parâmetro de perfil no request e vira administrador do sistema.',
-    ptDescription: 'Estagiário altera parâmetro de perfil no request e vira administrador do sistema.'
+    simpleDescription: "Estagiário altera parâmetro de perfil no request e vira administrador do sistema.",
+    ptDescription: "Estagiário altera parâmetro de perfil no request e vira administrador do sistema."
   },
   {
     id: 'bac-3',
@@ -230,8 +230,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 22,
     rarity: 'Common',
     icon: '📁',
-    simpleDescription: 'Usa ../../../etc/passwd no parâmetro de imagem para baixar arquivos do servidor.',
-    ptDescription: 'Usa ../../../etc/passwd no parâmetro de imagem para baixar ficheiros do servidor.'
+    simpleDescription: "Usa ../../../etc/passwd no parâmetro de imagem para baixar arquivos do servidor.",
+    ptDescription: "Usa ../../../etc/passwd no parâmetro de imagem para baixar ficheiros do servidor."
   },
   {
     id: 'bac-4',
@@ -242,8 +242,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 18,
     rarity: 'Common',
     icon: '🌐',
-    simpleDescription: 'Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.',
-    ptDescription: 'Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.'
+    simpleDescription: "Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.",
+    ptDescription: "Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários."
   },
   {
     id: 'bac-5',
@@ -254,8 +254,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '📍',
-    simpleDescription: 'URLs de download de faturas em PDF expostas publicamente sem chave de checagem.',
-    ptDescription: 'URLs de download de faturas em PDF expostas publicamente sem chave de checagem.'
+    simpleDescription: "URLs de download de faturas em PDF expostas publicamente sem chave de checagem.",
+    ptDescription: "URLs de download de faturas em PDF expostas publicamente sem chave de checagem."
   },
   {
     id: 'bac-6',
@@ -266,8 +266,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 32,
     rarity: 'Uncommon',
     icon: '⚽',
-    simpleDescription: 'Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.',
-    ptDescription: 'Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.'
+    simpleDescription: "Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.",
+    ptDescription: "Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros."
   },
   {
     id: 'bac-7',
@@ -278,8 +278,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 30,
     rarity: 'Uncommon',
     icon: '🛠️',
-    simpleDescription: 'Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.',
-    ptDescription: 'Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.'
+    simpleDescription: "Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.",
+    ptDescription: "Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão."
   },
   {
     id: 'bac-8',
@@ -290,8 +290,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 35,
     rarity: 'Uncommon',
     icon: '🏢',
-    simpleDescription: 'Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.',
-    ptDescription: 'Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.'
+    simpleDescription: "Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.",
+    ptDescription: "Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas."
   },
   {
     id: 'bac-9',
@@ -302,8 +302,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 28,
     rarity: 'Uncommon',
     icon: '🔑',
-    simpleDescription: 'Rota oculta /management/dashboard disponível sem exigência de login.',
-    ptDescription: 'Rota oculta /management/dashboard disponível sem exigência de login.'
+    simpleDescription: "Rota oculta /management/dashboard disponível sem exigência de login.",
+    ptDescription: "Rota oculta /management/dashboard disponível sem exigência de login."
   },
   {
     id: 'bac-10',
@@ -314,8 +314,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 42,
     rarity: 'Rare',
     icon: '📜',
-    simpleDescription: 'Altera o campo "role": "user" para "role": "superadmin" no token assinado fracamente.',
-    ptDescription: 'Altera o campo "role": "user" para "role": "superadmin" no token assinado fracamente.'
+    simpleDescription: "Altera o campo \"role\": \"user\" para \"role\": \"superadmin\" no token assinado fracamente.",
+    ptDescription: "Altera o campo \"role\": \"user\" para \"role\": \"superadmin\" no token assinado fracamente."
   },
   {
     id: 'bac-11',
@@ -326,8 +326,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 38,
     rarity: 'Rare',
     icon: '📦',
-    simpleDescription: 'Envia "is_verified": true no formulário de cadastro e ganha selo de conta oficial.',
-    ptDescription: 'Envia "is_verified": true no formulário de cadastro e ganha selo de conta oficial.'
+    simpleDescription: "Altera o campo \"role\": \"user\" para \"role\": \"superadmin\" no token assinado fracamente.",
+    ptDescription: "Altera o campo \"role\": \"user\" para \"role\": \"superadmin\" no token assinado fracamente."
   },
   {
     id: 'bac-12',
@@ -338,8 +338,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 40,
     rarity: 'Rare',
     icon: '📊',
-    simpleDescription: 'Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.',
-    ptDescription: 'Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.'
+    simpleDescription: "Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.",
+    ptDescription: "Baixa a lista de exportação completa de relatórios financeiros de todas as empresas."
   },
   {
     id: 'bac-13',
@@ -350,8 +350,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 48,
     rarity: 'Epic',
     icon: '🛡️',
-    simpleDescription: 'Anula totalmente a camada de controle de acesso de microsserviços na nuvem.',
-    ptDescription: 'Anula totalmente a camada de controle de acesso de microsserviços na nuvem.'
+    simpleDescription: "[NOISY] ROTAÇÃO DE MERCADO: Ao descer esta vulnerabilidade na mesa, descarte 1 Program Card do mercado e revele 1 nova do Program Deck.",
+    ptDescription: "[NOISY] ROTAÇÃO DE MERCADO: Ao descer esta vulnerabilidade na mesa, descarte 1 Program Card do mercado e revele 1 nova do Program Deck."
   },
   {
     id: 'bac-14',
@@ -362,8 +362,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 58,
     rarity: 'Legendary',
     icon: '👑',
-    simpleDescription: 'Assume o controle total do painel de administração da matriz global da empresa.',
-    ptDescription: 'Assume o controle total do painel de administração da matriz global da empresa.'
+    simpleDescription: "[NOISY] PANÓPTICO: Ao reportar com sucesso esta vulnerabilidade, olhe as 3 primeiras cartas do Event Deck, descarte 1 se desejar e organize as restantes no topo na ordem que preferir.",
+    ptDescription: "[NOISY] PANÓPTICO: Ao reportar com sucesso esta vulnerabilidade, olhe as 3 primeiras cartas do Event Deck, descarte 1 se desejar e organize as restantes no topo na ordem que preferir."
   },
 
   // --- 3. CROSS-SITE SCRIPTING (12 CARTAS: 5 Common, 4 Uncommon, 2 Rare, 1 Epic, 0 Legendary) ---
@@ -376,8 +376,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '🪞',
-    simpleDescription: 'Você coloca um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para você.',
-    ptDescription: 'Tu colocas um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para tu.'
+    simpleDescription: "Você coloca um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para você.",
+    ptDescription: "Tu colocas um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para tu."
   },
   {
     id: 'xss-2',
@@ -388,8 +388,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 22,
     rarity: 'Common',
     icon: '🌀',
-    simpleDescription: 'DOM-based XSS encadeado em rotas dinâmicas do Single Page App.',
-    ptDescription: 'DOM-based XSS encadeado em rotas dinâmicas do Single Page App.'
+    simpleDescription: "DOM-based XSS encadeado em rotas dinâmicas do Single Page App.",
+    ptDescription: "DOM-based XSS encadeado em rotas dinâmicas do Single Page App."
   },
   {
     id: 'xss-3',
@@ -400,8 +400,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 18,
     rarity: 'Common',
     icon: '🔎',
-    simpleDescription: 'Injeta script malicioso no campo de busca que é refletido sem sanitização na página.',
-    ptDescription: 'Injeta script malicioso no campo de busca que é refletido sem sanitização na página.'
+    simpleDescription: "Injeta script malicioso no campo de busca que é refletido sem sanitização na página.",
+    ptDescription: "Injeta script malicioso no campo de busca que é refletido sem sanitização na página."
   },
   {
     id: 'xss-4',
@@ -412,8 +412,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '⚓',
-    simpleDescription: 'Manipula window.location.hash para executar código JavaScript na leitura do elemento.',
-    ptDescription: 'Manipula window.location.hash para executar código JavaScript na leitura do elemento.'
+    simpleDescription: "Manipula window.location.hash para executar código JavaScript na leitura do elemento.",
+    ptDescription: "Manipula window.location.hash para executar código JavaScript na leitura do elemento."
   },
   {
     id: 'xss-5',
@@ -424,8 +424,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 15,
     rarity: 'Common',
     icon: '🏷️',
-    simpleDescription: 'Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.',
-    ptDescription: 'Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.'
+    simpleDescription: "Injeta tags &lt;h1&gt; e &lt;iframe&gt; falsas na tela de login de usuários leigos.",
+    ptDescription: "Injeta tags &lt;h1&gt; e &lt;iframe&gt; falsas na tela de login de usuários leigos."
   },
   {
     id: 'xss-6',
@@ -436,8 +436,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 30,
     rarity: 'Uncommon',
     icon: '💬',
-    simpleDescription: 'Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.',
-    ptDescription: 'Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.'
+    simpleDescription: "Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.",
+    ptDescription: "Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post."
   },
   {
     id: 'xss-7',
@@ -448,8 +448,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 28,
     rarity: 'Uncommon',
     icon: '🖼️',
-    simpleDescription: 'Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.',
-    ptDescription: 'Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.'
+    simpleDescription: "Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.",
+    ptDescription: "Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido."
   },
   {
     id: 'xss-8',
@@ -460,8 +460,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 25,
     rarity: 'Uncommon',
     icon: '✂️',
-    simpleDescription: 'Escapa da aspa do atributo input com " onfocus="alert(1) e dispara a vulnerabilidade.',
-    ptDescription: 'Escapa da aspa do atributo input com " onfocus="alert(1) e dispara a vulnerabilidade.'
+    simpleDescription: "Escapa da aspa do atributo input com \" onfocus=\"alert(1) e dispara a vulnerabilidade.",
+    ptDescription: "Escapa da aspa do atributo input com \" onfocus=\"alert(1) e dispara a vulnerabilidade."
   },
   {
     id: 'xss-9',
@@ -472,8 +472,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 32,
     rarity: 'Uncommon',
     icon: '📝',
-    simpleDescription: 'Explora o interpretador de Markdown na caixa de texto do editor de chamados.',
-    ptDescription: 'Explora o interpretador de Markdown na caixa de texto do editor de chamados.'
+    simpleDescription: "Escapa da aspa do atributo input com \" onfocus=\"alert(1) e dispara a vulnerabilidade.",
+    ptDescription: "Escapa da aspa do atributo input com \" onfocus=\"alert(1) e dispara a vulnerabilidade."
   },
   {
     id: 'xss-10',
@@ -484,8 +484,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 40,
     rarity: 'Rare',
     icon: '🪞',
-    simpleDescription: 'Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon.',
-    ptDescription: 'Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon.'
+    simpleDescription: "Se jogado com a ferramenta Browser DevTools ativa, duplica a compra de cartas na ação Recon.",
+    ptDescription: "Se jogado com a ferramenta Browser DevTools ativa, duplica a compra de cartas na ação Recon."
   },
   {
     id: 'xss-11',
@@ -496,8 +496,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 42,
     rarity: 'Rare',
     icon: '🙈',
-    simpleDescription: 'Executa código oculto no painel interno de triagem usado exclusivamente pelos administradores.',
-    ptDescription: 'Executa código oculto no painel interno de triagem usado exclusivamente pelos administradores.'
+    simpleDescription: "PROVA OOB: Esta vulnerabilidade é imune a Event Cards (não pode ser descartada por Eventos enquanto estiver na Zona de Exploits).",
+    ptDescription: "PROVA OOB: Esta vulnerabilidade é imune a Event Cards (não pode ser descartada por Eventos enquanto estiver na Zona de Exploits)."
   },
   {
     id: 'xss-12',
@@ -508,8 +508,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 48,
     rarity: 'Epic',
     icon: '⚡',
-    simpleDescription: 'Rouba tokens de sessão em tempo real através do canal aberto de WebSockets.',
-    ptDescription: 'Rouba tokens de sessão em tempo real através do canal aberto de WebSockets.'
+    simpleDescription: "[NOISY] INJEÇÃO HOSTIL: Transfira 1 Token de Alerta seu para o jogador à sua direita (se você não tiver, ele recebe 1).",
+    ptDescription: "[NOISY] INJEÇÃO HOSTIL: Transfira 1 Token de Alerta seu para o jogador à sua direita (se você não tiver, ele recebe 1)."
   },
 
   // --- 4. AUTHENTICATION & SESSION FLAWS (10 CARTAS: 4 Common, 3 Uncommon, 2 Rare, 1 Epic, 0 Legendary) ---
@@ -522,8 +522,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 30,
     rarity: 'Common',
     icon: '🔑',
-    simpleDescription: 'Você descobre uma brecha na catraca e entra direto sem precisar digitar senha ou mostrar documento.',
-    ptDescription: 'Tu descobres uma brecha na catraca e entra direto sem precisar digitar palavra-passe ou mostrar documento.'
+    simpleDescription: "Você descobre uma brecha na catraca e entra direto sem precisar digitar senha ou mostrar documento.",
+    ptDescription: "Tu descobres uma brecha na catraca e entra direto sem precisar digitar palavra-passe ou mostrar documento."
   },
   {
     id: 'auth-2',
@@ -534,8 +534,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 18,
     rarity: 'Common',
     icon: '🍪',
-    simpleDescription: 'Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.',
-    ptDescription: 'Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.'
+    simpleDescription: "Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.",
+    ptDescription: "Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura."
   },
   {
     id: 'auth-3',
@@ -546,8 +546,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 22,
     rarity: 'Common',
     icon: '⏳',
-    simpleDescription: 'O token de redefinição de senha usa a hora exata em segundos e é facilmente adivinhado.',
-    ptDescription: 'O token de redefinição de palavra-passe usa a hora exata em segundos e é facilmente adivinhado.'
+    simpleDescription: "O token de redefinição de senha usa a hora exata em segundos e é facilmente adivinhado.",
+    ptDescription: "O token de redefinição de palavra-passe usa a hora exata em segundos e é facilmente adivinhado."
   },
   {
     id: 'auth-4',
@@ -558,8 +558,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '📌',
-    simpleDescription: 'O token de "Lembrar de Mim" nunca expira e permite reuso infinito de sessão.',
-    ptDescription: 'O token de "Lembrar de Mim" nunca expira e permite reuso infinito de sessão.'
+    simpleDescription: "O token de \"Lembrar de Mim\" nunca expira e permite reuso infinito de sessão.",
+    ptDescription: "O token de \"Lembrar de Mim\" nunca expira e permite reuso infinito de sessão."
   },
   {
     id: 'auth-5',
@@ -570,8 +570,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 35,
     rarity: 'Uncommon',
     icon: '🚪',
-    simpleDescription: 'Altera o algoritmo do cabeçalho JWT para "none" e entra sem digitar senha.',
-    ptDescription: 'Altera o algoritmo do cabeçalho JWT para "none" e entra sem digitar palavra-passe.'
+    simpleDescription: "Altera o algoritmo do cabeçalho JWT para \"none\" e entra sem digitar senha.",
+    ptDescription: "Altera o algoritmo do cabeçalho JWT para \"none\" e entra sem digitar palavra-passe."
   },
   {
     id: 'auth-6',
@@ -582,8 +582,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 32,
     rarity: 'Uncommon',
     icon: '🤖',
-    simpleDescription: 'Testa vazamentos de senhas conhecidas em massa contra a tela de login.',
-    ptDescription: 'Testa vazamentos de palavras-passe conhecidas em massa contra a tela de login.'
+    simpleDescription: "O token de \"Lembrar de Mim\" nunca expira e permite reuso infinito de sessão.",
+    ptDescription: "O token de \"Lembrar de Mim\" nunca expira e permite reuso infinito de sessão."
   },
   {
     id: 'auth-7',
@@ -594,8 +594,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 28,
     rarity: 'Uncommon',
     icon: '🔗',
-    simpleDescription: 'Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.',
-    ptDescription: 'Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.'
+    simpleDescription: "Altera o algoritmo do cabeçalho JWT para \"none\" e entra sem digitar senha.",
+    ptDescription: "Altera o algoritmo do cabeçalho JWT para \"none\" e entra sem digitar palavra-passe."
   },
   {
     id: 'auth-8',
@@ -606,8 +606,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 40,
     rarity: 'Rare',
     icon: '📱',
-    simpleDescription: 'Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.',
-    ptDescription: 'Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.'
+    simpleDescription: "Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.",
+    ptDescription: "Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo."
   },
   {
     id: 'auth-9',
@@ -618,8 +618,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 42,
     rarity: 'Rare',
     icon: '🔓',
-    simpleDescription: 'Anula a validação da assinatura digital do token JWT corporativo.',
-    ptDescription: 'Anula a validação da assinatura digital do token JWT corporativo.'
+    simpleDescription: "[NOISY] PROVA OOB: Esta vulnerabilidade não pode ser descartada por Eventos.",
+    ptDescription: "[NOISY] PROVA OOB: Esta vulnerabilidade não pode ser descartada por Eventos."
   },
   {
     id: 'auth-10',
@@ -630,8 +630,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 50,
     rarity: 'Epic',
     icon: '🏢',
-    simpleDescription: 'Falsifica respostas SAML/Single Sign-On assumindo o controle de qualquer usuário da empresa.',
-    ptDescription: 'Falsifica respostas SAML/Single Sign-On assumindo o controle de qualquer usuário da empresa.'
+    simpleDescription: "[NOISY] DESVIO DE PAGAMENTO: Transfira $1.000 do jogador com o maior saldo para a sua Bounty Track.",
+    ptDescription: "[NOISY] DESVIO DE PAGAMENTO: Transfira $1.000 do jogador com o maior saldo para a sua Bounty Track."
   },
 
   // --- 5. SSRF / CSRF (8 CARTAS: 3 Common, 2 Uncommon, 2 Rare, 1 Epic, 0 Legendary) ---
@@ -644,8 +644,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 35,
     rarity: 'Common',
     icon: '🕵️',
-    simpleDescription: 'Você convence o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos arquivos.',
-    ptDescription: 'Tu convences o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos ficheiros.'
+    simpleDescription: "Você convence o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos arquivos.",
+    ptDescription: "Tu convences o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos ficheiros."
   },
   {
     id: 'ssrf-2',
@@ -656,8 +656,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '📩',
-    simpleDescription: 'Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.',
-    ptDescription: 'Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.'
+    simpleDescription: "Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.",
+    ptDescription: "Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF."
   },
   {
     id: 'ssrf-3',
@@ -668,8 +668,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 22,
     rarity: 'Common',
     icon: '📡',
-    simpleDescription: 'Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.',
-    ptDescription: 'Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.'
+    simpleDescription: "Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.",
+    ptDescription: "Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa."
   },
   {
     id: 'ssrf-4',
@@ -680,8 +680,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 32,
     rarity: 'Uncommon',
     icon: '👻',
-    simpleDescription: 'O webhook de notificação enviou a chave de API interna de volta para você.',
-    ptDescription: 'O webhook de notificação enviou a chave de API interna de volta para tu.'
+    simpleDescription: "O webhook de notificação enviou a chave de API interna de volta para você.",
+    ptDescription: "O webhook de notificação enviou a chave de API interna de volta para tu."
   },
   {
     id: 'ssrf-5',
@@ -692,8 +692,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 38,
     rarity: 'Uncommon',
     icon: '☁️',
-    simpleDescription: 'Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.',
-    ptDescription: 'Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.'
+    simpleDescription: "Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.",
+    ptDescription: "Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS."
   },
   {
     id: 'ssrf-6',
@@ -704,8 +704,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 40,
     rarity: 'Rare',
     icon: '🔄',
-    simpleDescription: 'Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.',
-    ptDescription: 'Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.'
+    simpleDescription: "Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.",
+    ptDescription: "Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais."
   },
   {
     id: 'ssrf-7',
@@ -716,8 +716,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 42,
     rarity: 'Rare',
     icon: '📡',
-    simpleDescription: 'Força o servidor a realizar requisições externas capturadas pelo Burp Collaborator.',
-    ptDescription: 'Força o servidor a realizar requisições externas capturadas pelo Burp Collaborator.'
+    simpleDescription: "[NOISY] PROVA OOB: Esta vulnerabilidade não pode ser descartada por Eventos.",
+    ptDescription: "[NOISY] PROVA OOB: Esta vulnerabilidade não pode ser descartada por Eventos."
   },
   {
     id: 'ssrf-8',
@@ -728,8 +728,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 52,
     rarity: 'Epic',
     icon: '⚡',
-    simpleDescription: 'Usa protocolo Gopher via SSRF para gravar chave SSH no servidor Redis interno.',
-    ptDescription: 'Usa protocolo Gopher via SSRF para gravar chave SSH no servidor Redis interno.'
+    simpleDescription: "[NOISY] ACESSO INTERNO: Ao reportar com sucesso, recupere 1 Tool Card do descarte para a sua mão.",
+    ptDescription: "[NOISY] ACESSO INTERNO: Ao reportar com sucesso, recupere 1 Tool Card do descarte para a sua mão."
   },
 
   // --- 6. BUSINESS LOGIC ERRORS (8 CARTAS: 3 Common, 2 Uncommon, 2 Rare, 1 Epic, 0 Legendary) ---
@@ -742,8 +742,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 20,
     rarity: 'Common',
     icon: '⏰',
-    simpleDescription: 'Você descobre que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor.',
-    ptDescription: 'Tu descobres que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor.'
+    simpleDescription: "Você descobre que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor.",
+    ptDescription: "Tu descobres que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não cobra o valor."
   },
   {
     id: 'bl-2',
@@ -754,8 +754,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 22,
     rarity: 'Common',
     icon: '💸',
-    simpleDescription: 'Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar você.',
-    ptDescription: 'Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar tu.'
+    simpleDescription: "Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar você.",
+    ptDescription: "Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar tu."
   },
   {
     id: 'bl-3',
@@ -766,8 +766,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 18,
     rarity: 'Common',
     icon: '🎟️',
-    simpleDescription: 'Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.',
-    ptDescription: 'Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.'
+    simpleDescription: "Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.",
+    ptDescription: "Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça."
   },
   {
     id: 'bl-4',
@@ -778,8 +778,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 30,
     rarity: 'Uncommon',
     icon: '🧪',
-    simpleDescription: 'Você clica no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.',
-    ptDescription: 'Tu clicas no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.'
+    simpleDescription: "Você clica no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.",
+    ptDescription: "Tu clicas no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou."
   },
   {
     id: 'bl-5',
@@ -790,8 +790,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 28,
     rarity: 'Uncommon',
     icon: '🧮',
-    simpleDescription: 'Arredondamento de frações de centavos acumuladas em transações bancárias.',
-    ptDescription: 'Arredondamento de frações de centavos acumuladas em transações bancárias.'
+    simpleDescription: "Arredondamento de frações de centavos acumuladas em transações bancárias.",
+    ptDescription: "Arredondamento de frações de centavos acumuladas em transações bancárias."
   },
   {
     id: 'bl-6',
@@ -802,8 +802,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 38,
     rarity: 'Rare',
     icon: '🔄',
-    simpleDescription: 'Cancela e reativa a avaliação gratuita no último segundo mantendo acesso premium infinito.',
-    ptDescription: 'Cancela e reativa a avaliação gratuita no último segundo mantendo acesso premium infinito.'
+    simpleDescription: "ACESSO INTERNO: Ao reportar com sucesso esta vulnerabilidade, resgate 1 Tool Card da pilha de descarte diretamente para a sua mão. Explora falha na validação de cupons para obter itens sem cobrança.",
+    ptDescription: "ACESSO INTERNO: Ao reportar com sucesso esta vulnerabilidade, resgate 1 Tool Card da pilha de descarte diretamente para a sua mão. Explora falha na validação de cupons para obter itens sem cobrança."
   },
   {
     id: 'bl-7',
@@ -814,8 +814,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 40,
     rarity: 'Rare',
     icon: '🛒',
-    simpleDescription: 'Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.',
-    ptDescription: 'Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.'
+    simpleDescription: "Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.",
+    ptDescription: "Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo."
   },
   {
     id: 'bl-8',
@@ -826,8 +826,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 50,
     rarity: 'Epic',
     icon: '🏦',
-    simpleDescription: 'Duplica transferências bancárias em lote manipulando o estado da transação.',
-    ptDescription: 'Duplica transferências bancárias em lote manipulando o estado da transação.'
+    simpleDescription: "[NOISY] BÔNUS CRÍTICO: Receba +$1.000 adicionais no payout deste Report.",
+    ptDescription: "[NOISY] BÔNUS CRÍTICO: Receba +$1.000 adicionais no payout deste Report."
   },
 
   // --- 7. CRYPTOGRAPHIC FAILURES (6 CARTAS: 2 Common, 2 Uncommon, 1 Rare, 1 Epic, 0 Legendary) ---
@@ -840,8 +840,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 15,
     rarity: 'Common',
     icon: '🔒',
-    simpleDescription: 'A empresa trancou os segredos com uma senha boba tipo "123456" que você descobre em 2 segundos.',
-    ptDescription: 'A empresa trancou os segredos com uma palavra-passe boba tipo "123456" que tu descobres em 2 segundos.'
+    simpleDescription: "A empresa trancou os segredos com uma senha boba tipo \"123456\" que você descobre em 2 segundos.",
+    ptDescription: "A empresa trancou os segredos com uma palavra-passe boba tipo \"123456\" que tu descobres em 2 segundos."
   },
   {
     id: 'crypto-2',
@@ -852,8 +852,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 18,
     rarity: 'Common',
     icon: '🥖',
-    simpleDescription: 'Senhas salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.',
-    ptDescription: 'Palavras-passe salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.'
+    simpleDescription: "A empresa trancou os segredos com uma senha boba tipo \"123456\" que você descobre em 2 segundos.",
+    ptDescription: "A empresa trancou os segredos com uma palavra-passe boba tipo \"123456\" que tu descobres em 2 segundos."
   },
   {
     id: 'crypto-3',
@@ -864,8 +864,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 28,
     rarity: 'Uncommon',
     icon: '🔑',
-    simpleDescription: 'A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.',
-    ptDescription: 'A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.'
+    simpleDescription: "A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.",
+    ptDescription: "A chave privada RSA de produção estava salva dentro do código JavaScript do frontend."
   },
   {
     id: 'crypto-4',
@@ -876,8 +876,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 26,
     rarity: 'Uncommon',
     icon: '🔓',
-    simpleDescription: 'Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.',
-    ptDescription: 'Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.'
+    simpleDescription: "Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.",
+    ptDescription: "Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro."
   },
   {
     id: 'crypto-5',
@@ -888,8 +888,8 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 40,
     rarity: 'Rare',
     icon: '🔮',
-    simpleDescription: 'Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.',
-    ptDescription: 'Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.'
+    simpleDescription: "Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.",
+    ptDescription: "Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor."
   },
   {
     id: 'crypto-6',
@@ -900,13 +900,13 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 48,
     rarity: 'Epic',
     icon: '🐧',
-    simpleDescription: 'Criptografia AES no modo ECB que preserva o padrão visual dos dados confidenciais.',
-    ptDescription: 'Criptografia AES no modo ECB que preserva o padrão visual dos dados confidenciais.'
+    simpleDescription: "[NOISY] ROTAÇÃO DE MERCADO: Ao descer esta vulnerabilidade na mesa, descarte 1 Program Card do mercado e revele 1 nova do Program Deck.",
+    ptDescription: "[NOISY] ROTAÇÃO DE MERCADO: Ao descer esta vulnerabilidade na mesa, descarte 1 Program Card do mercado e revele 1 nova do Program Deck."
   },
 
-  // --- 8. LEGENDARY / MULTI-STAGE EXPLOITS (6 CARTAS: 0 Common, 1 Uncommon, 1 Rare, 1 Epic, 3 Legendary) ---
+  // --- 8. APT / ADVANCED PERSISTENT THREATS (6 CARTAS: 0 Common, 1 Uncommon, 1 Rare, 1 Epic, 3 Legendary) ---
   {
-    id: 'leg-1',
+    id: 'apt-1',
     name: 'O Efeito Dominó',
     enName: 'The Domino Effect',
     technicalReference: 'Multi-Stage Chained Exploit',
@@ -914,11 +914,11 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 30,
     rarity: 'Uncommon',
     icon: '🔗',
-    simpleDescription: 'Combina um XSS refletido com um IDOR para roubar o token de acesso do administrador.',
-    ptDescription: 'Combina um XSS refletido com um IDOR para roubar o token de acesso do administrador.'
+    simpleDescription: "[NOISY] EFEITO DOMINÓ: Ao descer esta vulnerabilidade, você pode baixar imediatamente 1 vulnerabilidade adicional da mão na Zona de Exploits (respeitando escopo e limite de 3 cartas).",
+    ptDescription: "[NOISY] EFEITO DOMINÓ: Ao descer esta vulnerabilidade, podes baixar imediatamente 1 vulnerabilidade adicional da mão na Zona de Exploits (respeitando escopo e limite de 3 cartas)."
   },
   {
-    id: 'leg-2',
+    id: 'apt-2',
     name: 'A Tempestade Perfeita',
     enName: 'The Perfect Storm',
     technicalReference: 'SSRF to Internal Admin Chain',
@@ -926,47 +926,47 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 42,
     rarity: 'Rare',
     icon: '⚙️',
-    simpleDescription: 'Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.',
-    ptDescription: 'Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.'
+    simpleDescription: "Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.",
+    ptDescription: "Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres."
   },
   {
-    id: 'leg-3',
+    id: 'apt-3',
     name: 'O Apocalipse Primaveril',
     enName: 'The Spring Apocalypse',
-    technicalReference: 'Remote Code Execution (RCE)',
+    technicalReference: 'Spring4Shell / Framework RCE',
     type: 'exploit',
     points: 50,
     rarity: 'Epic',
     icon: '🌱',
-    simpleDescription: 'Explora vulnerabilidade no framework Java Spring para executar comandos no servidor de produção.',
-    ptDescription: 'Explora vulnerabilidade no framework Java Spring para executar comandos no servidor de produção.'
+    simpleDescription: "[NOISY] MERCADO EM CAOS: Ao reportar com sucesso esta vulnerabilidade, descarte até 3 programas do mercado e revele novos.",
+    ptDescription: "[NOISY] MERCADO EM CAOS: Ao reportar com sucesso esta vulnerabilidade, descarte até 3 programas do mercado e revele novos."
   },
   {
-    id: 'leg-4',
+    id: 'apt-4',
     name: 'O Mestre dos Títeres',
     enName: 'The Puppet Master',
-    technicalReference: 'Remote Code Execution (RCE)',
+    technicalReference: 'Supply Chain Compromise',
     type: 'exploit',
     points: 50,
     rarity: 'Legendary',
     icon: '🎮',
-    simpleDescription: 'O prêmio supremo! Você assume o controle total do computador da empresa como se estivesse sentado na cadeira deles.',
-    ptDescription: 'O prêmio supremo! Tu assumes o controle total do computador da empresa como se estivesse sentado na cadeira deles.'
+    simpleDescription: "[NOISY] TÍTERE: Ao reportar com sucesso, ative imediatamente o efeito de 1 Tool Card de qualquer oponente na mesa como se fosse sua (o oponente mantém a carta).",
+    ptDescription: "[NOISY] TÍTERE: Ao reportar com sucesso, ativa imediatamente o efeito de 1 Tool Card de qualquer oponente na mesa como se fosse tua (o oponente mantém a carta)."
   },
   {
-    id: 'leg-5',
+    id: 'apt-5',
     name: 'O Boneco de Marionete',
     enName: 'The Marionette',
-    technicalReference: 'Remote Code Execution (RCE root)',
+    technicalReference: 'Cyberwarfare Rootkit (SCADA)',
     type: 'exploit',
     points: 52,
     rarity: 'Legendary',
     icon: '🧸',
-    simpleDescription: 'Mãos etéreas controlando o rack de servidores. Ao ser reportada, força oponentes a descartarem Tools.',
-    ptDescription: 'Mãos etéreas controlando o rack de servidores. Ao ser reportada, força oponentes a descartarem Tools.'
+    simpleDescription: "[NOISY] MARIONETE: Ao reportar com sucesso, force 1 oponente a descartar 1 Tool ativa à sua escolha. Se ele não tiver Tools ativas, descarte 1 carta aleatória da mão dele.",
+    ptDescription: "[NOISY] MARIONETE: Ao reportar com sucesso, força 1 oponente a descartar 1 Tool ativa à tua escolha. Se ele não tiver Tools ativas, descarta 1 carta aleatória da mão dele."
   },
   {
-    id: 'leg-6',
+    id: 'apt-6',
     name: 'A Caixa de Pandora',
     enName: 'Pandora\'s Box',
     technicalReference: 'Log4Shell / Java Deserialization',
@@ -974,148 +974,148 @@ export const FULL_80_VULNERABILITIES: CardV2[] = [
     points: 55,
     rarity: 'Legendary',
     icon: '💀',
-    simpleDescription: 'Log4Shell! Chamas de código consumindo a infraestrutura de nuvem com RCE instantâneo.',
-    ptDescription: 'Log4Shell! Chamas de código consumindo a infraestrutura de nuvem com RCE instantâneo.'
+    simpleDescription: "[NOISY] ZERO-DAY: Ao reportar esta vulnerabilidade, ignore o Custo do Sucesso: não saque nenhum Event Card.",
+    ptDescription: "[NOISY] ZERO-DAY: Ao reportar esta vulnerabilidade, ignore o Custo do Sucesso: não saque nenhum Event Card."
   }
 ];
 
-// --- 12 TOOL CARDS (SEÇÃO 5.2 E 10 DO MANUAL) ---
+// --- 12 TOOL CARDS (SEÇÃO 06 E 10 DO MANUAL DO SUCESSO - 36 CARTAS NO TOOL DECK) ---
 export const FULL_12_TOOLS: CardV2[] = [
   {
-    id: 'tool-burp-1',
-    name: 'Canivete Suíço Hacker',
-    technicalReference: 'Burp Suite Pro',
-    type: 'tool',
-    points: 0,
-    rarity: 'Epic',
-    icon: '🧰',
-    simpleDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.',
-    ptDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.'
-  },
-  {
-    id: 'tool-burp-2',
-    name: 'Burp Suite Pro',
-    technicalReference: 'Burp Suite Pro',
-    type: 'tool',
-    points: 0,
-    rarity: 'Epic',
-    icon: '🧰',
-    simpleDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.',
-    ptDescription: 'Ignore a régua de cores do programa ao baixar 1 vulnerabilidade.'
-  },
-  {
-    id: 'tool-nmap-1',
-    name: 'Nmap + ffuf',
-    technicalReference: 'Network & Fuzzing Scanner',
+    id: 'tool-portsweep',
+    name: 'PortSweep',
+    technicalReference: 'Network Scanner',
     type: 'tool',
     points: 0,
     rarity: 'Common',
     icon: '📡',
-    simpleDescription: 'PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).',
-    ptDescription: 'PASSIVA: Concede +1 carta adicional na execução da ação de Recon (compara 3 cartas em vez de 2).'
+    simpleDescription: 'PASSIVA: Ao realizar a ação de Recon, compre 3 cartas do Main Deck em vez de 2.',
+    ptDescription: 'PASSIVA: Ao realizar a ação de Recon, compra 3 cartas do Main Deck em vez de 2.'
   },
   {
-    id: 'tool-nmap-2',
-    name: 'Nmap + ffuf',
-    technicalReference: 'Network & Fuzzing Scanner',
+    id: 'tool-fuzzstorm',
+    name: 'FuzzStorm',
+    technicalReference: 'Web Fuzzer',
     type: 'tool',
     points: 0,
     rarity: 'Common',
-    icon: '📡',
-    simpleDescription: 'PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.',
-    ptDescription: 'PASSIVA: Aumenta tua capacidade de varredura no Recon para comprar 3 cartas.'
+    icon: '🎯',
+    simpleDescription: 'ATIVA: Olhe as 3 primeiras cartas do Main Deck: compre 1 para a sua mão e organize as outras 2 no topo como desejar.',
+    ptDescription: 'ATIVA: Olha as 3 primeiras cartas do Main Deck: compra 1 para a tua mão e organiza as outras 2 no topo como desejares.'
   },
   {
-    id: 'tool-zap',
-    name: 'OWASP ZAP',
-    technicalReference: 'Automated Vulnerability Scanner',
+    id: 'tool-interceptor-pro',
+    name: 'Interceptor Pro',
+    technicalReference: 'Interception Proxy',
+    type: 'tool',
+    points: 0,
+    rarity: 'Epic',
+    icon: '🧰',
+    simpleDescription: 'ATIVA: INTERCEPTION - Ao ser alvo de um Event Card negativo, anule o efeito do Evento contra você (não protege contra PATCH DEPLOYED!).',
+    ptDescription: 'ATIVA: INTERCEPTION - Ao ser alvo de um Event Card negativo, anula o efeito do Evento contra ti (não protege contra PATCH DEPLOYED!).'
+  },
+  {
+    id: 'tool-exploit-forge',
+    name: 'Exploit Forge',
+    technicalReference: 'Exploit Automation Suite',
+    type: 'tool',
+    points: 0,
+    rarity: 'Rare',
+    icon: '⚙️',
+    simpleDescription: 'ATIVA: Descarte os 3 Programas expostos e revele 3 novos. Se algum deles aceitar a classe APT (ou escopo ALL), receba +$500 na Bounty Track; caso contrário, compre 1 carta do Main Deck.',
+    ptDescription: 'ATIVA: Descarta os 3 Programas expostos e revela 3 novos. Se algum deles aceitar a classe APT (ou escopo ALL), recebe +$500 na Bounty Track; caso contrário, compra 1 carta do Main Deck.'
+  },
+  {
+    id: 'tool-spiderscan',
+    name: 'SpiderScan',
+    technicalReference: 'Automated Web Scanner',
     type: 'tool',
     points: 0,
     rarity: 'Common',
     icon: '⚡',
-    simpleDescription: 'Baixe 2 vulnerabilidades na mesma ação de Exploit.',
-    ptDescription: 'Baixe 2 vulnerabilidades na mesma ação de Exploit.'
+    simpleDescription: 'PASSIVA: Na sua primeira ação de Exploit do turno, desça 2 vulnerabilidades em vez de 1.',
+    ptDescription: 'PASSIVA: Na tua primeira ação de Exploit do turno, desce 2 vulnerabilidades em vez de 1.'
   },
   {
-    id: 'tool-postman',
-    name: 'Postman API Suite',
+    id: 'tool-endpoint-lab',
+    name: 'Endpoint Lab',
     technicalReference: 'API Testing Environment',
     type: 'tool',
     points: 0,
     rarity: 'Common',
     icon: '🚀',
-    simpleDescription: 'Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.',
-    ptDescription: 'Baixe 1 vulnerabilidade da classe BAC ignorando a régua de cores do programa.'
+    simpleDescription: 'PASSIVA: Baixe 1 Vulnerability Card da classe BAC em qualquer programa.',
+    ptDescription: 'PASSIVA: Baixa 1 Vulnerability Card da classe BAC em qualquer programa.'
   },
   {
-    id: 'tool-devtools-1',
-    name: 'Lupa de Varredura',
-    technicalReference: 'Browser DevTools',
+    id: 'tool-dom-inspector',
+    name: 'DOM Inspector',
+    technicalReference: 'Client-Side Analysis Tool',
     type: 'tool',
     points: 0,
     rarity: 'Common',
     icon: '🔍',
-    simpleDescription: 'PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.',
-    ptDescription: 'PASSIVA: Dobra o valor da recompensa obtida em cartas da categoria XSS e DOM Manipulation.'
+    simpleDescription: 'PASSIVA: +$500 por carta da classe XSS no Report.',
+    ptDescription: 'PASSIVA: +$500 por carta da classe XSS no Report.'
   },
   {
-    id: 'tool-devtools-2',
+    id: 'tool-browser-devtools',
     name: 'Browser DevTools',
-    technicalReference: 'Browser DevTools',
+    technicalReference: 'Browser Console & Storage',
     type: 'tool',
     points: 0,
     rarity: 'Common',
-    icon: '🔍',
-    simpleDescription: 'PASSIVA: Amplificador de vulnerabilidades client-side no navegador.',
-    ptDescription: 'PASSIVA: Amplificador de vulnerabilidades client-side no navegador.'
+    icon: '💻',
+    simpleDescription: 'PASSIVA: Seu limite de mão aumenta em +1 carta enquanto esta Tool estiver instalada.',
+    ptDescription: 'PASSIVA: Teu limite de mão aumenta em +1 carta enquanto esta Tool estiver instalada.'
   },
   {
-    id: 'tool-sqlmap',
-    name: 'SQLMap Automator',
+    id: 'tool-injection-lab',
+    name: 'Injection Lab',
     technicalReference: 'Database Injection Tool',
     type: 'tool',
     points: 0,
     rarity: 'Uncommon',
     icon: '🛢️',
-    simpleDescription: 'Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.',
-    ptDescription: 'Baixe 1 vulnerabilidade da classe Injection ignorando a régua de cores do programa.'
+    simpleDescription: 'PASSIVA: Baixe 1 Vulnerability Card da classe INJ em qualquer programa.',
+    ptDescription: 'PASSIVA: Baixa 1 Vulnerability Card da classe INJ em qualquer programa.'
   },
   {
-    id: 'tool-collaborator',
-    name: 'Burp Collaborator',
-    technicalReference: 'Out-of-band Auditor',
+    id: 'tool-echo-beacon',
+    name: 'Echo Beacon',
+    technicalReference: 'Out-of-band Listener',
     type: 'tool',
     points: 0,
     rarity: 'Rare',
     icon: '📡',
-    simpleDescription: 'PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.',
-    ptDescription: 'PASSIVA: Resgata 1 carta de ferramenta do descarte toda vez que um oponente reportar SSRF.'
+    simpleDescription: 'PASSIVA: Ao reportar qualquer vulnerabilidade da classe SSRF ou com a tag [NOISY], compre 1 carta do Main Deck.',
+    ptDescription: 'PASSIVA: Ao reportar qualquer vulnerabilidade da classe SSRF ou com a tag [NOISY], compra 1 carta do Main Deck.'
   },
   {
-    id: 'tool-cyberchef',
-    name: 'CyberChef',
-    technicalReference: 'Cyber Swiss Army Knife',
+    id: 'tool-hex-kitchen',
+    name: 'Hex Kitchen',
+    technicalReference: 'Data Decoding Toolkit',
     type: 'tool',
     points: 0,
-    rarity: 'Uncommon',
+    rarity: 'Rare',
     icon: '🍳',
-    simpleDescription: 'ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.',
-    ptDescription: 'ATIVA: Permite converter 2 cartas de ferramentas descartadas em 1 ferramenta da tua escolha.'
+    simpleDescription: 'ATIVA: Decodifique o tráfego - olhe as 3 primeiras cartas do Event Deck, descarte 1 delas e devolva as demais em qualquer ordem.',
+    ptDescription: 'ATIVA: Decodifica o tráfego - olha as 3 primeiras cartas do Event Deck, descarta 1 delas e devolve as demais em qualquer ordem.'
   },
   {
-    id: 'tool-jwt-tool',
-    name: 'JWT Tool',
+    id: 'tool-token-cracker',
+    name: 'Token Cracker',
     technicalReference: 'Token Engineering Harness',
     type: 'tool',
     points: 0,
-    rarity: 'Uncommon',
+    rarity: 'Common',
     icon: '🔐',
-    simpleDescription: 'PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.',
-    ptDescription: 'PASSIVA: Vulnerabilidades da categoria Authentication concedem +50% de bónus financeiro.'
+    simpleDescription: 'PASSIVA: +$500 por carta da classe AUTH no Report.',
+    ptDescription: 'PASSIVA: +$500 por carta da classe AUTH no Report.'
   }
 ];
 
-// --- 10 DEFUSE CARDS NO DECK (8 Bypasses + 2 CVE Protections) ---
+// --- 10 DEFUSE / SAFEGUARD CARDS (8 Bypasses + 2 CVE Protections) ---
 export const FULL_3_DEFUSES: CardV2[] = [
   {
     id: 'defuse-deck-1',
@@ -1125,8 +1125,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
-    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva seus exploits. Recebe 1 Alerta. Descarte após o uso.',
+    ptDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva teus exploits. Recebe 1 Alerta. Descarte após o uso.'
   },
   {
     id: 'defuse-deck-2',
@@ -1136,8 +1136,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
-    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva seus exploits. Recebe 1 Alerta. Descarte após o uso.',
+    ptDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva teus exploits. Recebe 1 Alerta. Descarte após o uso.'
   },
   {
     id: 'defuse-deck-3',
@@ -1147,8 +1147,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
-    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva seus exploits. Recebe 1 Alerta. Descarte após o uso.',
+    ptDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva teus exploits. Recebe 1 Alerta. Descarte após o uso.'
   },
   {
     id: 'defuse-deck-4',
@@ -1158,8 +1158,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
-    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva seus exploits. Recebe 1 Alerta. Descarte após o uso.',
+    ptDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva teus exploits. Recebe 1 Alerta. Descarte após o uso.'
   },
   {
     id: 'defuse-deck-5',
@@ -1169,8 +1169,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
-    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva seus exploits. Recebe 1 Alerta. Descarte após o uso.',
+    ptDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva teus exploits. Recebe 1 Alerta. Descarte após o uso.'
   },
   {
     id: 'defuse-deck-6',
@@ -1180,8 +1180,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
-    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva seus exploits. Recebe 1 Alerta. Descarte após o uso.',
+    ptDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva teus exploits. Recebe 1 Alerta. Descarte após o uso.'
   },
   {
     id: 'defuse-deck-7',
@@ -1191,8 +1191,8 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
-    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva seus exploits. Recebe 1 Alerta. Descarte após o uso.',
+    ptDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva teus exploits. Recebe 1 Alerta. Descarte após o uso.'
   },
   {
     id: 'defuse-deck-8',
@@ -1202,38 +1202,40 @@ export const FULL_3_DEFUSES: CardV2[] = [
     points: 0,
     rarity: 'Rare',
     icon: '🛡️',
-    simpleDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.',
-    ptDescription: 'Safeguard SUPREMA: Anula o efeito destrutivo do Patch Deployed e mantém tuas cartas no tabuleiro.'
+    simpleDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva seus exploits. Recebe 1 Alerta. Descarte após o uso.',
+    ptDescription: 'Safeguard SUPREMA: Anula o PATCH DEPLOYED!. No Report: garante o payout na Bounty Track sem receber Tool. Em Stealth: preserva teus exploits. Recebe 1 Alerta. Descarte após o uso.'
   },
   {
     id: 'defuse-deck-9',
     name: 'CVE Assignment Protection',
-    technicalReference: 'CVE Assignment (Defuse)',
+    technicalReference: 'CVE Assignment (Safeguard)',
     type: 'defuse',
     points: 0,
     rarity: 'Uncommon',
     icon: '📜',
-    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.',
-    ptDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
+    simpleDescription: 'PROTEÇÃO DE ESCOPO (Uso único): Pode ser mantida no slot SAFEGUARD (empilhada) ou na mão. Anula os Event Cards Duplicate Report!, Out of Scope! e DNS Hijack! direcionados contra você. Descarte após o uso. Não protege contra PATCH DEPLOYED!.',
+    ptDescription: 'PROTEÇÃO DE ESCOPO (Uso único): Pode ser mantida no slot SAFEGUARD (empilhada) ou na mão. Anula os Event Cards Duplicate Report!, Out of Scope! e DNS Hijack! direcionados contra ti. Descarte após o uso. Não protege contra PATCH DEPLOYED!.'
   },
   {
     id: 'defuse-deck-10',
     name: 'CVE Assignment Protection',
-    technicalReference: 'CVE Assignment (Defuse)',
+    technicalReference: 'CVE Assignment (Safeguard)',
     type: 'defuse',
     points: 0,
     rarity: 'Uncommon',
     icon: '📜',
-    simpleDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.',
-    ptDescription: 'PROTEÇÃO DE ESCOPO (uso único): Reativa. Anula a penalidade de 10% do Duplicate Report! no teu Report, bem como os Eventos Duplicate Report!, Out of Scope e DNS Hijack direcionados a tu. Descarta ao ser usada. Não protege contra PATCH DEPLOYED!.'
+    simpleDescription: 'PROTEÇÃO DE ESCOPO (Uso único): Pode ser mantida no slot SAFEGUARD (empilhada) ou na mão. Anula os Event Cards Duplicate Report!, Out of Scope! e DNS Hijack! direcionados contra você. Descarte após o uso. Não protege contra PATCH DEPLOYED!.',
+    ptDescription: 'PROTEÇÃO DE ESCOPO (Uso único): Pode ser mantida no slot SAFEGUARD (empilhada) ou na mão. Anula os Event Cards Duplicate Report!, Out of Scope! e DNS Hijack! direcionados contra ti. Descarte após o uso. Não protege contra PATCH DEPLOYED!.'
   }
 ];
 
-// COMBINAÇÃO TOTAL DO BARALHO DE AÇÃO (80 VULNS + 36 TOOLS + 10 SAFEGUARDS = 126 CARTAS TOTAIS NA CAIXA / 120 NO DECK)
+// COMBINAÇÃO TOTAL DO BARALHO DE AÇÃO (80 VULNS + 48 TOOLS + 10 SAFEGUARDS = 138 CARTAS TOTAIS NA CAIXA / 132 NO DECK)
 export const ALL_ACTION_CARDS: CardV2[] = [
   ...FULL_80_VULNERABILITIES,
   ...FULL_12_TOOLS,
   ...FULL_12_TOOLS.map(t => ({ ...t, id: t.id + '-c2' })),
   ...FULL_12_TOOLS.map(t => ({ ...t, id: t.id + '-c3' })),
+  ...FULL_12_TOOLS.map(t => ({ ...t, id: t.id + '-c4' })),
   ...FULL_3_DEFUSES
 ];
+

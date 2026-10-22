@@ -1,0 +1,114 @@
+[
+  {
+    "id": "inj-12",
+    "name": "O Veneno Lento",
+    "diffs": {
+      "description": {
+        "truth": "CORINGA DE ESCOPO. Esta vulnerabilidade conta como dentro do escopo do seu programa ativo, mesmo que ele não permita a sua classe.",
+        "pnp": "Injeta payload no perfil do usuário que só é executado no relatório mensal do admin."
+      },
+      "ptDescription": {
+        "truth": "CORINGA DE ESCOPO. Esta vulnerabilidade conta como dentro do escopo do seu programa ativo, mesmo que ele não permita a sua classe.",
+        "pnp": "Injeta payload no perfil do usuário que só é executado no relatório mensal do admin."
+      }
+    }
+  },
+  {
+    "id": "bac-10",
+    "name": "O Degrau Oculto",
+    "diffs": {
+      "description": {
+        "truth": "Altera o campo \"role\": \"user\" para \"role\": \"superadmin\" no token assinado fracamente.",
+        "pnp": "Altera o campo "
+      },
+      "ptDescription": {
+        "truth": "Altera o campo \"role\": \"user\" para \"role\": \"superadmin\" no token assinado fracamente.",
+        "pnp": "Altera o campo "
+      }
+    }
+  },
+  {
+    "id": "xss-8",
+    "name": "A Máscara Rachada",
+    "diffs": {
+      "description": {
+        "truth": "Escapa da aspa do atributo input com \" onfocus=\"alert(1) e dispara a vulnerabilidade.",
+        "pnp": "Escapa da aspa do atributo input com "
+      },
+      "ptDescription": {
+        "truth": "Escapa da aspa do atributo input com \" onfocus=\"alert(1) e dispara a vulnerabilidade.",
+        "pnp": "Escapa da aspa do atributo input com "
+      }
+    }
+  },
+  {
+    "id": "xss-10",
+    "name": "O Espelho Narcisista",
+    "diffs": {
+      "description": {
+        "truth": "Se jogado com a ferramenta Browser DevTools ativa, duplica a compra de cartas na ação Recon.",
+        "pnp": "Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon."
+      },
+      "ptDescription": {
+        "truth": "Se jogado com a ferramenta Browser DevTools ativa, duplica a compra de cartas na ação Recon.",
+        "pnp": "Se jogado com a ferramenta Browser ativa, duplica a compra de cartas na ação Recon."
+      }
+    }
+  },
+  {
+    "id": "auth-4",
+    "name": "O Porteiro Esquecido",
+    "diffs": {
+      "description": {
+        "truth": "O token de \"Lembrar de Mim\" nunca expira e permite reuso infinito de sessão.",
+        "pnp": "O token de "
+      },
+      "ptDescription": {
+        "truth": "O token de \"Lembrar de Mim\" nunca expira e permite reuso infinito de sessão.",
+        "pnp": "O token de "
+      }
+    }
+  },
+  {
+    "id": "auth-5",
+    "name": "O Distintivo Falso",
+    "diffs": {
+      "description": {
+        "truth": "Altera o algoritmo do cabeçalho JWT para \"none\" e entra sem digitar senha.",
+        "pnp": "Altera o algoritmo do cabeçalho JWT para "
+      },
+      "ptDescription": {
+        "truth": "Altera o algoritmo do cabeçalho JWT para \"none\" e entra sem digitar palavra-passe.",
+        "pnp": "Altera o algoritmo do cabeçalho JWT para "
+      }
+    }
+  },
+  {
+    "id": "auth-9",
+    "name": "O Selo Violado",
+    "diffs": {
+      "description": {
+        "truth": "[NOISY] PROVA OOB. Esta vulnerabilidade não pode ser descartada por Eventos.",
+        "pnp": "Anula a validação da assinatura digital do token JWT corporativo."
+      },
+      "ptDescription": {
+        "truth": "[NOISY] PROVA OOB. Esta vulnerabilidade não pode ser descartada por Eventos.",
+        "pnp": "Anula a validação da assinatura digital do token JWT corporativo."
+      }
+    }
+  },
+  {
+    "id": "crypto-1",
+    "name": "Cadeado de Papel",
+    "diffs": {
+      "description": {
+        "truth": "A empresa trancou os segredos com uma senha boba tipo \"123456\" que você descobre em 2 segundos.",
+        "pnp": "A empresa trancou os segredos com uma senha boba tipo "
+      },
+      "ptDescription": {
+        "truth": "A empresa trancou os segredos com uma palavra-passe boba tipo \"123456\" que tu descobres em 2 segundos.",
+        "pnp": "A empresa trancou os segredos com uma palavra-passe boba tipo "
+      }
+    }
+  }
+]

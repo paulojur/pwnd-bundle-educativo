@@ -1,0 +1,49 @@
+﻿CardID,Nome,Subtitulo,Categoria,TipoUso,Raridade,Icone,TextoRegra,NumeroCopia
+tool-portsweep-c1,PortSweep,Network Scanner,TOOL,PASSIVA,Common,📡,"PASSIVA: Ao realizar a ação de Recon, compre 3 cartas do Main Deck em vez de 2.",Cópia 1 de 4
+tool-fuzzstorm-c1,FuzzStorm,Web Fuzzer,TOOL,ATIVA,Common,🎯,ATIVA: Olhe as 3 primeiras cartas do Main Deck: compre 1 para a sua mão e organize as outras 2 no topo como desejar.,Cópia 1 de 4
+tool-interceptor-pro-c1,Interceptor Pro,Interception Proxy,TOOL,ATIVA,Epic,🧰,"ATIVA: INTERCEPTION - Ao ser alvo de um Event Card negativo, anule o efeito do Evento contra você (não protege contra PATCH DEPLOYED!).",Cópia 1 de 4
+tool-exploit-forge-c1,Exploit Forge,Exploit Automation Suite,TOOL,ATIVA,Rare,⚙️,"ATIVA: Descarte os 3 Programas expostos e revele 3 novos. Se algum deles aceitar a classe APT (ou escopo ALL), receba +$500 na Bounty Track; caso contrário, compre 1 carta do Main Deck.",Cópia 1 de 4
+tool-spiderscan-c1,SpiderScan,Automated Web Scanner,TOOL,PASSIVA,Common,⚡,"PASSIVA: Na sua primeira ação de Exploit do turno, desça 2 vulnerabilidades em vez de 1.",Cópia 1 de 4
+tool-endpoint-lab-c1,Endpoint Lab,API Testing Environment,TOOL,PASSIVA,Common,🚀,PASSIVA: Baixe 1 Vulnerability Card da classe BAC em qualquer programa.,Cópia 1 de 4
+tool-dom-inspector-c1,DOM Inspector,Client-Side Analysis Tool,TOOL,PASSIVA,Common,🔍,PASSIVA: +$500 por carta da classe XSS no Report.,Cópia 1 de 4
+tool-browser-devtools-c1,Browser DevTools,Browser Console & Storage,TOOL,PASSIVA,Common,💻,PASSIVA: Seu limite de mão aumenta em +1 carta enquanto esta Tool estiver instalada.,Cópia 1 de 4
+tool-injection-lab-c1,Injection Lab,Database Injection Tool,TOOL,PASSIVA,Uncommon,🛢️,PASSIVA: Baixe 1 Vulnerability Card da classe INJ em qualquer programa.,Cópia 1 de 4
+tool-echo-beacon-c1,Echo Beacon,Out-of-band Listener,TOOL,PASSIVA,Rare,📡,"PASSIVA: Ao reportar qualquer vulnerabilidade da classe SSRF ou com a tag [NOISY], compre 1 carta do Main Deck.",Cópia 1 de 4
+tool-hex-kitchen-c1,Hex Kitchen,Data Decoding Toolkit,TOOL,ATIVA,Rare,🍳,"ATIVA: Decodifique o tráfego - olhe as 3 primeiras cartas do Event Deck, descarte 1 delas e devolva as demais em qualquer ordem.",Cópia 1 de 4
+tool-token-cracker-c1,Token Cracker,Token Engineering Harness,TOOL,PASSIVA,Common,🔐,PASSIVA: +$500 por carta da classe AUTH no Report.,Cópia 1 de 4
+tool-portsweep-c2,PortSweep,Network Scanner,TOOL,PASSIVA,Common,📡,"PASSIVA: Ao realizar a ação de Recon, compre 3 cartas do Main Deck em vez de 2.",Cópia 2 de 4
+tool-fuzzstorm-c2,FuzzStorm,Web Fuzzer,TOOL,ATIVA,Common,🎯,ATIVA: Olhe as 3 primeiras cartas do Main Deck: compre 1 para a sua mão e organize as outras 2 no topo como desejar.,Cópia 2 de 4
+tool-interceptor-pro-c2,Interceptor Pro,Interception Proxy,TOOL,ATIVA,Epic,🧰,"ATIVA: INTERCEPTION - Ao ser alvo de um Event Card negativo, anule o efeito do Evento contra você (não protege contra PATCH DEPLOYED!).",Cópia 2 de 4
+tool-exploit-forge-c2,Exploit Forge,Exploit Automation Suite,TOOL,ATIVA,Rare,⚙️,"ATIVA: Descarte os 3 Programas expostos e revele 3 novos. Se algum deles aceitar a classe APT (ou escopo ALL), receba +$500 na Bounty Track; caso contrário, compre 1 carta do Main Deck.",Cópia 2 de 4
+tool-spiderscan-c2,SpiderScan,Automated Web Scanner,TOOL,PASSIVA,Common,⚡,"PASSIVA: Na sua primeira ação de Exploit do turno, desça 2 vulnerabilidades em vez de 1.",Cópia 2 de 4
+tool-endpoint-lab-c2,Endpoint Lab,API Testing Environment,TOOL,PASSIVA,Common,🚀,PASSIVA: Baixe 1 Vulnerability Card da classe BAC em qualquer programa.,Cópia 2 de 4
+tool-dom-inspector-c2,DOM Inspector,Client-Side Analysis Tool,TOOL,PASSIVA,Common,🔍,PASSIVA: +$500 por carta da classe XSS no Report.,Cópia 2 de 4
+tool-browser-devtools-c2,Browser DevTools,Browser Console & Storage,TOOL,PASSIVA,Common,💻,PASSIVA: Seu limite de mão aumenta em +1 carta enquanto esta Tool estiver instalada.,Cópia 2 de 4
+tool-injection-lab-c2,Injection Lab,Database Injection Tool,TOOL,PASSIVA,Uncommon,🛢️,PASSIVA: Baixe 1 Vulnerability Card da classe INJ em qualquer programa.,Cópia 2 de 4
+tool-echo-beacon-c2,Echo Beacon,Out-of-band Listener,TOOL,PASSIVA,Rare,📡,"PASSIVA: Ao reportar qualquer vulnerabilidade da classe SSRF ou com a tag [NOISY], compre 1 carta do Main Deck.",Cópia 2 de 4
+tool-hex-kitchen-c2,Hex Kitchen,Data Decoding Toolkit,TOOL,ATIVA,Rare,🍳,"ATIVA: Decodifique o tráfego - olhe as 3 primeiras cartas do Event Deck, descarte 1 delas e devolva as demais em qualquer ordem.",Cópia 2 de 4
+tool-token-cracker-c2,Token Cracker,Token Engineering Harness,TOOL,PASSIVA,Common,🔐,PASSIVA: +$500 por carta da classe AUTH no Report.,Cópia 2 de 4
+tool-portsweep-c3,PortSweep,Network Scanner,TOOL,PASSIVA,Common,📡,"PASSIVA: Ao realizar a ação de Recon, compre 3 cartas do Main Deck em vez de 2.",Cópia 3 de 4
+tool-fuzzstorm-c3,FuzzStorm,Web Fuzzer,TOOL,ATIVA,Common,🎯,ATIVA: Olhe as 3 primeiras cartas do Main Deck: compre 1 para a sua mão e organize as outras 2 no topo como desejar.,Cópia 3 de 4
+tool-interceptor-pro-c3,Interceptor Pro,Interception Proxy,TOOL,ATIVA,Epic,🧰,"ATIVA: INTERCEPTION - Ao ser alvo de um Event Card negativo, anule o efeito do Evento contra você (não protege contra PATCH DEPLOYED!).",Cópia 3 de 4
+tool-exploit-forge-c3,Exploit Forge,Exploit Automation Suite,TOOL,ATIVA,Rare,⚙️,"ATIVA: Descarte os 3 Programas expostos e revele 3 novos. Se algum deles aceitar a classe APT (ou escopo ALL), receba +$500 na Bounty Track; caso contrário, compre 1 carta do Main Deck.",Cópia 3 de 4
+tool-spiderscan-c3,SpiderScan,Automated Web Scanner,TOOL,PASSIVA,Common,⚡,"PASSIVA: Na sua primeira ação de Exploit do turno, desça 2 vulnerabilidades em vez de 1.",Cópia 3 de 4
+tool-endpoint-lab-c3,Endpoint Lab,API Testing Environment,TOOL,PASSIVA,Common,🚀,PASSIVA: Baixe 1 Vulnerability Card da classe BAC em qualquer programa.,Cópia 3 de 4
+tool-dom-inspector-c3,DOM Inspector,Client-Side Analysis Tool,TOOL,PASSIVA,Common,🔍,PASSIVA: +$500 por carta da classe XSS no Report.,Cópia 3 de 4
+tool-browser-devtools-c3,Browser DevTools,Browser Console & Storage,TOOL,PASSIVA,Common,💻,PASSIVA: Seu limite de mão aumenta em +1 carta enquanto esta Tool estiver instalada.,Cópia 3 de 4
+tool-injection-lab-c3,Injection Lab,Database Injection Tool,TOOL,PASSIVA,Uncommon,🛢️,PASSIVA: Baixe 1 Vulnerability Card da classe INJ em qualquer programa.,Cópia 3 de 4
+tool-echo-beacon-c3,Echo Beacon,Out-of-band Listener,TOOL,PASSIVA,Rare,📡,"PASSIVA: Ao reportar qualquer vulnerabilidade da classe SSRF ou com a tag [NOISY], compre 1 carta do Main Deck.",Cópia 3 de 4
+tool-hex-kitchen-c3,Hex Kitchen,Data Decoding Toolkit,TOOL,ATIVA,Rare,🍳,"ATIVA: Decodifique o tráfego - olhe as 3 primeiras cartas do Event Deck, descarte 1 delas e devolva as demais em qualquer ordem.",Cópia 3 de 4
+tool-token-cracker-c3,Token Cracker,Token Engineering Harness,TOOL,PASSIVA,Common,🔐,PASSIVA: +$500 por carta da classe AUTH no Report.,Cópia 3 de 4
+tool-portsweep-c4,PortSweep,Network Scanner,TOOL,PASSIVA,Common,📡,"PASSIVA: Ao realizar a ação de Recon, compre 3 cartas do Main Deck em vez de 2.",Cópia 4 de 4
+tool-fuzzstorm-c4,FuzzStorm,Web Fuzzer,TOOL,ATIVA,Common,🎯,ATIVA: Olhe as 3 primeiras cartas do Main Deck: compre 1 para a sua mão e organize as outras 2 no topo como desejar.,Cópia 4 de 4
+tool-interceptor-pro-c4,Interceptor Pro,Interception Proxy,TOOL,ATIVA,Epic,🧰,"ATIVA: INTERCEPTION - Ao ser alvo de um Event Card negativo, anule o efeito do Evento contra você (não protege contra PATCH DEPLOYED!).",Cópia 4 de 4
+tool-exploit-forge-c4,Exploit Forge,Exploit Automation Suite,TOOL,ATIVA,Rare,⚙️,"ATIVA: Descarte os 3 Programas expostos e revele 3 novos. Se algum deles aceitar a classe APT (ou escopo ALL), receba +$500 na Bounty Track; caso contrário, compre 1 carta do Main Deck.",Cópia 4 de 4
+tool-spiderscan-c4,SpiderScan,Automated Web Scanner,TOOL,PASSIVA,Common,⚡,"PASSIVA: Na sua primeira ação de Exploit do turno, desça 2 vulnerabilidades em vez de 1.",Cópia 4 de 4
+tool-endpoint-lab-c4,Endpoint Lab,API Testing Environment,TOOL,PASSIVA,Common,🚀,PASSIVA: Baixe 1 Vulnerability Card da classe BAC em qualquer programa.,Cópia 4 de 4
+tool-dom-inspector-c4,DOM Inspector,Client-Side Analysis Tool,TOOL,PASSIVA,Common,🔍,PASSIVA: +$500 por carta da classe XSS no Report.,Cópia 4 de 4
+tool-browser-devtools-c4,Browser DevTools,Browser Console & Storage,TOOL,PASSIVA,Common,💻,PASSIVA: Seu limite de mão aumenta em +1 carta enquanto esta Tool estiver instalada.,Cópia 4 de 4
+tool-injection-lab-c4,Injection Lab,Database Injection Tool,TOOL,PASSIVA,Uncommon,🛢️,PASSIVA: Baixe 1 Vulnerability Card da classe INJ em qualquer programa.,Cópia 4 de 4
+tool-echo-beacon-c4,Echo Beacon,Out-of-band Listener,TOOL,PASSIVA,Rare,📡,"PASSIVA: Ao reportar qualquer vulnerabilidade da classe SSRF ou com a tag [NOISY], compre 1 carta do Main Deck.",Cópia 4 de 4
+tool-hex-kitchen-c4,Hex Kitchen,Data Decoding Toolkit,TOOL,ATIVA,Rare,🍳,"ATIVA: Decodifique o tráfego - olhe as 3 primeiras cartas do Event Deck, descarte 1 delas e devolva as demais em qualquer ordem.",Cópia 4 de 4
+tool-token-cracker-c4,Token Cracker,Token Engineering Harness,TOOL,PASSIVA,Common,🔐,PASSIVA: +$500 por carta da classe AUTH no Report.,Cópia 4 de 4

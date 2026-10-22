@@ -1,0 +1,7 @@
+﻿CardID	Nome	Titulo	Icone	CorHex	FraseApresentacao	EstiloDeJogo
+n00b	n00b	O Iniciante Dedicado	🌱	#39d353		Garimpeiro de Ferramentas: após cada Report bem-sucedido, olho as 3 primeiras cartas do Tool Deck e escolho 1.
+old-guard	The Old Guard	Hacker Raiz	🧠	#c084fc		Especialista Sênior: cada carta Épica ou Lendária incluída no Report vale +$500 extra no payout. Limite de mão aumentado para 8 cartas.
+bug-hunter	Bug Hunter	O Caçador em Escala	⚡	#f0883e		Volume Attack: cada carta além da primeira no mesmo Report soma +$500 ao payout. | Restrito a vulnerabilidades Comum e Incomum. | Eficiência em Volume: concluir um Report com 3 vulnerabilidades simultâneas concede 1 Token de Reputação (🐝).
+social-engineer	Social Engineer	O Manipulador Social	🎭	#58a6ff		Caos Redirecionado (uma vez por rodada): ao ser alvo de um Evento individual negativo, transfira o efeito para outro oponente. | Phishing (uma vez por rodada, ação livre): puxe 1 carta aleatória da mão de um oponente e entregue 1 carta da sua mão para ele.
+red-teamer	Red Teamer	O Operador Ofensivo	⚔️	#f85149		Sem Limites: ignoro as restrições de escopo dos programas e posso explorar qualquer vulnerabilidade em qualquer alvo. | Custo Operacional: subtraia $1.500 do payout total de cada Report.
+pentester	The Pentester	O Auditor Metódico	🛡️	#38bdf8		Auditor Metódico: imune a Duplicate Report! e a Triage Delay!. | Relatório Estruturado: ganhe +$500 por cada classe técnica diferente no seu Report além da primeira (máximo de +$1.000).

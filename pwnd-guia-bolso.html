@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWND! — Guia de Ensino & Glossário Completo</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --surface-color: #161b22;
+            --surface-color-light: #21262d;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+
+            --accent-green: #39d353;
+            --accent-purple: #c084fc;
+            --accent-orange: #f0883e;
+            --accent-blue: #58a6ff;
+            --accent-red: #f85149;
+            --accent-cyan: #38bdf8;
+            --accent-yellow: #e3b341;
+
+            --common: #8b949e;
+            --uncommon: #39d353;
+            --rare: #58a6ff;
+            --epic: #c084fc;
+            --legendary: #f0883e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        header h1 span {
+            color: var(--accent-green);
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 40px;
+        }
+
+        /* --- ACCORDIONS PARA MOBILE --- */
+        details {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        details[open] {
+            border-color: var(--accent-blue);
+        }
+
+        summary {
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--surface-color-light);
+            outline: none;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .details-content {
+            padding: 15px;
+        }
+
+        /* Sub-accordions */
+        .sub-details {
+            margin-bottom: 8px;
+            border-left: 2px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        .sub-details summary {
+            background-color: var(--surface-color);
+            font-size: 1rem;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sub-details[open] summary {
+            border-bottom-color: transparent;
+        }
+
+        /* --- ITEM DA CARTA --- */
+        .card-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .card-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .card-name {
+            font-weight: bold;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .card-tech {
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            font-family: monospace;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- RARIDADES DE VULNS --- */
+        .rarity-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .r-common {
+            border: 1px solid var(--common);
+            color: var(--common);
+        }
+
+        .r-uncommon {
+            border: 1px solid var(--uncommon);
+            color: var(--uncommon);
+        }
+
+        .r-rare {
+            border: 1px solid var(--rare);
+            color: var(--rare);
+        }
+
+        .r-epic {
+            border: 1px solid var(--epic);
+            color: var(--epic);
+        }
+
+        .r-legendary {
+            border: 1px solid var(--legendary);
+            color: var(--legendary);
+            background-color: rgba(240, 136, 62, 0.1);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .pitch-box {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: rgba(227, 179, 65, 0.1);
+            border: 1px dashed var(--accent-yellow);
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .pitch-box strong {
+            color: var(--accent-yellow);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>PWND<span>!</span></h1>
+            <p>Glossário Absoluto de Cartas</p>
+        </header>
+
+        <p style="font-size: 0.95rem; margin-bottom: 30px; color: var(--text-secondary); text-align: center;">
+            Um guia de estudo para o Host conhecer a explicação real (Bug Bounty) por trás de todas as mecânicas,
+            ferramentas e vulnerabilidades de PWND!
+        </p>
+
+        <!-- SEÇÃO 1: TOOLS E BYPASS -->
+        <h2>🛠️ Ferramentas & Bypass</h2>
+
+        <details>
+            <summary>🧰 Tool Cards (Ferramentas de Bancada)</summary>
+            <div class="details-content">
+                <div class="pitch-box" style="margin-bottom: 15px;">
+                    <strong>🗣️ Pitch Geral de Tools:</strong> "As tools são as extensões que nós hackers usamos. Você
+                    gasta tempo instalando elas (descartando cartas), mas depois elas automatizam o trabalho sujo. Um
+                    Burp Suite Pro, por exemplo, custa $400 por ano na vida real, no jogo te dá o poder de ignorar os
+                    bloqueios básicos do programa!"
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">Burp Suite Pro <span class="rarity-badge r-epic">Epic</span></div>
+                    <span class="card-tech">Universal Interception Proxy</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Ignore a régua de cores do programa ao baixar
+                        vulnerabilidades.<br><strong>Ensino:</strong> É a ferramenta mais famosa do mundo hacker.
+                        Intercepta todas as requisições entre o navegador e o servidor. Literalmente "Ignora as regras
+                        padrão".</div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">Nmap + ffuf <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Network & Fuzzing Scanner</span>
+                    <div class="card-desc"><strong>Efeito:</strong> +1 carta na ação de Recon (compra 3 em vez de
+                        2).<br><strong>Ensino:</strong> Nmap varre portas (ex: porta 80, 443, 22), ffuf descobre
+                        diretórios escondidos tipo /admin. Por isso te dá mais "cartas" de reconhecimento.</div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">OWASP ZAP <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Automated Vulnerability Scanner</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Baixe 2 vulns na mesma ação de
+                        Exploit.<br><strong>Ensino:</strong> É um robô de scanner gratuito da OWASP que joga lixo nas
+                        aplicações tentando achar falhas de forma massiva. Acelera os exploits.</div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">Postman API Suite <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">API Testing Environment</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Facilita baixar cartas de Broken Access
+                        Control.<br><strong>Ensino:</strong> Plataforma para montar e testar chamadas de API
+                        (REST/GraphQL) no qual você testa permissões e autorizações cruzadas.</div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">Browser DevTools <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">F12 Client-Side Analysis</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Dobra o valor de recompensas
+                        XSS.<br><strong>Ensino:</strong> O famoso "Apertar F12 no Chrome". A aba Network e Console são
+                        as maiores aliadas para caçar XSS e falhas de front-end.</div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">SQLMap Automator <span class="rarity-badge r-uncommon">Uncommon</span></div>
+                    <span class="card-tech">Database Injection Tool</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Ignora barreiras para baixar
+                        Injections.<br><strong>Ensino:</strong> Um script python famosíssimo. Você dá a URL pra ele, vai
+                        tomar um café, e ele extrai o banco de dados inteiro sozinho testando injeções SQL.</div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">Burp Collaborator <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">Out-of-band Auditor</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Resgata ferramenta quando oponentes reportam
+                        SSRF.<br><strong>Ensino:</strong> É um servidor que escuta interações "fora da banda" (OOB). Se
+                        o servidor da empresa pingar o seu Collaborator às escondidas, você comprova a falha (SSRF).
+                    </div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">CyberChef <span class="rarity-badge r-uncommon">Uncommon</span></div>
+                    <span class="card-tech">Cyber Swiss Army Knife</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Converte cartas de ferramentas
+                        descartadas.<br><strong>Ensino:</strong> "O canivete suíço". Uma ferramenta web mágica para
+                        decodificar base64, AES, Hex e criar cadeias lógicas de descriptografia.</div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">JWT Tool <span class="rarity-badge r-uncommon">Uncommon</span></div>
+                    <span class="card-tech">Token Engineering Harness</span>
+                    <div class="card-desc"><strong>Efeito:</strong> +50% bônus em vulnerabilidades de
+                        Autenticação.<br><strong>Ensino:</strong> Tokens JWT são o padrão moderno de login. Eles contêm
+                        dados codificados em base64. Ferramentas que adulteram JWT são críticas para falsificar logins.
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>🛡️ Defuse & Bypass (Salvadores de Vidas)</summary>
+            <div class="details-content">
+                <div class="card-item">
+                    <div class="card-name">Safeguard (Bypass) <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">Zero-Day Reserve / WAF Bypass</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Anula 100% o efeito destrutivo do Patch
+                        Deployed.<br><strong>Ensino:</strong> Representa um Exploit 0-Day não documentado que o hacker
+                        guardou na manga, ou um Bypass de firewall que ele puxa em caso de emergência. A empresa lança o
+                        patch, mas o hacker usa o Bypass e ainda continua conectado!</div>
+                </div>
+
+                <div class="card-item">
+                    <div class="card-name">CVE Assignment Protection <span
+                            class="rarity-badge r-uncommon">Uncommon</span></div>
+                    <span class="card-tech">CVE Authority Reservation</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Anula o Duplicate Report (10% de pena) e ataques
+                        OOS.<br><strong>Ensino:</strong> O MITRE emite os números "CVE" oficiais. Se você já reservou um
+                        CVE para a sua falha, você tem o direito oficial sobre ela, mesmo que outros reclamem. Impede
+                        burocracias!</div>
+                </div>
+            </div>
+        </details>
+
+        <!-- SEÇÃO 2: VULNERABILIDADES -->
+        <h2>🔥 80 Vulnerabilities (CVSS)</h2>
+        <div class="pitch-box" style="margin-bottom: 20px;">
+            <strong>🗣️ Pitch de Severidade:</strong> "Toda vulnerabilidade tem o CVSS (Common Vulnerability Scoring
+            System, de 0 a 10). Se é Cinza (Common), paga mal e é falha simples. Se é Roxa/Laranja (Epic/Legendary, de
+            9.0 a 10.0), a empresa tá perdendo dados e você será pago com valores altíssimos."
+        </div>
+
+        <details>
+            <summary>💉 Injection (16 Cartas)</summary>
+            <div class="details-content">
+                <div class="card-item">
+                    <div class="card-name">Injeção de Boato <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">SQL Injection (SQLi)</span>
+                    <div class="card-desc">Você cochicha um boato falso no campo de texto e o banco de dados acredita,
+                        entregando as senhas.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">A Injeção da Vovó <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">Classic SQLi (OR 1=1)</span>
+                    <div class="card-desc">A mais famosa. ' OR '1'='1 — Entrando como se fosse da família.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">Sopa de Comandos <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">OS Command Injection</span>
+                    <div class="card-desc">Insere comandos de sistema operacional diretamente no input do usuário.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">A Entidade Fantasma <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">XXE Injection</span>
+                    <div class="card-desc">O parser XML lê arquivos confidenciais locais do servidor.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Operador Vazado <span class="rarity-badge r-uncommon">Uncommon</span></div>
+                    <span class="card-tech">NoSQL Injection</span>
+                    <div class="card-desc">Bypassa autenticação injetando operadores de lógica ($gt, $ne) no MongoDB.
+                    </div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">A Bomba-Relógio <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">Time-Based Blind SQLi</span>
+                    <div class="card-desc">Injeção às cegas baseada em atraso. Força o servidor a pausar (SLEEP 10) para
+                        extrair dados lentamente char-by-char.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Veneno Lento <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">Second-Order SQLi</span>
+                    <div class="card-desc">O payload é injetado, mas só explode no mês seguinte quando o admin gerar o
+                        relatório.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Tubo Estourado <span class="rarity-badge r-legendary">Legendary</span>
+                    </div>
+                    <span class="card-tech">Critical Database Takeover</span>
+                    <div class="card-desc">CVSS Altíssimo. Acesso root à instância mestra do banco relacional de dados.
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; text-align: center; color: var(--text-secondary);">(E outras cartas de
+                    LDAP, ORM, SSTI...)</p>
+            </div>
+        </details>
+
+        <details>
+            <summary>🚪 Broken Access Control (14 Cartas)</summary>
+            <div class="details-content">
+                <div class="pitch-box"><strong>Ensino rápido:</strong> BAC é quando o usuário A consegue ver ou editar
+                    coisas do usuário B sem ter permissão. Inclui IDOR e Escalada de Privilégio.</div>
+                <div class="card-item">
+                    <div class="card-name">Porta Escancarada <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Insecure Direct Object Reference (IDOR)</span>
+                    <div class="card-desc">Você altera a URL de id=10 para id=1 e acessa a conta do dono.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Plebeu Privilegiado <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Privilege Escalation (PrivEsc)</span>
+                    <div class="card-desc">O estagiário intercepta o request, injeta "role": "admin" e vira o chefe do
+                        sistema.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Corredor Secreto <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Directory Traversal (Path Traversal)</span>
+                    <div class="card-desc">Usa ../../../etc/passwd para acessar pastas raízes proibidas pelo navegador.
+                    </div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Elevador de Serviço <span class="rarity-badge r-uncommon">Uncommon</span>
+                    </div>
+                    <span class="card-tech">Broken Function Level Auth</span>
+                    <div class="card-desc">Você acessa /admin/delete_all_users adivinhando o link. Ninguém exigiu a
+                        senha.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Degrau Oculto <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">JWT Role Manipulation</span>
+                    <div class="card-desc">Você adultera seu Token de sessão localmente assumindo a função de
+                        Superadmin.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">A Sala do Trono <span class="rarity-badge r-legendary">Legendary</span></div>
+                    <span class="card-tech">Root Organization Takeover</span>
+                    <div class="card-desc">CVSS extremo! Acesso completo ao painel corporativo da matriz. Controle
+                        total.</div>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>🪞 Cross-Site Scripting - XSS (12 Cartas)</summary>
+            <div class="details-content">
+                <div class="pitch-box"><strong>Ensino rápido:</strong> Injetar scripts de JavaScript que rodam no
+                    navegador da vítima. Rouba cookies, tokens e clicks.</div>
+
+                <div class="card-item">
+                    <div class="card-name">Espelho Falso <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Reflected XSS</span>
+                    <div class="card-desc">O script malicioso vai na URL (ex: um link falso que você manda por e-mail).
+                        Se clicarem, você ganha.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Labirinto de Espelhos <span class="rarity-badge r-common">Common</span>
+                    </div>
+                    <span class="card-tech">DOM-based XSS</span>
+                    <div class="card-desc">Falha ocorrendo exclusivamente no JavaScript do cliente (SPA/React), sem
+                        tocar no servidor.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Reflexo Congelado <span class="rarity-badge r-uncommon">Uncommon</span>
+                    </div>
+                    <span class="card-tech">Stored XSS</span>
+                    <div class="card-desc">Você posta um comentário no fórum contendo o Script. Quem ler o post, tem a
+                        conta hackeada automaticamente.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">A Tinta Invisível <span class="rarity-badge r-uncommon">Uncommon</span></div>
+                    <span class="card-tech">Markdown Parser XSS</span>
+                    <div class="card-desc">Você escapa do parser de markdown no chamado de suporte técnico. O suporte
+                        lê, o script executa e rouba a sessão de suporte.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Fio Transparente <span class="rarity-badge r-epic">Epic</span></div>
+                    <span class="card-tech">WebSocket XSS Hijack</span>
+                    <div class="card-desc">Exploração avançada roubando tokens de autenticação em tempo real via canal
+                        persistente.</div>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>🔐 Authentication Flaws (10 Cartas)</summary>
+            <div class="details-content">
+                <div class="card-item">
+                    <div class="card-name">Chave Mestra <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Authentication Bypass</span>
+                    <div class="card-desc">Ignora o prompt de senha totalmente através de brecha lógica.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Porteiro Esquecido <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Persistent Session Leak</span>
+                    <div class="card-desc">O token de "Lembrar de Mim" nunca expira e permite reuso ilimitado em
+                        terminais expostos.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Distintivo Falso <span class="rarity-badge r-uncommon">Uncommon</span>
+                    </div>
+                    <span class="card-tech">JWT Alg None Bypass</span>
+                    <div class="card-desc">Altera a assinatura do token para algoritmo "none", enviando um crachá de
+                        identificação em branco aprovado por falha lógica.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Gêmeo Maligno <span class="rarity-badge r-uncommon">Uncommon</span></div>
+                    <span class="card-tech">OAuth CSRF / State Fixation</span>
+                    <div class="card-desc">Vincula a rede social da vítima à sua própria conta devido à ausência do
+                        parâmetro protetor "state".</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Guarda Distraído <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">Multi-Factor Auth (MFA/2FA) Bypass</span>
+                    <div class="card-desc">Força bruta no SMS enviando milhares de requisições paralelas sem acionar
+                        limite de tentativas.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Sósia do Executivo <span class="rarity-badge r-epic">Epic</span></div>
+                    <span class="card-tech">SAML Response Tampering</span>
+                    <div class="card-desc">Engana o protocolo Single Sign-On (SSO) da matriz da empresa, assumindo papel
+                        executivo corporativo.</div>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>🕵️ SSRF (8 Cartas)</summary>
+            <div class="details-content">
+                <div class="pitch-box"><strong>Ensino rápido:</strong> Server-Side Request Forgery. Você força o próprio
+                    servidor da empresa a fazer o que você quer internamente, burlando firewalls, já que ele confia em
+                    si mesmo.</div>
+                <div class="card-item">
+                    <div class="card-name">O Espião Interno <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Classic SSRF</span>
+                    <div class="card-desc">Pede pro servidor público acessar e devolver a página restrita 127.0.0.1
+                        (Localhost).</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Segredo do Servidor <span class="rarity-badge r-uncommon">Uncommon</span>
+                    </div>
+                    <span class="card-tech">AWS EC2 Metadata SSRF</span>
+                    <div class="card-desc">Acesso clássico de bug bounty ao endpoint mágico 169.254.169.254, que devolve
+                        as chaves e credenciais IAM limpas do servidor de nuvem.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Endereço Traiçoeiro <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">DNS Rebinding</span>
+                    <div class="card-desc">O DNS resolve prum IP limpo, passa pela verificação e, segundos depois,
+                        resolve prum IP restrito pra realizar a requisição!</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Mensageiro Cego <span class="rarity-badge r-epic">Epic</span></div>
+                    <span class="card-tech">Gopher SSRF to Redis RCE</span>
+                    <div class="card-desc">Você injeta uma chave SSH forjada através do protocolo Gopher diretamente
+                        dentro do banco Redis.</div>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>💸 Business Logic (8 Cartas)</summary>
+            <div class="details-content">
+                <div class="pitch-box"><strong>Ensino rápido:</strong> Não é código quebrado, é regra de negócio falha!
+                    Como o fato de o site aceitar sacar valor negativo (e dar o troco pra ti).</div>
+                <div class="card-item">
+                    <div class="card-name">O Troco Infinito <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Negative Amount Logic Flaw</span>
+                    <div class="card-desc">Você põe no carrinho "-5 unidades" de um TV. O saldo da compra dá negativo. A
+                        loja paga você o valor do produto na finalização.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">A Entrega Fantasma <span class="rarity-badge r-uncommon">Uncommon</span>
+                    </div>
+                    <span class="card-tech">Race Condition</span>
+                    <div class="card-desc">Com $10 na conta, você ativa um script que aperta o botão "Sacar $10" 50
+                        vezes simultâneas. O banco saca $500 antes do seu saldo zerar no sistema.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Carrinho Sem Fundo <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">Integer Overflow</span>
+                    <div class="card-desc">Soma tantos itens (estourando o número binário 2.147.483.647) que o valor
+                        volta a ser zero ou negativo.</div>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>🔏 Cryptographic & Legendary RCE (12 Cartas)</summary>
+            <div class="details-content">
+                <div class="pitch-box"><strong>Ensino rápido:</strong> Erros de criptografia (MD5 fraco sem salt,
+                    Padding Oracles) e os Reis da Coroa: "RCE" ou Remote Code Execution, que ditam os maiores bounties
+                    do mundo.</div>
+                <div class="card-item">
+                    <div class="card-name">Cadeado de Papel <span class="rarity-badge r-common">Common</span></div>
+                    <span class="card-tech">Weak Crypto (MD5)</span>
+                    <div class="card-desc">Senhas vazadas são encontradas em 2 segundos em sites de crack MD5 porque não
+                        têm "Salt" (randomização).</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Oráculo Fofoqueiro <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">CBC Padding Oracle</span>
+                    <div class="card-desc">Decodifica mensagens cifradas brincando com os erros que o servidor cospe.
+                    </div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">A Tempestade Perfeita <span class="rarity-badge r-rare">Rare</span></div>
+                    <span class="card-tech">Multi-Stage Chain Exploit</span>
+                    <div class="card-desc">Combinação! Você encadeia SSRF para acessar o painel Admin e jogar um RCE lá
+                        dentro.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">O Mestre dos Títeres <span class="rarity-badge r-legendary">Legendary</span>
+                    </div>
+                    <span class="card-tech">Remote Code Execution (RCE)</span>
+                    <div class="card-desc">O prêmio máximo: você controla o servidor. É a vulnerabilidade que garante os
+                        bounties de $10.000 a $100.000+ no mundo real!</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">A Caixa de Pandora <span class="rarity-badge r-legendary">Legendary</span>
+                    </div>
+                    <span class="card-tech">Log4Shell / Java Deserialization</span>
+                    <div class="card-desc">Referência ao Log4J. Piora absoluta. Controle de infraestrutura cloud
+                        instantânea apenas logando string maliciosa.</div>
+                </div>
+            </div>
+        </details>
+
+        <!-- SEÇÃO 3: EVENTOS -->
+        <h2>🌪️ 24 Eventos (O Caos Corporativo)</h2>
+        <div class="pitch-box" style="margin-bottom: 20px;">
+            <strong>🗣️ Pitch Geral:</strong> "Bounty Hunters odeiam duas coisas: <em>Duplicates</em> (perder a
+            recompensa pra quem chegou 5 minutos mais cedo) e burocracia (<em>Out of Scope</em>, filas eternas). O
+            baralho de Eventos simula essa frustração PvP constante da profissão."
+        </div>
+
+        <details>
+            <summary>💥 Disrupção PvP e Ataques (8 Cartas)</summary>
+            <div class="details-content">
+                <div class="card-item">
+                    <div class="card-name">Duplicate Report!</div>
+                    <span class="card-tech">Duplicated Vulnerability Submission</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Oponente descarta a vulnerabilidade de maior valor
+                        da mesa.<br><strong>Ensino:</strong> 90% da dor de um hacker. O status passa de 'Triage' para
+                        'Closed as Duplicate'. Sem dinheiro, sem glória.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">DNS Hijack!</div>
+                    <span class="card-tech">Compulsory Target Switch</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Altera o programa ativo do oponente (ele perde os
+                        exploits!).<br><strong>Ensino:</strong> Tráfego desviado. De repente, todo o escopo no qual você
+                        trabalhou desapareceu do mapa ou foi migrado.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">Honeypot Triggered!</div>
+                    <span class="card-tech">Decoy Server Trap</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Oponente descarta 2 cartas da
+                        mão.<br><strong>Ensino:</strong> Era um servidor falso plantado pelo Blue Team só pra estudar
+                        suas táticas e queimar seu tempo.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">Data Breach! & Security Audit!</div>
+                    <span class="card-tech">Compliance Hand Inspection</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Exposição da mão e perda das cartas Críticas/Maior
+                        CVSS.<br><strong>Ensino:</strong> Vazamento ou auditoria pesada obriga quebra da
+                        confidencialidade da pesquisa.</div>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>⏳ Burocracia e Escopo (8 Cartas)</summary>
+            <div class="details-content">
+                <div class="card-item">
+                    <div class="card-name">Out of Scope!</div>
+                    <span class="card-tech">Boundary Rejection</span>
+                    <div class="card-desc"><strong>Efeito:</strong> O Autor não pode jogar ação Exploit no próximo
+                        turno.<br><strong>Ensino:</strong> O famigerado "Informational" ou "Out of Scope" do HackerOne.
+                        Você reportou um erro em subdomínio que não faz parte do bounty.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">Legal Threat! (Cease & Desist)</div>
+                    <span class="card-tech">Corporate Lawyer Intervention</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Bloqueia a ação Report por 1 rodada do
+                        alvo.<br><strong>Ensino:</strong> "Parem os testes já ou processaremos." Você tocou num
+                        mainframe frágil e a empresa mandou o jurídico!</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">Triage Delay!</div>
+                    <span class="card-tech">Corporate Backlog Delay</span>
+                    <div class="card-desc"><strong>Efeito:</strong> O autor joga com a mão revelada na mesa até o
+                        próximo turno.<br><strong>Ensino:</strong> A triagem corporativa dormiu e não viu seu relatório,
+                        a falha vazou e agora a comunidade tá lendo suas táticas.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">WAF Deployed! / 2FA Enforced!</div>
+                    <span class="card-tech">Web App Firewall / Hardening</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Bloqueiam classes específicas de vulnerabilidades de
+                        serem armadas (Injection / Authentication).<br><strong>Ensino:</strong> O Blue Team ativou a
+                        defesa da Cloudflare e subitamente SQLMap parou de funcionar e tudo dá 403 Forbidden.</div>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>💰 Bônus e Comunidade (8 Cartas)</summary>
+            <div class="details-content">
+                <div class="card-item">
+                    <div class="card-name">Bounty Increase! & Bug Bounty Mediation</div>
+                    <span class="card-tech">Double Bounty Multiplier</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Injeção massiva de dólares (bônus de 50% ou flat
+                        money).<br><strong>Ensino:</strong> Às vezes, o CISO adorou o seu trabalho e multiplicou seu
+                        Bounty. Mediação é quando o HackerOne força um pagamento amigável.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">Responsible Disclosure!</div>
+                    <span class="card-tech">Instant Free Submission</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Report Imediato em toda a mesa sem rolar o
+                        D8.<br><strong>Ensino:</strong> Divulgação ética! A janela onde tudo dá certo, a empresa assume
+                        a falha e paga todo mundo que enviou sem correr o risco de Patch.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">Bug Bounty Conference! & Swag Drop!</div>
+                    <span class="card-tech">Global Networking Event</span>
+                    <div class="card-desc"><strong>Efeito:</strong> Compra cartas (Tools e Main Deck)
+                        globalmente.<br><strong>Ensino:</strong> Encontros como DEF CON, Black Hat e H2HC. Todo mundo
+                        volta mais forte, com camisas, adesivos e truques novos.</div>
+                </div>
+                <div class="card-item">
+                    <div class="card-name">Zero Day Disclosure</div>
+                    <span class="card-tech">Underdog Catch-Up</span>
+                    <div class="card-desc"><strong>Efeito:</strong> O último colocado pega uma vulnerabilidade do
+                        lixo.<br><strong>Ensino:</strong> Vazam um 0-day no Twitter. Quem estava desatento usa ele para
+                        escalar os privilégios e correr atrás do pódio!</div>
+                </div>
+            </div>
+        </details>
+
+        <div class="footer">
+            <p>PWND! — Bug Bounty Chaos</p>
+            <p style="opacity: 0.6; margin-top: 5px;">Glossário de Bolso V1.1 (Autorizado para Playtest)</p>
+        </div>
+    </div>
+</body>
+
+</html>

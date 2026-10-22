@@ -1,6 +1,6 @@
 /**
  * gameRules.ts
- * PWND! Board Game - Regras Canônicas de Jogo e Constantes Compartilhadas
+ * PWND! Board Game - Regras Oficiais de Jogo e Constantes Compartilhadas
  * 
  * FONTE ÚNICA DE VERDADE:
  * Zona, cor e penalidade de patch são SEMPRE determinadas pelo SALDO BRUTO (bounty total)

@@ -118,16 +118,16 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
       </div>
 
       {/* CENTER MARKET MAT IN THE MIDDLE */}
-      <CenterMarketMat currentRound={3} totalRounds={8} />
+      <CenterMarketMat totalRounds={8} />
 
       {/* 6 PLAYMATS GRID LAYOUT (Estilo Imagem 2) */}
       <div style={{ textAlign: 'center', fontSize: '12px', color: 'var(--amber-glow)', fontFamily: 'var(--font-mono)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px' }}>
         — TAPETES INDIVIDUAIS DOS 6 JOGADORES DA MESA —
       </div>
 
-      <div className="full-table-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: '100%', alignItems: 'center' }}>
         {all6Players.map(pData => (
-          <div key={pData.playerId} style={{ transform: 'scale(0.95)', transformOrigin: 'top center', maxWidth: '100vw', overflowX: 'hidden' }}>
+          <div key={pData.playerId} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <PlayerMat playerData={pData} />
           </div>
         ))}

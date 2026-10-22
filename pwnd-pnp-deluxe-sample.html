@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWND! V1.3 — Amostra Gráfica Deluxe (Print & Play Frente/Verso)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@600;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --card-w: 63mm;
+      --card-h: 88mm;
+      --card-radius: 3mm;
+      --bg-cream: #F5EFE6;
+      --card-bg-white: #FFFFFF;
+      --text-black: #0F172A;
+      --border-dark: #1E293B;
+      
+      /* Cores Vibrantes de Alto Contraste */
+      --col-inj: #EA580C;
+      --col-bac: #7E22CE;
+      --col-xss: #DB2777;
+      --col-auth: #CA8A04;
+      --col-ssrf: #0284C7;
+      --col-logic: #0D9488;
+      --col-crypto: #16A34A;
+      --col-leg: #6D28D9;
+      --col-tool: #0F172A;
+      --col-defuse: #4F46E5;
+      --col-event: #DC2626;
+      --col-prog: #D97706;
+      --col-arch: #2563EB;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0B0F19;
+      color: #E2E8F0;
+      padding: 24px 12px;
+    }
+
+    /* BARRA DE CONTROLE NA TELA (NÃO IMPRIME) */
+    .toolbar-no-print {
+      max-width: 980px;
+      margin: 0 auto 24px auto;
+      background: #151D2E;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .toolbar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toolbar-title h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+    }
+
+    .toolbar-title p {
+      font-size: 12px;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: #10B981;
+      color: #064E3B;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+    .btn-primary:hover {
+      background: #34D399;
+      transform: translateY(-1px);
+    }
+
+    .btn-filter {
+      background: rgba(255, 255, 255, 0.08);
+      color: #E2E8F0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-filter.active {
+      background: #3B82F6;
+      color: #FFFFFF;
+      border-color: #60A5FA;
+    }
+
+    .guidance-box {
+      font-size: 11.5px;
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 3px solid #3B82F6;
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      color: #CBD5E1;
+      line-height: 1.45;
+    }
+
+    /* FOLHA DE IMPRESSÃO A4 */
+    .print-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 30px auto;
+      background: #FFFFFF;
+      padding: 16.5mm 10.5mm;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+      display: block;
+      page-break-after: always;
+    }
+
+    .sheet-meta-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5pt;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      color: #475569;
+      border-bottom: 1.5px solid #CBD5E1;
+      padding-bottom: 2mm;
+      margin-bottom: 3.5mm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* GRID 3x3 PERFEITO PARA POKER SIZE (63mm x 88mm) */
+    .cards-grid-3x3 {
+      display: grid;
+      grid-template-columns: repeat(3, var(--card-w));
+      grid-template-rows: repeat(3, var(--card-h));
+      gap: 0mm; /* Cartas coladas para corte linear com estilete */
+      justify-content: center;
+    }
+
+    /* CONTAINER PADRÃO DA CARTA (63mm x 88mm) */
+    .card-poker {
+      width: var(--card-w);
+      height: var(--card-h);
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-cream);
+      border: 0.25mm solid rgba(0, 0, 0, 0.25); /* Linha fina de corte */
+      padding: 3mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: var(--text-black);
+    }
+
+    /* Linhas de corte exteriores opcionais */
+    .crop-guides {
+      outline: 0.2mm dashed #94A3B8;
+    }
+
+    /* ========================================================
+       DESIGN ARTÍSTICO DELUXE - FRENTE DA CARTA (ALTO CONTRASTE)
+       ======================================================== */
+    .card-deluxe-front {
+      background: #FAF7F0;
+      border: 1.5px solid #111827;
+      border-radius: 2.5mm;
+      padding: 2.5mm;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* FAIXA SUPERIOR: CATEGORIA E PAYOUT */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5mm;
+    }
+
+    .badge-class {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1.5px 6px;
+      border-radius: 3px;
+      color: #FFFFFF;
+      font-size: 7.5pt;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .badge-bounty {
+      display: inline-flex;
+      align-items: center;
+      padding: 1.5px 5px;
+      border-radius: 3px;
+      background: #111827;
+      color: #FFFFFF;
+      font-size: 8pt;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.2px;
+    }
+
+    /* TÍTULO E NOME TÉCNICO */
+    .card-title-group {
+      margin-bottom: 1.5mm;
+      line-height: 1.15;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 10pt;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.2px;
+    }
+
+    .card-subtitle {
+      font-size: 6.8pt;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #475569;
+      margin-top: 1px;
+    }
+
+    /* QUADRO DE ARTE CENTRAL */
+    .card-art-frame {
+      width: 100%;
+      height: 25mm;
+      border: 1.2px solid #1E293B;
+      border-radius: 2mm;
+      overflow: hidden;
+      background: #E2E8F0;
+      position: relative;
+      margin-bottom: 2mm;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.15);
+    }
+
+    .card-art-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-art-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+      font-size: 26px;
+    }
+
+    /* CAIXA DE REGRAS E EFEITO (ABILITY BOX) - 100% BRANCA, ALTO CONTRASTE */
+    .card-rules-box {
+      background: #FFFFFF;
+      border: 1.2px solid #0F172A;
+      border-radius: 2mm;
+      padding: 2mm;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .rules-text {
+      font-size: 7.2pt;
+      line-height: 1.35;
+      color: #0F172A;
+      font-weight: 600;
+    }
+
+    /* CHIPS DE DESTAQUE PARA PALAVRAS-CHAVE */
+    .chip-tag {
+      display: inline-block;
+      padding: 0.5px 4px;
+      border-radius: 2px;
+      font-size: 6.5pt;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      vertical-align: middle;
+      margin-right: 3px;
+      text-transform: uppercase;
+    }
+    .chip-noisy {
+      background: #DC2626;
+      color: #FFFFFF;
+    }
+    .chip-active {
+      background: #D97706;
+      color: #FFFFFF;
+    }
+    .chip-passive {
+      background: #2563EB;
+      color: #FFFFFF;
+    }
+    .chip-defuse {
+      background: #7E22CE;
+      color: #FFFFFF;
+    }
+
+    .flavor-text {
+      font-size: 6.2pt;
+      font-style: italic;
+      color: #64748B;
+      border-top: 0.5px solid #E2E8F0;
+      padding-top: 1.5px;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+
+    /* RODAPÉ TÉCNICO (FOOTER) */
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5mm;
+      font-size: 6.5pt;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      color: #334155;
+      border-top: 1px solid rgba(0,0,0,0.15);
+      padding-top: 1mm;
+    }
+
+    /* ========================================================
+       VERSO DA CARTA (CARD BACK)
+       ======================================================== */
+    .card-back-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 2.5mm;
+      overflow: hidden;
+      border: 1px solid #111827;
+      display: flex;
+    }
+
+    .card-back-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ESTILOS DE IMPRESSÃO */
+    @media print {
+      body {
+        background: transparent !important;
+        padding: 0 !important;
+      }
+
+      .toolbar-no-print {
+        display: none !important;
+      }
+
+      .print-sheet {
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 16.5mm 10.5mm !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        page-break-after: always !important;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 0mm !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE CONTROLE NA TELA -->
+  <div class="toolbar-no-print">
+    <div class="toolbar-header">
+      <div class="toolbar-title">
+        <h1>PWND! V1.3 — Amostra Gráfica Deluxe & Impressão Duplex</h1>
+        <p>Poker Size 63mm × 88mm · 9 Cartas Protótipo com Arte Dedicada e Espelhamento Duplex Perfeito</p>
+      </div>
+      <div class="toolbar-actions">
+        <button class="btn btn-filter active" id="btn-show-both" onclick="setMode('both')">📄 Ambos (Frente & Verso Duplex)</button>
+        <button class="btn btn-filter" id="btn-show-front" onclick="setMode('front')">🃏 Apenas Frentes (Folha 1)</button>
+        <button class="btn btn-filter" id="btn-show-back" onclick="setMode('back')">🔄 Apenas Versos (Folha 2)</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ IMPRIMIR / SALVAR PDF (Ctrl + P)</button>
+      </div>
+    </div>
+    <div class="guidance-box">
+      <strong>💡 DICA CRÍTICA PARA IMPRESSÃO DUPLEX FRENTE E VERSO:</strong><br>
+      A Folha 2 (Versos) está <em>automaticamente espelhada nas colunas horizontais</em> (Coluna 1 da frente coincide com Coluna 3 do verso).
+      Ao imprimir em frente e verso na sua impressora (configuração "Virar na borda longa / Flip on Long Edge"), as cartas físicas coincidirão perfeitamente milímetro a milímetro!
+    </div>
+  </div>
+
+  <!-- ========================================================
+       FOLHA 1: FRENTES DAS 9 CARTAS DE AMOSTRA (GRID 3x3)
+       ======================================================== -->
+  <div class="print-sheet" id="sheet-front">
+    <div class="sheet-meta-header">
+      <span>PWND! V1.3 — FOLHA 1 DE 2 (FRENTES DAS CARTAS)</span>
+      <span>9 CARTAS POKER (63mm × 88mm) · ALTO CONTRASTE</span>
+    </div>
+
+    <div class="cards-grid-3x3">
+
+      <!-- CARTA 1: inj-13 (A Esteira Quebrada) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-inj);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-inj);">INJ · ÉPICA</span>
+              <span class="badge-bounty">+$5.0k</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">A Esteira Quebrada</div>
+              <div class="card-subtitle">[Automated SQL Injection]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <img src="/card-art/art-inj-13.png" alt="A Esteira Quebrada" onerror="this.onerror=null; this.src='card-art/art-inj-13.png';">
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <span class="chip-tag chip-noisy">[NOISY]</span>
+              <strong>BÔNUS CRÍTICO:</strong> Receba <strong>+$1.000</strong> adicionais no payout deste Report.
+            </div>
+            <div class="flavor-text">
+              Payload automatizado inserido na rotina assíncrona de conversão de dados da esteira.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>CVSS 8.3 · CRÍTICO</span>
+            <span>#013/080</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTA 2: tool-burp-1 (Canivete Suíço Hacker) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-tool);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-tool);">TOOL · ÉPICA</span>
+              <span class="badge-bounty" style="background: #334155;">FERRAMENTA</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">Canivete Suíço Hacker</div>
+              <div class="card-subtitle">[Burp Suite Pro · Intercept]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <img src="/card-art/art-tool-burp.png" alt="Canivete Suíço Hacker" onerror="this.onerror=null; this.src='card-art/art-tool-burp.png';">
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <span class="chip-tag chip-active">ATIVA</span>
+              Descarte os programas expostos e reponha-os; se pelo menos um aceitar a classe <strong>LEGENDARY</strong> (inclui escopo ALL), avance <strong>+$500</strong> na Bounty Track; caso contrário, compre 1 carta do Main Deck.
+            </div>
+            <div class="flavor-text">
+              O proxy interceptador essencial no cinto de qualquer pesquisador profissional.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>DESCARTE AO USAR</span>
+            <span>#081/126</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTA 3: old-guard (The Old Guard) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-arch);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-arch);">RESEARCHER</span>
+              <span class="badge-bounty" style="background: #1D4ED8;">MÃO: 9</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">The Old Guard</div>
+              <div class="card-subtitle">[O Veterano de C/ASM]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <img src="/card-art/art-arch-oldguard.png" alt="The Old Guard" onerror="this.onerror=null; this.src='card-art/art-arch-oldguard.png';">
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <span class="chip-tag chip-passive">PODER</span>
+              <strong>ESPECIALISTA SÊNIOR:</strong> Cada carta Épica ou Lendária incluída no seu Report concede <strong>+$500 extras</strong> no payout.
+            </div>
+            <div class="flavor-text">
+              "Décadas atrás eu quebrava isso decorando pointers. Mão grande, paciência de quem escreveu memcpy com o pé."
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>TAPETE PESQUISADOR</span>
+            <span>ARCH #02/06</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTA 4: evt-01 (Blue Team Hunt!) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-event);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-event);">EVENT #01</span>
+              <span class="badge-bounty" style="background: #991B1B;">CAOS</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">Blue Team Hunt!</div>
+              <div class="card-subtitle">[Proactive Threat Hunting]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <img src="/card-art/art-evt-blueteam.png" alt="Blue Team Hunt!" onerror="this.onerror=null; this.src='card-art/art-evt-blueteam.png';">
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <div style="font-size: 6.5pt; font-weight: 800; color: #DC2626; margin-bottom: 2px;">
+                ALVO: TODOS OS JOGADORES (Imune ao Social Engineer)
+              </div>
+              O time de defesa entra em ação proativa! Todos os jogadores devem <strong>descartar a vulnerabilidade de maior CVSS</strong> que possuírem exposta na mesa.
+            </div>
+            <div class="flavor-text">
+              A auditoria interna acordou. Quem deixou exploits desprotegidos vai pagar a conta.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>BARALHO DE EVENTOS</span>
+            <span>EVENT #01/24</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTA 5: shopall-1 (ShopAll Global) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-prog);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-prog);">PROGRAM</span>
+              <span class="badge-bounty" style="background: #B45309;">+$1.0k BÔNUS</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">ShopAll Global</div>
+              <div class="card-subtitle">[E-Commerce Multinacional]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <img src="/card-art/art-prog-shopall.png" alt="ShopAll Global" onerror="this.onerror=null; this.src='card-art/art-prog-shopall.png';">
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                <span style="font-size: 6.8pt; font-weight: 800; color: #EA580C;">PATCH: MODERADA (9+)</span>
+                <span style="font-size: 6.8pt; font-weight: 800; color: #16A34A;">ESCOPO: [ALL]</span>
+              </div>
+              Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão e alta rotatividade de pesquisadores.
+            </div>
+            <div class="flavor-text">
+              Milhões de requisições por minuto na maior plataforma de varejo digital do país.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>PROGRAM MARKET</span>
+            <span>PROG #01/24</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTA 6: defuse-deck-1 (Safeguard Suprema Bypass) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-defuse);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-defuse);">SAFEGUARD</span>
+              <span class="badge-bounty" style="background: #4338CA;">DEFESA</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">Safeguard (Bypass)</div>
+              <div class="card-subtitle">[Bypass Card · Dual Mode]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <img src="/card-art/art-defuse-bypass.png" alt="Safeguard Bypass" onerror="this.onerror=null; this.src='card-art/art-defuse-bypass.png';">
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <span class="chip-tag chip-defuse">SUPREMA</span>
+              <strong>Anula o Patch Deployed!</strong><br>
+              • <em>No Report (Noisy):</em> payout garantido sem tool, saca evento e renova programa.<br>
+              • <em>Em Stealth:</em> mantém exploits e programa intactos na mesa.
+            </div>
+            <div class="flavor-text">
+              Sempre existe uma porta dos fundos quando os administradores fecham o acesso principal.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>DESCARTE AO USAR</span>
+            <span>#117/126</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTA 7: auth-10 (O Sósia do Executivo) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-auth);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-auth); color: #000;">AUTH · ÉPICA</span>
+              <span class="badge-bounty">+$5.0k</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">O Sósia do Executivo</div>
+              <div class="card-subtitle">[SAML Response Tampering]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <div class="card-art-placeholder">
+              <span>🎭</span>
+              <span style="font-size: 8pt; font-family: 'JetBrains Mono', monospace; font-weight: 800; color: #CA8A04; margin-top: 4px;">SAML FORGERY</span>
+            </div>
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <span class="chip-tag chip-noisy">[NOISY]</span>
+              <strong>DESVIO DE PAGAMENTO:</strong> Transfira <strong>$1.000</strong> do jogador com o maior saldo para a sua Bounty Track.
+            </div>
+            <div class="flavor-text">
+              Um token assinado incorretamente convence a tesouraria corporativa de que você é o CFO.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>CVSS 8.8 · CRÍTICO</span>
+            <span>#040/080</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTA 8: tool-zap (OWASP ZAP) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-tool);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-tool);">TOOL · COMUM</span>
+              <span class="badge-bounty" style="background: #334155;">FERRAMENTA</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">OWASP ZAP</div>
+              <div class="card-subtitle">[Automated Vulnerability Scanner]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <div class="card-art-placeholder">
+              <span>⚡</span>
+              <span style="font-size: 8pt; font-family: 'JetBrains Mono', monospace; font-weight: 800; color: #2563EB; margin-top: 4px;">PARALLEL SCAN</span>
+            </div>
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <span class="chip-tag chip-passive">PASSIVA</span>
+              Na sua primeira ação de <strong>Exploit</strong> do turno, desça <strong>2 vulnerabilidades</strong> em vez de 1 (respeitando escopo e limite de mesa).
+            </div>
+            <div class="flavor-text">
+              Scanner open-source que dispara requisições concorrentes em alta velocidade.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>FERRAMENTA PERMANENTE</span>
+            <span>#085/126</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTA 9: leg-1 (O Efeito Dominó) -->
+      <div class="card-poker">
+        <div class="card-deluxe-front" style="border-top: 3.5mm solid var(--col-leg);">
+          <div>
+            <div class="card-header">
+              <span class="badge-class" style="background: var(--col-leg);">⚡ LEGENDARY</span>
+              <span class="badge-bounty">+$2.5k</span>
+            </div>
+            <div class="card-title-group">
+              <div class="card-title">O Efeito Dominó</div>
+              <div class="card-subtitle">[Multi-Stage Chained Exploit]</div>
+            </div>
+          </div>
+
+          <div class="card-art-frame">
+            <div class="card-art-placeholder">
+              <span>⛓️</span>
+              <span style="font-size: 8pt; font-family: 'JetBrains Mono', monospace; font-weight: 800; color: #7C3AED; margin-top: 4px;">EXPLOIT CHAIN</span>
+            </div>
+          </div>
+
+          <div class="card-rules-box">
+            <div class="rules-text">
+              <span class="chip-tag chip-noisy">[NOISY]</span>
+              <strong>EFEITO DOMINÓ:</strong> Ao descer esta vulnerabilidade, baixe imediatamente <strong>+1 vulnerabilidade adicional</strong> da mão na Zona de Exploits (respeita o limite de 3 e escopo).
+            </div>
+            <div class="flavor-text">
+              A primeira peça cai imperceptível. A última derruba o datacenter inteiro.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>CVSS 6.3 · INCOMUM</span>
+            <span>#075/080</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       FOLHA 2: VERSOS DAS CARTAS COM ESPELHAMENTO HORIZONTAL DUPLEX
+       ========================================================
+       IMPORTANTE: Na impressão frente e verso, a coluna da esquerda da folha 1
+       vai parar na coluna da direita da folha 2!
+       Portanto, para cada linha:
+       Frente: [Col 1, Col 2, Col 3] -> Verso: [Verso Col 3, Verso Col 2, Verso Col 1]
+       ======================================================== -->
+  <div class="print-sheet" id="sheet-back">
+    <div class="sheet-meta-header">
+      <span>PWND! V1.3 — FOLHA 2 DE 2 (VERSOS DAS CARTAS · ESPELHAMENTO DUPLEX)</span>
+      <span>VIRAR NA BORDA LONGA (FLIP ON LONG EDGE)</span>
+    </div>
+
+    <div class="cards-grid-3x3">
+
+      <!-- LINHA 1 - COLUNA 1 DO VERSO = VERSO DA CARTA 3 DA FRENTE (old-guard -> ARCHETYPE) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-archetype.jpg" alt="Verso Arquétipo" onerror="this.onerror=null; this.src='card-backs/back-archetype.jpg';">
+        </div>
+      </div>
+
+      <!-- LINHA 1 - COLUNA 2 DO VERSO = VERSO DA CARTA 2 DA FRENTE (tool-burp-1 -> TOOL) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-tool.jpg" alt="Verso Tool" onerror="this.onerror=null; this.src='card-backs/back-tool.jpg';">
+        </div>
+      </div>
+
+      <!-- LINHA 1 - COLUNA 3 DO VERSO = VERSO DA CARTA 1 DA FRENTE (inj-13 -> VULNERABILITY) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-vuln.jpg" alt="Verso Vulnerabilidade" onerror="this.onerror=null; this.src='card-backs/back-vuln.jpg';">
+        </div>
+      </div>
+
+      <!-- LINHA 2 - COLUNA 1 DO VERSO = VERSO DA CARTA 6 DA FRENTE (defuse-deck-1 -> TOOL/ACTION) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-tool.jpg" alt="Verso Safeguard/Action" onerror="this.onerror=null; this.src='card-backs/back-tool.jpg';">
+        </div>
+      </div>
+
+      <!-- LINHA 2 - COLUNA 2 DO VERSO = VERSO DA CARTA 5 DA FRENTE (shopall-1 -> PROGRAM) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-program.jpg" alt="Verso Programa" onerror="this.onerror=null; this.src='card-backs/back-program.jpg';">
+        </div>
+      </div>
+
+      <!-- LINHA 2 - COLUNA 3 DO VERSO = VERSO DA CARTA 4 DA FRENTE (evt-01 -> EVENT) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-event.jpg" alt="Verso Evento" onerror="this.onerror=null; this.src='card-backs/back-event.jpg';">
+        </div>
+      </div>
+
+      <!-- LINHA 3 - COLUNA 1 DO VERSO = VERSO DA CARTA 9 DA FRENTE (leg-1 -> VULNERABILITY) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-vuln.jpg" alt="Verso Vulnerabilidade" onerror="this.onerror=null; this.src='card-backs/back-vuln.jpg';">
+        </div>
+      </div>
+
+      <!-- LINHA 3 - COLUNA 2 DO VERSO = VERSO DA CARTA 8 DA FRENTE (tool-zap -> TOOL) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-tool.jpg" alt="Verso Tool" onerror="this.onerror=null; this.src='card-backs/back-tool.jpg';">
+        </div>
+      </div>
+
+      <!-- LINHA 3 - COLUNA 3 DO VERSO = VERSO DA CARTA 7 DA FRENTE (auth-10 -> VULNERABILITY) -->
+      <div class="card-poker">
+        <div class="card-back-image">
+          <img src="/card-backs/back-vuln.jpg" alt="Verso Vulnerabilidade" onerror="this.onerror=null; this.src='card-backs/back-vuln.jpg';">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function setMode(mode) {
+      const sheetFront = document.getElementById('sheet-front');
+      const sheetBack = document.getElementById('sheet-back');
+      const btnBoth = document.getElementById('btn-show-both');
+      const btnFront = document.getElementById('btn-show-front');
+      const btnBack = document.getElementById('btn-show-back');
+
+      btnBoth.classList.remove('active');
+      btnFront.classList.remove('active');
+      btnBack.classList.remove('active');
+
+      if (mode === 'front') {
+        sheetFront.style.display = 'block';
+        sheetBack.style.display = 'none';
+        btnFront.classList.add('active');
+      } else if (mode === 'back') {
+        sheetFront.style.display = 'none';
+        sheetBack.style.display = 'block';
+        btnBack.classList.add('active');
+      } else {
+        sheetFront.style.display = 'block';
+        sheetBack.style.display = 'block';
+        btnBoth.classList.add('active');
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+[
+  {
+    "id": "evt-01",
+    "description": {
+      "truth": "O time de defesa entra em ação proativa! Todos os jogadores devem descartar a vulnerabilidade de maior CVSS que possuírem exposta na mesa.",
+      "pnp": "O time de defesa entra em ação proativa! Todos os jogadores ativos devem descartar a vulnerabilidade de maior CVSS que possuírem exposta na mesa."
+    }
+  },
+  {
+    "id": "evt-05",
+    "description": {
+      "truth": "Equipe corporativa em backlog! Você fica impedido de instalar tools no seu próximo turno.",
+      "pnp": "Equipe corporativa em backlog! As cartas da sua mão devem jogar expostas (reveladas para a mesa) até o seu próximo turno."
+    }
+  },
+  {
+    "id": "evt-06",
+    "description": {
+      "truth": "Acordo de mediação global! Todos os jogadores recebem $1.500 imediatamente na Bounty Track.",
+      "pnp": "Acordo de mediação global! Todos os jogadores ativos recebem $1.500 imediatamente na Bounty Track."
+    }
+  },
+  {
+    "id": "evt-07",
+    "description": {
+      "truth": "Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 tool do descarte, se houver.",
+      "pnp": "Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 Tool Card da pilha de descarte para a mão (se houver)."
+    }
+  },
+  {
+    "id": "evt-09",
+    "description": {
+      "truth": "Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem metade do valor de cada carta descartada (arredondamento para baixo).",
+      "pnp": "Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem metade do valor de cada carta descartada como compensação (arredondando para baixo)."
+    }
+  },
+  {
+    "id": "evt-11",
+    "description": {
+      "truth": "Filtro de WAF ativado! Vulnerabilidades da classe INJ não podem ser baixadas na mesa por 1 rodada completa.",
+      "pnp": "Filtro de WAF ativado! Vulnerabilidades da classe Injection não podem ser baixadas na mesa por 1 rodada completa."
+    }
+  },
+  {
+    "id": "evt-12",
+    "description": {
+      "truth": "Sequestro de tráfego! O jogador com o MAIOR saldo: descarta o programa ativo, pega o próximo do deck e descarta as vulns na mesa que ficarem fora de escopo.",
+      "pnp": "Sequestro de tráfego! O jogador com o MAIOR saldo na Bounty Track descarta o seu programa ativo, pega o próximo do deck e descarta as vulnerabilidades na mesa que ficarem fora de escopo."
+    }
+  },
+  {
+    "id": "evt-17",
+    "description": {
+      "truth": "Reconhecimento na comunidade! O jogador em último lugar na Bounty Track recebe +$1.500 no seu próximo Report bem sucedido.",
+      "pnp": "Reconhecimento na comunidade! O jogador em último lugar na Bounty Track recebe +$1.500 de bônus no seu próximo Report bem-sucedido."
+    }
+  },
+  {
+    "id": "evt-19",
+    "description": {
+      "truth": "Autenticação em dois fatores ativada! Vulnerabilidades da classe AUTH ficam bloqueadas de serem baixadas por 1 rodada.",
+      "pnp": "Autenticação em dois fatores ativada! Vulnerabilidades da classe Authentication ficam bloqueadas de serem baixadas por 1 rodada."
+    }
+  },
+  {
+    "id": "evt-21",
+    "description": {
+      "truth": "Descarte os programas expostos e reponha-os. Se pelo menos um permitir todas as classes de escopo, todos avançam +$500 na Bounty Track.",
+      "pnp": "Fusão corporativa! Descarte os programas expostos do mercado e reponha-os. Se pelo menos um permitir todas as classes de escopo (ALL), todos os jogadores avançam +$500 na Bounty Track."
+    }
+  },
+  {
+    "id": "evt-24",
+    "description": {
+      "truth": "Cada pesquisador que reportou todas as vulnerabilidades dentro do escopo autorizado nesta rodada recebe +$2k de bônus de credibilidade ética. (A ética compensa. A sua reputação é a sua ferramenta mais valiosa.)",
+      "pnp": "Cada pesquisador que reportou TODAS as suas vulnerabilidades dentro do escopo autorizado nesta rodada recebe +$2.000 de bônus de credibilidade ética."
+    }
+  }
+]

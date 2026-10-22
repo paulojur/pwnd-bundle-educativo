@@ -18,9 +18,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Blue Team Hunt!',
     technicalReference: 'Proactive Threat Hunting',
     icon: '🕵️',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'O time de defesa entra em ação proativa! Todos os jogadores ativos devem descartar a vulnerabilidade de maior CVSS que possuírem exposta na mesa.',
-    ptDescription: 'O time de defesa entra em ação proativa! Todos os jogadores ativos devem descartar a vulnerabilidade de maior CVSS que possuírem exposta na mesa.',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'O time de defesa entra em ação proativa! Todos os jogadores devem descartar a vulnerabilidade de maior CVSS que possuírem exposta na mesa.',
+    ptDescription: 'O time de defesa entra em ação proativa! Todos os jogadores devem descartar a vulnerabilidade de maior CVSS que possuírem exposta na mesa.',
     effectType: 'patch'
   },
   {
@@ -40,9 +40,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Out of Scope!',
     technicalReference: 'Out of Scope Boundary Rejection',
     icon: '❌',
-    targetText: 'Tu (Autor do Report)',
+    targetText: 'O Autor do Report',
     simpleDescription: 'Seu reporte gerou alerta no comitê de escopo! Você fica impedido de realizar a ação Exploit (baixar vulnerabilidades) no seu próximo turno.',
-    ptDescription: 'Teu reporte gerou alerta no comitê de escopo! Tu ficas impedido de realizar a ação Exploit (baixar vulnerabilidades) no teu próximo turno.',
+    ptDescription: 'Seu reporte gerou alerta no comitê de escopo! Você fica impedido de realizar a ação Exploit (baixar vulnerabilidades) no seu próximo turno.',
     effectType: 'scope'
   },
   {
@@ -52,8 +52,8 @@ export const FULL_24_EVENTS: EventCardData[] = [
     technicalReference: 'Cease & Desist',
     icon: '⚖️',
     targetText: 'Escolha 1 Oponente',
-    simpleDescription: 'AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele fica impedido de realizar a ação Report pela próxima rodada.',
-    ptDescription: 'AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele fica impedido de realizar a ação Report pela próxima ronda.',
+    simpleDescription: 'AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele deve pagar $1.500 da sua Bounty Track para advogados de defesa, ou fica impedido de realizar a ação Report no seu próximo turno.',
+    ptDescription: 'AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele deve pagar $1.500 da sua Bounty Track para advogados de defesa, ou fica impedido de realizar a ação Report no seu próximo turno.',
     effectType: 'delay'
   },
   {
@@ -62,9 +62,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Triage Delay!',
     technicalReference: 'Corporate Backlog Delay',
     icon: '⏳',
-    targetText: 'Tu (Autor do Report)',
-    simpleDescription: 'Equipe corporativa em backlog! As cartas da sua mão devem jogar expostas (reveladas para a mesa) até o seu próximo turno.',
-    ptDescription: 'Equipe corporativa em backlog! As cartas da tua mão devem jogar expostas (reveladas para a mesa) até o teu próximo turno.',
+    targetText: 'O Autor do Report',
+    simpleDescription: 'Equipe corporativa em backlog! Você fica impedido de instalar ou ativar Tools no seu próximo turno.',
+    ptDescription: 'Equipe corporativa em backlog! Você fica impedido de instalar ou ativar Tools no seu próximo turno.',
     effectType: 'delay'
   },
   {
@@ -73,9 +73,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Bug Bounty Mediation',
     technicalReference: 'Consensus Bounty Settlement',
     icon: '🤝',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Acordo de mediação global! Todos os jogadores ativos recebem $1.500 imediatamente na Bounty Track.',
-    ptDescription: 'Acordo de mediação global! Todos os jogadores ativos recebem $1.500 imediatamente na Bounty Track.',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'Acordo de mediação global! Todos os jogadores recebem $1.500 imediatamente na Bounty Track.',
+    ptDescription: 'Acordo de mediação global! Todos os jogadores recebem $1.500 imediatamente na Bounty Track.',
     effectType: 'bounty'
   },
   {
@@ -85,8 +85,8 @@ export const FULL_24_EVENTS: EventCardData[] = [
     technicalReference: 'Discard Pile Rescue',
     icon: '🔓',
     targetText: 'Jogador em Último Lugar',
-    simpleDescription: 'Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 carta de vulnerabilidade da pilha de descarte para a mão.',
-    ptDescription: 'Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 carta de vulnerabilidade da pilha de descarte para a mão.',
+    simpleDescription: 'Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 Tool Card da pilha de descarte para a mão (se houver).',
+    ptDescription: 'Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 Tool Card da pilha de descarte para a mão (se houver).',
     effectType: 'meta'
   },
   {
@@ -95,7 +95,7 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Scope Expansion!',
     technicalReference: 'Corporate Scope Window Expansion',
     icon: '🌐',
-    targetText: 'Tu (Autor do Report)',
+    targetText: 'O Autor do Report',
     simpleDescription: 'A empresa expandiu o programa! No seu próximo turno, você pode jogar qualquer vulnerabilidade na mesa ignorando as restrições de escopo.',
     ptDescription: 'A empresa expandiu o programa! No teu próximo turno, tu podes jogar qualquer vulnerabilidade na mesa ignorando as restrições de escopo.',
     effectType: 'scope'
@@ -106,9 +106,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Public Disclosure!',
     technicalReference: 'Public Zero-Day Exfiltration',
     icon: '📢',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem $1.000 de compensação imediata.',
-    ptDescription: 'Vazamento público! Todos os jogadores descartam tuas vulnerabilidades expostas na mesa, mas recebem $1.000 de compensação imediata.',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem indenização na Bounty Track conforme a raridade: +$1.000 (Comum/Incomum), +$2.000 (Rara), +$2.500 (Épica) e +$3.000 (Lendária).',
+    ptDescription: 'Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem indenização na Bounty Track conforme a raridade: +$1.000 (Comum/Incomum), +$2.000 (Rara), +$2.500 (Épica) e +$3.000 (Lendária).',
     effectType: 'bounty'
   },
   {
@@ -117,9 +117,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Bounty Increase!',
     technicalReference: 'Double Bounty Multiplier',
     icon: '💰',
-    targetText: 'Tu (Autor do Report)',
-    simpleDescription: 'Verba de emergência liberada! O seu próximo Report aprovado terá um bônus financeiro adicional de +50%.',
-    ptDescription: 'Verba de emergência liberada! O teu próximo Report aprovado terá um bónus financeiro adicional de +50%.',
+    targetText: 'O Autor do Report / Mesa',
+    simpleDescription: 'Verba de emergência liberada! Posicione este evento no centro da mesa: ele permanece ativo por 1 volta completa (descarte-o no início do seu próximo turno). Qualquer jogador que realizar um Report bem-sucedido enquanto este evento estiver ativo recebe +$1.500 de bônus na Bounty Track.',
+    ptDescription: 'Verba de emergência liberada! Posicione este evento no centro da mesa: ele permanece ativo por 1 volta completa (descarte-o no início do seu próximo turno). Qualquer jogador que realizar um Report bem-sucedido enquanto este evento estiver ativo recebe +$1.500 de bônus na Bounty Track.',
     effectType: 'bounty'
   },
   {
@@ -128,7 +128,7 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'WAF Deployed!',
     technicalReference: 'Web Application Firewall Block',
     icon: '🛡️',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
+    targetText: 'Todos os Jogadores',
     simpleDescription: 'Filtro de WAF ativado! Vulnerabilidades da classe Injection não podem ser baixadas na mesa por 1 rodada completa.',
     ptDescription: 'Filtro de WAF ativado! Vulnerabilidades da classe Injection não podem ser baixadas na mesa por 1 ronda completa.',
     effectType: 'meta'
@@ -139,9 +139,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'DNS Hijack!',
     technicalReference: 'Compulsory Target Switch',
     icon: '🌐',
-    targetText: 'Escolha 1 Oponente',
-    simpleDescription: 'Sequestro de tráfego! Escolha 1 oponente: o programa ativo dele é descartado e substituído por uma carta do topo do mercado.',
-    ptDescription: 'Sequestro de tráfego! Escolha 1 oponente: o programa ativo dele é descartado e substituído por uma carta do topo do mercado.',
+    targetText: 'Jogador com Maior Saldo (Líder)',
+    simpleDescription: 'Sequestro de tráfego! O jogador com o MAIOR saldo na Bounty Track descarta o seu programa, pega o próximo do deck e descarta as vulnerabilidades na mesa que ficarem fora de escopo.',
+    ptDescription: 'Sequestro de tráfego! O jogador com o MAIOR saldo na Bounty Track descarta o seu programa, pega o próximo do deck e descarta as vulnerabilidades na mesa que ficarem fora de escopo.',
     effectType: 'meta'
   },
   {
@@ -150,9 +150,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Responsible Disclosure!',
     technicalReference: 'Instant Free Submission Window',
     icon: '📄',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rolar o D8 (sem risco de Patch Deployed!), respeitando a ordem da mesa.',
-    ptDescription: 'Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rodar o D8 (sem risco de Patch Deployed!), respeitando a ordem da mesa.',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rolar os dados (não compra tool nem evento), respeitando a ordem da mesa.',
+    ptDescription: 'Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rolar os dados (não compra tool nem evento), respeitando a ordem da mesa.',
     effectType: 'bounty'
   },
   {
@@ -162,8 +162,8 @@ export const FULL_24_EVENTS: EventCardData[] = [
     technicalReference: 'Decoy Server Trap',
     icon: '🍯',
     targetText: 'Escolha 1 Oponente',
-    simpleDescription: 'Armadilha de servidor honeypot! Escolha 1 oponente: ele é forçado a descartar 2 cartas aleatórias da própria mão.',
-    ptDescription: 'Armadilha de servidor honeypot! Escolha 1 oponente: ele é forçado a descartar 2 cartas aleatórias da própria mão.',
+    simpleDescription: 'Armadilha de servidor honeypot! Escolha 1 oponente: ele é forçado a descartar 2 cartas aleatórias da própria mão (em partidas de 2 jogadores, descarta apenas 1 carta).',
+    ptDescription: 'Armadilha de servidor honeypot! Escolha 1 oponente: ele é forçado a descartar 2 cartas aleatórias da própria mão (em partidas de 2 jogadores, descarta apenas 1 carta).',
     effectType: 'delay'
   },
   {
@@ -172,9 +172,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'CVE Assignment Delayed!',
     technicalReference: 'Defuse Blockade Window',
     icon: '⏳',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Burocracia na atribuição de CVE! Cartas de Defesa (Bypass) ficam bloqueadas por 1 rodada completa (efeito imediato, vale contra patches do mesmo turno).',
-    ptDescription: 'Burocracia na atribuição de CVE! Cartas de Defesa (Bypass) ficam bloqueadas por 1 ronda completa (efeito imediato, vale contra patches do mesmo turno).',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'Burocracia na atribuição de CVE! Cartas de Defesa (Safeguard) ficam bloqueadas por 1 rodada completa (efeito imediato, vale contra patches do mesmo turno).',
+    ptDescription: 'Burocracia na atribuição de CVE! Cartas de Defesa (Safeguard) ficam bloqueadas por 1 ronda completa (efeito imediato, vale contra patches do mesmo turno).',
     effectType: 'delay'
   },
   {
@@ -183,7 +183,7 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Bug Collision!',
     technicalReference: 'Lowest CVSS Discard Event',
     icon: '💥',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
+    targetText: 'Todos os Jogadores',
     simpleDescription: 'Colisão de relatórios no mercado! Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta em suas mesas.',
     ptDescription: 'Colisão de relatórios no mercado! Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta em tuas mesas.',
     effectType: 'duplicate'
@@ -195,8 +195,8 @@ export const FULL_24_EVENTS: EventCardData[] = [
     technicalReference: 'Underdog Catch-Up Boost',
     icon: '🏆',
     targetText: 'Jogador em Último Lugar',
-    simpleDescription: 'Reconhecimento na comunidade! O jogador em último lugar na Bounty Track compra 2 Tool Cards do Main Deck.',
-    ptDescription: 'Reconhecimento na comunidade! O jogador em último lugar na Bounty Track compra 2 Tool Cards do Main Deck.',
+    simpleDescription: 'Reconhecimento na comunidade! O jogador em último lugar na Bounty Track recebe +$1.500 de bônus no seu próximo Report bem-sucedido.',
+    ptDescription: 'Reconhecimento na comunidade! O jogador em último lugar na Bounty Track recebe +$1.500 de bónus no seu próximo Report bem-sucedido.',
     effectType: 'meta'
   },
   {
@@ -216,7 +216,7 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: '2FA Enforced!',
     technicalReference: 'Auth Class Lockdown',
     icon: '🔐',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
+    targetText: 'Todos os Jogadores',
     simpleDescription: 'Autenticação em dois fatores ativada! Vulnerabilidades da classe Authentication ficam bloqueadas de serem baixadas por 1 rodada.',
     ptDescription: 'Autenticação em dois fatores ativada! Vulnerabilidades da classe Authentication ficam bloqueadas de serem baixadas por 1 ronda.',
     effectType: 'meta'
@@ -227,7 +227,7 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Bug Bounty Conference!',
     technicalReference: 'Global Networking Event',
     icon: '🎪',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
+    targetText: 'Todos os Jogadores',
     simpleDescription: 'Confraternização da comunidade! Todos os jogadores compram 2 cartas do Main Deck imediatamente.',
     ptDescription: 'Confraternização da comunidade! Todos os jogadores compram 2 cartas do Main Deck imediatamente.',
     effectType: 'meta'
@@ -235,12 +235,12 @@ export const FULL_24_EVENTS: EventCardData[] = [
   {
     id: 'evt-21',
     number: '21',
-    name: 'Data Breach!',
-    technicalReference: 'Hand Inspection & Discard',
-    icon: '🔓',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Auditoria de dados! Todos revelam a mão. Quem tiver mais vulnerabilidades de severidade Critical descarta metade delas.',
-    ptDescription: 'Auditoria de dados! Todos revelam a mão. Quem tiver mais vulnerabilidades de severidade Critical descarta metade delas.',
+    name: 'Acquisition!',
+    technicalReference: 'Corporate Acquisition & Scope Flush',
+    icon: '🤝',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'Fusão corporativa! Descarte os programas expostos do mercado e reponha-os. Se pelo menos um permitir todas as classes de escopo (ALL), todos os jogadores avançam +$500 na Bounty Track.',
+    ptDescription: 'Fusão corporativa! Descarte os programas expostos do mercado e reponha-os. Se pelo menos um permitir todas as classes de escopo (ALL), todos os jogadores avançam +$500 na Bounty Track.',
     effectType: 'duplicate'
   },
   {
@@ -249,7 +249,7 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Security Audit!',
     technicalReference: 'Compliance Audit Cycle',
     icon: '📅',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
+    targetText: 'Todos os Jogadores',
     simpleDescription: 'Varredura geral de conformidade! Todos os jogadores revelam a mão e descartam a carta de maior CVSS.',
     ptDescription: 'Varredura geral de conformidade! Todos os jogadores revelam a mão e descartam a carta de maior CVSS.',
     effectType: 'meta'
@@ -260,9 +260,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Swag Drop!',
     technicalReference: 'Consolation Gear Reward',
     icon: '🎁',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
-    simpleDescription: 'Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool Card) do Main Deck.',
-    ptDescription: 'Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool Card) do Main Deck.',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool Card) do Tool Deck.',
+    ptDescription: 'Brindes e mimos do patrocinador! Cada jogador compra 1 carta de ferramenta (Tool Card) do Tool Deck.',
     effectType: 'meta'
   },
   {
@@ -272,9 +272,9 @@ export const FULL_24_EVENTS: EventCardData[] = [
     enName: 'Ethical Bounty',
     technicalReference: 'Coordinated Vulnerability Disclosure',
     icon: '🏅',
-    targetText: 'Todos os Pesquisadores',
-    simpleDescription: 'Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta rodada recebe +$2k de bônus de credibilidade ética. (A ética compensa. A sua reputação é a sua ferramenta mais valiosa.)',
-    ptDescription: 'Cada pesquisador que reportou vulnerabilidades dentro do escopo autorizado nesta ronda recebe +$2k de bónus de credibilidade ética. (A ética compensa. A tua reputação é a tua ferramenta mais valiosa.)',
+    targetText: 'Todos os Jogadores',
+    simpleDescription: 'Auditoria de conformidade corporativa! Cada jogador que possuir zero Tokens de Alerta na mesa recebe imediatamente +$1.500 de bônus de conduta ética na Bounty Track.',
+    ptDescription: 'Auditoria de conformidade corporativa! Cada jogador que possuir zero Tokens de Alerta na mesa recebe imediatamente +$1.500 de bônus de conduta ética na Bounty Track.',
     effectType: 'bounty'
   }
 ];
@@ -299,7 +299,7 @@ export const FULL_24_EVENTS: EventCardData[] = [
     name: 'Patch Tuesday!',
     technicalReference: 'Global Security Patch Cycle',
     icon: '📅',
-    targetText: 'Todos os Jogadores (Imune ao Social Engineer)',
+    targetText: 'Todos os Jogadores',
     simpleDescription: 'Dia mundial de correções corporativas! Todos os jogadores removem 1 carga de todas as Tools instaladas em seus Racks.',
     ptDescription: 'Dia mundial de correções corporativas! Todos os jogadores removem 1 carga de todas as Tools instaladas em seus Racks.',
     effectType: 'patch'

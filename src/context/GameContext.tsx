@@ -269,7 +269,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const name = progName.toLowerCase();
       if (name.includes('cloudnine') || name.includes('cryptox') || name.includes('aicore')) return 4000;
       if (name.includes('banksafe') || name.includes('healthlock') || name.includes('paygateway')) return 2500;
-      if (name.includes('shopall') || name.includes('socialbee') || name.includes('gameverse') || name.includes('deliverydash')) return 1000;
+      if (name.includes('shopall') || name.includes('socialbee') || name.includes('socialhive') || name.includes('gameverse') || name.includes('deliverydash')) return 1000;
       return 0;
     };
 

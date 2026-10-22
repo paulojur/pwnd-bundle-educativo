@@ -48,10 +48,10 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
   };
 
   const getPatchNumbers = (speed: string) => {
-    if (speed === 'Extrema') return '(5 a 8)';
-    if (speed === 'Rápida') return '(6 a 8)';
-    if (speed === 'Moderada') return '(7 e 8)';
-    if (speed === 'Lenta') return '(apenas 8)';
+    if (speed === 'Extrema') return '(7+)';
+    if (speed === 'Rápida') return '(8+)';
+    if (speed === 'Moderada') return '(9+)';
+    if (speed === 'Lenta') return '(10+)';
     return '';
   };
 
@@ -88,7 +88,7 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
       else if (cardId.startsWith('ssrf-')) key = 'SSRF';
       else if (cardId.startsWith('bl-')) key = 'Business Logic';
       else if (cardId.startsWith('crypto-')) key = 'Cryptography';
-      else if (cardId.startsWith('leg-')) key = 'Legendary';
+      else if (cardId.startsWith('leg-') || cardId.startsWith('apt-')) key = 'APT';
     }
 
     switch (key) {
@@ -100,12 +100,14 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
       case 'Business Logic': return { color: '#008080', label: 'LOGIC' };
       case 'Cryptography':
       case 'Cryptographic Failures': return { color: '#27AE60', label: 'CRYPTO' };
-      case 'Legendary': return { color: '#B39DDB', label: '⚡ LEGENDARY' };
+      case 'APT':
+      case 'Legendary': return { color: '#B39DDB', label: 'APT' };
       default: return { color: '#ccc', label: 'VULN' };
     }
   };
 
-  const [activeCategory, setActiveCategory] = useState<'cards' | 'events' | 'archetypes_programs' | 'center_mat' | 'player_mat' | 'tokens'>('cards');
+  const [activeCategory, setActiveCategory] = useState<'cards' | 'events' | 'archetypes_programs' | 'center_mat' | 'player_mat' | 'tokens' | 'v12_update' | 'deluxe_sample'>('deluxe_sample');
+  const [deluxePrintMode, setDeluxePrintMode] = useState<'both' | 'front' | 'back'>('both');
   const [cardFilter, setCardFilter] = useState<'all' | 'exploits' | 'tools' | 'defuse'>('all');
   const [paperSize, setPaperSize] = useState<'A4' | 'A3'>('A4');
 
@@ -127,6 +129,542 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
   const archetypePages = chunkArray(ARCHETYPES, 9);
   const programPages = chunkArray(PROGRAM_CARDS, 9);
 
+  const V13_UPDATED_BASE_TOOL_IDS = [
+    'tool-burp-1', 'tool-burp-2', 'tool-nmap-1', 'tool-nmap-2', 'tool-zap',
+    'tool-postman', 'tool-devtools-1', 'tool-devtools-2', 'tool-sqlmap',
+    'tool-collaborator', 'tool-cyberchef', 'tool-jwt-tool'
+  ];
+  
+  const V13_UPDATED_VULN_IDS = [
+    'inj-13', 'inj-14', 'bac-11', 'bac-13', 'xss-12',
+    'auth-9', 'auth-10', 'ssrf-7', 'ssrf-8', 'bl-8', 'crypto-6',
+    'leg-1', 'leg-3', 'leg-6'
+  ];
+
+  const v12MixedCards = [
+    // Vulnerabilidades [NOISY] e habilidades atualizadas no V1.3 (14 cartas)
+    ...CARDS_V2.filter(c => c.type === 'exploit' && V13_UPDATED_VULN_IDS.includes(c.id))
+      .map(c => ({ itemType: 'action' as const, data: c })),
+    // Ferramentas com descrições canônicas V1.3 (12 cartas base)
+    ...CARDS_V2.filter(c => c.type === 'tool' && V13_UPDATED_BASE_TOOL_IDS.some(id => c.id === id))
+      .map(c => ({ itemType: 'action' as const, data: c })),
+    // Safeguards atualizadas (Bypass unificado e CVE Assignment)
+    ...CARDS_V2.filter(c => c.id === 'defuse-deck-1' || c.id === 'defuse-deck-9')
+      .map(c => ({ itemType: 'action' as const, data: c })),
+    // Eventos atualizados no V1.3 com impacto substantivo (9 cartas)
+    ...FULL_24_EVENTS.filter(e => ['evt-05', 'evt-07', 'evt-09', 'evt-10', 'evt-12', 'evt-13', 'evt-17', 'evt-21', 'evt-24'].includes(e.id))
+      .map(e => ({ itemType: 'event' as const, data: e })),
+    // 6 Arquétipos com regras V1.3 reformuladas
+    ...ARCHETYPES.map(a => ({ itemType: 'archetype' as const, data: a }))
+  ];
+  
+  const v12MixedPages = chunkArray(v12MixedCards, 9);
+
+  // HIGH-CONTRAST CARD RENDERERS FOR CRYSTAL-CLEAR PRINTING (POKER SIZE 63x88mm)
+  const renderHighContrastActionCard = (card: CardV2, key: string) => {
+    const badgeInfo = getPnPBadgeProps((card as any).vulnClass, card.id);
+    const cvss = getSimulatedCVSS(card.rarity, card.id);
+    
+    let headerColor = '#0F172A';
+    let typeLabel = 'TOOL';
+    let valueLabel = 'FERRAMENTA';
+    
+    if (card.type === 'exploit') {
+      headerColor = badgeInfo.color;
+      typeLabel = `${badgeInfo.label} · ${(card.rarity || 'COMUM').toUpperCase()}`;
+      valueLabel = getFlatValueLabel(card);
+    } else if (card.type === 'defuse') {
+      headerColor = '#059669';
+      typeLabel = `SAFEGUARD · ${(card.rarity || 'RARA').toUpperCase()}`;
+      valueLabel = 'DEFESA';
+    } else {
+      headerColor = '#0F172A';
+      typeLabel = `TOOL · ${(card.rarity || 'COMUM').toUpperCase()}`;
+      valueLabel = 'FERRAMENTA';
+    }
+
+    const desc = card.simpleDescription || '';
+    const isNoisy = desc.includes('[NOISY]');
+    const isPassive = desc.startsWith('PASSIVA:');
+    const isActive = desc.startsWith('ATIVA:');
+    
+    let cleanDesc = desc;
+    if (isNoisy) cleanDesc = cleanDesc.replace('[NOISY]', '').trim();
+    if (isPassive) cleanDesc = cleanDesc.replace('PASSIVA:', '').trim();
+    if (isActive) cleanDesc = cleanDesc.replace('ATIVA:', '').trim();
+
+    return (
+      <div
+        key={key}
+        className="printable-card-item"
+        style={{
+          width: '63mm',
+          height: '88mm',
+          background: '#FAF7F0',
+          border: '1.5px solid #111827',
+          borderTop: `4mm solid ${headerColor}`,
+          borderRadius: '5px',
+          padding: '5px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          color: '#0F172A',
+          boxSizing: 'border-box',
+          overflow: 'hidden'
+        }}
+      >
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+            <span style={{
+              background: headerColor,
+              color: '#FFFFFF',
+              fontSize: '7pt',
+              fontWeight: 900,
+              padding: '1px 5px',
+              borderRadius: '3px',
+              fontFamily: 'monospace',
+              textTransform: 'uppercase'
+            }}>
+              {typeLabel}
+            </span>
+            <span style={{
+              background: '#111827',
+              color: '#FFFFFF',
+              fontSize: '7.5pt',
+              fontWeight: 900,
+              padding: '1px 5px',
+              borderRadius: '3px',
+              fontFamily: 'monospace'
+            }}>
+              {valueLabel}
+            </span>
+          </div>
+
+          <div style={{ fontSize: '9.8pt', fontWeight: 800, color: '#0F172A', lineHeight: '1.15', marginTop: '2px' }}>
+            {card.name}
+          </div>
+          <div style={{ fontSize: '6.8pt', color: '#1E293B', fontWeight: 700, fontFamily: 'monospace', marginTop: '1px' }}>
+            [{card.technicalReference}]
+          </div>
+        </div>
+
+        <div style={{
+          width: '100%',
+          height: '19mm',
+          border: '1.2px solid #1E293B',
+          borderRadius: '3px',
+          overflow: 'hidden',
+          background: '#FFFFFF',
+          margin: '2px 0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '22px'
+        }}>
+          <span>{card.icon}</span>
+        </div>
+
+        {/* PURE WHITE HIGH-CONTRAST RULES BOX */}
+        <div style={{
+          background: '#FFFFFF',
+          border: '1.2px solid #111827',
+          borderRadius: '3px',
+          padding: '5px',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+        }}>
+          <div style={{ fontSize: '7.4pt', lineHeight: '1.32', color: '#0F172A', fontWeight: 600 }}>
+            {isNoisy && (
+              <span style={{
+                background: '#DC2626',
+                color: '#FFFFFF',
+                fontSize: '6.5pt',
+                fontWeight: 900,
+                padding: '0 4px',
+                borderRadius: '2px',
+                marginRight: '4px',
+                display: 'inline-block'
+              }}>
+                [NOISY]
+              </span>
+            )}
+            {isPassive && (
+              <span style={{
+                background: '#1D4ED8',
+                color: '#FFFFFF',
+                fontSize: '6.5pt',
+                fontWeight: 900,
+                padding: '0 4px',
+                borderRadius: '2px',
+                marginRight: '4px',
+                display: 'inline-block'
+              }}>
+                PASSIVA
+              </span>
+            )}
+            {isActive && (
+              <span style={{
+                background: '#7C3AED',
+                color: '#FFFFFF',
+                fontSize: '6.5pt',
+                fontWeight: 900,
+                padding: '0 4px',
+                borderRadius: '2px',
+                marginRight: '4px',
+                display: 'inline-block'
+              }}>
+                ATIVA
+              </span>
+            )}
+            {cleanDesc}
+          </div>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: '6.2pt',
+          fontWeight: 800,
+          color: '#1E293B',
+          borderTop: '1px solid #CBD5E1',
+          paddingTop: '2px',
+          marginTop: '2px',
+          fontFamily: 'monospace'
+        }}>
+          <span>{card.type === 'exploit' ? `CVSS ${cvss} · ${(card.rarity || 'COMUM').toUpperCase()}` : card.type === 'defuse' ? 'SAFEGUARD DEFESA' : 'FERRAMENTA DE PESQUISA'}</span>
+          <span>#{card.id}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const renderHighContrastEventCard = (evt: EventCardData, key: string) => {
+    return (
+      <div
+        key={key}
+        className="printable-card-item"
+        style={{
+          width: '63mm',
+          height: '88mm',
+          background: '#FAF7F0',
+          border: '1.5px solid #111827',
+          borderTop: '4mm solid #DC2626',
+          borderRadius: '5px',
+          padding: '5px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          color: '#0F172A',
+          boxSizing: 'border-box',
+          overflow: 'hidden'
+        }}
+      >
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+            <span style={{
+              background: '#DC2626',
+              color: '#FFFFFF',
+              fontSize: '7pt',
+              fontWeight: 900,
+              padding: '1px 5px',
+              borderRadius: '3px',
+              fontFamily: 'monospace'
+            }}>
+              EVENT #{evt.number}
+            </span>
+            <span style={{
+              background: '#111827',
+              color: '#FFFFFF',
+              fontSize: '6.5pt',
+              fontWeight: 800,
+              padding: '1px 5px',
+              borderRadius: '3px',
+              fontFamily: 'monospace',
+              maxWidth: '32mm',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}>
+              {evt.targetText}
+            </span>
+          </div>
+
+          <div style={{ fontSize: '10pt', fontWeight: 800, color: '#991B1B', lineHeight: '1.15', marginTop: '2px' }}>
+            {evt.name}
+          </div>
+          <div style={{ fontSize: '6.8pt', color: '#1E293B', fontWeight: 700, fontFamily: 'monospace', marginTop: '1px' }}>
+            [{evt.technicalReference}]
+          </div>
+        </div>
+
+        <div style={{
+          width: '100%',
+          height: '19mm',
+          border: '1.2px solid #1E293B',
+          borderRadius: '3px',
+          overflow: 'hidden',
+          background: '#FEF2F2',
+          margin: '2px 0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px'
+        }}>
+          <span>{evt.icon}</span>
+        </div>
+
+        <div style={{
+          background: '#FFFFFF',
+          border: '1.2px solid #111827',
+          borderRadius: '3px',
+          padding: '5px',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+        }}>
+          <div style={{ fontSize: '7.4pt', lineHeight: '1.34', color: '#0F172A', fontWeight: 600 }}>
+            {evt.simpleDescription}
+          </div>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: '6.2pt',
+          fontWeight: 800,
+          color: '#991B1B',
+          borderTop: '1px solid #CBD5E1',
+          paddingTop: '2px',
+          marginTop: '2px',
+          fontFamily: 'monospace'
+        }}>
+          <span>🚨 BARALHO DE EVENTOS DA MESA</span>
+          <span style={{ color: '#0F172A' }}>#{evt.number}/024</span>
+        </div>
+      </div>
+    );
+  };
+
+  const renderHighContrastArchetypeCard = (arch: typeof ARCHETYPES[0], key: string) => {
+    return (
+      <div
+        key={key}
+        className="printable-card-item"
+        style={{
+          width: '63mm',
+          height: '88mm',
+          background: '#FAF7F0',
+          border: '1.5px solid #111827',
+          borderTop: '4mm solid #2563EB',
+          borderRadius: '5px',
+          padding: '5px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          color: '#0F172A',
+          boxSizing: 'border-box',
+          overflow: 'hidden'
+        }}
+      >
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+            <span style={{
+              background: '#2563EB',
+              color: '#FFFFFF',
+              fontSize: '7pt',
+              fontWeight: 900,
+              padding: '1px 5px',
+              borderRadius: '3px',
+              fontFamily: 'monospace'
+            }}>
+              RESEARCHER
+            </span>
+            <span style={{
+              background: '#111827',
+              color: '#FFFFFF',
+              fontSize: '6.8pt',
+              fontWeight: 800,
+              padding: '1px 5px',
+              borderRadius: '3px',
+              fontFamily: 'monospace'
+            }}>
+              MÃO MÁX: {arch.maxHandSize}
+            </span>
+          </div>
+
+          <div style={{ fontSize: '10.5pt', fontWeight: 900, color: '#0F172A', lineHeight: '1.15', marginTop: '2px' }}>
+            {arch.name}
+          </div>
+          <div style={{ fontSize: '6.8pt', color: '#1E293B', fontWeight: 700, marginTop: '1px' }}>
+            {arch.title}
+          </div>
+        </div>
+
+        {arch.presentation && (
+          <div style={{ fontSize: '6.2pt', fontStyle: 'italic', color: '#475569', lineHeight: '1.2', borderLeft: '2px solid #2563EB', paddingLeft: '4px', margin: '2px 0' }}>
+            {arch.presentation}
+          </div>
+        )}
+
+        <div style={{
+          background: '#FFFFFF',
+          border: '1.2px solid #111827',
+          borderRadius: '3px',
+          padding: '5px',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+          overflow: 'hidden'
+        }}>
+          <div style={{ fontSize: '6.8pt', fontWeight: 900, color: '#2563EB', borderBottom: '1px solid #CBD5E1', paddingBottom: '2px', marginBottom: '3px', textTransform: 'uppercase' }}>
+            ⚡ Habilidades Especiais (V1.3):
+          </div>
+          <div style={{ fontSize: '6.8pt', lineHeight: '1.3', color: '#0F172A', fontWeight: 600, whiteSpace: 'pre-line' }}>
+            {arch.playstyle}
+          </div>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: '6.2pt',
+          fontWeight: 800,
+          color: '#1E293B',
+          borderTop: '1px solid #CBD5E1',
+          paddingTop: '2px',
+          marginTop: '2px',
+          fontFamily: 'monospace'
+        }}>
+          <span>SLOT RESEARCHER DO TAPETE</span>
+          <span>#{arch.id}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const renderHighContrastProgramCard = (prog: typeof PROGRAM_CARDS[0], key: string) => {
+    return (
+      <div
+        key={key}
+        className="printable-card-item"
+        style={{
+          width: '63mm',
+          height: '88mm',
+          background: '#FAF7F0',
+          border: '1.5px solid #111827',
+          borderTop: '4mm solid #D97706',
+          borderRadius: '5px',
+          padding: '5px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          color: '#0F172A',
+          boxSizing: 'border-box',
+          overflow: 'hidden'
+        }}
+      >
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+            <span style={{
+              background: '#D97706',
+              color: '#FFFFFF',
+              fontSize: '7pt',
+              fontWeight: 900,
+              padding: '1px 5px',
+              borderRadius: '3px',
+              fontFamily: 'monospace'
+            }}>
+              PROGRAMA
+            </span>
+            <span style={{
+              background: '#111827',
+              color: '#FFFFFF',
+              fontSize: '7pt',
+              fontWeight: 800,
+              padding: '1px 5px',
+              borderRadius: '3px',
+              fontFamily: 'monospace'
+            }}>
+              {prog.bountyRange}
+            </span>
+          </div>
+
+          <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A', lineHeight: '1.15', marginTop: '2px' }}>
+            {prog.name}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1px' }}>
+            <span style={{ fontSize: '6.8pt', color: '#1E293B', fontWeight: 700 }}>
+              {prog.companyType}
+            </span>
+            <span style={{ fontSize: '7pt', color: '#C2410C', fontWeight: 900 }}>
+              Patch: {prog.patchSpeed} {getPatchNumbers(prog.patchSpeed)}
+            </span>
+          </div>
+        </div>
+
+        <div style={{
+          background: '#FFFFFF',
+          border: '1.2px solid #111827',
+          borderRadius: '3px',
+          padding: '5px',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+          margin: '3px 0'
+        }}>
+          <div style={{ fontSize: '7.2pt', lineHeight: '1.3', color: '#0F172A', fontWeight: 600 }}>
+            {prog.description}
+          </div>
+          <div style={{ borderTop: '1px solid #CBD5E1', paddingTop: '3px', marginTop: '3px' }}>
+            <div style={{ fontSize: '6pt', fontWeight: 800, color: '#475569', marginBottom: '2px', textTransform: 'uppercase' }}>
+              Escopo Autorizado:
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
+              {prog.allowedClasses === 'ALL' ? (
+                <span style={{ background: '#111827', color: '#FFFFFF', padding: '1px 4px', borderRadius: '2px', fontSize: '6.5pt', fontWeight: 900 }}>
+                  ✓ TODAS AS CLASSES
+                </span>
+              ) : (
+                (prog.allowedClasses as string[]).map(cls => {
+                  const b = getPnPBadgeProps(cls);
+                  return (
+                    <span key={cls} style={{ background: b.color, color: '#FFFFFF', padding: '1px 4px', borderRadius: '2px', fontSize: '6.2pt', fontWeight: 900 }}>
+                      {b.label}
+                    </span>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: '6.2pt',
+          fontWeight: 800,
+          color: '#1E293B',
+          borderTop: '1px solid #CBD5E1',
+          paddingTop: '2px',
+          marginTop: '2px',
+          fontFamily: 'monospace'
+        }}>
+          <span>MERCADO DE PROGRAMAS</span>
+          <span>#{prog.id}</span>
+        </div>
+      </div>
+    );
+  };
+
   const handleTriggerPrint = () => {
     soundFx.playClick();
     window.print();
@@ -138,6 +676,24 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
         @media print {
           @page {
             margin: 8mm !important;
+          }
+          
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
+          .printable-sheet {
+            padding: 0 !important;
+            background: transparent !important;
+          }
+          
+          .printable-page-a4 {
+            page-break-after: always !important;
+            break-after: page !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+            border-bottom: none !important;
           }
           
           .terminal-box {
@@ -292,6 +848,42 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
           >
             🎲 Marcadores, Tokens de Carga & Dados
           </button>
+
+          <button
+            onClick={() => { soundFx.playClick(); setActiveCategory('v12_update'); }}
+            style={{
+              padding: '8px 14px',
+              background: activeCategory === 'v12_update' ? '#9333ea' : 'rgba(255,255,255,0.06)',
+              color: activeCategory === 'v12_update' ? '#fff' : 'var(--text-secondary)',
+              border: 'none',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '11px',
+              fontWeight: '800',
+              fontFamily: 'var(--font-mono)',
+              cursor: 'pointer',
+              boxShadow: activeCategory === 'v12_update' ? '0 0 10px rgba(147, 51, 234, 0.4)' : 'none'
+            }}
+          >
+            ✨ Atualização V1.3 (Só Cartas Modificadas)
+          </button>
+
+          <button
+            onClick={() => { soundFx.playClick(); setActiveCategory('deluxe_sample'); }}
+            style={{
+              padding: '8px 14px',
+              background: activeCategory === 'deluxe_sample' ? '#10b981' : 'rgba(255,255,255,0.06)',
+              color: activeCategory === 'deluxe_sample' ? '#064e3b' : 'var(--text-secondary)',
+              border: 'none',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '11px',
+              fontWeight: '800',
+              fontFamily: 'var(--font-mono)',
+              cursor: 'pointer',
+              boxShadow: activeCategory === 'deluxe_sample' ? '0 0 12px rgba(16, 185, 129, 0.4)' : 'none'
+            }}
+          >
+            🎨 Amostra Deluxe (Frente/Verso Duplex)
+          </button>
         </div>
 
         {/* Action Bar with Card Category Sub-filters */}
@@ -379,6 +971,42 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
         {/* PRINTABLE CONTENT DISPLAY */}
         <div className="printable-sheet" style={{ background: '#fff', color: '#000', padding: '24px', borderRadius: '8px', fontFamily: 'sans-serif' }}>
 
+          {/* ABA DEDICADA: ATUALIZAÇÃO V1.3 (SÓ CARTAS MODIFICADAS) */}
+          {activeCategory === 'v12_update' && (
+            <div>
+              {v12MixedPages.map((pageCards, pageIdx) => (
+                <div
+                  key={`v12-page-${pageIdx}`}
+                  className="printable-page-a4"
+                  style={{
+                    marginBottom: '32px',
+                    paddingBottom: '16px',
+                    borderBottom: '2px dashed #999'
+                  }}
+                >
+                  <div style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 'bold', borderBottom: '2px solid #a855f7', color: '#a855f7', paddingBottom: '4px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>PWND! V1.3 — CARTAS RELEVANTEMENTE MODIFICADAS ({v12MixedCards.length} CARTAS)</span>
+                    <span>FOLHA A4 ({pageIdx + 1} DE {v12MixedPages.length} — 9 CARTAS 3×3 63x88mm)</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 63mm)', justifyContent: 'center', gap: '4mm' }}>
+                    {pageCards.map((mixedItem, idx) => {
+                      if (mixedItem.itemType === 'action') {
+                        return renderHighContrastActionCard(mixedItem.data, `v12-card-${mixedItem.data.id}-${idx}`);
+                      }
+                      if (mixedItem.itemType === 'event') {
+                        return renderHighContrastEventCard(mixedItem.data, `v12-evt-${mixedItem.data.id}-${idx}`);
+                      }
+                      if (mixedItem.itemType === 'archetype') {
+                        return renderHighContrastArchetypeCard(mixedItem.data, `v12-arch-${mixedItem.data.id}-${idx}`);
+                      }
+                      return null;
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* ABA 1: CARTAS DE AÇÃO (PAGINADAS RIGIDAMENTE EM GRUPOS DE 9 POR FOLHA A4) */}
           {activeCategory === 'cards' && (
             <div>
@@ -393,68 +1021,12 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
                   }}
                 >
                   <div style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 'bold', borderBottom: '2px solid #000', paddingBottom: '4px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between' }}>
-                    <span>PWND! — BARALHO DE CARTAS DE AÇÃO</span>
+                    <span>PWND! — BARALHO DE CARTAS DE AÇÃO (80 VULNS + 36 TOOLS + 10 SAFEGUARDS)</span>
                     <span>FOLHA A4 ({pageIdx + 1} DE {cardPages.length} — 9 CARTAS 3×3 63x88mm)</span>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', justifyContent: 'center', gap: '16px' }}>
-                    {pageCards.map((card, idx) => (
-                      <div
-                        key={`${card.id}-${idx}`}
-                        className="printable-card-item"
-                        style={{
-                          ...getCardStyle(),
-                          border: '2px dashed #000',
-                          boxShadow: card.type === 'exploit' ? `inset 10px 0 0 ${getRarityBorderColor(card.rarity)}` : 'none',
-                          borderRadius: '8px',
-                          padding: '10px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between',
-                          background: card.type === 'exploit' ? '#fffaf5' : card.type === 'tool' ? '#f0f9ff' : '#f0fdf4',
-                        }}
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          {card.type === 'exploit' ? (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ 
-                                background: getPnPBadgeProps((card as any).vulnClass, card.id).color, 
-                                color: '#fff', 
-                                padding: '2px 6px', 
-                                borderRadius: '4px', 
-                                fontSize: '11px',
-                                fontWeight: 'bold',
-                                textShadow: '0 0 2px rgba(0,0,0,0.8)'
-                              }}>
-                                {getPnPBadgeProps((card as any).vulnClass, card.id).label}
-                              </span>
-                              <span style={{ fontSize: '10px', fontWeight: '900', color: '#111', fontFamily: 'monospace' }}>
-                                CVSS {getSimulatedCVSS(card.rarity, card.id)}
-                              </span>
-                            </div>
-                          ) : (
-                            <span style={{ fontSize: '18px' }}>{card.icon}</span>
-                          )}
-                          <span style={{ fontSize: '8.5px', fontWeight: 'bold', border: '1px solid #000', padding: '1px 5px', borderRadius: '3px', textTransform: 'uppercase' }}>
-                            {card.type === 'defuse' ? 'SAFEGUARD' : card.type}
-                          </span>
-                        </div>
-
-                        <div>
-                          <div style={{ fontSize: '12px', fontWeight: 'bold', marginTop: '2px' }}>{card.name}</div>
-                          <div style={{ fontSize: '8.5px', fontStyle: 'italic', color: '#555' }}>({card.technicalReference})</div>
-                        </div>
-
-                        <div style={{ fontSize: '9px', lineHeight: '1.2', borderTop: '1px solid #ddd', paddingTop: '4px' }}>
-                          {card.simpleDescription}
-                        </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8.5px', fontWeight: 'bold', borderTop: '1px solid #000', paddingTop: '3px' }}>
-                          <span>Raridade: {card.rarity}</span>
-                          <span>{getFlatValueLabel(card)}</span>
-                        </div>
-                      </div>
-                    ))}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 63mm)', justifyContent: 'center', gap: '4mm' }}>
+                    {pageCards.map((card, idx) => renderHighContrastActionCard(card, `${card.id}-${idx}`))}
                   </div>
                 </div>
               ))}
@@ -479,43 +1051,8 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
                     <span>FOLHA A4 ({pageIdx + 1} DE {eventPages.length} — 9 CARTAS 3×3 63x88mm)</span>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', justifyContent: 'center', gap: '16px' }}>
-                    {pageEvents.map((evt) => (
-                      <div
-                        key={evt.id}
-                        className="printable-card-item"
-                        style={{
-                          ...getCardStyle(),
-                          border: '2px dashed #dc2626',
-                          borderRadius: '8px',
-                          padding: '10px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between',
-                          background: evt.id === 'evt-01' ? '#fef2f2' : '#fff5f5',
-                        }}
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: '20px' }}>{evt.icon}</span>
-                          <span style={{ fontSize: '8.5px', fontWeight: 'bold', background: '#dc2626', color: '#fff', padding: '1px 6px', borderRadius: '3px', textTransform: 'uppercase' }}>
-                            EVENT #{evt.number}
-                          </span>
-                        </div>
-
-                        <div>
-                          <div style={{ fontSize: '12.5px', fontWeight: 'bold', color: '#991b1b', marginTop: '2px' }}>{evt.name}</div>
-                          <div style={{ fontSize: '8.5px', fontStyle: 'italic', color: '#7f1d1d' }}>({evt.technicalReference})</div>
-                        </div>
-
-                        <div style={{ fontSize: '9px', lineHeight: '1.25', borderTop: '1px solid #fca5a5', paddingTop: '4px', color: '#450a0a' }}>
-                          {evt.simpleDescription}
-                        </div>
-
-                        <div style={{ textAlign: 'center', fontSize: '8px', fontWeight: 'bold', color: '#dc2626', borderTop: '1px solid #dc2626', paddingTop: '3px', textTransform: 'uppercase' }}>
-                          🚨 BARALHO DE EVENTOS DA MESA
-                        </div>
-                      </div>
-                    ))}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 63mm)', justifyContent: 'center', gap: '4mm' }}>
+                    {pageEvents.map((evt) => renderHighContrastEventCard(evt, evt.id))}
                   </div>
                 </div>
               ))}
@@ -532,44 +1069,8 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
                   <span>FOLHA A4 (3×3 — RETRATO 63x88mm)</span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', justifyContent: 'center', gap: '16px' }}>
-                  {ARCHETYPES.map(arch => (
-                    <div
-                      key={arch.id}
-                      className="printable-card-item"
-                      style={{
-                        ...getCardStyle(),
-                        border: '2px dashed #000',
-                        borderRadius: '8px',
-                        padding: '10px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        background: '#fafafa',
-                      }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '24px' }}>{arch.avatarIcon}</span>
-                        <span style={{ fontSize: '8px', fontWeight: 'bold', border: '1px solid #000', padding: '1px 4px', borderRadius: '3px' }}>
-                          RESEARCHER
-                        </span>
-                      </div>
-
-                      <div>
-                        <div style={{ fontSize: '14px', fontWeight: 'bold', marginTop: '2px' }}>{arch.name}</div>
-                        <div style={{ fontSize: '8.5px', color: '#555' }}>{arch.title}</div>
-                        <div style={{ fontSize: '8.5px', fontWeight: 'bold', color: '#000', marginTop: '2px' }}>Mão Máxima: {arch.maxHandSize} cartas</div>
-                      </div>
-
-                      <div style={{ fontSize: '8.5px', lineHeight: '1.25', borderTop: '1px solid #ddd', paddingTop: '4px' }}>
-                        <strong>Poder Especial:</strong> {arch.playstyle}
-                      </div>
-
-                      <div style={{ textAlign: 'center', fontSize: '7.5px', fontWeight: 'bold', borderTop: '1px solid #000', paddingTop: '2px', textTransform: 'uppercase' }}>
-                        SLOT RESEARCHER DO TAPETE
-                      </div>
-                    </div>
-                  ))}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 63mm)', justifyContent: 'center', gap: '4mm' }}>
+                  {ARCHETYPES.map(arch => renderHighContrastArchetypeCard(arch, arch.id))}
                 </div>
               </div>
 
@@ -581,61 +1082,8 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
                     <span>FOLHA A4 ({pIdx + 1} DE {programPages.length} — 9 CARTAS 3×3 63x88mm)</span>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', justifyContent: 'center', gap: '16px' }}>
-                    {pageProgs.map(prog => (
-                      <div
-                        key={prog.id}
-                        className="printable-card-item"
-                        style={{
-                          ...getCardStyle(),
-                          border: '2px dashed #000',
-                          borderRadius: '8px',
-                          padding: '10px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between',
-                          background: '#f8fafc',
-                        }}
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#444' }}>{prog.companyType}</span>
-                          <span style={{ fontSize: '8.5px', fontWeight: 'bold', border: '1px solid #000', padding: '1px 5px', background: '#fff' }}>
-                            {prog.bountyRange}
-                          </span>
-                        </div>
-
-                        <div>
-                          <div style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '4px' }}>{prog.name}</div>
-                          <div style={{ fontSize: '8.5px', color: '#c2410c', fontWeight: 'bold', marginTop: '2px' }}>
-                            Patch: {prog.patchSpeed} <span style={{ color: '#000', marginLeft: '2px' }}>{getPatchNumbers(prog.patchSpeed)}</span>
-                          </div>
-                        </div>
-
-                        <div style={{ fontSize: '8.5px', lineHeight: '1.25', borderTop: '1px solid #ddd', paddingTop: '4px' }}>
-                          {prog.description}
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px', marginTop: '6px' }}>
-                            {prog.allowedClasses === 'ALL' ? (
-                              <span style={{ background: '#333', color: '#fff', padding: '2px 4px', borderRadius: '3px', fontSize: '7px', fontWeight: 'bold' }}>
-                                ✓ [Todas as classes]
-                              </span>
-                            ) : (
-                              (prog.allowedClasses as string[]).map(cls => {
-                                const badge = getPnPBadgeProps(cls);
-                                return (
-                                  <span key={cls} style={{ background: badge.color, color: '#fff', padding: '2px 4px', borderRadius: '3px', fontSize: '7px', fontWeight: 'bold', textShadow: '0 0 1px rgba(0,0,0,0.8)' }}>
-                                    {badge.label}
-                                  </span>
-                                );
-                              })
-                            )}
-                          </div>
-                        </div>
-
-                        <div style={{ textAlign: 'center', fontSize: '7.5px', fontWeight: 'bold', borderTop: '1px solid #000', paddingTop: '2px', textTransform: 'uppercase' }}>
-                          ACTIVE PROGRAM / MARKET SLOT
-                        </div>
-                      </div>
-                    ))}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 63mm)', justifyContent: 'center', gap: '4mm' }}>
+                    {pageProgs.map(prog => renderHighContrastProgramCard(prog, prog.id))}
                   </div>
                 </div>
               ))}
@@ -795,11 +1243,11 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
                 {/* 1. Marcadores de Madeira Cortáveis (Wood Tokens) */}
                 <div style={{ border: '2px solid #000', borderRadius: '8px', padding: '16px', background: '#fdf8f4' }}>
                   <h4 style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '10px' }}>
-                    1. Marcadores Hexagonais (Bounty Tokens):
+                    1. Marcadores de Pontuação (Bounty Track):
                   </h4>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
                     {['Verde (P1)', 'Azul (P2)', 'Roxo (P3)', 'Rosa (P4)', 'Laranja (P5)', 'Ciano (P6)', 'Bot 1', 'Bot 2'].map(token => (
-                      <div key={token} style={{ border: '2px solid #000', borderRadius: '50%', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 'bold', textAlign: 'center', background: '#d97706', color: '#fff' }}>
+                      <div key={token} style={{ border: '2px solid #000', borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8.5px', fontWeight: 'bold', textAlign: 'center', background: '#d97706', color: '#fff' }}>
                         {token}
                       </div>
                     ))}
@@ -814,7 +1262,7 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
                   <p style={{ fontSize: '10px', color: '#666', marginBottom: '12px' }}>
                     Coloque sobre a carta alvo para indicar bloqueio. Remova no início do seu próximo turno.
                   </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
                     {Array.from({ length: 4 }).map((_, idx) => (
                       <div key={idx} style={{ border: '2px solid #000', borderRadius: '4px', height: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '10px', background: '#ef4444', color: '#fff' }}>
                         <span style={{ fontSize: '14px' }}>🔒</span>
@@ -823,7 +1271,444 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
                     ))}
                   </div>
                 </div>
+
+                {/* 3. Tokens de Alerta (Blue Team) */}
+                <div style={{ border: '2px solid #000', borderRadius: '8px', padding: '16px', background: '#fff1f2' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <h4 style={{ fontSize: '12px', fontWeight: 'bold', color: '#9f1239' }}>
+                      3. 🐞 18 Tokens de Alerta (Blue Team):
+                    </h4>
+                    <span style={{ fontSize: '10px', fontWeight: 'bold', background: '#f43f5e', color: '#fff', padding: '2px 6px', borderRadius: '4px' }}>
+                      -$500 / 2x = -$2k
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '9.5px', color: '#666', marginBottom: '10px' }}>
+                    Receba ao falhar no Patch Check. A cada 2 Alertas perde -$2.000. Cada Alerta restante desconta -$500 no fim.
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
+                    {Array.from({ length: 18 }).map((_, idx) => (
+                      <div key={`alert-${idx}`} style={{ border: '2px solid #9f1239', borderRadius: '50%', width: '42px', height: '42px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontSize: '7px', fontWeight: 'bold', textAlign: 'center', background: '#ffe4e6', color: '#9f1239' }}>
+                        <span style={{ fontSize: '16px' }}>🐞</span>
+                        -$500
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. Tokens de Reputação (Bounty Bees) */}
+                <div style={{ border: '2px solid #000', borderRadius: '8px', padding: '16px', background: '#fefce8' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <h4 style={{ fontSize: '12px', fontWeight: 'bold', color: '#854d0e' }}>
+                      4. 🐝 18 Tokens de Reputação (Bounty Bees):
+                    </h4>
+                    <span style={{ fontSize: '10px', fontWeight: 'bold', background: '#eab308', color: '#000', padding: '2px 6px', borderRadius: '4px' }}>
+                      +$500 ou 2x Reroll
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '9.5px', color: '#666', marginBottom: '10px' }}>
+                    Ganhe em Reports Épica/Lendária. Descarte 2 Tokens para Reroll de 1 dado de Patch ou guarde para +$500 no final.
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
+                    {Array.from({ length: 18 }).map((_, idx) => (
+                      <div key={`rep-${idx}`} style={{ border: '2px solid #854d0e', borderRadius: '50%', width: '42px', height: '42px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontSize: '7px', fontWeight: 'bold', textAlign: 'center', background: '#fef9c3', color: '#854d0e' }}>
+                        <span style={{ fontSize: '16px' }}>🐝</span>
+                        +$500
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 5. 3 Dados D6 & Tabela de Patch Deployed V1.3 */}
+                <div style={{ border: '2px solid #000', borderRadius: '8px', padding: '16px', background: '#f0fdf4', gridColumn: 'span 2' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <h4 style={{ fontSize: '12px', fontWeight: 'bold', color: '#166534' }}>
+                      5. 🎲 Sistema de 3x Dados D6 & Régua de Patch Deployed (V1.3):
+                    </h4>
+                    <span style={{ fontSize: '10px', fontWeight: 'bold', background: '#16a34a', color: '#fff', padding: '2px 8px', borderRadius: '4px' }}>
+                      3× D6 (Soma 3 a 18)
+                    </span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', textAlign: 'center', marginTop: '10px' }}>
+                    <div style={{ border: '1.5px solid #dc2626', borderRadius: '6px', padding: '8px', background: '#fff' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#dc2626' }}>Extrema</div>
+                      <div style={{ fontSize: '16px', fontWeight: '900', color: '#000', margin: '4px 0' }}>7+</div>
+                      <div style={{ fontSize: '8.5px', color: '#666' }}>Risco de Patch: ~72%</div>
+                    </div>
+                    <div style={{ border: '1.5px solid #ea580c', borderRadius: '6px', padding: '8px', background: '#fff' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#ea580c' }}>Rápida</div>
+                      <div style={{ fontSize: '16px', fontWeight: '900', color: '#000', margin: '4px 0' }}>8+</div>
+                      <div style={{ fontSize: '8.5px', color: '#666' }}>Risco de Patch: ~62%</div>
+                    </div>
+                    <div style={{ border: '1.5px solid #d97706', borderRadius: '6px', padding: '8px', background: '#fff' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#d97706' }}>Moderada</div>
+                      <div style={{ fontSize: '16px', fontWeight: '900', color: '#000', margin: '4px 0' }}>9+</div>
+                      <div style={{ fontSize: '8.5px', color: '#666' }}>Risco de Patch: ~51%</div>
+                    </div>
+                    <div style={{ border: '1.5px solid #16a34a', borderRadius: '6px', padding: '8px', background: '#fff' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#16a34a' }}>Lenta</div>
+                      <div style={{ fontSize: '16px', fontWeight: '900', color: '#000', margin: '4px 0' }}>10+</div>
+                      <div style={{ fontSize: '8.5px', color: '#666' }}>Risco de Patch: ~41%</div>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
+          )}
+
+          {/* ABA 6: AMOSTRA GRÁFICA DELUXE (FRENTE E VERSO DUPLEX) */}
+          {activeCategory === 'deluxe_sample' && (
+            <div>
+              {/* Seletor de visualização Deluxe */}
+              <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', background: 'rgba(0,0,0,0.5)', padding: '12px 16px', borderRadius: '8px', flexWrap: 'wrap', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '11px', color: '#10b981', fontFamily: 'monospace', fontWeight: 'bold' }}>
+                    Modo Duplex:
+                  </span>
+                  <button
+                    onClick={() => setDeluxePrintMode('both')}
+                    style={{ padding: '6px 12px', background: deluxePrintMode === 'both' ? '#10b981' : 'rgba(255,255,255,0.08)', color: deluxePrintMode === 'both' ? '#064e3b' : '#fff', border: 'none', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    📄 Ambos (Frente & Verso)
+                  </button>
+                  <button
+                    onClick={() => setDeluxePrintMode('front')}
+                    style={{ padding: '6px 12px', background: deluxePrintMode === 'front' ? '#3b82f6' : 'rgba(255,255,255,0.08)', color: deluxePrintMode === 'front' ? '#fff' : '#fff', border: 'none', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    🃏 Apenas Frentes (Folha 1)
+                  </button>
+                  <button
+                    onClick={() => setDeluxePrintMode('back')}
+                    style={{ padding: '6px 12px', background: deluxePrintMode === 'back' ? '#f59e0b' : 'rgba(255,255,255,0.08)', color: deluxePrintMode === 'back' ? '#000' : '#fff', border: 'none', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    🔄 Apenas Versos (Folha 2 Espelhada)
+                  </button>
+                </div>
+
+                <a
+                  href="/pwnd-pnp-deluxe-sample.html"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: 'none', padding: '6px 14px', background: '#3b82f6', color: '#fff', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  🌐 Abrir em Aba Independente
+                </a>
+              </div>
+
+              {/* FOLHA 1: FRENTES (ALTO CONTRASTE + ARTE PROFISSIONAL) */}
+              {(deluxePrintMode === 'both' || deluxePrintMode === 'front') && (
+                <div className="printable-page-a4" style={{ marginBottom: '32px', paddingBottom: '16px', borderBottom: '2px dashed #999' }}>
+                  <div style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 'bold', borderBottom: '2px solid #10b981', color: '#10b981', paddingBottom: '4px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>PWND! V1.3 — AMOSTRA DELUXE (FOLHA 1: FRENTES COM ALTO CONTRASTE)</span>
+                    <span>FOLHA A4 (3×3 — POKER 63×88mm)</span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 63mm)', justifyContent: 'center', gap: '4mm' }}>
+                    
+                    {/* C1: inj-13 (A Esteira Quebrada) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #EA580C', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#EA580C', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>INJ · ÉPICA</span>
+                          <span style={{ background: '#111', color: '#fff', fontSize: '8pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>+$5.0k</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>A Esteira Quebrada</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[Automated SQL Injection]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#E2E8F0', margin: '2px 0' }}>
+                        <img src="/card-art/art-inj-13.png" alt="A Esteira Quebrada" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e: any) => { e.target.style.display = 'none'; }} />
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '7pt', lineHeight: '1.3', color: '#0F172A' }}>
+                          <span style={{ background: '#DC2626', color: '#fff', fontSize: '6pt', fontWeight: 900, padding: '0 3px', borderRadius: '2px', marginRight: '3px' }}>[NOISY]</span>
+                          <strong>BÔNUS CRÍTICO:</strong> Receba <strong>+$1.000</strong> adicionais no payout deste Report.
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          Payload na rotina de conversão de PDFs.
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>CVSS 8.3 · CRÍTICO</span>
+                        <span>#013/080</span>
+                      </div>
+                    </div>
+
+                    {/* C2: tool-burp-1 (Canivete Suíço Hacker) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #0F172A', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#0F172A', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>TOOL · ÉPICA</span>
+                          <span style={{ background: '#334155', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>FERRAMENTA</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>Canivete Suíço Hacker</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[Burp Suite Pro · Intercept]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#E2E8F0', margin: '2px 0' }}>
+                        <img src="/card-art/art-tool-burp.png" alt="Canivete Suíço Hacker" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e: any) => { e.target.style.display = 'none'; }} />
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '7pt', lineHeight: '1.3', color: '#0F172A' }}>
+                          <span style={{ background: '#D97706', color: '#fff', fontSize: '6pt', fontWeight: 900, padding: '0 3px', borderRadius: '2px', marginRight: '3px' }}>ATIVA</span>
+                          Descarte os programas e reponha; se algum aceitar <strong>LEGENDARY</strong> (ou ALL), <strong>+$500</strong>; senão, compre 1 carta.
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          O canivete de auditoria essencial.
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>DESCARTE AO USAR</span>
+                        <span>#081/126</span>
+                      </div>
+                    </div>
+
+                    {/* C3: old-guard (The Old Guard) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #2563EB', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#2563EB', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>RESEARCHER</span>
+                          <span style={{ background: '#1D4ED8', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>MÃO: 9</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>The Old Guard</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[O Veterano de C/ASM]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#E2E8F0', margin: '2px 0' }}>
+                        <img src="/card-art/art-arch-oldguard.png" alt="The Old Guard" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e: any) => { e.target.style.display = 'none'; }} />
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '7pt', lineHeight: '1.3', color: '#0F172A' }}>
+                          <span style={{ background: '#2563EB', color: '#fff', fontSize: '6pt', fontWeight: 900, padding: '0 3px', borderRadius: '2px', marginRight: '3px' }}>PODER</span>
+                          <strong>ESPECIALISTA SÊNIOR:</strong> Cada carta Épica ou Lendária no Report vale <strong>+$500 extras</strong>.
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          "Mão grande, paciência de quem escreveu memcpy com o pé."
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>TAPETE RESEARCHER</span>
+                        <span>ARCH #02/06</span>
+                      </div>
+                    </div>
+
+                    {/* C4: evt-01 (Blue Team Hunt!) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #DC2626', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#DC2626', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>EVENT #01</span>
+                          <span style={{ background: '#991B1B', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>CAOS</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>Blue Team Hunt!</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[Proactive Threat Hunting]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#E2E8F0', margin: '2px 0' }}>
+                        <img src="/card-art/art-evt-blueteam.png" alt="Blue Team Hunt" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e: any) => { e.target.style.display = 'none'; }} />
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '7pt', lineHeight: '1.3', color: '#0F172A' }}>
+                          <div style={{ fontSize: '6pt', fontWeight: 800, color: '#DC2626' }}>ALVO: TODOS OS JOGADORES</div>
+                          Todos os jogadores devem <strong>descartar a vulnerabilidade de maior CVSS</strong> na mesa.
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          A auditoria interna acordou.
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>EVENT DECK</span>
+                        <span>#01/24</span>
+                      </div>
+                    </div>
+
+                    {/* C5: shopall-1 (ShopAll Global) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #D97706', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#D97706', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>PROGRAM</span>
+                          <span style={{ background: '#B45309', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>+$1.0k BÔNUS</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>ShopAll Global</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[E-Commerce Multinacional]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#E2E8F0', margin: '2px 0' }}>
+                        <img src="/card-art/art-prog-shopall.png" alt="ShopAll Global" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e: any) => { e.target.style.display = 'none'; }} />
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '7pt', lineHeight: '1.3', color: '#0F172A' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#EA580C', fontWeight: 800, fontSize: '6.5pt' }}>
+                            <span>PATCH: MODERADA (9+)</span>
+                            <span style={{ color: '#16A34A' }}>ESCOPO: [ALL]</span>
+                          </div>
+                          Escopo amplo. Aceita todas as classes com triagem padrão.
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          Milhões de requisições por minuto.
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>PROGRAM MARKET</span>
+                        <span>PROG #01/24</span>
+                      </div>
+                    </div>
+
+                    {/* C6: defuse-deck-1 (Safeguard Bypass) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #4F46E5', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#4F46E5', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>SAFEGUARD</span>
+                          <span style={{ background: '#312E81', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>DEFESA</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>Safeguard (Bypass)</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[Bypass Card · Dual Mode]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#E2E8F0', margin: '2px 0' }}>
+                        <img src="/card-art/art-defuse-bypass.png" alt="Bypass Safeguard" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e: any) => { e.target.style.display = 'none'; }} />
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '6.8pt', lineHeight: '1.25', color: '#0F172A' }}>
+                          <span style={{ background: '#4F46E5', color: '#fff', fontSize: '6pt', fontWeight: 900, padding: '0 3px', borderRadius: '2px', marginRight: '3px' }}>SUPREMA</span>
+                          <strong>Anula o Patch!</strong> Se no Report: payout garantido sem tool, saca evento e renova. Se em Stealth: mantém vulns e programa.
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          Sempre há uma rota alternativa.
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>DESCARTE AO USAR</span>
+                        <span>#117/126</span>
+                      </div>
+                    </div>
+
+                    {/* C7: auth-10 (O Sósia do Executivo) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #CA8A04', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#CA8A04', color: '#000', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>AUTH · ÉPICA</span>
+                          <span style={{ background: '#111', color: '#fff', fontSize: '8pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>+$5.0k</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>O Sósia do Executivo</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[SAML Response Tampering]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#FEF08A', margin: '2px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+                        <span>🎭</span>
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '7pt', lineHeight: '1.3', color: '#0F172A' }}>
+                          <span style={{ background: '#DC2626', color: '#fff', fontSize: '6pt', fontWeight: 900, padding: '0 3px', borderRadius: '2px', marginRight: '3px' }}>[NOISY]</span>
+                          <strong>DESVIO DE PAGAMENTO:</strong> Transfira <strong>$1.000</strong> do jogador com o maior saldo para a sua Bounty Track.
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          Um token forjado altera a tesouraria corporativa.
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>CVSS 8.8 · CRÍTICO</span>
+                        <span>#040/080</span>
+                      </div>
+                    </div>
+
+                    {/* C8: tool-zap (OWASP ZAP) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #0F172A', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#0F172A', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>TOOL · COMUM</span>
+                          <span style={{ background: '#334155', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>FERRAMENTA</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>OWASP ZAP</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[Automated Vulnerability Scanner]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#DBEAFE', margin: '2px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+                        <span>⚡</span>
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '7pt', lineHeight: '1.3', color: '#0F172A' }}>
+                          <span style={{ background: '#2563EB', color: '#fff', fontSize: '6pt', fontWeight: 900, padding: '0 3px', borderRadius: '2px', marginRight: '3px' }}>PASSIVA</span>
+                          Na sua primeira ação de <strong>Exploit</strong> do turno, desça <strong>2 vulnerabilidades</strong> em vez de 1.
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          Dispare requisições concorrentes em alta velocidade.
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>FERRAMENTA PERMANENTE</span>
+                        <span>#085/126</span>
+                      </div>
+                    </div>
+
+                    {/* C9: leg-1 (O Efeito Dominó) */}
+                    <div style={{ width: '63mm', height: '88mm', background: '#FAF7F0', border: '1.5px solid #111', borderTop: '4mm solid #7C3AED', borderRadius: '6px', padding: '6px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: '#0F172A', boxSizing: 'border-box' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <span style={{ background: '#7C3AED', color: '#fff', fontSize: '7.5pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>⚡ LEGENDARY</span>
+                          <span style={{ background: '#111', color: '#fff', fontSize: '8pt', fontWeight: 900, padding: '1px 5px', borderRadius: '3px' }}>+$2.5k</span>
+                        </div>
+                        <div style={{ fontSize: '10pt', fontWeight: 800, color: '#0F172A' }}>O Efeito Dominó</div>
+                        <div style={{ fontSize: '6.5pt', color: '#475569', fontWeight: 700 }}>[Multi-Stage Chained Exploit]</div>
+                      </div>
+                      <div style={{ width: '100%', height: '26mm', border: '1px solid #1E293B', borderRadius: '4px', overflow: 'hidden', background: '#EDE9FE', margin: '2px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+                        <span>🔗</span>
+                      </div>
+                      <div style={{ background: '#fff', border: '1px solid #111', borderRadius: '4px', padding: '5px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ fontSize: '7pt', lineHeight: '1.3', color: '#0F172A' }}>
+                          <span style={{ background: '#DC2626', color: '#fff', fontSize: '6pt', fontWeight: 900, padding: '0 3px', borderRadius: '2px', marginRight: '3px' }}>[NOISY]</span>
+                          <strong>EFEITO DOMINÓ:</strong> Ao descer esta carta, baixe imediatamente <strong>+1 vulnerabilidade</strong> da mão na mesa (respeita o limite de 3 e escopo).
+                        </div>
+                        <div style={{ fontSize: '6pt', fontStyle: 'italic', color: '#64748B', borderTop: '0.5px solid #E2E8F0', paddingTop: '2px' }}>
+                          A primeira peça cai imperceptível. A última derruba o datacenter.
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '6pt', fontWeight: 800, color: '#334155', borderTop: '1px solid #ccc', paddingTop: '2px', marginTop: '2px' }}>
+                        <span>CVSS 6.3 · INCOMUM</span>
+                        <span>#075/080</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              )}
+
+              {/* FOLHA 2: VERSOS ESPELHADOS HORIZONTALMENTE PARA IMPRESSÃO DUPLEX PERFEITA */}
+              {(deluxePrintMode === 'both' || deluxePrintMode === 'back') && (
+                <div className="printable-page-a4" style={{ marginBottom: '32px', paddingBottom: '16px' }}>
+                  <div style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 'bold', borderBottom: '2px solid #f59e0b', color: '#f59e0b', paddingBottom: '4px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>PWND! V1.3 — AMOSTRA DELUXE (FOLHA 2: VERSOS DAS CARTAS · ESPELHAMENTO DUPLEX)</span>
+                    <span>VIRAR NA BORDA LONGA (FLIP ON LONG EDGE)</span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 63mm)', justifyContent: 'center', gap: '4mm' }}>
+                    
+                    {/* Linha 1 Versos: Verso C3, Verso C2, Verso C1 */}
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-archetype.jpg" alt="Verso Archetype" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-tool.jpg" alt="Verso Tool" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-vuln.jpg" alt="Verso Vulnerabilidade" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+
+                    {/* Linha 2 Versos: Verso C6, Verso C5, Verso C4 */}
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-tool.jpg" alt="Verso Safeguard" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-program.jpg" alt="Verso Programa" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-event.jpg" alt="Verso Evento" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+
+                    {/* Linha 3 Versos: Verso C9, Verso C8, Verso C7 */}
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-vuln.jpg" alt="Verso Vulnerabilidade" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-tool.jpg" alt="Verso Tool" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                    <div style={{ width: '63mm', height: '88mm', border: '1px solid #111', borderRadius: '6px', overflow: 'hidden' }}>
+                      <img src="/card-backs/back-vuln.jpg" alt="Verso Vulnerabilidade" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWNED! The Bug Bounty Chaos - Livreto de Quick Rules (V1.4)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0d11;
+      --paper-bg: #ffffff;
+      --paper-text: #111827;
+      --border-dark: #1f2937;
+      --border-light: #e5e7eb;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --accent-blue: #2563eb;
+      --accent-orange: #d97706;
+      --accent-purple: #7c3aed;
+      --muted: #4b5563;
+      --faint: #f9fafb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e5e7eb;
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* Barra Superior de Controles na Tela */
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: #161b22;
+      border: 1px solid #30363d;
+      padding: 12px 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-print {
+      background: #00ff66;
+      color: #000;
+    }
+
+    .btn-print:hover {
+      background: #00cc52;
+      transform: translateY(-1px);
+    }
+
+    .btn-toggle {
+      background: #21262d;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+    }
+
+    .btn-toggle:hover {
+      background: #30363d;
+      color: #fff;
+    }
+
+    .instructions {
+      font-size: 13px;
+      color: #9ca3af;
+      text-align: center;
+      max-width: 820px;
+      line-height: 1.5;
+    }
+
+    .instructions strong {
+      color: #fff;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       ESTRUTURA DE IMPRESSÃO / FOLHA A4 PAISAGEM (LIVRETO DOBRÁVEL)
+       ══════════════════════════════════════════════════════════════ */
+    .booklet-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Cada folha A4 em modo paisagem (297mm x 210mm) */
+    .a4-sheet {
+      width: 297mm;
+      height: 210mm;
+      background: var(--paper-bg);
+      color: var(--paper-text);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 8mm 10mm;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      border-radius: 4px;
+      position: relative;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    /* Linha sutil de dobra no meio da folha */
+    .fold-line {
+      position: absolute;
+      top: 6mm;
+      bottom: 6mm;
+      left: 50%;
+      width: 1px;
+      border-left: 1px dashed rgba(0, 0, 0, 0.12);
+      pointer-events: none;
+    }
+
+    /* Página A5 individual dentro da folha (Metade de A4) */
+    .page-a5 {
+      padding: 3mm 8mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      font-size: 10px;
+      line-height: 1.38;
+    }
+
+    /* Cabeçalhos de Página */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid #111;
+      padding-bottom: 3px;
+      margin-bottom: 6px;
+    }
+
+    .page-header .brand {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #111;
+    }
+
+    .page-header .page-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9.5px;
+      color: #4b5563;
+      font-weight: bold;
+    }
+
+    /* Rodapé da Página */
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 3px;
+      font-size: 8.5px;
+      color: #6b7280;
+      font-family: 'Share Tech Mono', monospace;
+      margin-top: 4px;
+    }
+
+    /* Títulos de Seção Interna */
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #111;
+      margin: 5px 0 3px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 2px;
+    }
+
+    .section-title .badge {
+      font-size: 8.5px;
+      background: #111;
+      color: #fff;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .card-box {
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      padding: 4px 7px;
+      margin-bottom: 4px;
+      background: #fff;
+    }
+
+    .card-box.highlight {
+      border-color: #059669;
+      background: #ecfdf5;
+    }
+
+    .card-box.warn {
+      border-color: #dc2626;
+      background: #fef2f2;
+    }
+
+    .card-box.info {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+
+    .card-box.amber {
+      border-color: #d97706;
+      background: #fffbeb;
+    }
+
+    /* Listas compactas */
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      position: relative;
+      padding-left: 10px;
+      margin-bottom: 2px;
+    }
+
+    li::before {
+      content: '▪';
+      position: absolute;
+      left: 0;
+      color: #6b7280;
+      font-size: 8.5px;
+    }
+
+    ol {
+      padding-left: 15px;
+      margin-bottom: 2px;
+    }
+
+    ol li {
+      padding-left: 2px;
+      margin-bottom: 2px;
+    }
+
+    ol li::before {
+      content: none;
+    }
+
+    strong {
+      color: #000;
+      font-weight: 700;
+    }
+
+    .mono {
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .fira {
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Tabelas compactas */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9px;
+      margin: 3px 0;
+    }
+
+    th,
+    td {
+      padding: 2.5px 5px;
+      border: 1px solid #d1d5db;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 800;
+      font-size: 8.5px;
+      text-transform: uppercase;
+    }
+
+    /* Badges de Cores para Arquétipos */
+    .tag {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .tag-green {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .tag-red {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .tag-blue {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .tag-yellow {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .tag-purple {
+      background: #f3e8ff;
+      color: #6b21a8;
+      border: 1px solid #d8b4fe;
+    }
+
+    /* Grid de Arquétipos */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      margin: 3px 0;
+    }
+
+    .arch-item {
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 9.2px;
+      line-height: 1.35;
+    }
+
+    .arch-title {
+      font-weight: 800;
+      color: #111;
+      font-size: 9.8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+
+    /* Grid das Badges de Escopo (Seção 09) */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px 6px;
+      margin-top: 3px;
+    }
+
+    .scope-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 8.8px;
+      color: #374151;
+    }
+
+    .badge-scope {
+      display: inline-block;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 8px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 3px;
+      min-width: 32px;
+      text-align: center;
+      letter-spacing: 0.5px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       CSS MEDIA PRINT - IMPRESSÃO EXATA EM 1 FOLHA A4 FRENTE/VERSO
+       ══════════════════════════════════════════════════════════════ */
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+
+      body {
+        background: #fff;
+        padding: 0;
+        margin: 0;
+      }
+
+      .controls,
+      .instructions {
+        display: none !important;
+      }
+
+      .booklet-container {
+        gap: 0;
+      }
+
+      .a4-sheet {
+        box-shadow: none;
+        border-radius: 0;
+        width: 297mm;
+        height: 210mm;
+        page-break-after: always;
+        break-after: page;
+        padding: 7mm 9mm;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Barra de Controles na Tela -->
+  <div class="controls">
+    <button class="btn btn-print" onclick="window.print()">🖨️ IMPRIMIR LIVRETO (Frente e Verso)</button>
+    <a href="pwned-manual-sucesso-v1.html" class="btn btn-toggle">📖 Manual Completo (80+ Cartas)</a>
+  </div>
+
+  <div class="instructions">
+    <strong>Configuração de Impressão:</strong> Na caixa de diálogo da impressora, selecione orientação
+    <strong>Paisagem (Landscape)</strong>, marque <strong>Frente e Verso (Virar pela borda menor / Flip on short
+      edge)</strong>
+    e Margens: <strong>Nenhuma</strong> (ou Padrão). Ao retirar da impressora e dobrar no meio, você terá o livreto de 4
+    páginas pronto.
+  </div>
+
+  <div class="booklet-container">
+
+    <!-- ══════════════════════════════════════════════════════════════
+         FOLHA 1 (LADO EXTERNO): PÁGINA 4 (Esquerda) + PÁGINA 1 (Direita)
+         ══════════════════════════════════════════════════════════════ -->
+    <div class="a4-sheet">
+      <div class="fold-line"></div>
+
+      <!-- ─── PÁGINA 4: ARQUÉTIPOS, DESEMPATE & ESCOPOS ─── -->
+      <div class="page-a5">
+        <div>
+          <div class="page-header">
+            <span class="brand">ARQUÉTIPOS & REFERÊNCIA</span>
+            <span class="page-tag">PÁG. 4</span>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">06</span> OS 6 ARQUÉTIPOS DE PESQUISADOR
+          </div>
+          <div class="arch-grid">
+            <div class="arch-item">
+              <div class="arch-title"><span>n00b (🌱)</span> <span class="tag tag-green">Ferramentas</span></div>
+              No Report bem-sucedido: em vez da Tool do topo, <strong>olhe as 3 primeiras do Tool Deck e escolha
+                1</strong>.
+            </div>
+            <div class="arch-item">
+              <div class="arch-title"><span>The Old Guard (🧠)</span> <span class="tag tag-blue">Hacker Raiz</span></div>
+              <strong>Limite de mão permanente de 8 cartas</strong>. Recebe +$500 por cada carta Épica ou Lendária
+              reportada.
+            </div>
+            <div class="arch-item">
+              <div class="arch-title"><span>Bug Hunter (⚡)</span> <span class="tag tag-yellow">Volume</span></div>
+              Só reporta Comum e Incomum. +$500 por carta além da 1ª. <strong>Report com 3 vulns concede 1
+                Token de Reputação (🐝)</strong>.
+            </div>
+            <div class="arch-item">
+              <div class="arch-title"><span>Social Engineer (🎭)</span> <span class="tag tag-purple">Caos</span></div>
+              <strong>Caos Redirecionado (1x/rodada):</strong> passa evento maléfico para outro. <strong>Phishing
+                (1x/rodada livre):</strong> puxa carta rival e dá 1 sua.
+            </div>
+            <div class="arch-item">
+              <div class="arch-title"><span>Red Teamer (⚔️)</span> <span class="tag tag-red">Sem Limites</span></div>
+              <strong>Ignora restrições de escopo</strong> dos programas. Penalidade: subtrai <strong>$1.500</strong> do payout total de cada Report.
+            </div>
+            <div class="arch-item">
+              <div class="arch-title"><span>The Pentester (🛡️)</span> <span class="tag tag-blue">Auditor</span></div>
+              <strong>Imune a Duplicate Report! e Triage Delay!</strong>. Ganhe +$500 por cada classe técnica diferente
+              no
+              Report (máx. +$1.000).
+            </div>
+          </div>
+
+          <div class="section-title" style="margin-top: 5px;">
+            <span class="badge">07</span> SALVAGUARDAS RÁPIDAS (SAFEGUARDS)
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 4px;">
+            <div class="card-box" style="padding: 4px 6px; margin: 0;">
+              <strong>🛡️ Safeguard (Bypass):</strong> Anula <em>PATCH DEPLOYED!</em>. No Report: garante payout sem
+              tool
+              e saca evento. Em Stealth: mantém mesa. Descarte após o uso. <em>(Recebe 1 Alerta; sem Tool nem consolação).</em>
+            </div>
+            <div class="card-box" style="padding: 4px 6px; margin: 0;">
+              <strong>📜 CVE Protection:</strong> Anula <em>Duplicate Report!</em>, <em>Out of Scope!</em> e <em>DNS
+                Hijack!</em> direcionados a você. Descarte após o uso. <em>Não protege contra Patch Deployed.</em>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">08</span> CRITÉRIOS DE FIM DE JOGO & DESEMPATE
+          </div>
+          <div class="card-box highlight" style="margin-bottom: 3px;">
+            <ul>
+              <li><strong>$40.000 na Bounty Track:</strong> Vitória instantânea em qualquer momento do jogo!</li>
+              <li><strong>Final da 8ª Rodada:</strong> Cada Token de Reputação (🐝) mantido soma <strong>+$500</strong>; cada Token de Alerta (🐞)
+                restante subtrai <strong>-$500</strong>. Maior saldo vence!</li>
+              <li><strong>Desempate Oficial:</strong> 1º Quem tiver <strong>mais Tokens de Reputação</strong> → 2º Quem
+                tiver <strong>menos Tokens de Alerta</strong> → 3º Vitória compartilhada!</li>
+            </ul>
+          </div>
+
+          <div class="section-title" style="margin-top: 5px;">
+            <span class="badge">09</span> CLASSES TÉCNICAS (BADGES DE ESCOPO)
+          </div>
+          <div class="scope-grid">
+            <div class="scope-item">
+              <span class="badge-scope" style="background:#E67E22; color:#fff;">INJ</span>
+              <span>Injection (Injeção de Código/SQL)</span>
+            </div>
+            <div class="scope-item">
+              <span class="badge-scope" style="background:#4B0082; color:#fff;">BAC</span>
+              <span>Broken Access Control (Acesso)</span>
+            </div>
+            <div class="scope-item">
+              <span class="badge-scope" style="background:#E91E63; color:#fff;">XSS</span>
+              <span>Cross-Site Scripting</span>
+            </div>
+            <div class="scope-item">
+              <span class="badge-scope" style="background:#F1C40F; color:#111;">AUTH</span>
+              <span>Authentication (Autenticação)</span>
+            </div>
+            <div class="scope-item">
+              <span class="badge-scope" style="background:#2196F3; color:#fff;">SSRF</span>
+              <span>Server-Side Request Forgery</span>
+            </div>
+            <div class="scope-item">
+              <span class="badge-scope" style="background:#008080; color:#fff;">LOGIC</span>
+              <span>Business Logic (Lógica de Negócio)</span>
+            </div>
+            <div class="scope-item">
+              <span class="badge-scope" style="background:#27AE60; color:#fff;">CRYPTO</span>
+              <span>Cryptography (Criptografia)</span>
+            </div>
+            <div class="scope-item">
+              <span class="badge-scope" style="background:#6D28D9; color:#fff;">⚡ LEG</span>
+              <span>Legendary RCE (Zero-Days)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-footer">
+          <span>PWNED! The Bug Bounty Chaos • Quick Rules v1.4</span>
+          <span>4</span>
+        </div>
+      </div>
+
+      <!-- ─── PÁGINA 1: CAPA & SETUP RÁPIDO ─── -->
+      <div class="page-a5">
+        <div>
+          <div class="page-header">
+            <div>
+              <span class="brand" style="font-size: 15px;">PWNED!</span>
+              <span
+                style="font-size: 10.5px; color: var(--accent-orange); font-family: 'Share Tech Mono', monospace; font-weight: bold; margin-left: 4px;">The
+                Bug Bounty Chaos</span>
+            </div>
+            <span class="page-tag">PÁG. 1</span>
+          </div>
+
+          <div
+            style="background: #111827; color: #fff; padding: 6px 10px; border-radius: 4px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div
+                style="font-family: 'Share Tech Mono', monospace; font-size: 11.5px; color: #00ff66; font-weight: bold;">
+                LIVRETO DE QUICK
+                RULES</div>
+              <div style="font-size: 8.5px; color: #9ca3af; font-style: italic;">Find it. Report it. Get paid.</div>
+            </div>
+            <span class="tag tag-green" style="font-size: 8.5px;">TABLETOP V1.4</span>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">01</span> OBJETIVO DO JOGO
+          </div>
+          <div class="card-box highlight">
+            <p><strong>Meta Primária:</strong> Alcançar <strong>$40.000</strong> na Bounty Track (vitória
+              instantânea em qualquer momento).</p>
+            <p><strong>Duração da Partida:</strong> 8 rodadas completas (45–90 min · 2 a 6 jogadores). Se ninguém atingir $40k, o maior saldo
+              consolidado
+              vence (+ Reputação, - Alerta).</p>
+            <p><strong>Regra de Arredondamento:</strong> Cálculos e bônus fora da grade arredondam para o múltiplo de
+              <strong>$500</strong> mais próximo; empate arredonda para baixo.
+            </p>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">02</span> COMPONENTES & DECK SETUP
+          </div>
+          <div class="card-box">
+            <ul>
+              <li><strong>Main Deck (84 cartas):</strong> 80 Vulnerabilidades + 4 Safeguards (2 Bypass + 2 CVE
+                Protection). <em>Reembaralhe o descarte ao esvaziar.</em></li>
+              <li><strong>Tool Deck (36 cartas):</strong> 12 ferramentas táticas × 3 cópias de cada.</li>
+              <li><strong>Event Deck (24 cartas):</strong> Eventos de caos disparados após cada Report.</li>
+              <li><strong>18 Tokens de Alerta (🐞):</strong> Atenção defensiva e rastreamento do Blue Team.</li>
+              <li><strong>18 Tokens de Reputação (🐝):</strong> Prestígio, reroll de dados e bônus de vitória.</li>
+              <li><strong>3 Dados D6:</strong> Utilizados nos Patch Speed Checks corporativos.</li>
+              <li><strong>Tabuleiro Central:</strong> Bounty Track ($0 a $40k), Round Tracker e Program Market (3 slots
+                abertos).</li>
+            </ul>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">03</span> PREPARAÇÃO DOS JOGADORES
+          </div>
+          <div class="card-box info">
+            <ol>
+              <li>Sorteie 1 <strong>Carta de Arquétipo</strong> para cada jogador.</li>
+              <li>Coloque seu marcador na casa <strong>START ($0)</strong> da Bounty Track.</li>
+              <li>Receba <strong>5 cartas do Main Deck + 1 Bypass</strong> (instale no slot SAFEGUARD do seu tabuleiro). Embaralhe 2 Bypass e 2 CVE no Main Deck; excedentes na caixa.</li>
+              <li><strong>Limite de Mão:</strong> Máximo de <strong>6 cartas</strong> na mão (exceto <em>The Old
+                  Guard</em>, que possui limite de 8 cartas).</li>
+              <li>Revele 3 Program Cards no mercado. No turno 1, cada jogador escolhe 1 programa grátis.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="page-footer">
+          <span>Find it. Report it. Get paid.</span>
+          <span>1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         FOLHA 2 (LADO INTERNO - MIOLO): PÁGINA 2 (Esquerda) + PÁGINA 3 (Direita)
+         ══════════════════════════════════════════════════════════════ -->
+    <div class="a4-sheet">
+      <div class="fold-line"></div>
+
+      <!-- ─── PÁGINA 2: O SEU TURNO & AS 3 AÇÕES ─── -->
+      <div class="page-a5">
+        <div>
+          <div class="page-header">
+            <span class="brand">O CICLO DO TURNO</span>
+            <span class="page-tag">PÁG. 2</span>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">04</span> AS 3 AÇÕES DO TURNO
+          </div>
+          <p style="font-size: 9px; color: #4b5563; margin-bottom: 4px;">No seu turno, você comanda <strong>3
+              ações</strong> livres para combinar:</p>
+
+          <div class="card-box info">
+            <div style="font-weight: 800; color: #1e40af; margin-bottom: 2px;">1. RECON (Custa 1 ação)</div>
+            <p>Compre <strong>2 cartas do Main Deck</strong> OU <strong>troque de programa</strong> por 1 dos 3 abertos
+              no mercado (ao trocar voluntariamente, descarte quaisquer vulnerabilidades instaladas na sua Zona de
+              Exploits).</p>
+          </div>
+
+          <div class="card-box info">
+            <div style="font-weight: 800; color: #1e40af; margin-bottom: 2px;">2. EXPLOIT (Custa 1 ação)</div>
+            <p>Baixe 1 carta de vulnerabilidade da sua mão para a sua <strong>Zona de Exploits</strong>, desde que a
+              classe técnica da carta seja aceita pelo escopo do seu programa ativo.</p>
+            <p style="font-size: 8.5px; color: #b91c1c; font-weight: bold; margin-top: 1px;">⚠️ Limite de Mesa: Máximo
+              de
+              3 vulnerabilidades simultâneas na mesa.</p>
+          </div>
+
+          <div class="card-box highlight">
+            <div style="font-weight: 800; color: #065f46; margin-bottom: 2px;">3. REPORT (Custa 2 ações) - Sempre a
+              última!</div>
+            <p>Submeta as vulnerabilidades da mesa! Role <strong>2D6 somados</strong> (Modo Noisy) no teste de Patch
+              Speed Check. Se passar, avance o pagamento na Bounty Track. <strong>REGRA DE OURO:</strong> O Report é
+              sempre a última
+              ação do seu turno.</p>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">★</span> AÇÃO LIVRE (CUSTO ZERO DE AÇÃO)
+          </div>
+          <div class="card-box" style="padding: 3px 6px;">
+            <p><strong>Instalar Tool Card (1x/turno):</strong> Baixe 1 Tool da sua mão pagando o custo de descartar
+              <strong>1 carta qualquer da sua mão</strong>. Pode ser feito a qualquer momento antes do Report.
+            </p>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">1-2-3</span> SEQUÊNCIA DO REPORT BEM-SUCEDIDO
+          </div>
+          <div class="card-box highlight">
+            <ol>
+              <li><strong>Payout:</strong> Avance na Bounty Track o valor das vulns + bônus do programa. <em>Se incluir
+                  carta Épica ou Lendária, ganhe 1 Token de Reputação (🐝)!</em></li>
+              <li><strong>Compre 1 Tool:</strong> Puxe 1 carta do Tool Deck para sua mão.</li>
+              <li><strong>Saque e Ative 1 Evento:</strong> Revele 1 Event Card e aplique na hora! Depois, descarte as vulns da Zona
+                de
+                Exploits e pegue um novo programa do mercado.</li>
+            </ol>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">2P</span> MODO DUELO (2 JOGADORES)
+          </div>
+          <div class="card-box" style="padding: 3px 6px;">
+            <p>Ao concluir um Report com sucesso, antes de escolher o novo programa, você <strong>pode descartar até 2 programas abertos</strong> do mercado e repor antes de escolher o novo.</p>
+          </div>
+        </div>
+
+        <div class="page-footer">
+          <span>Recon • Exploit • Report</span>
+          <span>2</span>
+        </div>
+      </div>
+
+      <!-- ─── PÁGINA 3: O RISCO & INSETOS TÁTEIS ─── -->
+      <div class="page-a5">
+        <div>
+          <div class="page-header">
+            <span class="brand">RISCO & ALERTA</span>
+            <span class="page-tag">PÁG. 3</span>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">05</span> TESTE DE PATCH SPEED CHECK (D6)
+          </div>
+          <div class="card-box">
+            <ul>
+              <li><strong>NOISY (se fez REPORT no turno):</strong> Role <strong>2D6 e some os dois dados</strong> antes
+                do payout.</li>
+              <li><strong>STEALTH (só baixou vulns e passou a vez):</strong> Role <strong>3D6, descarte o maior e some
+                  os
+                  dois menores</strong>.</li>
+              <li><strong>Vulnerabilidade <span class="tag tag-red">[NOISY]</span> na mesa:</strong> Quebra o Stealth!
+                Força sempre 2D6 somados.</li>
+              <li><em>(Mesa limpa ao final do turno → nenhum dado é rolado).</em></li>
+            </ul>
+          </div>
+
+          <table class="mono">
+            <thead>
+              <tr>
+                <th>Velocidade Alvo</th>
+                <th>Limiar de Patch</th>
+                <th>Risco Noisy (2D6)</th>
+                <th>Risco Stealth (3D6)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Lenta</strong></td>
+                <td><strong style="color: #dc2626;">10+</strong> (10, 11, 12)</td>
+                <td>16,7%</td>
+                <td>5,1%</td>
+              </tr>
+              <tr>
+                <td><strong>Moderada</strong></td>
+                <td><strong style="color: #dc2626;">9+</strong> (9 a 12)</td>
+                <td>27,8%</td>
+                <td>10,6%</td>
+              </tr>
+              <tr>
+                <td><strong>Rápida</strong></td>
+                <td><strong style="color: #dc2626;">8+</strong> (8 a 12)</td>
+                <td>41,7%</td>
+                <td>19,4%</td>
+              </tr>
+              <tr>
+                <td><strong>Extrema</strong></td>
+                <td><strong style="color: #dc2626;">7+</strong> (7 a 12)</td>
+                <td>58,3%</td>
+                <td>31,9%</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="section-title">
+            <span class="badge">💥</span> PATCH DEPLOYED! (FALHA NO DADO)
+          </div>
+          <div class="card-box warn">
+            <p>Se a soma dos dados empatar ou superar o limiar do programa:</p>
+            <ul>
+              <li><strong>Perda Total:</strong> Descarte todos os exploits da sua mesa + o programa ativo.</li>
+              <li><strong>Penalidade & Consolação:</strong> Receba <strong>1 Token de Alerta (🐞)</strong> + compre <strong>1 carta
+                  de consolação</strong> do Main Deck.</li>
+              <li><strong>Defesa do Bypass:</strong> Descarte seu Bypass para anular a perda e garantir o payout (sem
+                tool). <em>Recebe 1 Token de Alerta, mas sem Tool nem consolação!</em></li>
+            </ul>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">🐞</span> TOKENS DE ALERTA (BLUE TEAM)
+          </div>
+          <div class="card-box warn" style="margin-bottom: 3px;">
+            <ul>
+              <li><strong>Alarme Crítico (2 Alertas):</strong> Perca <strong>-$2.000</strong> na Bounty Track
+                imediatamente e devolva os 2 alertas ao suprimento central.</li>
+              <li><strong>Penalidade de Fim de Jogo:</strong> Cada Token de Alerta restante na mesa ao fim da 8ª rodada
+                desconta
+                <strong>-$500</strong> do placar final.
+              </li>
+              <li><strong>Modo Furtivo (Limpeza):</strong> Se passar o turno sem report, sem patch e com a <strong>Zona de Exploits
+                  vazia</strong>, remova 1 Token de Alerta seu.</li>
+            </ul>
+          </div>
+
+          <div class="section-title">
+            <span class="badge">🐝</span> TOKENS DE REPUTAÇÃO (BOUNTY BEES)
+          </div>
+          <div class="card-box amber" style="margin-bottom: 2px;">
+            <ul>
+              <li><strong>Ganho:</strong> Report com carta Épica ou Lendária concede <strong>1 Token de Reputação (🐝)</strong>.
+              </li>
+              <li><strong>Valor Final:</strong> Cada Reputação guardada vale <strong>+$500</strong> no desempate de
+                vitória.</li>
+              <li><strong>Reroll:</strong> Descarte <strong>2 Tokens de Reputação</strong> para rerrolar 1 dado de Patch Check.</li>
+              <li><strong>Roubo:</strong> Report com 2 Lendárias ou 3 Épicas <strong>rouba 1 Token de Reputação</strong> de um
+                rival!
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="page-footer">
+          <span>Noisy • Stealth • Alerta • Reputação</span>
+          <span>3</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>

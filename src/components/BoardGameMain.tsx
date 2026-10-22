@@ -12,8 +12,8 @@ import { ARCHETYPES, PROGRAM_CARDS, ProgramCard } from '../data/cardsData';
 import { Layers, RefreshCw, Eye, Users, ShieldAlert, Globe, Printer, BookOpen, Trophy, Home } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 
-class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
-  constructor(props: {children: React.ReactNode}) {
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: React.ReactNode }) {
     super(props);
     this.state = { hasError: false };
   }
@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
   }
   render() {
     if (this.state.hasError) {
-      return <div style={{padding: '20px', color: 'red', background: 'black', border: '1px solid red'}}>Erro ao renderizar componente. Feche e abra novamente.</div>;
+      return <div style={{ padding: '20px', color: 'red', background: 'black', border: '1px solid red' }}>Erro ao renderizar componente. Feche e abra novamente.</div>;
     }
     return this.props.children;
   }
@@ -39,6 +39,7 @@ const BoardGameContent: React.FC = () => {
     playerActiveTools,
     playerActiveProgram,
     playerArchetype,
+    playerSafeguardSlot,
     deployedExploits,
     currentTurn,
     myRole,
@@ -101,7 +102,7 @@ const BoardGameContent: React.FC = () => {
     hand: playerHand,
     activeTools: playerActiveTools,
     activeExploits: myExploitsCards,
-    hasDefuse: playerHand.some(c => c.name === 'Cofre 0-Day'),
+    hasDefuse: playerSafeguardSlot !== null,
     isCurrentTurnPlayer: isMyTurn
   };
 
@@ -117,7 +118,7 @@ const BoardGameContent: React.FC = () => {
 
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '16px' }}>
-      
+
       {/* Board Game Header */}
       <header className="terminal-box" style={{ padding: '12px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -126,11 +127,13 @@ const BoardGameContent: React.FC = () => {
           </div>
           <div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--amber-glow)', letterSpacing: '3px', textTransform: 'uppercase' }}>
-              PWND! Board Game Edition {roomCode ? `[SALA: ${roomCode}]` : ''}
+              PWNED! Board Game Edition {roomCode ? `[SALA: ${roomCode}]` : ''}
             </div>
             <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#fff', letterSpacing: '-1px', lineHeight: '1' }}>
-              PWND! Tabletop
+              PWNED! Tabletop
             </h1>
+            <h3 style={{ fontSize: '16px', color: 'var(--amber-glow)' }}>The Bug Bounty Chaos</h3>
+            <h5 style={{ fontSize: '12px' }}>Find it. Report it. Get paid.</h5>
           </div>
         </div>
 
@@ -291,7 +294,6 @@ const BoardGameContent: React.FC = () => {
 
           {/* Center Market Mat (Imagem 3) */}
           <CenterMarketMat
-            currentRound={currentTurn}
             totalRounds={8}
             selectedProgramId={playerActiveProgram?.id}
             onSelectProgram={selectNewProgram}
@@ -301,7 +303,7 @@ const BoardGameContent: React.FC = () => {
           <div style={{ textAlign: 'center', fontSize: '12px', color: myRole === 'player-1' ? 'var(--terminal-green)' : 'var(--cyber-blue)', fontFamily: 'var(--font-mono)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>
             — SEU TAPETE INDIVIDUAL ({myRole === 'player-1' ? 'PLAYER MAT 1 - VERDE' : 'PLAYER MAT 2 - AZUL'}) —
           </div>
-          
+
           <PlayerMat
             playerData={humanPlayerData}
             onExploitSelect={(card) => {
@@ -342,8 +344,8 @@ const BoardGameContent: React.FC = () => {
           patchSpeed={currentDisplayProgram.patchSpeed}
           requiredRollText={
             currentDisplayProgram.patchSpeed.includes('Lenta') ? '8 (12,5% risco)' :
-            currentDisplayProgram.patchSpeed.includes('Moderada') ? '7 ou 8 (25% risco)' :
-            currentDisplayProgram.patchSpeed.includes('Rápida') ? '6, 7 ou 8 (37,5% risco)' : '5, 6, 7 ou 8 (50% risco)'
+              currentDisplayProgram.patchSpeed.includes('Moderada') ? '7 ou 8 (25% risco)' :
+                currentDisplayProgram.patchSpeed.includes('Rápida') ? '6, 7 ou 8 (37,5% risco)' : '5, 6, 7 ou 8 (50% risco)'
           }
           isRound8={currentTurn >= 8}
           stealthMode={diceRollReason === 'endTurn'}

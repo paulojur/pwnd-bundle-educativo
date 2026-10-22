@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
-import { Search, Send, SkipForward, Award, Dices, UserCheck, Clock } from 'lucide-react';
+import { Search, Send, SkipForward, Award, Dices, UserCheck, Clock, FileText } from 'lucide-react';
 import { soundFx } from '../utils/audio';
+import { BountyLedgerModal } from './BountyLedgerModal';
 
 export const ActionPointsBar: React.FC = () => {
+  const [isLedgerOpen, setIsLedgerOpen] = useState(false);
   const {
     playerScore,
     isMyTurn,
@@ -12,7 +14,8 @@ export const ActionPointsBar: React.FC = () => {
     actionVarrer,
     actionReportar,
     triggerManualDiceRoll,
-    endTurn
+    endTurn,
+    needsDiscard
   } = useBoardGame();
 
   return (
@@ -64,8 +67,30 @@ export const ActionPointsBar: React.FC = () => {
               <div style={{ fontSize: '10px', color: 'var(--text-secondary)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
                 Pontuação Total
               </div>
-              <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--terminal-green)', fontFamily: 'var(--font-mono)' }}>
-                {playerScore} pts
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--terminal-green)', fontFamily: 'var(--font-mono)' }}>
+                  {playerScore} pts
+                </div>
+                <button
+                  onClick={() => { soundFx.playClick(); setIsLedgerOpen(true); }}
+                  title="Ver Extrato de Payouts"
+                  style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '4px',
+                    padding: '2px 6px',
+                    color: 'var(--terminal-green)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    fontSize: '9px',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  <FileText size={12} /> EXTRATO
+                </button>
               </div>
             </div>
           </div>
@@ -76,11 +101,16 @@ export const ActionPointsBar: React.FC = () => {
         </div>
 
         {/* Action Buttons (1 Ação Única Por Turno) */}
-        <div className="action-bar-container" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        <div className="action-bar-container" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', opacity: needsDiscard ? 0.3 : 1, pointerEvents: needsDiscard ? 'none' : 'auto' }}>
+          {needsDiscard && (
+            <div style={{ position: 'absolute', background: 'rgba(248, 81, 73, 0.9)', color: '#fff', padding: '10px 20px', borderRadius: '8px', zIndex: 10, left: '50%', transform: 'translateX(-50%)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+              ⚠️ LIMITE DE MÃO EXCEDIDO: Descarte cartas primeiro!
+            </div>
+          )}
           {/* Varrer / Recon (1 Ação) */}
           <button
             onClick={() => { soundFx.playClick(); actionVarrer(); }}
-            disabled={!isMyTurn}
+            disabled={!isMyTurn || needsDiscard}
             style={{
               padding: '10px 18px',
               background: isMyTurn ? 'var(--cyber-blue)' : 'rgba(255,255,255,0.06)',
@@ -90,7 +120,7 @@ export const ActionPointsBar: React.FC = () => {
               fontWeight: '800',
               fontFamily: 'var(--font-mono)',
               fontSize: '13px',
-              cursor: isMyTurn ? 'pointer' : 'not-allowed',
+              cursor: isMyTurn && !needsDiscard ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
@@ -102,7 +132,7 @@ export const ActionPointsBar: React.FC = () => {
           {/* Reportar vulnerabilidades (1 Ação) */}
           <button
             onClick={() => { soundFx.playClick(); actionReportar(); }}
-            disabled={!isMyTurn}
+            disabled={!isMyTurn || needsDiscard}
             style={{
               padding: '10px 18px',
               background: isMyTurn ? 'var(--terminal-green)' : 'rgba(255,255,255,0.06)',
@@ -112,7 +142,7 @@ export const ActionPointsBar: React.FC = () => {
               fontWeight: '800',
               fontFamily: 'var(--font-mono)',
               fontSize: '13px',
-              cursor: isMyTurn ? 'pointer' : 'not-allowed',
+              cursor: isMyTurn && !needsDiscard ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
@@ -124,6 +154,7 @@ export const ActionPointsBar: React.FC = () => {
           {/* Botão de Teste do Dado D6 3D */}
           <button
             onClick={() => { soundFx.playClick(); triggerManualDiceRoll(); }}
+            disabled={needsDiscard}
             style={{
               padding: '10px 18px',
               background: 'var(--electric-purple)',
@@ -133,7 +164,7 @@ export const ActionPointsBar: React.FC = () => {
               fontWeight: '800',
               fontFamily: 'var(--font-mono)',
               fontSize: '13px',
-              cursor: 'pointer',
+              cursor: needsDiscard ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -146,17 +177,17 @@ export const ActionPointsBar: React.FC = () => {
           {/* Passar Turno (Manual) */}
           <button
             onClick={() => { soundFx.playClick(); endTurn(); }}
-            disabled={!isMyTurn}
+            disabled={!isMyTurn || needsDiscard}
             style={{
               padding: '10px 18px',
-              background: isMyTurn ? 'rgba(192, 132, 252, 0.2)' : 'rgba(255,255,255,0.06)',
-              color: isMyTurn ? 'var(--electric-purple-light)' : 'var(--text-muted)',
-              border: isMyTurn ? '1px solid var(--electric-purple-light)' : '1px solid rgba(255,255,255,0.1)',
+              background: 'transparent',
+              color: isMyTurn ? '#fff' : 'var(--text-muted)',
+              border: isMyTurn ? '1px solid rgba(255,255,255,0.3)' : '1px solid rgba(255,255,255,0.1)',
               borderRadius: 'var(--radius-sm)',
               fontWeight: '800',
               fontFamily: 'var(--font-mono)',
               fontSize: '13px',
-              cursor: isMyTurn ? 'pointer' : 'not-allowed',
+              cursor: isMyTurn && !needsDiscard ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
@@ -166,6 +197,7 @@ export const ActionPointsBar: React.FC = () => {
           </button>
         </div>
       </div>
+      {isLedgerOpen && <BountyLedgerModal onClose={() => setIsLedgerOpen(false)} />}
     </div>
   );
 };

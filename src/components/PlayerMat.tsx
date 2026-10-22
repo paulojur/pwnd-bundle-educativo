@@ -188,9 +188,6 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                           <span style={{ fontSize: '10.5px', fontWeight: '700', color: 'var(--cyber-blue)', fontFamily: 'var(--font-mono)', textAlign: 'center' }}>
                             {tool.name}
                           </span>
-                          <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(234, 179, 8, 0.2)', color: 'var(--amber-glow)', fontFamily: 'var(--font-mono)', fontWeight: 'bold' }}>
-                            ⚡ Carga: {tool.charges ?? (tool.rarity === 'Epic' || tool.rarity === 'Rare' ? 1 : 2)}
-                          </span>
                         </>
                       ) : (
                         <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', margin: 'auto' }}>[Slot Vazio]</span>

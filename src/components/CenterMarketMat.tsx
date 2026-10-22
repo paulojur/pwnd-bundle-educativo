@@ -5,23 +5,19 @@ import { Layers, ShieldAlert, AlertTriangle, ArrowRight, Dices } from 'lucide-re
 import { soundFx } from '../utils/audio';
 
 interface CenterMarketMatProps {
-  currentRound: number;
   totalRounds?: number;
-  eventDeckCount?: number;
-  discardCount?: number;
   selectedProgramId?: string;
   onSelectProgram?: (program: ProgramCard) => void;
 }
 
 export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
-  currentRound = 1,
   totalRounds = 8,
-  eventDeckCount = 24,
-  discardCount = 3,
   selectedProgramId,
   onSelectProgram
 }) => {
-  const { programMarket, playerActiveProgram, selectNewProgram, drawEventCard } = useBoardGame();
+  const { programMarket, playerActiveProgram, selectNewProgram, drawEventCard, mainDeckCount, eventDeckCount, programDeckCount, currentTurn } = useBoardGame();
+  
+  const currentRound = currentTurn || 1;
 
   const isPendingProgram = playerActiveProgram === null;
 
@@ -155,19 +151,20 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
             <span style={{ fontSize: '10px', fontWeight: '900', color: 'var(--alert-red)', fontFamily: 'var(--font-mono)' }}>
               EVENT DECK
             </span>
-            <span style={{ fontSize: '8px', color: '#fff', background: 'var(--alert-red)', padding: '1px 5px', borderRadius: '3px', marginTop: '2px', fontWeight: '700' }}>
-              CLIQUE P/ PUXAR
+            <span style={{ fontSize: '11px', color: '#fff', background: 'rgba(248,81,73,0.35)', padding: '1px 5px', borderRadius: '3px', marginTop: '2px', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+              {eventDeckCount} cartas
             </span>
           </div>
 
-          {/* Discard Pile */}
+          {/* Discard Pile — Main Deck count */}
           <div className="playmat-slot" style={{ width: '90px', height: '110px' }}>
             <span style={{ fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              DISCARD
+              MAIN DECK
             </span>
-            <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              ({discardCount})
+            <span style={{ fontSize: '18px', fontWeight: '900', color: mainDeckCount > 20 ? 'var(--terminal-green)' : mainDeckCount > 5 ? 'var(--amber-glow)' : 'var(--alert-red)', fontFamily: 'var(--font-mono)' }}>
+              {mainDeckCount}
             </span>
+            <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>cartas</span>
           </div>
         </div>
 

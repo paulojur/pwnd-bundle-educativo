@@ -1,52 +1,13 @@
 import React from 'react';
-import { ShieldAlert, Zap, X, AlertTriangle, Gift, Layers } from 'lucide-react';
+import { ShieldAlert } from 'lucide-react';
 import { soundFx } from '../utils/audio';
+import { EventCardData } from '../data/full24EventsData';
 
-export interface EventCardData {
-  id: string;
-  name: string;
-  effectDescription: string;
-  icon: string;
-  type: 'global' | 'targeted';
-}
+// Re-export EventCardData so existing imports of EventCardData from this file keep working
+export type { EventCardData };
 
-export const EVENT_CARDS_LIST: EventCardData[] = [
-  {
-    id: 'evt-patch-tuesday',
-    name: 'Patch Tuesday!',
-    effectDescription: 'Todos os participantes com vulnerabilidades expostas na mesa realizam imediatamente um Patch Speed Check de surpresa!',
-    icon: '⚡',
-    type: 'global'
-  },
-  {
-    id: 'evt-duplicate-report',
-    name: 'Duplicate Report!',
-    effectDescription: 'O pesquisador deve escolher e descartar imediatamente a sua vulnerabilidade de maior valor CVSS presente na mesa.',
-    icon: '📄',
-    type: 'targeted'
-  },
-  {
-    id: 'evt-data-breach',
-    name: 'Data Breach!',
-    effectDescription: 'Vazamento de dados massivo! Todos os participantes mostram suas mãos. O participante com mais vulnerabilidades descarta metade da mão.',
-    icon: '💥',
-    type: 'global'
-  },
-  {
-    id: 'evt-scope-expansion',
-    name: 'Scope Expansion!',
-    effectDescription: 'O escopo de todos os programas ativos na mesa torna-se irrestrito por 2 rodadas completas, aceitando qualquer classe técnica!',
-    icon: '🌐',
-    type: 'global'
-  },
-  {
-    id: 'evt-swag-drop',
-    name: 'Swag Drop!',
-    effectDescription: 'Brinde de segurança! Cada pesquisador presente na mesa compra 1 carta de ferramenta imediatamente do deck principal.',
-    icon: '🎁',
-    type: 'global'
-  }
-];
+// Legacy list kept for any old code that imported EVENT_CARDS_LIST — now unused by engine
+export const EVENT_CARDS_LIST: EventCardData[] = [];
 
 interface EventCardModalProps {
   isOpen: boolean;
@@ -76,15 +37,21 @@ export const EventCardModal: React.FC<EventCardModalProps> = ({ isOpen, eventCar
         </div>
 
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--alert-red)', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '4px' }}>
-          EVENT CARD ATIVADA (MANUAL V1.0 SEÇÃO 8)
+          EVENT CARD ATIVADA (MANUAL V1.1 SEÇÃO 09) — #{eventCard.number}
         </div>
 
         <h3 style={{ fontSize: '24px', fontWeight: '900', color: '#fff', fontFamily: 'var(--font-mono)', marginBottom: '8px' }}>
           {eventCard.icon} {eventCard.name}
         </h3>
 
+        {eventCard.targetText && (
+          <div style={{ fontSize: '11px', color: 'var(--amber-glow)', fontFamily: 'var(--font-mono)', letterSpacing: '1px', marginBottom: '8px' }}>
+            🎯 ALVO: {eventCard.targetText}
+          </div>
+        )}
+
         <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px', borderRadius: '8px', border: '1px dashed var(--alert-red)', margin: '16px 0', fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.4' }}>
-          {eventCard.effectDescription}
+          {eventCard.simpleDescription}
         </div>
 
         <button

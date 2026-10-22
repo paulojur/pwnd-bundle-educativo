@@ -6,7 +6,7 @@ import { Zap, Wrench, ShieldCheck, Sparkles, CheckCircle2, Trash2, RefreshCw } f
 import { soundFx } from '../utils/audio';
 
 export const BoardHand: React.FC = () => {
-  const { playerHand, playerActiveProgram, playerArchetype, isMyTurn, actionInfiltrar, discardCardFromHand, recycleHandCards, moveCardToToolsRack, moveCardToDefuseSlot } = useBoardGame();
+  const { playerHand, playerActiveProgram, playerArchetype, isMyTurn, actionInfiltrar, discardCardFromHand, recycleHandCards, moveCardToToolsRack, moveCardToDefuseSlot, needsDiscard, pendingToolInstall, cancelToolInstall, confirmToolInstall } = useBoardGame();
   const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
   const [lastActionText, setLastActionText] = useState<string | null>(null);
 
@@ -98,7 +98,19 @@ export const BoardHand: React.FC = () => {
         </div>
 
         {/* Action Confirmation Banner */}
-        {lastActionText && (
+        {needsDiscard && !pendingToolInstall && (
+          <div style={{ fontSize: '12px', color: '#fff', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(248, 81, 73, 0.9)', padding: '6px 14px', borderRadius: '4px', fontWeight: '800' }}>
+            ⚠️ LIMITE DE MÃO EXCEDIDO! Descarte {playerHand.length - playerArchetype.maxHandSize} carta(s).
+          </div>
+        )}
+
+        {pendingToolInstall && (
+          <div style={{ fontSize: '12px', color: '#000', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--cyber-blue)', padding: '6px 14px', borderRadius: '4px', fontWeight: '800' }}>
+            🔧 INSTALANDO [{pendingToolInstall.name}]: Clique no botão verde de outra carta para sacrificar como pagamento.
+          </div>
+        )}
+
+        {lastActionText && !needsDiscard && !pendingToolInstall && (
           <div style={{ fontSize: '11px', color: 'var(--terminal-green)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(57, 211, 83, 0.1)', padding: '4px 10px', borderRadius: '4px' }}>
             <CheckCircle2 size={14} /> {lastActionText}
           </div>
@@ -236,7 +248,32 @@ export const BoardHand: React.FC = () => {
 
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
-                  {card.type === 'exploit' && scopeStatus.inScope && (
+                  {pendingToolInstall ? (
+                    card.id === pendingToolInstall.id ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          soundFx.playClick();
+                          cancelToolInstall();
+                        }}
+                        style={{ flex: 1, padding: '5px', background: 'rgba(248, 81, 73, 0.2)', color: 'var(--alert-red)', border: '1px solid rgba(248, 81, 73, 0.5)', borderRadius: '3px', fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', cursor: 'pointer' }}
+                      >
+                        ❌ CANCELAR INSTALAÇÃO
+                      </button>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          confirmToolInstall(card.id);
+                        }}
+                        style={{ flex: 1, padding: '5px', background: 'var(--terminal-green)', color: '#000', border: 'none', borderRadius: '3px', fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', cursor: 'pointer', boxShadow: 'var(--glow-green)' }}
+                      >
+                        ✅ PAGAR COM ESTA CARTA
+                      </button>
+                    )
+                  ) : (
+                    <>
+                      {!needsDiscard && card.type === 'exploit' && scopeStatus.inScope && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -261,7 +298,7 @@ export const BoardHand: React.FC = () => {
                     </button>
                   )}
 
-                  {card.type === 'tool' && (
+                  {!needsDiscard && card.type === 'tool' && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -286,7 +323,7 @@ export const BoardHand: React.FC = () => {
                     </button>
                   )}
 
-                  {card.type === 'defuse' && (
+                  {!needsDiscard && card.type === 'defuse' && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -312,31 +349,36 @@ export const BoardHand: React.FC = () => {
                   )}
 
                   {/* Botão de Descarte */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      soundFx.playClick();
-                      discardCardFromHand(card.id);
-                    }}
-                    title="Descartar esta carta da mão para liberar espaço"
-                    style={{
-                      flex: 1,
-                      padding: '5px',
-                      background: 'rgba(248, 81, 73, 0.15)',
-                      color: 'var(--alert-red)',
-                      border: '1px solid rgba(248, 81, 73, 0.4)',
-                      borderRadius: '3px',
-                      fontSize: '9px',
-                      fontWeight: '800',
-                      fontFamily: 'var(--font-mono)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <Trash2 size={11} />
-                  </button>
+                  {!pendingToolInstall && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        soundFx.playClick();
+                        discardCardFromHand(card.id);
+                      }}
+                      title="Descartar esta carta da mão para liberar espaço"
+                      style={{
+                        flex: 1,
+                        padding: '5px',
+                        background: needsDiscard ? 'rgba(248, 81, 73, 0.2)' : 'rgba(248, 81, 73, 0.15)',
+                        color: 'var(--alert-red)',
+                        border: needsDiscard ? '1px solid var(--alert-red)' : '1px solid rgba(248, 81, 73, 0.4)',
+                        borderRadius: '3px',
+                        fontSize: '9px',
+                        fontWeight: '800',
+                        fontFamily: 'var(--font-mono)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: needsDiscard ? '0 0 8px rgba(248, 81, 73, 0.4)' : 'none'
+                      }}
+                    >
+                      <Trash2 size={11} />
+                    </button>
+                  )}
+                    </>
+                  )}
                 </div>
               </div>
             );

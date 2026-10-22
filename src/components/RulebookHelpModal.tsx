@@ -81,8 +81,8 @@ export const RulebookHelpModal: React.FC<RulebookHelpModalProps> = ({ isOpen, on
                 Estutura do Turno (Escolha EXATAMENTE 1 ação):
               </h3>
               <ul style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <li><strong>1. RECON:</strong> Compre 2 cartas do baralho principal (+1 carta se tiver <em>Nmap + ffuf</em>). Limite de mão: 6 cartas (9 para Old Guard).</li>
-                <li><strong>2. EXPLOIT:</strong> Jogue 1 carta de vulnerabilidade para sua mesa. Exige respeitar o <em>Scope</em> do programa ativo e pagar os custos de ferramentas (com abates de SQLMap, Postman, ZAP, Burp Pro).</li>
+                <li><strong>1. RECON:</strong> Compre 2 cartas do baralho principal (+1 carta se tiver <em>PortSweep</em>). Limite de mão: 6 cartas (9 para Old Guard).</li>
+                <li><strong>2. EXPLOIT:</strong> Jogue 1 carta de vulnerabilidade para sua mesa. Exige respeitar o <em>Scope</em> do programa ativo e pagar os custos de ferramentas (com suporte de Injection Lab, Endpoint Lab, SpiderScan, Interceptor Pro).</li>
                 <li><strong>3. REPORT:</strong> Submete todas as vulnerabilidades da sua mesa. Soma o valor de CVSS, multiplica pelo fator da empresa (x1 a x10) e avança seu token no <strong>Bounty Track</strong> ($1.000 por casa).</li>
               </ul>
             </div>
@@ -117,7 +117,7 @@ export const RulebookHelpModal: React.FC<RulebookHelpModalProps> = ({ isOpen, on
               </h3>
               <ul style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <li>🟢 <strong>Low Tier (x1):</strong> GovPortal, EduConnect (Patch Lento)</li>
-                <li>🟡 <strong>Medium Tier (x2):</strong> ShopAll, SocialBee, GameVerse (Patch Moderado)</li>
+                <li>🟡 <strong>Medium Tier (x2):</strong> ShopAll, SocialHive, GameVerse (Patch Moderado)</li>
                 <li>🟠 <strong>High Tier (x5):</strong> BankSafe, HealthLock (Patch Rápido)</li>
                 <li>🔴 <strong>Critical Tier (x10):</strong> CloudNine (Patch Extremo - Recompensa Máxima!)</li>
               </ul>
