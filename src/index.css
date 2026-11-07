@@ -44,17 +44,16 @@
 }
 
 body {
-  background-color: #1e130c;
-  color: var(--text-primary);
+  background-color: #E2D7C5;
+  color: #1E1B18;
   font-family: var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.5;
-  /* Fundo de Mesa de Madeira Maciça de Jogo de Tabuleiro */
+  /* Fundo de Mesa de Madeira Clara / Estúdio de Tabuleiro */
   background-image: 
-    radial-gradient(circle at 50% 30%, rgba(255, 200, 120, 0.12) 0%, transparent 70%),
-    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)),
-    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%2326170d"/><path d="M0 40 Q 50 45, 100 40 T 200 40 M0 90 Q 50 95, 100 90 T 200 90 M0 140 Q 50 145, 100 140 T 200 140" stroke="%231a0e07" stroke-width="8" fill="none" opacity="0.4"/></svg>');
+    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 70%),
+    linear-gradient(to bottom, #ECE4D6 0%, #DBD0BD 100%);
   background-attachment: fixed;
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
-import { Search, Send, SkipForward, Award, Dices, UserCheck, Clock, FileText } from 'lucide-react';
+import { Search, Send, SkipForward, Award, Dices, UserCheck, Clock, FileText, AlertCircle, Sparkles } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 import { BountyLedgerModal } from './BountyLedgerModal';
 
@@ -11,192 +11,314 @@ export const ActionPointsBar: React.FC = () => {
     isMyTurn,
     activePlayerRole,
     myRole,
+    currentPlayer,
+    allPlayers,
     actionVarrer,
     actionReportar,
     triggerManualDiceRoll,
     endTurn,
-    needsDiscard
+    needsDiscard,
+    actionsRemaining,
+    deployedExploits,
+    playerSafeguardSlot
   } = useBoardGame();
 
-  return (
-    <div style={{ marginBottom: '20px' }}>
+  const myExploitsCount = deployedExploits.filter(e => e.playerId === myRole).length;
 
-      {/* TURN STATUS BANNER (Sua Vez vs Aguardando Oponente) */}
+  return (
+    <div style={{ marginBottom: '22px' }}>
+      {/* BARRA DE TURNO E PONTOS DE AÇÃO (3 AP) */}
       <div
         style={{
-          padding: '10px 20px',
-          borderRadius: 'var(--radius-md)',
+          background: isMyTurn ? '#FAF6EE' : '#F1E9DC',
+          border: '2.5px solid #2B2620',
+          borderRadius: '10px',
+          padding: '12px 18px',
           marginBottom: '10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: isMyTurn ? 'linear-gradient(90deg, rgba(57, 211, 83, 0.15) 0%, rgba(57, 211, 83, 0.05) 100%)' : 'linear-gradient(90deg, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0.05) 100%)',
-          border: isMyTurn ? '1px solid var(--terminal-green)' : '1px solid var(--cyber-blue)',
-          boxShadow: isMyTurn ? 'var(--glow-green)' : 'none'
+          flexWrap: 'wrap',
+          gap: '12px',
+          boxShadow: isMyTurn ? '0 4px 14px rgba(0,0,0,0.15)' : 'none'
         }}
       >
+        {/* Identificação de Turno */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {isMyTurn ? (
-            <UserCheck size={22} color="var(--terminal-green)" />
-          ) : (
-            <Clock size={22} color="var(--cyber-blue)" className="animate-spin-slow" />
-          )}
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: isMyTurn ? '#16A34A' : '#64748B',
+              border: '2px solid #2B2620',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#fff'
+            }}
+          >
+            {isMyTurn ? <UserCheck size={18} /> : <Clock size={18} />}
+          </div>
           <div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-              REGRA OFICIAL (MANUAL V1.0): 1 AÇÃO POR TURNO
+            <div style={{ fontSize: '9.5px', color: '#685F53', textTransform: 'uppercase', fontFamily: 'monospace', fontWeight: '700' }}>
+              REGRA OFICIAL V1.4: 3 AÇÕES POR TURNO (REPORT CUSTA 2 AP)
             </div>
-            <div style={{ fontSize: '14px', fontWeight: '800', color: isMyTurn ? 'var(--terminal-green)' : 'var(--cyber-blue)', fontFamily: 'var(--font-mono)' }}>
-              {isMyTurn ? '🟢 SUA VEZ! (Escolha 1 Ação e o Turno Passará Automático)' : `⏳ AGUARDANDO A JOGADA DO ${activePlayerRole === 'player-1' ? 'JOGADOR 1 (VERDE)' : 'JOGADOR 2 (AZUL)'}...`}
+            <div style={{ fontSize: '14px', fontWeight: '900', color: isMyTurn ? '#166534' : '#475569', fontFamily: 'monospace' }}>
+              {isMyTurn
+                ? '🟢 SUA VEZ! Execute suas ações na mesa'
+                : `⏳ Aguardando a jogada de ${allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole}...`}
             </div>
           </div>
         </div>
 
-        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-          Você é: <strong style={{ color: myRole === 'player-1' ? 'var(--terminal-green)' : 'var(--cyber-blue)' }}>{myRole === 'player-1' ? 'Jogador 1 (Verde)' : 'Jogador 2 (Azul)'}</strong>
+        {/* PIPS DE PONTOS DE AÇÃO (AP TRACKER) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: '#FFFFFF',
+              border: '1.5px solid #2B2620',
+              borderRadius: '6px',
+              padding: '6px 12px'
+            }}
+          >
+            <span style={{ fontSize: '11px', fontFamily: 'monospace', fontWeight: '800', color: '#1E1B18' }}>
+              AÇÕES (AP):
+            </span>
+            <div style={{ display: 'flex', gap: '5px' }}>
+              {[1, 2, 3].map(ap => {
+                const isAvailable = ap <= actionsRemaining;
+                return (
+                  <div
+                    key={ap}
+                    style={{
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '50%',
+                      background: isAvailable ? '#16A34A' : '#D1D5DB',
+                      border: '1.5px solid #2B2620',
+                      boxShadow: isAvailable ? '0 1px 3px rgba(22, 163, 74, 0.4)' : 'none'
+                    }}
+                    title={`Ação ${ap} de 3 ${isAvailable ? '(Disponível)' : '(Gasta)'}`}
+                  />
+                );
+              })}
+            </div>
+            <span style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'monospace', color: actionsRemaining > 0 ? '#166534' : '#B91C1C' }}>
+              {actionsRemaining}/3
+            </span>
+          </div>
+
+          <div style={{ fontSize: '11px', color: '#685F53', fontFamily: 'monospace' }}>
+            Papel Local: <strong style={{ color: currentPlayer?.color || '#166534' }}>{currentPlayer?.name || myRole}</strong>
+          </div>
         </div>
       </div>
 
-      {/* Main Controls Box */}
-      <div className="terminal-box" style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', opacity: isMyTurn ? 1 : 0.65 }}>
-
-        {/* Total Score & Rule Title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ background: 'rgba(57, 211, 83, 0.1)', border: '1px solid var(--terminal-green)', borderRadius: 'var(--radius-md)', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Award size={20} color="var(--terminal-green)" />
+      {/* PAINEL DE BOTÕES DE AÇÃO TABLETOP */}
+      <div
+        style={{
+          background: '#FAF6EE',
+          border: '2px solid #2B2620',
+          borderRadius: '10px',
+          padding: '14px 18px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '14px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+        }}
+      >
+        {/* BOUNTY SCORE & EXTRATO */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div
+            style={{
+              background: '#ECFDF5',
+              border: '1.5px solid #059669',
+              borderRadius: '8px',
+              padding: '6px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <Award size={20} color="#059669" />
             <div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                Pontuação Total
+              <div style={{ fontSize: '9.5px', color: '#065F46', textTransform: 'uppercase', fontFamily: 'monospace', fontWeight: '700' }}>
+                Bounty Acumulado (Meta $40k)
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--terminal-green)', fontFamily: 'var(--font-mono)' }}>
-                  {playerScore} pts
-                </div>
+                <span style={{ fontSize: '18px', fontWeight: '900', color: '#047857', fontFamily: 'monospace' }}>
+                  ${playerScore.toLocaleString('pt-BR')}
+                </span>
                 <button
                   onClick={() => { soundFx.playClick(); setIsLedgerOpen(true); }}
-                  title="Ver Extrato de Payouts"
+                  title="Ver extrato contábil de Bounties"
                   style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    border: '1px solid rgba(255,255,255,0.2)',
+                    background: '#FFFFFF',
+                    border: '1px solid #059669',
                     borderRadius: '4px',
-                    padding: '2px 6px',
-                    color: 'var(--terminal-green)',
+                    padding: '2px 8px',
+                    color: '#065F46',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px',
-                    fontSize: '9px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: 'bold'
+                    fontSize: '9.5px',
+                    fontFamily: 'monospace',
+                    fontWeight: '800'
                   }}
                 >
-                  <FileText size={12} /> EXTRATO
+                  <FileText size={11} /> Extrato
                 </button>
               </div>
             </div>
           </div>
 
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
-            Ações no Turno: <strong style={{ color: 'var(--amber-glow)' }}>[ RECON ]</strong> ou <strong style={{ color: 'var(--amber-glow)' }}>[ EXPLOIT ]</strong> ou <strong style={{ color: 'var(--amber-glow)' }}>[ REPORT ]</strong>
+          <div style={{ fontSize: '11px', color: '#685F53', fontFamily: 'monospace', borderLeft: '1px solid #D6CBB8', paddingLeft: '12px' }}>
+            Exploits no Alvo: <strong style={{ color: myExploitsCount > 0 ? '#B45309' : '#685F53' }}>{myExploitsCount} / 3</strong>
+            {playerSafeguardSlot && <span style={{ marginLeft: '10px', color: '#047857' }}>🛡️ Bypass Pronto</span>}
           </div>
         </div>
 
-        {/* Action Buttons (1 Ação Única Por Turno) */}
-        <div className="action-bar-container" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', opacity: needsDiscard ? 0.3 : 1, pointerEvents: needsDiscard ? 'none' : 'auto' }}>
+        {/* BOTÕES DAS 4 AÇÕES PRINCIPAIS */}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           {needsDiscard && (
-            <div style={{ position: 'absolute', background: 'rgba(248, 81, 73, 0.9)', color: '#fff', padding: '10px 20px', borderRadius: '8px', zIndex: 10, left: '50%', transform: 'translateX(-50%)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
-              ⚠️ LIMITE DE MÃO EXCEDIDO: Descarte cartas primeiro!
+            <div style={{ background: '#FEE2E2', border: '1.5px solid #B91C1C', color: '#991B1B', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', fontFamily: 'monospace' }}>
+              ⚠️ LIMITE DE MÃO: Descarte cartas antes de agir!
             </div>
           )}
-          {/* Varrer / Recon (1 Ação) */}
+
+          {isMyTurn && actionsRemaining === 0 && myExploitsCount > 0 && (
+            <div style={{ background: '#FEF3C7', border: '1.5px solid #D97706', color: '#92400E', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', fontFamily: 'monospace' }}>
+              🎲 Suas 3 Ações terminaram! Encerre o turno para rolar o Patch Stealth (3D6).
+            </div>
+          )}
+
+          {isMyTurn && actionsRemaining === 0 && myExploitsCount === 0 && (
+            <div style={{ background: '#DCFCE7', border: '1.5px solid #166534', color: '#166534', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', fontFamily: 'monospace' }}>
+              🕶️ 3 Ações gastas! Passe o turno no Modo Furtivo para remover 1 Alerta (🐞).
+            </div>
+          )}
+
+          {/* 1. RECON (1 AP) -> COMPRA 2 CARTAS */}
           <button
             onClick={() => { soundFx.playClick(); actionVarrer(); }}
-            disabled={!isMyTurn || needsDiscard}
+            disabled={!isMyTurn || needsDiscard || actionsRemaining < 1}
+            title="Ação RECON: Compre 2 cartas do Main Deck para sua mão (Custa 1 AP)"
             style={{
-              padding: '10px 18px',
-              background: isMyTurn ? 'var(--cyber-blue)' : 'rgba(255,255,255,0.06)',
-              color: isMyTurn ? '#000' : 'var(--text-muted)',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              fontWeight: '800',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '13px',
-              cursor: isMyTurn && !needsDiscard ? 'pointer' : 'not-allowed',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <Search size={16} /> Varrer / Recon (1 Ação)
-          </button>
-
-          {/* Reportar vulnerabilidades (1 Ação) */}
-          <button
-            onClick={() => { soundFx.playClick(); actionReportar(); }}
-            disabled={!isMyTurn || needsDiscard}
-            style={{
-              padding: '10px 18px',
-              background: isMyTurn ? 'var(--terminal-green)' : 'rgba(255,255,255,0.06)',
-              color: isMyTurn ? '#000' : 'var(--text-muted)',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              fontWeight: '800',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '13px',
-              cursor: isMyTurn && !needsDiscard ? 'pointer' : 'not-allowed',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <Send size={16} /> Reportar vulnerabilidades (1 Ação)
-          </button>
-
-          {/* Botão de Teste do Dado D6 3D */}
-          <button
-            onClick={() => { soundFx.playClick(); triggerManualDiceRoll(); }}
-            disabled={needsDiscard}
-            style={{
-              padding: '10px 18px',
-              background: 'var(--electric-purple)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              fontWeight: '800',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '13px',
-              cursor: needsDiscard ? 'not-allowed' : 'pointer',
+              padding: '10px 16px',
+              background: isMyTurn && actionsRemaining >= 1 && !needsDiscard ? '#0284C7' : '#E2E8F0',
+              color: isMyTurn && actionsRemaining >= 1 && !needsDiscard ? '#FFFFFF' : '#94A3B8',
+              border: '1.5px solid #2B2620',
+              borderRadius: '6px',
+              fontWeight: '900',
+              fontFamily: 'monospace',
+              fontSize: '12px',
+              cursor: isMyTurn && !needsDiscard && actionsRemaining >= 1 ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: 'var(--glow-purple)'
+              boxShadow: isMyTurn && actionsRemaining >= 1 && !needsDiscard ? '0 2px 5px rgba(2, 132, 199, 0.3)' : 'none'
             }}
           >
-            <Dices size={16} /> Testar Dado D8
+            <Search size={15} /> 1. RECON (1 AP)
           </button>
 
-          {/* Passar Turno (Manual) */}
+          {/* Dica de Exploit */}
+          <div
+            style={{
+              padding: '8px 12px',
+              background: '#F1E9DC',
+              border: '1px dashed #A89D8B',
+              borderRadius: '6px',
+              fontSize: '10px',
+              fontFamily: 'monospace',
+              color: '#685F53'
+            }}
+          >
+            2. EXPLOIT (1 AP): Baixe da mão ⬇️
+          </div>
+
+          {/* 3. REPORT (2 AP) */}
+          <button
+            onClick={() => { soundFx.playClick(); actionReportar(); }}
+            disabled={!isMyTurn || needsDiscard || actionsRemaining < 2 || myExploitsCount === 0}
+            title={myExploitsCount === 0 ? 'Você precisa ter pelo menos 1 Exploit na mesa para reportar!' : 'Submeta o relatório! Custa 2 AP e encerra o turno com Payout.'}
+            style={{
+              padding: '10px 18px',
+              background: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 && !needsDiscard ? '#16A34A' : '#E2E8F0',
+              color: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 && !needsDiscard ? '#FFFFFF' : '#94A3B8',
+              border: '1.5px solid #2B2620',
+              borderRadius: '6px',
+              fontWeight: '900',
+              fontFamily: 'monospace',
+              fontSize: '12px',
+              cursor: isMyTurn && !needsDiscard && actionsRemaining >= 2 && myExploitsCount > 0 ? 'pointer' : 'not-allowed',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 ? '0 2px 6px rgba(22, 163, 74, 0.4)' : 'none'
+            }}
+          >
+            <Send size={15} /> 3. REPORT (2 AP)
+          </button>
+
+          {/* Simulação de Teste D6 */}
+          <button
+            onClick={() => { soundFx.playClick(); triggerManualDiceRoll(); }}
+            title="Simular teste de Patch Speed (D6)"
+            style={{
+              padding: '10px 14px',
+              background: '#FAF6EE',
+              color: '#7C3AED',
+              border: '1.5px solid #7C3AED',
+              borderRadius: '6px',
+              fontWeight: '800',
+              fontFamily: 'monospace',
+              fontSize: '11px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}
+          >
+            <Dices size={14} /> Dados D6
+          </button>
+
+          {/* Passar Turno */}
           <button
             onClick={() => { soundFx.playClick(); endTurn(); }}
             disabled={!isMyTurn || needsDiscard}
+            title={myExploitsCount > 0 ? 'Encerra o turno e dispara o Teste de Patch Stealth (3D6, descarta o maior).' : 'Encerra o turno no Modo Furtivo e remove 1 Token de Alerta.'}
             style={{
-              padding: '10px 18px',
-              background: 'transparent',
-              color: isMyTurn ? '#fff' : 'var(--text-muted)',
-              border: isMyTurn ? '1px solid rgba(255,255,255,0.3)' : '1px solid rgba(255,255,255,0.1)',
-              borderRadius: 'var(--radius-sm)',
-              fontWeight: '800',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '13px',
+              padding: '10px 16px',
+              background: isMyTurn && actionsRemaining === 0 ? '#B45309' : '#2B2620',
+              color: '#FAF6EE',
+              border: '1.5px solid #2B2620',
+              borderRadius: '6px',
+              fontWeight: '900',
+              fontFamily: 'monospace',
+              fontSize: '12px',
               cursor: isMyTurn && !needsDiscard ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '6px',
+              boxShadow: isMyTurn && actionsRemaining === 0 ? '0 2px 8px rgba(180, 83, 9, 0.4)' : 'none'
             }}
           >
-            <SkipForward size={16} /> Passar Turno
+            <SkipForward size={14} />
+            {actionsRemaining === 0
+              ? (myExploitsCount > 0 ? 'Passar Turno & Rolar Patch 🎲' : 'Passar Turno (Furtivo) 🕶️')
+              : 'Passar Turno ⏩'}
           </button>
         </div>
       </div>
+
       {isLedgerOpen && <BountyLedgerModal onClose={() => setIsLedgerOpen(false)} />}
     </div>
   );

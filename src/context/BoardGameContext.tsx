@@ -1,50 +1,111 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { CardV2, CARDS_V2 } from '../data/cardsDataV2';
-import { FULL_80_VULNERABILITIES, FULL_12_TOOLS, FULL_3_DEFUSES } from '../data/full80DeckData';
-import { ServerRegion, SERVERS_DATA, ALL_BOARD_NODES } from '../data/boardData';
-import { getZoneByBalance } from '../utils/gameRules';
-import { ProgramCard, PROGRAM_CARDS, Archetype, ARCHETYPES } from '../data/cardsData';
-import { FULL_24_EVENTS, EventCardData } from '../data/full24EventsData';
+import { CardV2 } from '../data/cardsDataV2';
+import {
+  V14_VULNERABILITIES,
+  V14_TOOLS,
+  V14_PROGRAMS,
+  V14_EVENTS,
+  V14_SAFEGUARDS,
+  V14_ARCHETYPES,
+  buildCanonicalV14MainDeck,
+  buildCanonicalV14ToolDeck,
+  buildCanonicalV14ProgramDeck,
+  buildCanonicalV14EventDeck,
+  CanonicalVulnCard,
+  CanonicalToolCard,
+  CanonicalSafeguardCard
+} from '../data/canonicalV14Data';
+import { ServerRegion, SERVERS_DATA } from '../data/boardData';
+import { ProgramCard, Archetype } from '../data/cardsData';
+import { EventCardData } from '../data/full24EventsData';
 import { mpSync } from '../utils/multiplayerSync';
+import { supabaseSync, RoomMessage } from '../utils/supabaseSync';
 import { soundFx } from '../utils/audio';
 import confetti from 'canvas-confetti';
+import { getPatchThreshold, BOUNTY_MILESTONES } from '../utils/gameRulesV14';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DECK BUILDER V1.2 — Seção 04 do Manual V1.2
-// Main Deck: 80 vulns + 4 Safeguards (2 Bypass + 2 CVE) = 84 cartas
-// Tool Deck SEPARADO: 12 tools × 3 cópias = 36 cartas
+// CARD MAPPERS (Canônico V1.4 -> CardV2)
 // ─────────────────────────────────────────────────────────────────────────────
-const buildCanonical84Deck = (): CardV2[] => {
-  // 4 Safeguards (2 Bypass + 2 CVE)
-  const bypassCards = FULL_3_DEFUSES.filter(d =>
-    d.technicalReference === 'Bypass Card' || d.name.includes('Bypass')
-  ).slice(0, 2);
+export const mapCanonicalToCardV2 = (card: any): CardV2 => {
+  if (card.category === 'VULNERABILITY') {
+    const v = card as CanonicalVulnCard;
+    const icon = v.vulnClass === 'INJ' ? '💉' : v.vulnClass === 'BAC' ? '🚪' : v.vulnClass === 'XSS' ? '🪞' : v.vulnClass === 'AUTH' ? '🔑' : v.vulnClass === 'SSRF' ? '🕵️' : v.vulnClass === 'LOGIC' ? '⏰' : v.vulnClass === 'CRYPTO' ? '🔒' : '💎';
 
-  const cveCards = FULL_3_DEFUSES.filter(d =>
-    d.technicalReference.includes('CVE') || d.name.includes('CVE')
-  ).slice(0, 2);
-
-  const safeguards = [...bypassCards, ...cveCards]; // 4 total
-  const deck = [...FULL_80_VULNERABILITIES, ...safeguards]; // 84 total
-  if (deck.length !== 84) {
-    console.warn(`[PWND] Main Deck incorreto: ${deck.length} cartas (esperado 84)`);
+    return {
+      id: v.id,
+      name: v.name,
+      enName: v.name,
+      technicalReference: v.technicalReference || v.name,
+      type: 'exploit',
+      points: v.bountyValue > 0 ? v.bountyValue : 1500,
+      rarity: (v.rarity.charAt(0).toUpperCase() + v.rarity.slice(1).toLowerCase()) as any,
+      icon,
+      simpleDescription: v.description,
+      ptDescription: v.shortDesc || v.description,
+      isNoisy: v.isNoisy,
+      vulnClass: v.vulnClass
+    };
+  } else if (card.category === 'TOOL') {
+    const t = card as CanonicalToolCard;
+    return {
+      id: t.id,
+      name: t.name,
+      enName: t.name,
+      technicalReference: t.technicalReference || t.name,
+      type: 'tool',
+      points: 0,
+      rarity: 'Common',
+      icon: '🛠️',
+      simpleDescription: t.description,
+      ptDescription: t.shortDesc || t.description
+    };
+  } else {
+    const s = card as CanonicalSafeguardCard;
+    return {
+      id: s.id,
+      name: s.name,
+      enName: s.name,
+      technicalReference: s.technicalReference || s.name,
+      type: 'defuse',
+      points: 0,
+      rarity: 'Rare',
+      icon: '🛡️',
+      simpleDescription: s.description,
+      ptDescription: s.description
+    };
   }
-  return deck;
 };
 
-const buildToolDeck36 = (): CardV2[] => {
-  // 12 tools × 3 cópias = 36
-  const deck = [
-    ...FULL_12_TOOLS,
-    ...FULL_12_TOOLS.map(t => ({ ...t, id: `${t.id}-c2` })),
-    ...FULL_12_TOOLS.map(t => ({ ...t, id: `${t.id}-c3` })),
-  ];
-  if (deck.length !== 36) {
-    console.warn(`[PWND] Tool Deck incorreto: ${deck.length} cartas (esperado 36)`);
-  }
-  return deck;
-};
+export const CANONICAL_PROGRAMS: ProgramCard[] = V14_PROGRAMS.map(p => ({
+  id: p.id,
+  name: p.name,
+  companyType: p.companyType,
+  allowedClasses: p.allowedClasses as any,
+  patchSpeed: p.patchSpeed as any,
+  bountyRange: p.bonusBounty,
+  flatBountyBonus: p.bonusBountyValue,
+  description: p.description,
+  ptDescription: p.description
+}));
 
+export const CANONICAL_ARCHETYPES: Archetype[] = V14_ARCHETYPES.map(a => ({
+  id: a.id,
+  name: a.name,
+  title: a.title,
+  ptTitle: a.title,
+  presentation: a.description,
+  ptPresentation: a.description,
+  playstyle: a.description,
+  ptPlaystyle: a.description,
+  maxHandSize: a.name.includes('Old Guard') ? 8 : 6,
+  reportsPerTurn: 1,
+  bountyModifier: a.name.includes('Red Teamer') ? 0.7 : 1.0,
+  specialPowers: [a.abilityName],
+  ptSpecialPowers: [a.abilityName],
+  avatarIcon: a.name.includes('n00b') ? '🌱' : a.name.includes('Old Guard') ? '🧠' : a.name.includes('Bug Hunter') ? '🎯' : a.name.includes('Social Engineer') ? '🎭' : a.name.includes('Red Teamer') ? '⚔️' : '🔍',
+  color: a.name.includes('n00b') ? '#39d353' : a.name.includes('Old Guard') ? '#a855f7' : a.name.includes('Bug Hunter') ? '#f59e0b' : a.name.includes('Social Engineer') ? '#ec4899' : a.name.includes('Red Teamer') ? '#ef4444' : '#06b6d4'
+}));
 
 const shuffleArray = <T,>(array: T[]): T[] => {
   const arr = [...array];
@@ -55,103 +116,174 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return arr;
 };
 
-// Red Teamer V1.2: arredonda para o múltiplo de $500 mais próximo (inferior ou igual)
-const roundTo500 = (value: number): number => Math.floor(value / 500) * 500;
+// ─────────────────────────────────────────────────────────────────────────────
+// TIPOS E MODELO DE JOGADOR MULTIPLAYER
+// ─────────────────────────────────────────────────────────────────────────────
+export type PlayerRoleId = 'player-1' | 'player-2' | 'player-3' | 'player-4' | 'player-5' | 'player-6';
+
+export interface PlayerState {
+  id: PlayerRoleId;
+  name: string;
+  color: string;
+  archetype: Archetype;
+  hand: CardV2[];
+  activeTools: CardV2[];
+  activeProgram: ProgramCard | null;
+  safeguardSlot: CardV2 | null;
+  cveProtection: CardV2 | null;
+  alertaTokens: number;
+  reputacaoTokens: number;
+  score: number;
+  actionsRemaining: number;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PATCH SPEED HELPERS — Seções 07-08, 15
+// INITIAL GAME FACTORY (6 Jogadores canônicos preparados deterministicamente)
 // ─────────────────────────────────────────────────────────────────────────────
-// Returns the threshold (inclusive) at or above which the patch fires
-const getPatchThreshold = (patchSpeed: string): number => {
-  switch (patchSpeed) {
-    case 'Lenta':    return 8;
-    case 'Moderada': return 7;
-    case 'Rápida':   return 6;
-    case 'Rǭpida':   return 6;
-    case 'Extrema':  return 5;
-    default:         return 8; // Muito Lenta / unknown → only 8
-  }
+const createInitialGameState = () => {
+  const canonical84 = buildCanonicalV14MainDeck().map(mapCanonicalToCardV2);
+  const shuffledMain = shuffleArray(canonical84);
+
+  // 1 carta Bypass entregue na preparação para cada jogador
+  const bypassTemplate = mapCanonicalToCardV2(
+    V14_SAFEGUARDS.find(s => s.name.includes('Bypass')) || V14_SAFEGUARDS[0]
+  );
+
+  // Tool Deck: 48 cartas (12 tipos x 4 cópias)
+  const shuffledTools = shuffleArray(buildCanonicalV14ToolDeck().map(mapCanonicalToCardV2));
+
+  // Event Deck: 24 cartas
+  const eventCardsFormatted: EventCardData[] = V14_EVENTS.map((e, idx) => ({
+    id: e.id,
+    number: String(idx + 1).padStart(2, '0'),
+    name: e.title,
+    enName: e.title,
+    technicalReference: e.subtitle || e.title,
+    icon: '🚨',
+    targetText: e.moment || 'Mesa',
+    simpleDescription: e.description,
+    ptDescription: e.description,
+    effectType: 'patch'
+  }));
+  const shuffledEvents = shuffleArray(eventCardsFormatted);
+
+  // Program Market: 3 abertos e o restante no deck
+  const shuffledPrograms = shuffleArray([...CANONICAL_PROGRAMS]);
+  const market = shuffledPrograms.slice(0, 3);
+  const programDeck = shuffledPrograms.slice(3);
+
+  // Cada um dos 6 jogadores recebe 5 cartas da pilha central (30 cartas distribuídas)
+  const playersInitial: Record<PlayerRoleId, PlayerState> = {
+    'player-1': {
+      id: 'player-1',
+      name: 'Jogador 1 (Verde)',
+      color: '#16A34A',
+      archetype: CANONICAL_ARCHETYPES[0], // Script Kiddie
+      hand: shuffledMain.slice(0, 5),
+      activeTools: [],
+      activeProgram: market[0] || CANONICAL_PROGRAMS[0],
+      safeguardSlot: { ...bypassTemplate, id: 'bypass-p1' },
+      cveProtection: null,
+      alertaTokens: 0,
+      reputacaoTokens: 0,
+      score: 0,
+      actionsRemaining: 3
+    },
+    'player-2': {
+      id: 'player-2',
+      name: 'Jogador 2 (Azul)',
+      color: '#2563EB',
+      archetype: CANONICAL_ARCHETYPES[2], // Bug Hunter
+      hand: shuffledMain.slice(5, 10),
+      activeTools: [],
+      activeProgram: market[1] || CANONICAL_PROGRAMS[1] || CANONICAL_PROGRAMS[0],
+      safeguardSlot: { ...bypassTemplate, id: 'bypass-p2' },
+      cveProtection: null,
+      alertaTokens: 0,
+      reputacaoTokens: 0,
+      score: 0,
+      actionsRemaining: 3
+    },
+    'player-3': {
+      id: 'player-3',
+      name: 'Jogador 3 (Roxo)',
+      color: '#9333EA',
+      archetype: CANONICAL_ARCHETYPES[4], // Red Teamer
+      hand: shuffledMain.slice(10, 15),
+      activeTools: [],
+      activeProgram: market[2] || CANONICAL_PROGRAMS[2] || CANONICAL_PROGRAMS[0],
+      safeguardSlot: { ...bypassTemplate, id: 'bypass-p3' },
+      cveProtection: null,
+      alertaTokens: 0,
+      reputacaoTokens: 0,
+      score: 0,
+      actionsRemaining: 3
+    },
+    'player-4': {
+      id: 'player-4',
+      name: 'Jogador 4 (Rosa)',
+      color: '#DB2777',
+      archetype: CANONICAL_ARCHETYPES[1], // Old Guard
+      hand: shuffledMain.slice(15, 20),
+      activeTools: [],
+      activeProgram: CANONICAL_PROGRAMS[3] || CANONICAL_PROGRAMS[0],
+      safeguardSlot: { ...bypassTemplate, id: 'bypass-p4' },
+      cveProtection: null,
+      alertaTokens: 0,
+      reputacaoTokens: 0,
+      score: 0,
+      actionsRemaining: 3
+    },
+    'player-5': {
+      id: 'player-5',
+      name: 'Jogador 5 (Laranja)',
+      color: '#D97706',
+      archetype: CANONICAL_ARCHETYPES[3], // Social Engineer
+      hand: shuffledMain.slice(20, 25),
+      activeTools: [],
+      activeProgram: CANONICAL_PROGRAMS[4] || CANONICAL_PROGRAMS[0],
+      safeguardSlot: { ...bypassTemplate, id: 'bypass-p5' },
+      cveProtection: null,
+      alertaTokens: 0,
+      reputacaoTokens: 0,
+      score: 0,
+      actionsRemaining: 3
+    },
+    'player-6': {
+      id: 'player-6',
+      name: 'Jogador 6 (Ciano)',
+      color: '#0891B2',
+      archetype: CANONICAL_ARCHETYPES[5], // Pentester
+      hand: shuffledMain.slice(25, 30),
+      activeTools: [],
+      activeProgram: CANONICAL_PROGRAMS[5] || CANONICAL_PROGRAMS[0],
+      safeguardSlot: { ...bypassTemplate, id: 'bypass-p6' },
+      cveProtection: null,
+      alertaTokens: 0,
+      reputacaoTokens: 0,
+      score: 0,
+      actionsRemaining: 3
+    }
+  };
+
+  const remainingMain = shuffledMain.slice(30);
+
+  return {
+    playersInitial,
+    remainingMain,
+    shuffledTools,
+    shuffledEvents,
+    market,
+    programDeck
+  };
 };
 
-// Seção 15: R8 Stealth Mode lowers threshold by 1
-const getPatchThresholdStealth = (patchSpeed: string): number =>
-  Math.max(1, getPatchThreshold(patchSpeed) - 1);
-
-// Red Teamer & Pentester take patch only on natural 8
-const isArchetypePatchOnly8 = (archetypeId: string) =>
-  archetypeId === 'red-teamer' || archetypeId === 'pentester';
-
-// V1.2: Stealth rola 2D8 e usa o MENOR valor (vantagem para o jogador)
-// Noisy Report: rola 1D8 normal
-const didPatchFire = (
-  diceValue: number,
-  diceValue2: number | undefined,
-  patchSpeed: string,
-  archetypeId: string,
-  isStealthMode: boolean,
-  _currentRound: number // mantido para compatibilidade de assinatura
-): boolean => {
-  const specialOnly8 = isArchetypePatchOnly8(archetypeId);
-  if (specialOnly8) return diceValue >= 8;
-
-  const threshold = isStealthMode
-    ? getPatchThresholdStealth(patchSpeed)
-    : getPatchThreshold(patchSpeed);
-
-  if (!isStealthMode || diceValue2 === undefined) {
-    return diceValue >= threshold;
-  }
-
-  // Stealth: rola 2D8 e fica com o MENOR (vantagem)
-  const best = Math.min(diceValue, diceValue2);
-  return best >= threshold;
-};
-
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ARCHETYPE POWER HELPERS — Seção 10
-// ─────────────────────────────────────────────────────────────────────────────
-// Bug Hunter: only Common and Uncommon count as valid exploits
-const isBugHunterEligible = (card: CardV2): boolean =>
-  card.rarity === 'Common' || card.rarity === 'Uncommon';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PROGRAM TIER HELPERS — Seção 06 (mínimo de escopo)
-// ─────────────────────────────────────────────────────────────────────────────
-const getProgramTier = (program: ProgramCard): 'Low' | 'Medium' | 'High' | 'Critical' => {
-  const bonus = program.flatBountyBonus;
-  if (bonus >= 4000) return 'Critical';
-  if (bonus >= 2500) return 'High';
-  if (bonus >= 1000) return 'Medium';
-  return 'Low';
-};
-
-const getMinVulnsRequired = (program: ProgramCard): number => {
-  const tier = getProgramTier(program);
-  if (tier === 'High' || tier === 'Critical') return 2;
-  return 1; // Low or Medium
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// TYPES
-// ─────────────────────────────────────────────────────────────────────────────
 export interface DeployedExploit {
   id: string;
   nodeId: string;
   card: CardV2;
   playerId: string;
 }
-
-export interface BoardGameBot {
-  id: string;
-  name: string;
-  icon: string;
-  currentNodeId: string;
-  score: number;
-}
-
-// Track which vuln technicalReferences were reported per program
-export type ReportHistory = Record<string, Set<string>>; // programId → Set<technicalReference>
 
 export interface BountyTransaction {
   id: string;
@@ -168,7 +300,7 @@ interface BoardGameContextType {
   playerActiveTools: CardV2[];
   playerActiveProgram: ProgramCard | null;
   playerArchetype: Archetype;
-  playerSafeguardSlot: CardV2 | null; // Bypass no Slot Safeguard (Seção 04)
+  playerSafeguardSlot: CardV2 | null;
   playerCveProtection: CardV2 | null;
   mainDeckCount: number;
   toolDeckCount: number;
@@ -180,17 +312,29 @@ interface BoardGameContextType {
   gameWinner: string | null;
   servers: ServerRegion[];
   deployedExploits: DeployedExploit[];
-  bots: BoardGameBot[];
+  bots: any[];
   currentTurn: number;
   bountyLedger: BountyTransaction[];
   needsDiscard: boolean;
   pendingToolInstall: CardV2 | null;
-  actionsRemaining: number; // AP: 3 por turno (Report custa 2, Recon/Exploit custam 1)
+  actionsRemaining: number;
 
-  activePlayerRole: 'player-1' | 'player-2';
-  myRole: 'player-1' | 'player-2';
+  alertaTokens: number;
+  reputacaoTokens: number;
+  useReputacaoReroll: () => boolean;
+  addAlertaToken: (count?: number) => void;
+  removeAlertaToken: (count?: number) => void;
+  addReputacaoToken: (count?: number) => void;
+
+  activePlayerRole: PlayerRoleId;
+  myRole: PlayerRoleId;
   isMyTurn: boolean;
   gameMode: 'solo' | 'hotseat' | 'lan';
+  playerCount: number;
+  setPlayerCount: (count: number) => void;
+
+  allPlayers: PlayerState[];
+  currentPlayer: PlayerState;
 
   isSetupWizardOpen: boolean;
   activeEventCard: EventCardData | null;
@@ -203,7 +347,7 @@ interface BoardGameContextType {
   logs: string[];
 
   // Actions
-  setMyRole: (role: 'player-1' | 'player-2') => void;
+  setMyRole: (role: PlayerRoleId) => void;
   setGameMode: (mode: 'solo' | 'hotseat' | 'lan') => void;
   completeSetup: (archetype: Archetype, program: ProgramCard) => void;
   drawEventCard: () => void;
@@ -223,58 +367,42 @@ interface BoardGameContextType {
   actionReportar: () => void;
   triggerManualDiceRoll: () => void;
   selectNewProgram: (program: ProgramCard) => void;
-  handleDiceRollResult: (result: { diceValue: number; diceValue2?: number; passed: boolean }) => void;
+  handleDiceRollResult: (result: any) => void;
   defusePatch: () => void;
   acceptPatch: () => void;
   endTurn: () => void;
   resetBoardGame: () => void;
 }
 
-
 const BoardGameContext = createContext<BoardGameContextType | undefined>(undefined);
 
 export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // ── Core state ──────────────────────────────────────────────────────────────
+  // Inicialização preguiçosa imediata com dados canônicos
+  const [initData] = useState(() => createInitialGameState());
+
+  const [players, setPlayers] = useState<Record<PlayerRoleId, PlayerState>>(() => initData.playersInitial);
+  const [playerCount, setPlayerCount] = useState<number>(2); // Duelo 2 Jogadores por padrão (Manual V1.4)
+  const [activePlayerRole, setActivePlayerRole] = useState<PlayerRoleId>('player-1');
+  const [myRole, setMyRoleState] = useState<PlayerRoleId>('player-1');
+  const [gameMode, setGameModeState] = useState<'solo' | 'hotseat' | 'lan'>('hotseat');
+
+  // Decks centrais compartilhados
   const [playerNodeId, setPlayerNodeId] = useState<string>('node-bank-login');
-  const [playerHand, setPlayerHand] = useState<CardV2[]>([]);
-  const [playerActiveTools, setPlayerActiveTools] = useState<CardV2[]>([]);
-  const [playerActiveProgram, setPlayerActiveProgram] = useState<ProgramCard | null>(null);
-  const [playerArchetype, setPlayerArchetype] = useState<Archetype>(ARCHETYPES[0]);
+  const [mainDeck, setMainDeck] = useState<CardV2[]>(() => initData.remainingMain);
+  const [discardPile, setDiscardPile] = useState<CardV2[]>([]);
+  const [toolDeck, setToolDeck] = useState<CardV2[]>(() => initData.shuffledTools);
+  const [toolDiscard, setToolDiscard] = useState<CardV2[]>([]);
+  const [eventDeck, setEventDeck] = useState<EventCardData[]>(() => initData.shuffledEvents);
+  const [programMarket, setProgramMarket] = useState<ProgramCard[]>(() => initData.market);
+  const [programDeck, setProgramDeck] = useState<ProgramCard[]>(() => initData.programDeck);
 
-  // Seção 04: Bypass posicionado no Slot Safeguard (NÃO conta como carta de mão)
-  const [playerSafeguardSlot, setPlayerSafeguardSlot] = useState<CardV2 | null>(null);
-  // CVE Assignment Protection ativa (uso único)
-  const [playerCveProtection, setPlayerCveProtection] = useState<CardV2 | null>(null);
   const [pendingToolInstall, setPendingToolInstall] = useState<CardV2 | null>(null);
-
-  const [programMarket, setProgramMarket] = useState<ProgramCard[]>(() => shuffleArray([...PROGRAM_CARDS]).slice(0, 3));
-  const [programDeck, setProgramDeck] = useState<ProgramCard[]>(() => shuffleArray([...PROGRAM_CARDS]).slice(3));
-  const [mainDeck, setMainDeck] = useState<CardV2[]>([]);
-  const [toolDeck, setToolDeck] = useState<CardV2[]>([]); // Tool Deck separado V1.2
-  const [eventDeck, setEventDeck] = useState<EventCardData[]>([]);
-
-  const [playerScore, setPlayerScore] = useState<number>(0);
   const [servers, setServers] = useState<ServerRegion[]>(SERVERS_DATA);
   const [deployedExploits, setDeployedExploits] = useState<DeployedExploit[]>([]);
   const [currentTurn, setCurrentTurn] = useState<number>(1);
   const [bountyLedger, setBountyLedger] = useState<BountyTransaction[]>([]);
 
-  // AP System V1.2: 3 ações por turno (Recon=1, Exploit=1, Report=2 e sempre última)
-  const [actionsRemaining, setActionsRemaining] = useState<number>(3);
-
-  // Track reports per round (Old Guard: 1 per round)
-  const [reportsThisRound, setReportsThisRound] = useState<number>(0);
-
-  // Social Engineer: pode redirecionar 1× por rodada
-  const [socialEngineerUsedThisRound, setSocialEngineerUsedThisRound] = useState<boolean>(false);
-
-  const [gameMode, setGameModeState] = useState<'solo' | 'hotseat' | 'lan'>('solo');
-  const [activePlayerRole, setActivePlayerRole] = useState<'player-1' | 'player-2'>('player-1');
-  const [myRole, setMyRoleState] = useState<'player-1' | 'player-2'>('player-1');
-
-  const isMyTurn = myRole === activePlayerRole;
-
-  const [isSetupWizardOpen, setIsSetupWizardOpen] = useState<boolean>(true);
+  const [isSetupWizardOpen, setIsSetupWizardOpen] = useState<boolean>(false);
   const [activeEventCard, setActiveEventCard] = useState<EventCardData | null>(null);
 
   const [patchAlertModal, setPatchAlertModal] = useState<boolean>(false);
@@ -283,731 +411,684 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [diceRollReason, setDiceRollReason] = useState<'report' | 'endTurn' | 'manualTest'>('report');
   const [isStealthMode, setIsStealthMode] = useState<boolean>(false);
 
-  const [logs, setLogs] = useState<string[]>(['PWND! Board Game — Inicie a Fase de Preparação da Mesa.']);
-
-  const [bots, setBots] = useState<BoardGameBot[]>([
-    { id: 'bot-1', name: 'Ninja_Cyber', icon: '🤖', currentNodeId: 'node-ecom-catalog', score: 0 },
-    { id: 'bot-2', name: 'Ghost_Hacker', icon: '👾', currentNodeId: 'node-social-feed', score: 0 }
+  const [logs, setLogs] = useState<string[]>([
+    'PWND! The Bug Bounty Chaos — Mesa pronta. 5 cartas na mão + 1 Bypass no Safeguard. Escolha um Programa no Mercado.'
   ]);
+  const [bots, setBots] = useState<any[]>([]);
   const [gameWinner, setGameWinner] = useState<string | null>(null);
 
-  const bountyTotalCash = playerScore;
+  // Jogador atual sendo visualizado no dispositivo local
+  const currentPlayer = players[myRole] || players['player-1'];
+  const isMyTurn = myRole === activePlayerRole;
 
-  // ── Logging ──────────────────────────────────────────────────────────────────
+  // Helper para atualizar o estado do jogador atual
+  const updateCurrentPlayer = useCallback((updater: (prev: PlayerState) => PlayerState) => {
+    setPlayers(prev => ({
+      ...prev,
+      [myRole]: updater(prev[myRole] || prev['player-1'])
+    }));
+  }, [myRole]);
+
   const addLog = (text: string) => {
     const time = new Date().toLocaleTimeString('pt-BR', { hour12: false });
     setLogs(prev => [`[${time}] ${text}`, ...prev.slice(0, 30)]);
   };
 
-  // ── Hand size enforcer — Seção 10 ─────────────────────────────────────────
-  const enforceHandLimit = useCallback((hand: CardV2[], archetype: Archetype): CardV2[] => {
-    // Agora o limite é forçado via needsDiscard e não interceptando a compra
-    return hand;
-  }, []);
-
-  // Detect tools in rack
-  const hasNmapInRack = () =>
-    playerActiveTools.some(t => t.technicalReference === 'Network & Fuzzing Scanner');
-
-  const hasBrowserDevToolsInRack = () =>
-    playerActiveTools.some(t =>
-      t.technicalReference === 'Browser DevTools' && t.id.includes('devtools-2')
-    );
-
-  // Dynamic max hand size (Browser DevTools c2: +1)
-  const dynamicMaxHandSize = playerArchetype.maxHandSize + (hasBrowserDevToolsInRack() ? 1 : 0);
-
-  const needsDiscard = playerHand.length > dynamicMaxHandSize;
-
-  // ── Draw from any deck ──────────────────────────────────────────────────
-  const drawFromDeck = (count: number, currentDeck: CardV2[]): [CardV2[], CardV2[]] => {
-    const drawn: CardV2[] = [];
-    const remaining = [...currentDeck];
-    for (let i = 0; i < count; i++) {
-      if (remaining.length === 0) break;
-      drawn.push(remaining.shift()!);
-    }
-    return [drawn, remaining];
+  // ── Tokens Management V1.4 ──────────────────────────────────────────────────
+  const addAlertaToken = (count: number = 1) => {
+    updateCurrentPlayer(p => {
+      const next = p.alertaTokens + count;
+      if (next >= 2) {
+        soundFx.playPatchDeployedAlarm();
+        addLog(`🚨 ALARME CRÍTICO (${p.name})! Acumulou 2 Tokens de Alerta (🐞): -$2.000 imediatos na Bounty Track. Alertas limpos.`);
+        return {
+          ...p,
+          score: Math.max(0, p.score - 2000),
+          alertaTokens: 0
+        };
+      }
+      addLog(`🐞 ${p.name}: +${count} Token de Alerta (${next}/2).`);
+      return { ...p, alertaTokens: next };
+    });
   };
 
+  const removeAlertaToken = (count: number = 1) => {
+    updateCurrentPlayer(p => {
+      const next = Math.max(0, p.alertaTokens - count);
+      if (p.alertaTokens > 0) {
+        addLog(`🥷 Modo Furtivo (${p.name}): Removeu ${count} Token de Alerta (${next}/2).`);
+      }
+      return { ...p, alertaTokens: next };
+    });
+  };
 
-  // ── Setup — Seção 04 ──────────────────────────────────────────────────────
-  const setMyRole = (role: 'player-1' | 'player-2') => {
+  const addReputacaoToken = (count: number = 1) => {
+    updateCurrentPlayer(p => {
+      const next = p.reputacaoTokens + count;
+      addLog(`🐝 ${p.name}: Ganhou +${count} Token de Reputação! (Total: ${next})`);
+      return { ...p, reputacaoTokens: next };
+    });
+  };
+
+  const useReputacaoReroll = (): boolean => {
+    if (currentPlayer.reputacaoTokens < 2) return false;
+    updateCurrentPlayer(p => ({ ...p, reputacaoTokens: p.reputacaoTokens - 2 }));
+    addLog(`🐝 Reroll de Patch (${currentPlayer.name}): Gastou 2 Tokens de Reputação para rolar novamente um dado!`);
+    return true;
+  };
+
+  const dynamicMaxHandSize = currentPlayer.archetype.maxHandSize || 6;
+  const needsDiscard = currentPlayer.hand.length > dynamicMaxHandSize;
+
+  // ── Compra Segura com Reembaralhamento de Descarte ─────────────────────────
+  const drawCardsFromMainDeck = (count: number): CardV2[] => {
+    let availableDeck = [...mainDeck];
+    let availableDiscards = [...discardPile];
+
+    if (availableDeck.length < count && availableDiscards.length > 0) {
+      addLog('🔄 Main Deck vazio! Reembaralhando a pilha de descarte...');
+      availableDeck = [...availableDeck, ...shuffleArray(availableDiscards)];
+      availableDiscards = [];
+      setDiscardPile([]);
+    }
+
+    const drawn: CardV2[] = [];
+    for (let i = 0; i < count; i++) {
+      if (availableDeck.length === 0) break;
+      drawn.push(availableDeck.shift()!);
+    }
+
+    setMainDeck(availableDeck);
+    return drawn;
+  };
+
+  // ── Setup & Reset ──────────────────────────────────────────────────────────
+  const setMyRole = (role: PlayerRoleId) => {
     setMyRoleState(role);
-    addLog(`Papel fixado no dispositivo: ${role === 'player-1' ? 'Jogador 1 (Verde)' : 'Jogador 2 (Azul)'}`);
+    const pName = players[role]?.name || role;
+    addLog(`Papel fixado: ${pName}`);
   };
 
   const setGameMode = (mode: 'solo' | 'hotseat' | 'lan') => {
     setGameModeState(mode);
-    addLog(`Modo de Jogo alterado para: ${mode.toUpperCase()}`);
+    addLog(`Modo de Jogo: ${mode.toUpperCase()}`);
   };
 
   const completeSetup = (archetype: Archetype, program: ProgramCard) => {
-    setPlayerArchetype(archetype);
-    setPlayerActiveProgram(program);
-    setReportsThisRound(0);
-    setSocialEngineerUsedThisRound(false);
-    setActionsRemaining(3);
+    updateCurrentPlayer(p => ({
+      ...p,
+      archetype,
+      activeProgram: program
+    }));
+    setIsSetupWizardOpen(false);
+    addLog(`✅ Setup concluído para ${currentPlayer.name}: [${archetype.name}] contra [${program.name}].`);
+  };
 
-    // Build V1.2 canonical 84-card main deck
-    const canonical84 = buildCanonical84Deck();
-
-    // Extract 1 Bypass for Safeguard Slot (Seção 04)
-    const bypassIndex = canonical84.findIndex(c =>
-      c.technicalReference === 'Bypass Card' || c.name === 'Safeguard (Bypass)'
-    );
-    let bypassForSlot: CardV2 | null = null;
-    let deckWithout: CardV2[] = canonical84;
-    if (bypassIndex !== -1) {
-      bypassForSlot = canonical84[bypassIndex];
-      deckWithout = canonical84.filter((_, i) => i !== bypassIndex);
-    }
-
-    const shuffledDeck = shuffleArray(deckWithout); // 83 cards in main deck
-    setMainDeck(shuffledDeck);
-    setPlayerSafeguardSlot(bypassForSlot);
-
-    // Tool Deck separado V1.2: 36 cartas, baralhação independente
-    const shuffledTools = shuffleArray(buildToolDeck36());
-    setToolDeck(shuffledTools);
-
-    // Event deck: 24 cards
-    const shuffledEvents = shuffleArray([...FULL_24_EVENTS]);
-    setEventDeck(shuffledEvents);
-
-    // Program market
-    const shuffledPrograms = shuffleArray([...PROGRAM_CARDS]);
-    setProgramMarket(shuffledPrograms.slice(0, 3));
-    setProgramDeck(shuffledPrograms.slice(3));
-
-    // Initial hand: 5 cards from main deck
-    const [initialHand, remaining] = drawFromDeck(5, shuffledDeck);
-    setMainDeck(remaining);
-    setPlayerHand(initialHand);
-    setPlayerActiveTools([]);
+  const resetBoardGame = () => {
+    const fresh = createInitialGameState();
+    setPlayers(fresh.playersInitial);
+    setMainDeck(fresh.remainingMain);
+    setDiscardPile([]);
+    setToolDeck(fresh.shuffledTools);
+    setToolDiscard([]);
+    setEventDeck(fresh.shuffledEvents);
+    setProgramMarket(fresh.market);
+    setProgramDeck(fresh.programDeck);
     setDeployedExploits([]);
-    setPlayerScore(0);
     setBountyLedger([]);
     setCurrentTurn(1);
-    setActionsRemaining(3);
-
-    setIsSetupWizardOpen(false);
-    addLog(
-      `✅ PREPARAÇÃO CONCLUÍDA! Arquétipo [${archetype.name}]. ` +
-      `Main Deck: 83 cartas. Tool Deck: 36 cartas. Event Deck: 24 cartas. ` +
-      `5 cartas compradas. 1 Bypass no Slot Safeguard.`
-    );
+    setActivePlayerRole('player-1');
+    setMyRoleState('player-1');
+    setPatchAlertModal(false);
+    setIsDiceModalOpen(false);
+    setGameWinner(null);
+    addLog('🔄 Tabuleiro reiniciado com novas cartas canônicas V1.4!');
   };
 
-  // Auto-start
+  // ── Supabase Auto-Connect & Realtime Listener ──────────────────────────────
   useEffect(() => {
-    const randArchetype = ARCHETYPES[Math.floor(Math.random() * ARCHETYPES.length)];
-    const shuffledPrograms = shuffleArray([...PROGRAM_CARDS]);
-    const randProgram = shuffledPrograms[0];
-    setTimeout(() => {
-      completeSetup(randArchetype, randProgram);
-    }, 100);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const roomParam = params.get('room');
+    const roleParam = params.get('role') as PlayerRoleId | null;
 
-  // LAN sync
-  useEffect(() => {
-    const unsubscribe = mpSync.subscribe((msg) => {
+    if (roomParam) {
+      const assignedRole = roleParam || 'player-2';
+      supabaseSync.joinRoom(roomParam, assignedRole, players[assignedRole]?.name || 'Jogador');
+      setMyRoleState(assignedRole);
+      setGameModeState('lan');
+      addLog(`🌐 Conectado à Sala [${roomParam}] como ${players[assignedRole]?.name || assignedRole}.`);
+    }
+
+    const unsubscribe = supabaseSync.subscribe((msg: RoomMessage) => {
       if (msg.actionType === 'END_TURN') {
-        const nextRole = msg.payload.activePlayerRole;
-        const nextTurn = msg.payload.currentTurn;
-        setActivePlayerRole(nextRole);
-        if (nextTurn) setCurrentTurn(nextTurn);
-        soundFx.playClick();
-        if (nextRole === myRole) {
-          addLog(`🟢 O oponente passou a vez! É A SUA VEZ DE JOGAR!`);
-        } else {
-          addLog(`⏳ Turno passado. Aguardando o ${nextRole === 'player-1' ? 'Jogador 1' : 'Jogador 2'}...`);
-        }
+        setActivePlayerRole(msg.payload.activePlayerRole);
+        if (msg.payload.currentTurn) setCurrentTurn(msg.payload.currentTurn);
+        addLog(`[Rede] Vez de ${msg.payload.activePlayerRole}.`);
+      } else if (msg.actionType === 'STATE_SYNC') {
+        if (msg.payload.deployedExploits) setDeployedExploits(msg.payload.deployedExploits);
+        if (msg.payload.programMarket) setProgramMarket(msg.payload.programMarket);
+        if (msg.payload.players) setPlayers(msg.payload.players);
       }
     });
+
     return () => unsubscribe();
-  }, [myRole]);
+  }, [players]);
 
-  // ── Event Draw V1.2 ─────────────────────────────────────────────────────────────────────
-  const drawEventCard = useCallback(() => {
-    soundFx.playPatchDeployedAlarm();
-
-    setEventDeck(prev => {
-      if (prev.length === 0) {
-        // Recicla o Event Deck (Seção 09)
-        addLog('📠 Event Deck esgotado — rebaralhando.');
-        return shuffleArray([...FULL_24_EVENTS]);
+  // ── Actions ────────────────────────────────────────────────────────────────
+  const drawEventCard = () => {
+    setEventDeck(deck => {
+      if (deck.length === 0) {
+        addLog('Event Deck esgotado!');
+        return deck;
       }
-      const [top, ...rest] = prev;
+      const [top, ...rest] = deck;
       setActiveEventCard(top);
-      addLog(`🚨 EVENT CARD: [${top.name}] — ${top.simpleDescription}`);
-
-      // evt-23: Swag Drop — cada jogador compra 1 Tool Card DO TOOL DECK
-      if (top.id === 'evt-23') {
-        setToolDeck(deck => {
-          if (deck.length === 0) { addLog('🎁 Swag Drop: Tool Deck vazio.'); return deck; }
-          const tool = deck[0];
-          setPlayerHand(hand => enforceHandLimit([...hand, tool], playerArchetype));
-          addLog(`🎁 Swag Drop: Tool "${tool.name}" adicionada à mão!`);
-          return deck.slice(1);
-        });
-      }
-
-      // evt-17: Hall of Fame Update — jogador em último lugar compra 2 Tools DO TOOL DECK
-      if (top.id === 'evt-17') {
-        setToolDeck(deck => {
-          const toolCards = deck.slice(0, 2);
-          if (toolCards.length > 0) {
-            setPlayerHand(hand => enforceHandLimit([...hand, ...toolCards], playerArchetype));
-            addLog(`🏆 Hall of Fame: +${toolCards.length} Tool Cards do Tool Deck!`);
-            return deck.slice(toolCards.length);
-          }
-          return deck;
-        });
-      }
-
-      // evt-20: Bug Bounty Conference — Todos compram 2 cartas do Main Deck
-      if (top.id === 'evt-20') {
-        setMainDeck(deck => {
-          const [drawn, remaining] = drawFromDeck(2, deck);
-          setPlayerHand(hand => enforceHandLimit([...hand, ...drawn], playerArchetype));
-          addLog(`🎫 Bug Bounty Conference: +${drawn.length} cartas do Main Deck!`);
-          return remaining;
-        });
-      }
-
-      // evt-24: Bounty Ético
-      if (top.id === 'evt-24') {
-        if (reportsThisRound > 0) {
-          const gain = 2000;
-          setPlayerScore(s => s + gain);
-          addLog(`🏅 Bounty Ético: +$${gain.toLocaleString('pt-BR')}!`);
-          setBountyLedger(prev => [...prev, {
-            id: `evt-24-${Date.now()}`,
-            turn: currentTurn,
-            type: 'Event',
-            description: 'Bounty Ético (evt-24)',
-            amount: gain,
-            mathBreakdown: 'Bónus fixo por report na mesma ronda'
-          }]);
-        } else {
-          addLog(`🏅 Bounty Ético: Nenhum report esta ronda — sem bónus.`);
-        }
-      }
-
-      // evt-13: Responsible Disclosure
-      if (top.id === 'evt-13') {
-        addLog(`📄 Responsible Disclosure: Realize 1 Report IMEDIATO sem rolar D8!`);
-      }
-
+      soundFx.playClick();
+      addLog(`🚨 EVENTO ATIVADO: [${top.name}] — ${top.simpleDescription}`);
       return rest;
     });
-  }, [playerArchetype, reportsThisRound, enforceHandLimit, currentTurn]);
+  };
 
   const closeEventModal = () => setActiveEventCard(null);
+  const movePawn = (targetNodeId: string) => setPlayerNodeId(targetNodeId);
 
-  // ── Movement ──────────────────────────────────────────────────────────────────────────
-  const movePawn = (targetNodeId: string) => {
-    if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
-    const currentNode = ALL_BOARD_NODES.find(n => n.id === playerNodeId);
-    if (currentNode && currentNode.connectedNodeIds.includes(targetNodeId)) {
-      soundFx.playClick();
-      setPlayerNodeId(targetNodeId);
-      const targetNode = ALL_BOARD_NODES.find(n => n.id === targetNodeId);
-      addLog(`Peão movido para: [${targetNode?.name}]`);
-    } else {
-      addLog('Rota inválida!');
-    }
-  };
-
-  // ── Recon (Varrer) V1.2 — 1 AP; Nmap no rack: 3 cartas em vez de 2 ──────────────────
+  // RECON (Custa 1 AP) -> Compra 2 cartas do Main Deck para a mão!
   const actionVarrer = () => {
     if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
-    if (actionsRemaining < 1) { alert('Sem ações restantes neste turno! Encerre o turno.'); return; }
+    if (currentPlayer.actionsRemaining < 1) { alert('Sem ações restantes!'); return; }
     soundFx.playScan();
-    const drawCount = hasNmapInRack() ? 3 : 2; // Nmap passiva V1.2
-    setMainDeck(deck => {
-      const [drawn, remaining] = drawFromDeck(drawCount, deck);
-      setPlayerHand(hand => [...hand, ...drawn]);
-      addLog(`RECON: +${drawn.length} cartas (${remaining.length} restantes). APs: ${actionsRemaining - 1}/3.`);
-      return remaining;
-    });
-    setActionsRemaining(ap => ap - 1);
+
+    let deck = [...mainDeck];
+    let discards = [...discardPile];
+    if (deck.length < 2 && discards.length > 0) {
+      deck = [...deck, ...shuffleArray(discards)];
+      setDiscardPile([]);
+    }
+    if (deck.length === 0) {
+      deck = shuffleArray(buildCanonicalV14MainDeck().map(mapCanonicalToCardV2));
+    }
+
+    const drawnCards = deck.slice(0, 2);
+    const newDeck = deck.slice(2);
+
+    setMainDeck(newDeck);
+    updateCurrentPlayer(p => ({
+      ...p,
+      hand: [...p.hand, ...drawnCards],
+      actionsRemaining: p.actionsRemaining - 1
+    }));
+    addLog(`🔍 RECON (${currentPlayer.name}): Comprou +${drawnCards.length} cartas do Main Deck para a mão. APs restantes: ${currentPlayer.actionsRemaining - 1}/3.`);
   };
 
-  // ── Exploit (Infiltrar) V1.2 — 1 AP ──────────────────────────────────────────────
+  // EXPLOIT (Custa 1 AP) -> Baixa 1 carta de vulnerabilidade na mesa!
   const actionInfiltrar = (cardId: string) => {
     if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
-    if (actionsRemaining < 1) { alert('Sem ações restantes neste turno! Encerre o turno.'); return; }
+    if (currentPlayer.actionsRemaining < 1) { alert('Sem ações restantes!'); return; }
 
-    const card = playerHand.find(c => c.id === cardId);
+    const card = currentPlayer.hand.find(c => c.id === cardId);
     if (!card || card.type !== 'exploit') return;
 
-    if (!playerActiveProgram) {
-      alert('Selecione um Active Program no Program Market!');
+    if (!currentPlayer.activeProgram) {
+      alert('Selecione primeiro um Programa Corporativo no mercado do Tabuleiro Central!');
       return;
     }
 
-    const allowed = playerActiveProgram.allowedClasses;
-    const isRedTeamer = playerArchetype.id === 'red-teamer';
+    const myExploits = deployedExploits.filter(e => e.playerId === myRole);
+    if (myExploits.length >= 3) {
+      alert('Limite máximo de 3 vulnerabilidades na Zona de Exploits atingido!');
+      return;
+    }
 
-    // Scope check (Red Teamer ignora restrições de escopo)
+    const allowed = currentPlayer.activeProgram.allowedClasses;
+    const isRedTeamer = currentPlayer.archetype.id === 'red-teamer';
+
     if (allowed !== 'ALL' && !isRedTeamer) {
-      const cardRef = card.technicalReference || card.name;
-      const isAllowed = Array.isArray(allowed) && allowed.some(cat =>
-        cardRef.toLowerCase().includes(cat.toLowerCase()) ||
-        cat.toLowerCase().includes(cardRef.toLowerCase())
+      const cardRef = (card.technicalReference || card.name).toLowerCase();
+      const cardClass = (card.vulnClass || '').toUpperCase();
+      const isAllowed = Array.isArray(allowed) && (
+        (allowed as any[]).includes(cardClass) ||
+        allowed.some(cat => cardRef.includes(cat.toLowerCase()) || cat.toLowerCase().includes(cardRef))
       );
       if (!isAllowed) {
         soundFx.playPatchDeployedAlarm();
-        alert(`❌ FORA DE ESCOPO!\n"${card.name}" não é aceita por [${playerActiveProgram.name}].`);
-        addLog(`❌ Carta "${card.name}" fora de escopo em ${playerActiveProgram.name}.`);
+        alert(`❌ FORA DE ESCOPO!\nA vulnerabilidade "${card.name}" [${cardClass || 'OUTRA'}] não é aceita por [${currentPlayer.activeProgram.name}].\nEscopo aceito: ${Array.isArray(allowed) ? allowed.join(', ') : allowed}`);
         return;
       }
     }
 
-    // Bug Hunter: só Comum e Incomum
-    if (playerArchetype.id === 'bug-hunter' && !isBugHunterEligible(card)) {
-      alert(`❌ Bug Hunter só pode explorar vulnerabilidades Comum e Incomum!\n"${card.name}" é ${card.rarity}.`);
-      addLog(`❌ Bug Hunter: "${card.name}" (${card.rarity}) não é permitida.`);
+    if (currentPlayer.archetype.id === 'bug-hunter' && (card.rarity === 'Rare' || card.rarity === 'Epic' || card.rarity === 'Legendary')) {
+      alert('❌ O Bug Hunter só pode explorar classes Comum e Incomum!');
       return;
     }
 
     soundFx.playClick();
-    const currentNode = ALL_BOARD_NODES.find(n => n.id === playerNodeId);
-    setPlayerHand(prev => prev.filter(c => c.id !== cardId));
-    setDeployedExploits(prev => [...prev, { id: Math.random().toString(), nodeId: playerNodeId, card, playerId: myRole }]);
-    addLog(`EXPLOIT: "${card.name}" armada em ${currentNode?.name || playerNodeId}! APs: ${actionsRemaining - 1}/3.`);
-    setActionsRemaining(ap => ap - 1);
+    const newExploit: DeployedExploit = { id: Math.random().toString(), nodeId: playerNodeId, card, playerId: myRole };
+    const nextExploits = [...deployedExploits, newExploit];
+    setDeployedExploits(nextExploits);
+
+    updateCurrentPlayer(p => ({
+      ...p,
+      hand: p.hand.filter(c => c.id !== cardId),
+      actionsRemaining: p.actionsRemaining - 1
+    }));
+
+    addLog(`⚡ EXPLOIT (${currentPlayer.name}): "${card.name}" baixada na mesa! APs restantes: ${currentPlayer.actionsRemaining - 1}/3.`);
+
+    // Sincroniza em tempo real
+    supabaseSync.broadcast('STATE_SYNC', { deployedExploits: nextExploits });
   };
 
-
-  // ── Discard / Recycle ────────────────────────────────────────────────────
   const discardCardFromHand = (cardId: string) => {
-    const card = playerHand.find(c => c.id === cardId);
+    const card = currentPlayer.hand.find(c => c.id === cardId);
     if (!card) return;
     soundFx.playClick();
-    setPlayerHand(prev => prev.filter(c => c.id !== cardId));
-    addLog(`Descartada: "${card.name}".`);
+    updateCurrentPlayer(p => ({
+      ...p,
+      hand: p.hand.filter(c => c.id !== cardId)
+    }));
+    setDiscardPile(prev => [...prev, card]);
+    addLog(`Descartou da mão (${currentPlayer.name}): "${card.name}".`);
   };
 
   const recycleHandCards = (cardId1: string, cardId2: string) => {
     soundFx.playScan();
-    setMainDeck(deck => {
-      const [drawn, remaining] = drawFromDeck(1, deck);
-      setPlayerHand(prev => {
-        const filtered = prev.filter(c => c.id !== cardId1 && c.id !== cardId2);
-        return enforceHandLimit([...filtered, ...drawn], playerArchetype);
-      });
-      addLog(`♻️ Reciclagem 2:1: ${drawn.length > 0 ? `"${drawn[0].name}"` : 'sem carta disponível'}.`);
-      return remaining;
-    });
+    const c1 = currentPlayer.hand.find(c => c.id === cardId1);
+    const c2 = currentPlayer.hand.find(c => c.id === cardId2);
+    if (c1 && c2) {
+      setDiscardPile(prev => [...prev, c1, c2]);
+    }
+    const drawn = drawCardsFromMainDeck(1);
+    updateCurrentPlayer(p => ({
+      ...p,
+      hand: [...p.hand.filter(c => c.id !== cardId1 && c.id !== cardId2), ...drawn]
+    }));
+    addLog(`♻️ Reciclagem 2:1 (${currentPlayer.name}): Comprou 1 nova carta.`);
   };
 
   const abandonActiveProgram = () => {
-    if (!playerActiveProgram) return;
+    if (!currentPlayer.activeProgram) return;
     soundFx.playClick();
-    addLog(`ALVO DESCARTADO: Você desistiu de [${playerActiveProgram.name}].`);
-    setPlayerActiveProgram(null);
+    const myExploits = deployedExploits.filter(e => e.playerId === myRole);
+    setDiscardPile(prev => [...prev, ...myExploits.map(e => e.card)]);
+    setDeployedExploits(prev => prev.filter(e => e.playerId !== myRole));
+    updateCurrentPlayer(p => ({ ...p, activeProgram: null }));
+    addLog(`Alvo trocado (RECON): Exploits anteriores de ${currentPlayer.name} descartados.`);
   };
 
-  // ── Tools Rack — Seção 11 ────────────────────────────────────────────────
+  // Instalação de Ferramenta (Ação Livre - Custo: descartar 1 carta da mão)
   const moveCardToToolsRack = (cardId: string) => {
-    if (activePlayerRole !== myRole) return;
-    
-    // Ferramentas ativas não vão para o rack, elas são descartadas no uso e resolvem efeito.
-    // Mas a mecânica base é colocá-las no rack (passivas).
-    const card = playerHand.find(c => c.id === cardId);
+    const card = currentPlayer.hand.find(c => c.id === cardId);
     if (!card) return;
-
-    if (playerActiveTools.length >= 3) {
-      alert('Tools Rack cheio! Máximo 3 ferramentas.');
+    if (currentPlayer.activeTools.length >= 3) {
+      alert('Tools Rack cheio! Limite de 3 ferramentas instaladas.');
       return;
     }
-
-    if (playerHand.length < 2) {
-      alert('Você precisa descartar 1 carta da mão para pagar pela instalação da ferramenta!');
+    if (currentPlayer.hand.length < 2) {
+      alert('Instalar ferramenta exige descartar 1 outra carta da mão!');
       return;
     }
-
     setPendingToolInstall(card);
   };
 
-  const cancelToolInstall = () => {
-    setPendingToolInstall(null);
-  };
+  const cancelToolInstall = () => setPendingToolInstall(null);
 
   const confirmToolInstall = (discardCardId: string) => {
     if (!pendingToolInstall) return;
-
     soundFx.playClick();
-    
-    // Remove both the tool and the discarded card from hand
-    setPlayerHand(prev => prev.filter(c => c.id !== pendingToolInstall.id && c.id !== discardCardId));
-    
-    // Add tool to rack
-    setPlayerActiveTools(prev => [...prev, pendingToolInstall]);
-    
+    const discardCard = currentPlayer.hand.find(c => c.id === discardCardId);
+    if (discardCard) {
+      setDiscardPile(prev => [...prev, discardCard]);
+    }
+    updateCurrentPlayer(p => ({
+      ...p,
+      hand: p.hand.filter(c => c.id !== pendingToolInstall.id && c.id !== discardCardId),
+      activeTools: [...p.activeTools, pendingToolInstall]
+    }));
+    addLog(`🛠️ Tool [${pendingToolInstall.name}] instalada para ${currentPlayer.name} (descartou "${discardCard?.name || 'carta'}").`);
     setPendingToolInstall(null);
   };
 
-  // -- Safeguard Slot
   const moveCardToDefuseSlot = (cardId: string) => {
-    if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
-    const card = playerHand.find(c => c.id === cardId);
+    const card = currentPlayer.hand.find(c => c.id === cardId);
     if (!card || card.type !== 'defuse') return;
-    if (card.technicalReference !== 'Bypass Card' && !card.name.includes('Bypass')) {
-      if (card.name.includes('CVE') || card.technicalReference.includes('CVE')) {
-        setPlayerHand(prev => prev.filter(c => c.id !== cardId));
-        setPlayerCveProtection(card);
-        addLog('CVE Assignment Protection ativada no slot de protecao.');
+
+    const isCve = card.name.includes('CVE') || (card.technicalReference || '').includes('CVE');
+    if (isCve) {
+      if (currentPlayer.cveProtection) {
+        alert('Você já possui uma CVE Assignment Protection instalada no Safeguard!');
         return;
       }
+      soundFx.playClick();
+      updateCurrentPlayer(p => ({
+        ...p,
+        hand: p.hand.filter(c => c.id !== cardId),
+        cveProtection: card
+      }));
+      addLog(`📜 CVE Assignment Protection empilhada no Slot Safeguard de ${currentPlayer.name}!`);
+    } else {
+      if (currentPlayer.safeguardSlot) {
+        alert('Você já possui um Bypass instalado no Slot Safeguard!');
+        return;
+      }
+      soundFx.playClick();
+      updateCurrentPlayer(p => ({
+        ...p,
+        hand: p.hand.filter(c => c.id !== cardId),
+        safeguardSlot: card
+      }));
+      addLog(`🛡️ Bypass alocado no Slot Safeguard de ${currentPlayer.name}.`);
     }
-    if (playerSafeguardSlot) { alert('Slot Safeguard ja ocupado por um Bypass!'); return; }
-    soundFx.playClick();
-    setPlayerHand(prev => prev.filter(c => c.id !== cardId));
-    setPlayerSafeguardSlot(card);
-    addLog('Bypass alocado no Slot Safeguard.');
   };
 
   const activateCveProtection = () => {
-    const cveCard = playerHand.find(c => c.name.includes('CVE') || c.technicalReference.includes('CVE'));
-    if (!cveCard) { alert('Nenhuma CVE Assignment Protection na mao!'); return; }
-    setPlayerHand(prev => prev.filter(c => c.id !== cveCard.id));
-    setPlayerCveProtection(cveCard);
-    addLog('CVE Assignment Protection ativada.');
+    const cveCard = currentPlayer.hand.find(c => c.name.includes('CVE') || c.technicalReference.includes('CVE'));
+    if (!cveCard) return;
+    updateCurrentPlayer(p => ({
+      ...p,
+      hand: p.hand.filter(c => c.id !== cveCard.id),
+      cveProtection: cveCard
+    }));
+    addLog(`CVE Assignment Protection ativada para ${currentPlayer.name}.`);
   };
 
-  // -- Report V1.2: custa 2 AP, deve ser sempre a ultima acao do turno
-  const actionReportar = (skipDice = false) => {
-    if (!isMyTurn && !skipDice) { alert('Aguarde a sua vez!'); return; }
-    if (!skipDice && actionsRemaining !== 2) {
-      if (actionsRemaining === 3) {
-        alert('Report so pode ser feito apos pelo menos 1 acao no turno (Recon ou Exploit).');
-      } else {
-        alert('Sem APs suficientes para Report (custa 2 AP, voce tem ' + actionsRemaining + ').');
-      }
+  // REPORT (Custa 2 AP — sempre a última ação)
+  const actionReportar = () => {
+    if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
+    if (currentPlayer.actionsRemaining < 2) {
+      alert(`Report custa 2 Ações! Você tem ${currentPlayer.actionsRemaining} AP restante.`);
       return;
     }
     const myExploits = deployedExploits.filter(e => e.playerId === myRole);
-    const eligibleExploits = playerArchetype.id === 'bug-hunter'
-      ? myExploits.filter(e => isBugHunterEligible(e.card))
-      : myExploits;
-    if (eligibleExploits.length === 0) { alert('Nenhuma vulnerabilidade elegivel na mesa para reportar!'); return; }
-    if (!playerActiveProgram) { alert('Sem Active Program! Selecione um programa no mercado.'); return; }
-    if (playerArchetype.id === 'old-guard' && reportsThisRound >= 1) { alert('Old Guard: apenas 1 Report por rodada!'); return; }
-    const minRequired = getMinVulnsRequired(playerActiveProgram);
-    if (eligibleExploits.length < minRequired) {
-      alert('MINIMO DE ESCOPO: ' + playerActiveProgram.name + ' exige ' + minRequired + ' vulnerabilidade(s) valida(s).');
-      addLog('Report bloqueado: necessario ' + minRequired + ' carta(s) valida(s).');
+    if (myExploits.length === 0) {
+      alert('Você precisa ter pelo menos 1 Exploit na mesa para reportar!');
       return;
     }
-    if (skipDice) {
-      processSuccessfulReport(eligibleExploits, myExploits, true);
-    } else {
-      setDiceRollReason('report');
-      setIsStealthMode(false);
-      setIsDiceModalOpen(true);
-      addLog('REPORT INICIADO: Rolando D8 (Noisy Report)...');
+    if (!currentPlayer.activeProgram) {
+      alert('Sem programa ativo selecionado!');
+      return;
+    }
+
+    setDiceRollReason('report');
+    setIsStealthMode(false);
+    setIsDiceModalOpen(true);
+    addLog(`REPORT INICIADO (${currentPlayer.name}): Rolando teste de Patch em Modo Noisy (2D6 somados)...`);
+  };
+
+  // Resolução do Payout do Report
+  const getVulnFlatValue = (card: CardV2) => {
+    switch (card.rarity) {
+      case 'Common': return 1500;
+      case 'Uncommon': return 2500;
+      case 'Rare': return 4000;
+      case 'Epic': return 5000;
+      case 'Legendary': return 6000;
+      default: return 1500;
     }
   };
 
-  // -- Core Report Payout V1.2
   const processSuccessfulReport = (
     eligibleExploits: DeployedExploit[],
-    allMyExploits: DeployedExploit[],
-    freeDice = false
+    bypassMode = false
   ) => {
-    const program = playerActiveProgram;
+    const program = currentPlayer.activeProgram;
     if (!program) return;
+
     let vulnTotal = eligibleExploits.reduce((sum, e) => sum + getVulnFlatValue(e.card), 0);
-    const programBonus = program.flatBountyBonus;
-    const toolTotalBonus = playerActiveTools.reduce((sum, t) => sum + getToolFlatBonus(t), 0);
-    let earnedCash = vulnTotal + programBonus + toolTotalBonus;
-    let bugHunterBonus = 0;
-    if (playerArchetype.id === 'bug-hunter' && eligibleExploits.length > 1) {
-      bugHunterBonus = (eligibleExploits.length - 1) * 500;
-      earnedCash += bugHunterBonus;
-      addLog('Bug Hunter: +$' + bugHunterBonus.toLocaleString('pt-BR') + ' (' + (eligibleExploits.length - 1) + ' carta(s) extra).');
+    const programBonus = program.flatBountyBonus || 0;
+    let earnedCash = vulnTotal + programBonus;
+
+    // Bônus do Bug Hunter
+    if (currentPlayer.archetype.id === 'bug-hunter' && eligibleExploits.length > 1) {
+      const extra = (eligibleExploits.length - 1) * 500;
+      earnedCash += extra;
     }
-    let oldGuardBonus = 0;
-    if (playerArchetype.id === 'old-guard') {
+
+    // Bônus do Old Guard
+    if (currentPlayer.archetype.id === 'old-guard') {
       const epicLegCount = eligibleExploits.filter(e => e.card.rarity === 'Epic' || e.card.rarity === 'Legendary').length;
-      oldGuardBonus = epicLegCount * 500;
-      if (oldGuardBonus > 0) {
-        earnedCash += oldGuardBonus;
-        addLog('Old Guard: +$' + oldGuardBonus.toLocaleString('pt-BR') + ' (' + epicLegCount + ' carta(s) Epica/Lendaria).');
-      }
+      earnedCash += epicLegCount * 500;
     }
-    let redTeamerReduction = 0;
-    if (playerArchetype.id === 'red-teamer') {
-      const afterDiscount = roundTo500(earnedCash * 0.7);
-      redTeamerReduction = earnedCash - afterDiscount;
-      earnedCash = afterDiscount;
-      addLog('Red Teamer: -30% + arredondamento (-$' + redTeamerReduction.toLocaleString('pt-BR') + ').');
+
+    // Penalidade do Red Teamer
+    if (currentPlayer.archetype.id === 'red-teamer') {
+      earnedCash = Math.max(0, earnedCash - 1500);
+      addLog('Red Teamer: -$1.500 de custo operacional.');
     }
+
+    // Ganho de Reputação (🐝)
+    const hasEpicOrLegendary = eligibleExploits.some(e => e.card.rarity === 'Epic' || e.card.rarity === 'Legendary');
+    let repGain = 0;
+    if (hasEpicOrLegendary) repGain += 1;
+    if (currentPlayer.archetype.id === 'bug-hunter' && eligibleExploits.length === 3) repGain += 1;
+
     if (earnedCash >= 10000) confetti({ particleCount: 80, spread: 60 });
-    setReportsThisRound(r => r + 1);
-    setActionsRemaining(0);
-    if (playerArchetype.id === 'n00b') {
+    const newScore = currentPlayer.score + earnedCash;
+
+    updateCurrentPlayer(p => ({
+      ...p,
+      score: newScore,
+      reputacaoTokens: p.reputacaoTokens + repGain,
+      activeProgram: null
+    }));
+
+    setBountyLedger(prev => [
+      ...prev,
+      {
+        id: 'rep-' + Date.now(),
+        turn: currentTurn,
+        type: 'Report',
+        description: `Report de ${currentPlayer.name} em ${program.name}`,
+        amount: earnedCash,
+        mathBreakdown: `Vulns: $${vulnTotal} + Bonus: $${programBonus}`
+      }
+    ]);
+
+    // Descarte das vulnerabilidades
+    setDiscardPile(prev => [...prev, ...eligibleExploits.map(e => e.card)]);
+    setDeployedExploits(prev => prev.filter(e => e.playerId !== myRole));
+
+    // Compra 1 Tool do Tool Deck (se não foi bypass)
+    if (!bypassMode) {
       setToolDeck(deck => {
-        const top3 = deck.slice(0, 3);
-        const toolsInTop3 = top3.filter(c => c.type === 'tool');
-        if (toolsInTop3.length > 0) {
-          const chosenTool = toolsInTop3[0];
-          const newDeck = deck.filter(c => c.id !== chosenTool.id);
-          if (playerActiveTools.length < 3) {
-            setPlayerActiveTools(prev => [...prev, { ...chosenTool, charges: chosenTool.maxCharges || 2 }]);
-            addLog('n00b Garimpeiro: "' + chosenTool.name + '" do Tool Deck instalada!');
-          } else {
-            setPlayerActiveTools(prev => { const [, ...rest] = prev; addLog('n00b Garimpeiro: Rack cheio.'); return [...rest, { ...chosenTool, charges: chosenTool.maxCharges || 2 }]; });
-          }
-          return newDeck;
-        } else {
-          addLog('n00b Garimpeiro: Nenhuma Tool no top 3 do Tool Deck. Rebaralha.');
-          return shuffleArray([...top3, ...deck.slice(3)]);
+        if (deck.length > 0) {
+          const [topTool, ...rest] = deck;
+          updateCurrentPlayer(p => ({ ...p, hand: [...p.hand, topTool] }));
+          addLog(`🛠️ Report Payout: Comprou 1 Tool [${topTool.name}] do Tool Deck para ${currentPlayer.name}.`);
+          return rest;
         }
+        return deck;
       });
     }
-    const newScore = playerScore + earnedCash;
-    setPlayerScore(newScore);
-    let mathStr = 'Vulns: $' + vulnTotal;
-    if (programBonus > 0) mathStr += ' + Program: $' + programBonus;
-    if (toolTotalBonus > 0) mathStr += ' + Tools: $' + toolTotalBonus;
-    if (bugHunterBonus > 0) mathStr += ' + Bug Hunter: $' + bugHunterBonus;
-    if (oldGuardBonus > 0) mathStr += ' + Old Guard: $' + oldGuardBonus;
-    if (redTeamerReduction > 0) mathStr += ' - Red Teamer: $' + redTeamerReduction;
-    setBountyLedger(prev => [...prev, { id: 'rep-' + Date.now(), turn: currentTurn, type: 'Report', description: 'Report em ' + program.name, amount: earnedCash, mathBreakdown: mathStr }]);
-    setDeployedExploits(prev => prev.filter(e => e.playerId !== myRole));
-    if (program) {
-      setProgramMarket(prevMarket => prevMarket.map(slot => {
-        if (slot.id === program.id && programDeck.length > 0) {
-          const nextProg = programDeck[0]; setProgramDeck(prev => prev.slice(1));
-          addLog('Mercado reposto: [' + nextProg.name + '] entrou.');
-          return nextProg;
-        }
-        return slot;
-      }));
-    }
-    setPlayerActiveProgram(null);
-    if (newScore >= 40000) { setGameWinner(myRole); soundFx.playVictory(); addLog('VITORIA INSTANTANEA! $' + newScore.toLocaleString('pt-BR') + ' atingidos!'); return; }
-    soundFx.playBountyPayout();
-    addLog('REPORT APROVADO! +$' + earnedCash.toLocaleString('pt-BR') + ' | Saldo: $' + newScore.toLocaleString('pt-BR'));
-    addLog('CUSTO DO SUCESSO: Sacando Event Card obrigatoria...');
+
+    // Saque de Evento
     drawEventCard();
+
+    // Novo programa no mercado
+    if (programDeck.length > 0) {
+      const nextProg = programDeck[0];
+      setProgramDeck(prev => prev.slice(1));
+      setProgramMarket(prevMarket => prevMarket.map(slot => slot.id === program.id ? nextProg : slot));
+    }
+
+    // Meta $40k
+    if (newScore >= 40000) {
+      addLog(`🏆 VITORIOSO! ${currentPlayer.name} atingiu $40.000 na Bounty Track!`);
+      setGameWinner(currentPlayer.name);
+      return;
+    }
+
     finalizeTurnAdvance();
   };
 
   const triggerManualDiceRoll = () => {
     setDiceRollReason('manualTest');
     setIsDiceModalOpen(true);
-    addLog('🎲 Teste manual de Dado D8...');
   };
 
-  // ── Payout value helpers ──────────────────────────────────────────────────
-  const getVulnFlatValue = (card: CardV2) => {
-    switch (card.rarity) {
-      case 'Common':    return 1500;
-      case 'Uncommon':  return 2500;
-      case 'Rare':      return 4000;
-      case 'Epic':      return 5000;
-      case 'Legendary': return 6000;
-      default:          return 1500;
-    }
-  };
-
-  const getToolFlatBonus = (tool: CardV2) => {
-    const ch = tool.charges ?? 2;
-    if (tool.rarity === 'Epic')   return 2000;
-    if (tool.rarity === 'Rare')   return 1500;
-    return ch >= 2 ? 1000 : 500;
-  };
-
-  // ── Dice Roll Result Handler ───────────────────────────────────────────────
-  const handleDiceRollResult = (result: { diceValue: number; diceValue2?: number; passed: boolean }) => {
+  const handleDiceRollResult = (result: any) => {
     setIsDiceModalOpen(false);
+    const passed = result.passed;
 
     if (diceRollReason === 'report') {
-      const myExploits = deployedExploits.filter(e => e.playerId === myRole);
-      const eligibleExploits = playerArchetype.id === 'bug-hunter'
-        ? myExploits.filter(e => isBugHunterEligible(e.card))
-        : myExploits;
-
-      // Evaluate patch using canonical rules (Seções 07-08, 15)
-      const patchFired = playerActiveProgram ? didPatchFire(
-        result.diceValue,
-        result.diceValue2,
-        playerActiveProgram.patchSpeed,
-        playerArchetype.id,
-        false, // report is always Noisy (not Stealth)
-        currentTurn
-      ) : !result.passed;
-
-      if (!patchFired) {
-        processSuccessfulReport(eligibleExploits, myExploits, false);
+      if (passed) {
+        const myExploits = deployedExploits.filter(e => e.playerId === myRole);
+        processSuccessfulReport(myExploits, false);
       } else {
         setPatchAlertModal(true);
-        setAlertServerName(playerActiveProgram?.name || null);
+        setAlertServerName(currentPlayer.activeProgram?.name || null);
         soundFx.playPatchDeployedAlarm();
-        addLog(`🚨 PATCH DEPLOYED! D8 tirou ${result.diceValue}${result.diceValue2 !== undefined ? `/${result.diceValue2}` : ''} — Report falhou!`);
+        addLog(`🚨 PATCH DEPLOYED! Soma dos dados atingiu o limiar.`);
       }
-
     } else if (diceRollReason === 'endTurn') {
-      // Patch Speed Check no fim do turno — Seção 07
-      const patchFired = playerActiveProgram ? didPatchFire(
-        result.diceValue,
-        result.diceValue2,
-        playerActiveProgram.patchSpeed,
-        playerArchetype.id,
-        isStealthMode,
-        currentTurn
-      ) : !result.passed;
-
-      if (!patchFired) {
-        addLog(`✓ D8: ${result.diceValue}. Sistema permaneceu vulnerável.`);
+      if (passed) {
+        addLog(`✓ Modo Stealth: Sistema vulnerável! Turno de ${currentPlayer.name} encerrado com sucesso.`);
         finalizeTurnAdvance();
       } else {
         setPatchAlertModal(true);
-        setAlertServerName(playerActiveProgram?.name || null);
+        setAlertServerName(currentPlayer.activeProgram?.name || null);
         soundFx.playPatchDeployedAlarm();
-        addLog(`🚨 PATCH DEPLOYED! D8 tirou ${result.diceValue}${result.diceValue2 !== undefined ? `/${result.diceValue2}` : ''}.`);
+        addLog(`🚨 PATCH DEPLOYED no fim do turno! Sistemas detectaram a intrusão de ${currentPlayer.name}.`);
       }
     } else {
-      addLog(`🎲 Teste concluído. D8: ${result.diceValue}.`);
+      addLog(`🎲 Teste D6: Soma ${result.evaluatedSum} vs Limiar ${result.threshold}. ${passed ? 'Seguro ✓' : 'Patch Disparou 💥'}`);
     }
   };
 
   const selectNewProgram = (chosenProgram: ProgramCard) => {
-    setPlayerActiveProgram(chosenProgram);
+    updateCurrentPlayer(p => ({ ...p, activeProgram: chosenProgram }));
     soundFx.playClick();
-    addLog(`🎯 Programa selecionado: [${chosenProgram.name}].`);
+    addLog(`🎯 Programa selecionado para ${currentPlayer.name}: [${chosenProgram.name}].`);
   };
 
-  // ── End Turn — Seção 07 ─────────────────────────────────────────────────
+  // PASSAR TURNO
   const endTurn = () => {
     if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
     const myExploits = deployedExploits.filter(e => e.playerId === myRole);
+    const hasNoisyExploit = myExploits.some(e => e.card.isNoisy);
+
     if (myExploits.length > 0) {
-      // Stealth Mode: turno encerra silenciosamente → vantagem no dado (Seção 07)
-      setIsStealthMode(true);
+      setIsStealthMode(!hasNoisyExploit);
       setDiceRollReason('endTurn');
       setIsDiceModalOpen(true);
-      addLog(`🎲 Passando turno com vulns na mesa... Patch Speed Check (D8)!`);
+      addLog(`🎲 Passando turno com vulns na mesa... Teste de Patch (${hasNoisyExploit ? 'Noisy 2D6' : 'Stealth 3D6'})!`);
+    } else {
+      // Mesa limpa: remove 1 Token de Alerta se tiver
+      removeAlertaToken(1);
+      finalizeTurnAdvance();
+    }
+  };
+
+  const defusePatch = () => {
+    setIsDiceModalOpen(false);
+    setPatchAlertModal(false);
+    updateCurrentPlayer(p => ({
+      ...p,
+      safeguardSlot: null,
+      alertaTokens: p.alertaTokens + 1
+    }));
+    addLog(`🛡️ BYPASS ATIVADO (${currentPlayer.name}): Anulou o Patch! Bypass descartado e recebeu 1 Token de Alerta.`);
+
+    if (diceRollReason === 'report') {
+      const myExploits = deployedExploits.filter(e => e.playerId === myRole);
+      processSuccessfulReport(myExploits, true);
     } else {
       finalizeTurnAdvance();
     }
   };
 
-  // ── Safeguard: Defuse or Accept Patch ─────────────────────────────────────
-  const defusePatch = () => {
-    // Bypass anula 100% — Seção 02/07
-    setPatchAlertModal(false);
-    setPlayerSafeguardSlot(null); // Bypass é descartado ao ser usado
-    addLog('🛡️ BYPASS ATIVADO: Todas as penalidades do Patch Deployed! anuladas. Bypass descartado.');
-    finalizeTurnAdvance();
-  };
-
   const acceptPatch = () => {
-    // V1.2: SEM penalidade financeira — perde apenas os exploits e o programa
+    setIsDiceModalOpen(false);
     setPatchAlertModal(false);
+    const myExploits = deployedExploits.filter(e => e.playerId === myRole);
+    setDiscardPile(prev => [...prev, ...myExploits.map(e => e.card)]);
     setDeployedExploits(prev => prev.filter(e => e.playerId !== myRole));
-    setPlayerActiveProgram(null);
-    addLog('PATCH DEPLOYED! Exploits perdidos. Programa encerrado. Saldo INTACTO (V1.2).');
+
+    // Compra 1 carta de consolação do Main Deck
+    const consolation = drawCardsFromMainDeck(1);
+    updateCurrentPlayer(p => ({
+      ...p,
+      activeProgram: null,
+      alertaTokens: p.alertaTokens + 1,
+      hand: [...p.hand, ...consolation]
+    }));
+
+    addLog(`💥 PATCH DEPLOYED ACEITO (${currentPlayer.name}): Exploits descartados, +1 Token de Alerta e comprou 1 carta de consolação.`);
     finalizeTurnAdvance();
   };
 
-
-  // ── Turn Advance + Round Logic ─────────────────────────────────────────────
   const finalizeTurnAdvance = () => {
-    const nextRole: 'player-1' | 'player-2' = activePlayerRole === 'player-1' ? 'player-2' : 'player-1';
-    const nextRound = nextRole === 'player-1' ? Math.min(8, currentTurn + 1) : currentTurn;
+    const activeList: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
+    const currentIndex = activeList.indexOf(activePlayerRole);
+    const nextIndex = (currentIndex + 1) % activeList.length;
+    const nextRole = activeList[nextIndex];
+    const isNewRound = nextIndex === 0;
+    const nextRound = isNewRound ? Math.min(8, currentTurn + 1) : currentTurn;
 
-    // Reset round-scoped state when round increments
-    if (nextRound > currentTurn) {
-      setReportsThisRound(0);
-      setSocialEngineerUsedThisRound(false);
-
-      // R8: fim do jogo
-      if (nextRound > 8) {
-        addLog(`🏁 JOGO ENCERRADO após a Ronda 8! Vencedor: jogador com maior saldo.`);
-        setGameWinner(myRole);
-        return;
-      }
+    if (isNewRound && currentTurn >= 8) {
+      let bestPlayer = players['player-1'];
+      let bestScore = -1;
+      activeList.forEach(pId => {
+        const p = players[pId];
+        const finalScore = p.score + (p.reputacaoTokens * 500) - (p.alertaTokens * 500);
+        if (finalScore > bestScore) {
+          bestScore = finalScore;
+          bestPlayer = p;
+        }
+      });
+      addLog(`🏁 8ª RODADA CONCLUÍDA! Vencedor da Mesa: ${bestPlayer.name} com $${bestScore.toLocaleString('pt-BR')}!`);
+      setGameWinner(bestPlayer.name);
+      return;
     }
 
-    // Reset APs para o próximo turno
-    setActionsRemaining(3);
+    // Reseta as 3 Ações do próximo jogador
+    setPlayers(all => ({
+      ...all,
+      [nextRole]: {
+        ...all[nextRole],
+        actionsRemaining: 3
+      }
+    }));
 
     setActivePlayerRole(nextRole);
-    if (nextRole === 'player-1') setCurrentTurn(nextRound);
+    if (isNewRound) {
+      setCurrentTurn(nextRound);
+    }
+
+    // No modo hotseat local, a perspectiva alterna automaticamente para o jogador da vez!
+    if (gameMode === 'hotseat') {
+      setMyRoleState(nextRole);
+    }
 
     mpSync.sendAction('END_TURN', { activePlayerRole: nextRole, currentTurn: nextRound });
-    addLog(`⏩ Vez de: ${nextRole === 'player-1' ? 'Jogador 1' : 'Jogador 2'} (Ronda ${nextRound}/8)`);
+    supabaseSync.broadcast('END_TURN', { activePlayerRole: nextRole, currentTurn: nextRound });
+    addLog(`⏩ Vez de: ${players[nextRole]?.name || nextRole} (Rodada ${nextRound}/8)`);
 
-    // Solo bot logic
-    if (gameMode === 'solo' && nextRole === 'player-2') {
+    if (gameMode === 'solo' && nextRole !== 'player-1') {
       setTimeout(() => {
-        setBots(prevBots => prevBots.map(bot => ({ ...bot, score: bot.score + Math.floor(Math.random() * 25) + 10 })));
-        addLog(`🤖 IA: Ninja_Cyber jogou.`);
-        setTimeout(() => {
-          setActivePlayerRole('player-1');
-          setCurrentTurn(prev => Math.min(8, prev + 1));
-          mpSync.sendAction('END_TURN', { activePlayerRole: 'player-1', currentTurn: currentTurn + 1 });
-          addLog(`🟢 Sua vez! Ronda ${Math.min(8, currentTurn + 1)}/8.`);
-        }, 1000);
-      }, 1500);
+        addLog(`🤖 Oponente virtual (${players[nextRole]?.name}) jogou.`);
+        finalizeTurnAdvance();
+      }, 1200);
     }
   };
 
-  // ── Reset ────────────────────────────────────────────────────────────────
-  const resetBoardGame = () => {
-    setPlayerNodeId('node-bank-login');
-    setPlayerHand([]);
-    setPlayerActiveTools([]);
-    setPlayerActiveProgram(null);
-    setPlayerSafeguardSlot(null);
-    setPlayerCveProtection(null);
-    setPlayerScore(0);
-    setServers(SERVERS_DATA);
-    setDeployedExploits([]);
-    setCurrentTurn(1);
-    setActivePlayerRole('player-1');
-    setPatchAlertModal(false);
-    setIsDiceModalOpen(false);
-    setActionsRemaining(3);
-    setReportsThisRound(0);
-    setSocialEngineerUsedThisRound(false);
-    setToolDeck([]);
-    setMainDeck([]);
-    setEventDeck([]);
-    setLogs(['Board Game reiniciado!']);
-    const randArchetype = ARCHETYPES[Math.floor(Math.random() * ARCHETYPES.length)];
-    const shuffledPrograms = shuffleArray([...PROGRAM_CARDS]);
-    const randProgram = shuffledPrograms[0];
-    setTimeout(() => completeSetup(randArchetype, randProgram), 100);
-  };
-
-
-  // ─────────────────────────────────────────────────────────────────────────
   return (
     <BoardGameContext.Provider
       value={{
         playerNodeId,
-        playerHand,
-        playerActiveTools,
-        playerActiveProgram,
-        playerArchetype,
-        playerSafeguardSlot,
-        playerCveProtection,
+        playerHand: currentPlayer.hand,
+        playerActiveTools: currentPlayer.activeTools,
+        playerActiveProgram: currentPlayer.activeProgram,
+        playerArchetype: currentPlayer.archetype,
+        playerSafeguardSlot: currentPlayer.safeguardSlot,
+        playerCveProtection: currentPlayer.cveProtection,
         mainDeckCount: mainDeck.length,
         toolDeckCount: toolDeck.length,
         eventDeckCount: eventDeck.length,
         programDeckCount: programDeck.length,
         programMarket,
-        playerScore,
-        bountyTotalCash,
+        playerScore: currentPlayer.score,
+        bountyTotalCash: currentPlayer.score,
         gameWinner,
         servers,
         deployedExploits,
@@ -1016,12 +1097,24 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         bountyLedger,
         needsDiscard,
         pendingToolInstall,
-        actionsRemaining,
+        actionsRemaining: currentPlayer.actionsRemaining,
+
+        alertaTokens: currentPlayer.alertaTokens,
+        reputacaoTokens: currentPlayer.reputacaoTokens,
+        useReputacaoReroll,
+        addAlertaToken,
+        removeAlertaToken,
+        addReputacaoToken,
 
         activePlayerRole,
         myRole,
         isMyTurn,
         gameMode,
+        playerCount,
+        setPlayerCount,
+
+        allPlayers: Object.values(players),
+        currentPlayer,
 
         isSetupWizardOpen,
         activeEventCard,
@@ -1065,9 +1158,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   );
 };
 
-
 export const useBoardGame = () => {
   const context = useContext(BoardGameContext);
-  if (!context) throw new Error('useBoardGame deve ser usado dentro de um BoardGameProvider');
+  if (!context) {
+    throw new Error('useBoardGame must be used within a BoardGameProvider');
+  }
   return context;
 };

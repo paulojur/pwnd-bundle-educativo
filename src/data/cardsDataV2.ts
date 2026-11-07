@@ -13,12 +13,15 @@ export interface CardV2 {
   ptDescription?: string;
   maxCharges?: number;
   charges?: number;
+  isNoisy?: boolean;
+  vulnClass?: string;
 }
 
-export const getClassBadgeInfo = (id: string = '', techRef: string = '', name: string = '') => {
+export const getClassBadgeInfo = (id: string = '', techRef: string = '', name: string = '', explicitClass?: string) => {
   const prefix = id.split('-')[0].toLowerCase();
   
   const getByKeyword = () => {
+    if (explicitClass) return explicitClass.toUpperCase();
     const ref = (techRef + ' ' + name).toLowerCase();
     if (ref.includes('injection') || ref.includes('sqli') || ref.includes('xxe') || ref.includes('ssti') || ref.includes('command')) return 'INJ';
     if (ref.includes('access') || ref.includes('idor') || ref.includes('bola') || ref.includes('traversal') || ref.includes('cors') || ref.includes('bfla') || ref.includes('privesc')) return 'BAC';
@@ -27,16 +30,21 @@ export const getClassBadgeInfo = (id: string = '', techRef: string = '', name: s
     if (ref.includes('ssrf') || ref.includes('csrf') || ref.includes('gopher') || ref.includes('metadata')) return 'SSRF';
     if (ref.includes('logic') || ref.includes('race') || ref.includes('coupon') || ref.includes('price') || ref.includes('rounding') || ref.includes('overflow')) return 'LOGIC';
     if (ref.includes('crypt') || ref.includes('hash') || ref.includes('md5') || ref.includes('cipher') || ref.includes('oracle') || ref.includes('ecb')) return 'CRYPTO';
-    return 'LEGENDARY';
+    return 'SPECIAL';
   };
 
-  let code = '';
+  let code = explicitClass ? explicitClass.toUpperCase() : '';
   
-  if (prefix === 'inj') code = 'INJ';
-  else if (prefix === 'bac') code = 'BAC';
-  else if (prefix === 'xss') code = 'XSS';
-  else if (prefix === 'auth') code = 'AUTH';
-  else if (prefix === 'ssrf') code = 'SSRF';
+  if (!code) {
+    if (prefix === 'inj') code = 'INJ';
+    else if (prefix === 'bac') code = 'BAC';
+    else if (prefix === 'xss') code = 'XSS';
+    else if (prefix === 'auth') code = 'AUTH';
+    else if (prefix === 'ssrf') code = 'SSRF';
+    else if (prefix === 'logic') code = 'LOGIC';
+    else if (prefix === 'crypto') code = 'CRYPTO';
+    else code = getByKeyword();
+  }
   else if (prefix === 'bl') code = 'LOGIC';
   else if (prefix === 'crypto') code = 'CRYPTO';
   else if (prefix === 'leg') code = 'LEGENDARY';

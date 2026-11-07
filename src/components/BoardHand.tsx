@@ -6,7 +6,22 @@ import { Zap, Wrench, ShieldCheck, Sparkles, CheckCircle2, Trash2, RefreshCw } f
 import { soundFx } from '../utils/audio';
 
 export const BoardHand: React.FC = () => {
-  const { playerHand, playerActiveProgram, playerArchetype, isMyTurn, actionInfiltrar, discardCardFromHand, recycleHandCards, moveCardToToolsRack, moveCardToDefuseSlot, needsDiscard, pendingToolInstall, cancelToolInstall, confirmToolInstall } = useBoardGame();
+  const {
+    playerHand,
+    playerActiveProgram,
+    playerArchetype,
+    isMyTurn,
+    actionInfiltrar,
+    discardCardFromHand,
+    recycleHandCards,
+    moveCardToToolsRack,
+    moveCardToDefuseSlot,
+    needsDiscard,
+    pendingToolInstall,
+    cancelToolInstall,
+    confirmToolInstall
+  } = useBoardGame();
+
   const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
   const [lastActionText, setLastActionText] = useState<string | null>(null);
 
@@ -16,33 +31,37 @@ export const BoardHand: React.FC = () => {
       return {
         inScope: true,
         badgeLabel: card.type === 'tool' ? '🧰 FERRAMENTA' : '🛡️ Safeguard',
-        badgeColor: card.type === 'tool' ? 'var(--cyber-blue)' : 'var(--terminal-green)'
+        badgeColor: card.type === 'tool' ? '#0369A1' : '#166534'
       };
     }
 
     if (!playerActiveProgram) {
-      return { inScope: false, badgeLabel: '⚠️ SEM ALVO', badgeColor: 'var(--amber-glow)' };
+      return { inScope: false, badgeLabel: '⚠️ SEM ALVO ATIVO', badgeColor: '#B45309' };
     }
 
     if (playerArchetype.id === 'red-teamer') {
-      return { inScope: true, badgeLabel: '🎯 PERMITIDO (RED TEAM)', badgeColor: 'var(--terminal-green)' };
+      return { inScope: true, badgeLabel: '🎯 ESCOPO LIVRE (RED TEAM)', badgeColor: '#166534' };
     }
 
     const allowed = playerActiveProgram.allowedClasses;
     if (allowed === 'ALL') {
-      return { inScope: true, badgeLabel: '🎯 PERMITIDO NO ESCOPO', badgeColor: 'var(--terminal-green)' };
+      return { inScope: true, badgeLabel: '🎯 ESCOPO AMPLO', badgeColor: '#166534' };
     }
 
-    const cardCategory = card.technicalReference || card.name;
-    const isAllowed = Array.isArray(allowed) && allowed.some(cat =>
-      cardCategory.toLowerCase().includes(cat.toLowerCase()) ||
-      cat.toLowerCase().includes(cardCategory.toLowerCase())
+    const cardCategory = (card.technicalReference || card.name).toLowerCase();
+    const cardClass = (card.vulnClass || '').toUpperCase();
+    const isAllowed = Array.isArray(allowed) && (
+      (allowed as any[]).includes(cardClass) ||
+      allowed.some(cat =>
+        cardCategory.includes(cat.toLowerCase()) ||
+        cat.toLowerCase().includes(cardCategory)
+      )
     );
 
     if (isAllowed) {
-      return { inScope: true, badgeLabel: '🎯 PERMITIDO NO ESCOPO', badgeColor: 'var(--terminal-green)' };
+      return { inScope: true, badgeLabel: `🎯 NO ESCOPO [${cardClass || 'OK'}]`, badgeColor: '#166534' };
     } else {
-      return { inScope: false, badgeLabel: '❌ FORA DE ESCOPO', badgeColor: 'var(--alert-red)' };
+      return { inScope: false, badgeLabel: `❌ FORA DE ESCOPO [${cardClass || 'N/A'}]`, badgeColor: '#B91C1C' };
     }
   };
 
@@ -74,125 +93,140 @@ export const BoardHand: React.FC = () => {
 
     if (card.type === 'exploit') {
       actionInfiltrar(card.id);
-      setLastActionText(`Ação EXPLOIT: Carta "${card.name}" armada no nó! Turno passado.`);
+      setLastActionText(`Ação EXPLOIT: Carta "${card.name}" baixada na mesa! (1 AP gasto)`);
     } else if (card.type === 'tool') {
       moveCardToToolsRack(card.id);
-      setLastActionText(`Ferramenta "${card.name}" enviada para o Tools Rack!`);
+      setLastActionText(`Ferramenta "${card.name}" alocada no Tools Rack!`);
     } else if (card.type === 'defuse') {
       moveCardToDefuseSlot(card.id);
-      setLastActionText(`Safeguard "${card.name}" alocada no Slot de Defuse!`);
+      setLastActionText(`Safeguard "${card.name}" alocada no Safeguard Slot!`);
     }
     setSelectedCardIds([]);
   };
 
   return (
-    <div className="terminal-box" style={{ padding: '16px', background: 'rgba(13, 15, 26, 0.95)' }}>
-
-      {/* Hand Header */}
+    <div
+      style={{
+        background: '#FAF6EE',
+        border: '2px solid #2B2620',
+        borderRadius: '10px',
+        padding: '16px 20px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+      }}
+    >
+      {/* CABEÇALHO DA MÃO */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '10px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Sparkles size={16} color="var(--electric-purple-light)" />
-          <h3 style={{ fontSize: '14px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)' }}>
-            Sua Mão de Cartas ({playerHand.length} cartas)
+          <span style={{ fontSize: '16px' }}>🃏</span>
+          <h3 style={{ fontSize: '14px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace' }}>
+            SUA MÃO DE CARTAS ({playerHand.length} cartas)
           </h3>
+          <span style={{ fontSize: '10px', color: '#685F53', fontFamily: 'monospace' }}>
+            (Limite: {playerArchetype.maxHandSize || 6} cartas)
+          </span>
         </div>
 
-        {/* Action Confirmation Banner */}
+        {/* Notificações de ação */}
         {needsDiscard && !pendingToolInstall && (
-          <div style={{ fontSize: '12px', color: '#fff', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(248, 81, 73, 0.9)', padding: '6px 14px', borderRadius: '4px', fontWeight: '800' }}>
-            ⚠️ LIMITE DE MÃO EXCEDIDO! Descarte {playerHand.length - playerArchetype.maxHandSize} carta(s).
+          <div style={{ fontSize: '11px', color: '#991B1B', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#FEE2E2', border: '1px solid #B91C1C', padding: '4px 10px', borderRadius: '4px', fontWeight: '800' }}>
+            ⚠️ LIMITE EXCEDIDO: Descarte {playerHand.length - playerArchetype.maxHandSize} carta(s).
           </div>
         )}
 
         {pendingToolInstall && (
-          <div style={{ fontSize: '12px', color: '#000', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--cyber-blue)', padding: '6px 14px', borderRadius: '4px', fontWeight: '800' }}>
-            🔧 INSTALANDO [{pendingToolInstall.name}]: Clique no botão verde de outra carta para sacrificar como pagamento.
+          <div style={{ fontSize: '11px', color: '#0369A1', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#E0F2FE', border: '1px solid #0369A1', padding: '4px 10px', borderRadius: '4px', fontWeight: '800' }}>
+            🔧 INSTALANDO [{pendingToolInstall.name}]: Clique no botão de outra carta para sacrificar como pagamento.
           </div>
         )}
 
         {lastActionText && !needsDiscard && !pendingToolInstall && (
-          <div style={{ fontSize: '11px', color: 'var(--terminal-green)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(57, 211, 83, 0.1)', padding: '4px 10px', borderRadius: '4px' }}>
-            <CheckCircle2 size={14} /> {lastActionText}
+          <div style={{ fontSize: '10.5px', color: '#166534', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#DCFCE7', border: '1px solid #166534', padding: '3px 8px', borderRadius: '4px' }}>
+            <CheckCircle2 size={13} /> {lastActionText}
           </div>
         )}
 
-        {/* RECYCLE 2 FOR 1 BUTTON */}
+        {/* RECICLAGEM 2 POR 1 */}
         {selectedCardIds.length === 2 ? (
           <button
             onClick={handleRecycleTwoForOne}
             style={{
               padding: '6px 14px',
-              background: 'var(--terminal-green)',
-              color: '#000',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '12px',
+              background: '#16A34A',
+              color: '#FFFFFF',
+              border: '1.5px solid #2B2620',
+              borderRadius: '6px',
+              fontSize: '11px',
               fontWeight: '900',
-              fontFamily: 'var(--font-mono)',
+              fontFamily: 'monospace',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: 'var(--glow-green)'
+              boxShadow: '0 2px 5px rgba(22, 163, 74, 0.4)'
             }}
           >
-            <RefreshCw size={15} /> ♻️ RECICLAR 2 CARTAS SELECIONADAS POR 1 NOVA DO DECK
+            <RefreshCw size={14} /> ♻️ RECICLAR 2 CARTAS SELECIONADAS POR 1 NOVA
           </button>
         ) : selectedCardIds.length === 1 && (
-          <div style={{ fontSize: '11px', color: 'var(--amber-glow)', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ fontSize: '10.5px', color: '#B45309', fontFamily: 'monospace' }}>
             💡 Selecione mais 1 carta para ativar a <strong>Reciclagem 2 por 1</strong>!
           </div>
         )}
       </div>
 
-      {/* Cards List Horizontal Container */}
+      {/* CONTAINER HORIZONTAL DE CARTAS */}
       {playerHand.length === 0 ? (
-        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
-          Sua mão está vazia. Clique em <strong>[VARRER / RECON]</strong> no painel de ações para comprar novas cartas no seu turno!
+        <div style={{ padding: '24px', textAlign: 'center', color: '#685F53', fontSize: '12px', fontFamily: 'monospace', background: '#FAF6EE', border: '1.5px dashed #A89D8B', borderRadius: '8px' }}>
+          Sua mão está vazia. Clique em <strong>[1. RECON (1 AP)]</strong> na barra de ações acima para comprar novas cartas no seu turno!
         </div>
       ) : (
         <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', maxWidth: '100%', paddingBottom: '10px' }}>
           {playerHand.map(card => {
             const isSelected = selectedCardIds.includes(card.id);
             const scopeStatus = checkScopeStatus(card);
-            const classInfo = getClassBadgeInfo(card.id, card.technicalReference, card.name);
+            const classInfo = getClassBadgeInfo(card.id, card.technicalReference, card.name, card.vulnClass);
 
-            // Borda temática por tipo de baralho
-            const deckBorderColor =
-              card.type === 'tool' ? 'var(--cyber-blue)' :
-                card.type === 'defuse' ? 'var(--terminal-green)' : 'var(--amber-glow)';
+            const cardBorderColor = isSelected
+              ? '#D97706'
+              : card.type === 'tool'
+                ? '#0369A1'
+                : card.type === 'defuse'
+                  ? '#166534'
+                  : '#2B2620';
 
             return (
               <div
                 key={card.id}
                 onClick={() => handleCardClick(card.id)}
-                className="game-card"
                 style={{
-                  width: '165px',
-                  minWidth: '165px',
-                  height: '248px',
+                  width: '170px',
+                  minWidth: '170px',
+                  height: '255px',
                   padding: '10px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  border: isSelected ? '2px solid var(--amber-glow)' : scopeStatus.inScope ? `1px solid ${deckBorderColor}` : '1px solid rgba(248, 81, 73, 0.3)',
-                  boxShadow: isSelected ? 'var(--glow-amber)' : scopeStatus.inScope && card.type === 'exploit' ? '0 0 10px rgba(240, 136, 62, 0.2)' : 'none',
-                  background: card.type === 'exploit' ? 'linear-gradient(165deg, #131726 0%, #1f1430 100%)' : card.type === 'tool' ? 'linear-gradient(165deg, #131726 0%, #0c2033 100%)' : 'linear-gradient(165deg, #131726 0%, #0a2618 100%)',
-                  opacity: scopeStatus.inScope ? (isMyTurn ? 1 : 0.8) : 0.55,
-                  position: 'relative'
+                  border: isSelected ? '2.5px solid #D97706' : `1.5px solid ${cardBorderColor}`,
+                  borderRadius: '8px',
+                  background: '#FFFFFF',
+                  boxShadow: isSelected ? '0 4px 12px rgba(217, 119, 6, 0.35)' : '0 2px 6px rgba(0,0,0,0.08)',
+                  opacity: scopeStatus.inScope ? 1 : 0.65,
+                  position: 'relative',
+                  cursor: 'pointer',
+                  transition: 'transform 0.15s ease'
                 }}
               >
-                {/* CLASS BADGE & SCOPE BADGE */}
+                {/* TOPO DA CARTA: STATUS DE ESCOPO E CLASSE */}
                 <div>
                   <div
                     style={{
-                      fontSize: '8.5px',
+                      fontSize: '8px',
                       fontWeight: '800',
                       color: scopeStatus.badgeColor,
-                      fontFamily: 'var(--font-mono)',
-                      background: 'rgba(0,0,0,0.85)',
-                      padding: '2px 6px',
-                      borderRadius: '4px',
+                      fontFamily: 'monospace',
+                      background: '#FAF6EE',
+                      padding: '2px 4px',
+                      borderRadius: '3px',
                       border: `1px solid ${scopeStatus.badgeColor}`,
                       textAlign: 'center',
                       marginBottom: '3px'
@@ -204,49 +238,48 @@ export const BoardHand: React.FC = () => {
                   {card.type === 'exploit' && (
                     <div
                       style={{
-                        fontSize: '8px',
+                        fontSize: '7.5px',
                         fontWeight: '800',
                         color: classInfo.color,
-                        background: classInfo.bg,
+                        background: '#FAF6EE',
                         border: `1px solid ${classInfo.color}`,
                         borderRadius: '3px',
                         padding: '1px 4px',
                         textAlign: 'center',
-                        fontFamily: 'var(--font-mono)',
-                        letterSpacing: '0.5px'
+                        fontFamily: 'monospace'
                       }}
                     >
-                      {classInfo.label}
+                      {classInfo.label} {card.isNoisy ? '⚡ NOISY' : '🕶️ STEALTH'}
                     </div>
                   )}
                 </div>
 
-                {/* Header */}
+                {/* ÍCONE E PONTOS */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '20px' }}>{card.icon}</span>
+                  <span style={{ fontSize: '22px' }}>{card.icon}</span>
                   {card.points > 0 && (
-                    <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--terminal-green)', fontFamily: 'var(--font-mono)' }}>
-                      +{card.points} pts
+                    <span style={{ fontSize: '11px', fontWeight: '900', color: '#166534', fontFamily: 'monospace' }}>
+                      +${card.points.toLocaleString('pt-BR')}
                     </span>
                   )}
                 </div>
 
-                {/* Title & Technical Ref Tag */}
+                {/* NOME DA CARTA E REFERÊNCIA TÉCNICA */}
                 <div>
-                  <h4 style={{ fontSize: '11.5px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)', lineHeight: '1.2' }}>
+                  <h4 style={{ fontSize: '11px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', lineHeight: '1.2', margin: 0 }}>
                     {card.name}
                   </h4>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
-                    ({card.technicalReference})
+                  <div style={{ fontSize: '8px', color: '#685F53', fontFamily: 'monospace', marginTop: '2px' }}>
+                    {card.technicalReference}
                   </div>
                 </div>
 
-                {/* Simple Layman Explanation */}
-                <div style={{ fontSize: '9px', color: 'var(--text-primary)', lineHeight: '1.25', background: 'rgba(0,0,0,0.4)', padding: '4px', borderRadius: '4px' }}>
-                  {card.simpleDescription}
+                {/* DESCRIÇÃO EM PORTUGUÊS LEIGO */}
+                <div style={{ fontSize: '8.5px', color: '#4B4337', lineHeight: '1.3', background: '#FAF6EE', padding: '4px', borderRadius: '4px', border: '1px solid #E2D7C5' }}>
+                  {card.ptDescription || card.simpleDescription}
                 </div>
 
-                {/* Action Buttons */}
+                {/* BOTÕES DE AÇÃO NA CARTA */}
                 <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
                   {pendingToolInstall ? (
                     card.id === pendingToolInstall.id ? (
@@ -256,9 +289,9 @@ export const BoardHand: React.FC = () => {
                           soundFx.playClick();
                           cancelToolInstall();
                         }}
-                        style={{ flex: 1, padding: '5px', background: 'rgba(248, 81, 73, 0.2)', color: 'var(--alert-red)', border: '1px solid rgba(248, 81, 73, 0.5)', borderRadius: '3px', fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', cursor: 'pointer' }}
+                        style={{ flex: 1, padding: '5px', background: '#FEE2E2', color: '#B91C1C', border: '1px solid #B91C1C', borderRadius: '3px', fontSize: '8.5px', fontWeight: '800', fontFamily: 'monospace', cursor: 'pointer' }}
                       >
-                        ❌ CANCELAR INSTALAÇÃO
+                        ❌ CANCELAR
                       </button>
                     ) : (
                       <button
@@ -266,117 +299,116 @@ export const BoardHand: React.FC = () => {
                           e.stopPropagation();
                           confirmToolInstall(card.id);
                         }}
-                        style={{ flex: 1, padding: '5px', background: 'var(--terminal-green)', color: '#000', border: 'none', borderRadius: '3px', fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', cursor: 'pointer', boxShadow: 'var(--glow-green)' }}
+                        style={{ flex: 1, padding: '5px', background: '#16A34A', color: '#FFFFFF', border: 'none', borderRadius: '3px', fontSize: '8.5px', fontWeight: '800', fontFamily: 'monospace', cursor: 'pointer' }}
                       >
-                        ✅ PAGAR COM ESTA CARTA
+                        ✅ PAGAR COM ESTA
                       </button>
                     )
                   ) : (
                     <>
                       {!needsDiscard && card.type === 'exploit' && scopeStatus.inScope && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        soundFx.playClick();
-                        handlePlayCard(card);
-                      }}
-                      disabled={!isMyTurn}
-                      style={{
-                        flex: 2,
-                        padding: '5px',
-                        background: 'var(--amber-glow)',
-                        color: '#000',
-                        border: 'none',
-                        borderRadius: '3px',
-                        fontSize: '9px',
-                        fontWeight: '800',
-                        fontFamily: 'var(--font-mono)',
-                        cursor: isMyTurn ? 'pointer' : 'not-allowed'
-                      }}
-                    >
-                      AÇÃO EXPLOIT
-                    </button>
-                  )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            soundFx.playClick();
+                            handlePlayCard(card);
+                          }}
+                          disabled={!isMyTurn}
+                          style={{
+                            flex: 2,
+                            padding: '5px',
+                            background: '#B45309',
+                            color: '#FFFFFF',
+                            border: 'none',
+                            borderRadius: '3px',
+                            fontSize: '8.5px',
+                            fontWeight: '800',
+                            fontFamily: 'monospace',
+                            cursor: isMyTurn ? 'pointer' : 'not-allowed'
+                          }}
+                        >
+                          EXPLOIT (1 AP)
+                        </button>
+                      )}
 
-                  {!needsDiscard && card.type === 'tool' && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        soundFx.playClick();
-                        handlePlayCard(card);
-                      }}
-                      disabled={!isMyTurn}
-                      style={{
-                        flex: 2,
-                        padding: '5px',
-                        background: 'var(--cyber-blue)',
-                        color: '#000',
-                        border: 'none',
-                        borderRadius: '3px',
-                        fontSize: '9px',
-                        fontWeight: '800',
-                        fontFamily: 'var(--font-mono)',
-                        cursor: isMyTurn ? 'pointer' : 'not-allowed'
-                      }}
-                    >
-                      MOVER P/ TOOLS
-                    </button>
-                  )}
+                      {!needsDiscard && card.type === 'tool' && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            soundFx.playClick();
+                            handlePlayCard(card);
+                          }}
+                          disabled={!isMyTurn}
+                          style={{
+                            flex: 2,
+                            padding: '5px',
+                            background: '#0369A1',
+                            color: '#FFFFFF',
+                            border: 'none',
+                            borderRadius: '3px',
+                            fontSize: '8.5px',
+                            fontWeight: '800',
+                            fontFamily: 'monospace',
+                            cursor: isMyTurn ? 'pointer' : 'not-allowed'
+                          }}
+                        >
+                          MOVER P/ TOOLS
+                        </button>
+                      )}
 
-                  {!needsDiscard && card.type === 'defuse' && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        soundFx.playClick();
-                        handlePlayCard(card);
-                      }}
-                      disabled={!isMyTurn}
-                      style={{
-                        flex: 2,
-                        padding: '5px',
-                        background: 'var(--terminal-green)',
-                        color: '#000',
-                        border: 'none',
-                        borderRadius: '3px',
-                        fontSize: '9px',
-                        fontWeight: '800',
-                        fontFamily: 'var(--font-mono)',
-                        cursor: isMyTurn ? 'pointer' : 'not-allowed'
-                      }}
-                    >
-                      ENVIAR SAFEGUARD
-                    </button>
-                  )}
+                      {!needsDiscard && card.type === 'defuse' && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            soundFx.playClick();
+                            handlePlayCard(card);
+                          }}
+                          disabled={!isMyTurn}
+                          style={{
+                            flex: 2,
+                            padding: '5px',
+                            background: '#166534',
+                            color: '#FFFFFF',
+                            border: 'none',
+                            borderRadius: '3px',
+                            fontSize: '8.5px',
+                            fontWeight: '800',
+                            fontFamily: 'monospace',
+                            cursor: isMyTurn ? 'pointer' : 'not-allowed'
+                          }}
+                        >
+                          SAFEGUARD
+                        </button>
+                      )}
 
-                  {/* Botão de Descarte */}
-                  {!pendingToolInstall && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        soundFx.playClick();
-                        discardCardFromHand(card.id);
-                      }}
-                      title="Descartar esta carta da mão para liberar espaço"
-                      style={{
-                        flex: 1,
-                        padding: '5px',
-                        background: needsDiscard ? 'rgba(248, 81, 73, 0.2)' : 'rgba(248, 81, 73, 0.15)',
-                        color: 'var(--alert-red)',
-                        border: needsDiscard ? '1px solid var(--alert-red)' : '1px solid rgba(248, 81, 73, 0.4)',
-                        borderRadius: '3px',
-                        fontSize: '9px',
-                        fontWeight: '800',
-                        fontFamily: 'var(--font-mono)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: needsDiscard ? '0 0 8px rgba(248, 81, 73, 0.4)' : 'none'
-                      }}
-                    >
-                      <Trash2 size={11} />
-                    </button>
-                  )}
+                      {/* Botão de Descarte */}
+                      {!pendingToolInstall && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            soundFx.playClick();
+                            discardCardFromHand(card.id);
+                          }}
+                          title="Descartar esta carta"
+                          style={{
+                            flex: 1,
+                            padding: '5px',
+                            background: '#FEE2E2',
+                            color: '#B91C1C',
+                            border: '1px solid #B91C1C',
+                            borderRadius: '3px',
+                            fontSize: '8.5px',
+                            fontWeight: '800',
+                            fontFamily: 'monospace',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Trash2 size={11} />
+                        </button>
+                      )}
                     </>
                   )}
                 </div>
