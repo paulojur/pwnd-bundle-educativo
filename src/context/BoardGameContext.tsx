@@ -22,7 +22,7 @@ import { mpSync } from '../utils/multiplayerSync';
 import { supabaseSync, RoomMessage } from '../utils/supabaseSync';
 import { soundFx } from '../utils/audio';
 import confetti from 'canvas-confetti';
-import { getPatchThreshold, BOUNTY_MILESTONES } from '../utils/gameRulesV14';
+import { getPatchThreshold, BOUNTY_MILESTONES, checkCardScopeV14 } from '../utils/gameRulesV14';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CARD MAPPERS (Canônico V1.4 -> CardV2)
@@ -558,17 +558,37 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       setMyRoleState(assignedRole);
       setGameModeState('lan');
       addLog(`🌐 Conectado à Sala [${roomParam}] como ${players[assignedRole]?.name || assignedRole}.`);
+      if (assignedRole !== 'player-1') {
+        setTimeout(() => {
+          supabaseSync.broadcast('REQUEST_STATE', { from: assignedRole });
+        }, 600);
+      }
     }
 
     const unsubscribe = supabaseSync.subscribe((msg: RoomMessage) => {
       if (msg.actionType === 'END_TURN') {
         setActivePlayerRole(msg.payload.activePlayerRole);
         if (msg.payload.currentTurn) setCurrentTurn(msg.payload.currentTurn);
+        if (msg.payload.players) setPlayers(msg.payload.players);
+        if (msg.payload.deployedExploits) setDeployedExploits(msg.payload.deployedExploits);
+        if (msg.payload.programMarket) setProgramMarket(msg.payload.programMarket);
         addLog(`[Rede] Vez de ${msg.payload.activePlayerRole}.`);
       } else if (msg.actionType === 'STATE_SYNC') {
         if (msg.payload.deployedExploits) setDeployedExploits(msg.payload.deployedExploits);
         if (msg.payload.programMarket) setProgramMarket(msg.payload.programMarket);
         if (msg.payload.players) setPlayers(msg.payload.players);
+        if (msg.payload.activePlayerRole) setActivePlayerRole(msg.payload.activePlayerRole);
+        if (msg.payload.currentTurn) setCurrentTurn(msg.payload.currentTurn);
+      } else if (msg.actionType === 'REQUEST_STATE') {
+        if (myRole === 'player-1') {
+          supabaseSync.broadcast('STATE_SYNC', {
+            players,
+            deployedExploits,
+            programMarket,
+            activePlayerRole,
+            currentTurn
+          });
+        }
       }
     });
 
@@ -640,25 +660,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       return;
     }
 
-    const allowed = currentPlayer.activeProgram.allowedClasses;
-    const isRedTeamer = currentPlayer.archetype.id === 'red-teamer';
-
-    if (allowed !== 'ALL' && !isRedTeamer) {
-      const cardRef = (card.technicalReference || card.name).toLowerCase();
-      const cardClass = (card.vulnClass || '').toUpperCase();
-      const isAllowed = Array.isArray(allowed) && (
-        (allowed as any[]).includes(cardClass) ||
-        allowed.some(cat => cardRef.includes(cat.toLowerCase()) || cat.toLowerCase().includes(cardRef))
-      );
-      if (!isAllowed) {
-        soundFx.playPatchDeployedAlarm();
-        alert(`❌ FORA DE ESCOPO!\nA vulnerabilidade "${card.name}" [${cardClass || 'OUTRA'}] não é aceita por [${currentPlayer.activeProgram.name}].\nEscopo aceito: ${Array.isArray(allowed) ? allowed.join(', ') : allowed}`);
-        return;
-      }
-    }
-
-    if (currentPlayer.archetype.id === 'bug-hunter' && (card.rarity === 'Rare' || card.rarity === 'Epic' || card.rarity === 'Legendary')) {
-      alert('❌ O Bug Hunter só pode explorar classes Comum e Incomum!');
+    const scopeCheck = checkCardScopeV14(card, currentPlayer.activeProgram, currentPlayer.archetype);
+    if (!scopeCheck.inScope) {
+      soundFx.playPatchDeployedAlarm();
+      alert(`❌ JOGADA INVÁLIDA!\n${scopeCheck.rejectionReason || 'Vulnerabilidade não permitida para o programa ou arquétipo atual.'}`);
       return;
     }
 
@@ -865,12 +870,32 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (earnedCash >= 10000) confetti({ particleCount: 80, spread: 60 });
     const newScore = currentPlayer.score + earnedCash;
 
-    updateCurrentPlayer(p => ({
-      ...p,
-      score: newScore,
-      reputacaoTokens: p.reputacaoTokens + repGain,
-      activeProgram: null
-    }));
+    let updatedHand = [...currentPlayer.hand];
+
+    // Compra 1 Tool do Tool Deck (se não foi bypass)
+    if (!bypassMode) {
+      setToolDeck(deck => {
+        if (deck.length > 0) {
+          const [topTool, ...rest] = deck;
+          updatedHand.push(topTool);
+          addLog(`🛠️ Report Payout: Comprou 1 Tool [${topTool.name}] do Tool Deck para ${currentPlayer.name}.`);
+          return rest;
+        }
+        return deck;
+      });
+    }
+
+    const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
+      ...players,
+      [myRole]: {
+        ...currentPlayer,
+        score: newScore,
+        reputacaoTokens: currentPlayer.reputacaoTokens + repGain,
+        activeProgram: null,
+        hand: updatedHand
+      }
+    };
+    setPlayers(updatedPlayersState);
 
     setBountyLedger(prev => [
       ...prev,
@@ -885,30 +910,20 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     ]);
 
     // Descarte das vulnerabilidades
+    const nextExploits = deployedExploits.filter(e => e.playerId !== myRole);
     setDiscardPile(prev => [...prev, ...eligibleExploits.map(e => e.card)]);
-    setDeployedExploits(prev => prev.filter(e => e.playerId !== myRole));
-
-    // Compra 1 Tool do Tool Deck (se não foi bypass)
-    if (!bypassMode) {
-      setToolDeck(deck => {
-        if (deck.length > 0) {
-          const [topTool, ...rest] = deck;
-          updateCurrentPlayer(p => ({ ...p, hand: [...p.hand, topTool] }));
-          addLog(`🛠️ Report Payout: Comprou 1 Tool [${topTool.name}] do Tool Deck para ${currentPlayer.name}.`);
-          return rest;
-        }
-        return deck;
-      });
-    }
+    setDeployedExploits(nextExploits);
 
     // Saque de Evento
     drawEventCard();
 
     // Novo programa no mercado
+    let nextMarket = programMarket;
     if (programDeck.length > 0) {
       const nextProg = programDeck[0];
       setProgramDeck(prev => prev.slice(1));
-      setProgramMarket(prevMarket => prevMarket.map(slot => slot.id === program.id ? nextProg : slot));
+      nextMarket = programMarket.map(slot => slot.id === program.id ? nextProg : slot);
+      setProgramMarket(nextMarket);
     }
 
     // Meta $40k
@@ -918,7 +933,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       return;
     }
 
-    finalizeTurnAdvance();
+    finalizeTurnAdvance(updatedPlayersState);
   };
 
   const triggerManualDiceRoll = () => {
@@ -1017,7 +1032,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     finalizeTurnAdvance();
   };
 
-  const finalizeTurnAdvance = () => {
+  const finalizeTurnAdvance = (overridePlayers?: Record<PlayerRoleId, PlayerState>) => {
+    const currentPlayersState = overridePlayers || players;
     const activeList: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
     const currentIndex = activeList.indexOf(activePlayerRole);
     const nextIndex = (currentIndex + 1) % activeList.length;
@@ -1026,10 +1042,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const nextRound = isNewRound ? Math.min(8, currentTurn + 1) : currentTurn;
 
     if (isNewRound && currentTurn >= 8) {
-      let bestPlayer = players['player-1'];
+      let bestPlayer = currentPlayersState['player-1'];
       let bestScore = -1;
       activeList.forEach(pId => {
-        const p = players[pId];
+        const p = currentPlayersState[pId];
         const finalScore = p.score + (p.reputacaoTokens * 500) - (p.alertaTokens * 500);
         if (finalScore > bestScore) {
           bestScore = finalScore;
@@ -1042,13 +1058,14 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
 
     // Reseta as 3 Ações do próximo jogador
-    setPlayers(all => ({
-      ...all,
+    const updatedPlayers: Record<PlayerRoleId, PlayerState> = {
+      ...currentPlayersState,
       [nextRole]: {
-        ...all[nextRole],
+        ...currentPlayersState[nextRole],
         actionsRemaining: 3
       }
-    }));
+    };
+    setPlayers(updatedPlayers);
 
     setActivePlayerRole(nextRole);
     if (isNewRound) {
@@ -1060,14 +1077,21 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       setMyRoleState(nextRole);
     }
 
-    mpSync.sendAction('END_TURN', { activePlayerRole: nextRole, currentTurn: nextRound });
-    supabaseSync.broadcast('END_TURN', { activePlayerRole: nextRole, currentTurn: nextRound });
-    addLog(`⏩ Vez de: ${players[nextRole]?.name || nextRole} (Rodada ${nextRound}/8)`);
+    const syncPayload = {
+      activePlayerRole: nextRole,
+      currentTurn: nextRound,
+      players: updatedPlayers,
+      deployedExploits,
+      programMarket
+    };
+    mpSync.sendAction('END_TURN', syncPayload);
+    supabaseSync.broadcast('END_TURN', syncPayload);
+    addLog(`⏩ Vez de: ${updatedPlayers[nextRole]?.name || nextRole} (Rodada ${nextRound}/8)`);
 
     if (gameMode === 'solo' && nextRole !== 'player-1') {
       setTimeout(() => {
-        addLog(`🤖 Oponente virtual (${players[nextRole]?.name}) jogou.`);
-        finalizeTurnAdvance();
+        addLog(`🤖 Oponente virtual (${updatedPlayers[nextRole]?.name}) jogou.`);
+        finalizeTurnAdvance(updatedPlayers);
       }, 1200);
     }
   };

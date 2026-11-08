@@ -11,6 +11,7 @@ export const ActionPointsBar: React.FC = () => {
     isMyTurn,
     activePlayerRole,
     myRole,
+    setMyRole,
     currentPlayer,
     allPlayers,
     actionVarrer,
@@ -64,10 +65,37 @@ export const ActionPointsBar: React.FC = () => {
             <div style={{ fontSize: '9.5px', color: '#685F53', textTransform: 'uppercase', fontFamily: 'monospace', fontWeight: '700' }}>
               REGRA OFICIAL V1.4: 3 AÇÕES POR TURNO (REPORT CUSTA 2 AP)
             </div>
-            <div style={{ fontSize: '14px', fontWeight: '900', color: isMyTurn ? '#166534' : '#475569', fontFamily: 'monospace' }}>
-              {isMyTurn
-                ? '🟢 SUA VEZ! Execute suas ações na mesa'
-                : `⏳ Aguardando a jogada de ${allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole}...`}
+            <div style={{ fontSize: '14px', fontWeight: '900', color: isMyTurn ? '#166534' : '#475569', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              {isMyTurn ? (
+                '🟢 SUA VEZ! Execute suas ações na mesa'
+              ) : (
+                <>
+                  <span>⏳ Aguardando a jogada de {allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole}...</span>
+                  <button
+                    onClick={() => {
+                      soundFx.playClick();
+                      setMyRole(activePlayerRole);
+                    }}
+                    title="Alterna sua visão para controlar o jogador da vez"
+                    style={{
+                      padding: '3px 8px',
+                      background: '#2B2620',
+                      color: '#FAF6EE',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '10.5px',
+                      fontWeight: '800',
+                      fontFamily: 'monospace',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    👁️ Jogar como {allPlayers.find(p => p.id === activePlayerRole)?.name.split(' ')[0] || 'Próximo'} ➔
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

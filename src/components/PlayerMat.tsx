@@ -58,7 +58,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
   const isPendingProgram = !currentProgram || currentProgram.id === 'pending';
 
   return (
-    <div style={{ width: '100%', maxWidth: '1240px', margin: '0 auto 28px' }}>
+    <div style={{ width: '100%', maxWidth: '1540px', margin: '0 auto 28px' }}>
       {/* TABULEIRO DO JOGADOR - RÉPLICA DO PLAYTEST FÍSICO */}
       <div
         className="tabletop-board"

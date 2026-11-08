@@ -1,6 +1,8 @@
 /**
  * PWNED! Bug Bounty Chaos — Canonical Game Rules Engine (Manual V1.4)
  */
+import { CardV2 } from '../data/cardsDataV2';
+import { ProgramCard, Archetype } from '../data/cardsData';
 
 export interface PatchSpeedResult {
   mode: 'NOISY' | 'STEALTH';
@@ -111,4 +113,109 @@ export const TOTAL_SUPPLY_TOKENS = {
 };
 
 export const roundTo500 = (val: number): number => Math.floor(val / 500) * 500;
+
+export interface ScopeCheckResult {
+  inScope: boolean;
+  badgeLabel: string;
+  badgeColor: string;
+  rejectionReason?: string;
+}
+
+/**
+ * Validação Canônica de Escopo (Manual V1.4 Seção 03 & 06)
+ * - Identifica 'ALL' e 'TODAS AS CLASSES (ALL)'
+ * - Aplica regra 'Volume Puro' do Bug Hunter (apenas Comum e Incomum)
+ * - Aplica 'Escopo Livre' do Red Teamer
+ * - Checa siglas canônicas: INJ, BAC, XSS, AUTH, SSRF, LOGIC, CRYPTO, APT
+ */
+export const checkCardScopeV14 = (
+  card: CardV2,
+  program: ProgramCard | null,
+  archetype?: Archetype
+): ScopeCheckResult => {
+  if (card.type !== 'exploit') {
+    return {
+      inScope: true,
+      badgeLabel: card.type === 'tool' ? '🧰 FERRAMENTA' : '🛡️ Safeguard',
+      badgeColor: card.type === 'tool' ? '#0369A1' : '#166534'
+    };
+  }
+
+  if (!program) {
+    return {
+      inScope: false,
+      badgeLabel: '⚠️ SEM PROGRAMA',
+      badgeColor: '#B45309',
+      rejectionReason: 'Nenhum Programa Corporativo ativo selecionado!'
+    };
+  }
+
+  const cardRarity = (card.rarity || '').toLowerCase();
+  const cardClass = (card.vulnClass || '').toUpperCase();
+
+  // 1. Regra de Arquétipo: Bug Hunter (Volume Puro - manual V1.4 linhas 716-726)
+  // "Volume Puro: Você ganha na força bruta, mas o prêmio é menor: só tem permissão pra reportar cartas Comuns e Incomuns."
+  if (archetype?.id === 'bug-hunter') {
+    if (cardRarity === 'rare' || cardRarity === 'epic' || cardRarity === 'legendary') {
+      return {
+        inScope: false,
+        badgeLabel: '⛔ BUG HUNTER (SÓ COMUM/INCOMUM)',
+        badgeColor: '#7C3AED',
+        rejectionReason: 'O Bug Hunter (Volume Puro) só tem permissão para explorar cartas Comuns e Incomuns!'
+      };
+    }
+  }
+
+  // 2. Regra de Arquétipo: Red Teamer
+  // "Escopo Livre: Pode explorar qualquer classe de vulnerabilidade em qualquer programa"
+  if (archetype?.id === 'red-teamer') {
+    return {
+      inScope: true,
+      badgeLabel: `🎯 RED TEAM [${cardClass || 'OK'}]`,
+      badgeColor: '#166534'
+    };
+  }
+
+  const allowed = program.allowedClasses;
+
+  // 3. Checagem de Escopo Amplo / Todas as Classes (ex: ShopAll Global, MegaCorp)
+  const isAllClasses = allowed === 'ALL' ||
+    (Array.isArray(allowed) && allowed.some(c => {
+      const u = String(c).toUpperCase();
+      return u === 'ALL' || u.includes('TODAS') || u.includes('ALL');
+    }));
+
+  if (isAllClasses) {
+    return {
+      inScope: true,
+      badgeLabel: `🎯 NO ESCOPO [${cardClass || 'ALL'}]`,
+      badgeColor: '#166534'
+    };
+  }
+
+  // 4. Checagem de Classes Específicas
+  const cardRef = (card.technicalReference || card.name).toLowerCase();
+  const isClassMatch = Array.isArray(allowed) && allowed.some(cat => {
+    const catUpper = String(cat).toUpperCase();
+    if (cardClass && catUpper === cardClass) return true;
+    const catLower = String(cat).toLowerCase();
+    return cardRef.includes(catLower) || catLower.includes(cardRef);
+  });
+
+  if (isClassMatch) {
+    return {
+      inScope: true,
+      badgeLabel: `🎯 NO ESCOPO [${cardClass || 'OK'}]`,
+      badgeColor: '#166534'
+    };
+  }
+
+  return {
+    inScope: false,
+    badgeLabel: `❌ FORA DE ESCOPO [${cardClass || 'N/A'}]`,
+    badgeColor: '#B91C1C',
+    rejectionReason: `A vulnerabilidade "${card.name}" [${cardClass || 'OUTRA'}] não é aceita por [${program.name}].\nEscopo aceito: ${Array.isArray(allowed) ? allowed.join(', ') : allowed}`
+  };
+};
+
 

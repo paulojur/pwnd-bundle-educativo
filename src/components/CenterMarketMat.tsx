@@ -44,7 +44,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
     <div
       style={{
         width: '100%',
-        maxWidth: '1240px',
+        maxWidth: '1540px',
         margin: '0 auto 28px'
       }}
     >

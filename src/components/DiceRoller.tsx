@@ -7,6 +7,7 @@ interface DiceRollerProps {
   programName: string;
   patchSpeed: string;
   isNoisy: boolean;
+  diceRollReason?: 'report' | 'endTurn' | 'manualTest';
   playerReputationTokens?: number;
   hasBypass?: boolean;
   onUseReputationReroll?: () => void;
@@ -25,6 +26,7 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
   programName,
   patchSpeed,
   isNoisy,
+  diceRollReason = 'report',
   playerReputationTokens = 0,
   hasBypass = false,
   onUseReputationReroll,
@@ -253,9 +255,11 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
             <strong style={{ color: '#ff334b' }}>{threshold}+</strong> (Soma D6)
           </div>
           <div style={{ fontSize: '11px', color: '#bbb', marginTop: '4px' }}>
-            {isNoisy
-              ? 'Modo Noisy: Rola 2D6 e soma os valores. Se a soma for igual ou maior que o limiar, o Patch dispara!'
-              : 'Modo Stealth: Rola 3D6, descarta o maior valor e soma os 2 menores.'}
+            {diceRollReason === 'endTurn'
+              ? isNoisy
+                ? 'Fim de Turno [NOISY]: Você possui vulns barulhentas na mesa! Rola 2D6 somados. Se a soma for menor que o limiar, seus exploits continuam na mesa.'
+                : 'Fim de Turno [STEALTH]: Rola 3D6, descarta o maior valor e soma os 2 menores. Se passar, seus exploits permanecem na mesa para a próxima rodada!'
+              : 'Ação REPORT [NOISY]: Rola 2D6 e soma os valores. Se a soma for menor que o limiar, seu relatório é aprovado e você recebe o Payout na Bounty Track!'}
           </div>
         </div>
 
@@ -312,11 +316,17 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
             <div style={{ fontSize: '13px', fontWeight: 'bold', fontFamily: 'monospace' }}>
               {passed ? (
                 <span style={{ color: '#00ff66', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                  <ShieldCheck size={20} /> SISTEMA PERMANECE VULNERÁVEL! (Resultado Seguro)
+                  <ShieldCheck size={20} />
+                  {diceRollReason === 'endTurn'
+                    ? '✓ SISTEMA VULNERÁVEL! Seus exploits permanecem na mesa para o próximo turno.'
+                    : '✓ REPORT APROVADO! Triagem aceita e Payout liberado.'}
                 </span>
               ) : (
                 <span style={{ color: '#ff334b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                  <ShieldAlert size={20} /> ⚠️ PATCH DEPLOYED! (Alerta & Perda de Ativos)
+                  <ShieldAlert size={20} />
+                  {diceRollReason === 'endTurn'
+                    ? '⚠️ PATCH DEPLOYED NO FIM DO TURNO! Sistemas detectaram a intrusão.'
+                    : '⚠️ PATCH DEPLOYED NO REPORT! Falha corrigida antes do pagamento.'}
                 </span>
               )}
             </div>
@@ -375,7 +385,9 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                 boxShadow: '0 2px 6px rgba(22, 163, 74, 0.4)'
               }}
             >
-              Confirmar Sucesso & Receber Payout ✅
+              {diceRollReason === 'endTurn'
+                ? 'Manter Exploits na Mesa & Encerrar Turno ✓'
+                : 'Confirmar Sucesso & Receber Payout ✅'}
             </button>
           ) : (
             <div style={{ display: 'flex', gap: '10px', width: '100%', flexWrap: 'wrap' }}>
@@ -399,9 +411,13 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                     cursor: 'pointer',
                     boxShadow: '0 2px 6px rgba(22, 163, 74, 0.4)'
                   }}
-                  title="Anula o descarte dos seus exploits, garante o Payout e descarta o Bypass (+1 Alerta)"
+                  title={diceRollReason === 'endTurn'
+                    ? 'Anula o descarte dos seus exploits na mesa, descarta o Bypass (+1 Alerta)'
+                    : 'Garante o Payout do Report, anula o descarte e descarta o Bypass (+1 Alerta)'}
                 >
-                  🛡️ Ativar Bypass (Garante Payout!)
+                  {diceRollReason === 'endTurn'
+                    ? '🛡️ Usar Bypass (Salva Exploits & +1 Alerta)'
+                    : '🛡️ Ativar Bypass (Garante Payout & +1 Alerta)'}
                 </button>
               )}
 
@@ -430,7 +446,9 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                 }}
                 title="Descarta seus exploits e programa ativo, recebe 1 Alerta e compra 1 consolação"
               >
-                💥 Aceitar Patch (+1 Alerta 🐞)
+                {diceRollReason === 'endTurn'
+                  ? '💥 Aceitar Patch (Perde Exploits, +1 Alerta & +1 Carta)'
+                  : '💥 Aceitar Patch (Perde Payout, +1 Alerta & +1 Carta)'}
               </button>
             </div>
           )}

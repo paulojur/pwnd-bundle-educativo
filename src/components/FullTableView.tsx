@@ -205,7 +205,7 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
   const p6 = allPlayers[5];
 
   return (
-    <div style={{ maxWidth: '1240px', margin: '0 auto', paddingBottom: '32px' }}>
+    <div style={{ width: '100%', maxWidth: '1540px', margin: '0 auto', paddingBottom: '32px' }}>
       {/* BARRA SUPERIOR DO PANORAMA */}
       <div
         style={{
@@ -288,40 +288,37 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
         </div>
       </div>
 
-      {/* A MESA REAL COM POSIÇÕES AO REDOR DO TABULEIRO CENTRAL */}
+      {/* A MESA REAL OVAL COM POSIÇÕES AO REDOR DO TABULEIRO CENTRAL */}
       <div
         style={{
-          background: '#EAE1D3',
-          backgroundImage: `
-            radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.4) 0%, transparent 80%),
-            linear-gradient(to bottom, #ECE4D6 0%, #DBD0BD 100%)
-          `,
-          border: '4px solid #2B2620',
-          borderRadius: '24px',
-          padding: '24px',
-          boxShadow: '0 16px 40px rgba(0,0,0,0.25)',
+          background: 'radial-gradient(ellipse at 50% 50%, #FAF6EE 0%, #EBE1CE 55%, #CFBE9E 100%)',
+          border: '16px solid #2B1D14',
+          borderRadius: '100px',
+          padding: '36px 28px',
+          boxShadow: '0 24px 60px rgba(0,0,0,0.35), inset 0 0 40px rgba(43, 29, 20, 0.4)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '20px'
+          gap: '20px',
+          position: 'relative'
         }}
       >
         {/* LINHA SUPERIOR DA MESA: JOGADOR 1 & JOGADOR 2 */}
         <div>
           <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '8px' }}>
-            ▲ CABECEIRA NORTE DA MESA ▲
+            ▲ CABECEIRA NORTE DA MESA (JOGADORES 1 & 2) ▲
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', maxWidth: '1080px', margin: '0 auto' }}>
             {renderPlayerCardSeat(p1, 'Jogador 1')}
             {renderPlayerCardSeat(p2, 'Jogador 2')}
           </div>
         </div>
 
         {/* CENTRO DA MESA: TABULEIRO CENTRAL FLANQUEADO POR JOGADORES 6 E 3 */}
-        <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 220px', gap: '16px', alignItems: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr 260px', gap: '18px', alignItems: 'center' }}>
           {/* LADO OESTE: JOGADOR 6 */}
           <div>
             <div style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '6px', textAlign: 'center' }}>
-              ◀ LADO OESTE (JOGADOR 6)
+              ◀ OESTE (JOGADOR 6)
             </div>
             {renderPlayerCardSeat(p6, 'Jogador 6')}
           </div>
@@ -334,7 +331,7 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
           {/* LADO LESTE: JOGADOR 3 */}
           <div>
             <div style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '6px', textAlign: 'center' }}>
-              (JOGADOR 3) LADO LESTE ▶
+              (JOGADOR 3) LESTE ▶
             </div>
             {renderPlayerCardSeat(p3, 'Jogador 3')}
           </div>
@@ -343,12 +340,17 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
         {/* LINHA INFERIOR DA MESA: JOGADOR 5 & JOGADOR 4 */}
         <div>
           <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '8px' }}>
-            ▼ CABECEIRA SUL DA MESA ▼
+            ▼ CABECEIRA SUL DA MESA (JOGADORES 5 & 4) ▼
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', maxWidth: '1080px', margin: '0 auto' }}>
             {renderPlayerCardSeat(p5, 'Jogador 5')}
             {renderPlayerCardSeat(p4, 'Jogador 4')}
           </div>
+        </div>
+
+        {/* MARCA D'ÁGUA SUTIL DA MESA */}
+        <div style={{ textAlign: 'center', fontSize: '9px', fontWeight: '800', letterSpacing: '3px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#9E8E75', marginTop: '4px' }}>
+          PWND! THE BUG BOUNTY CHAOS — ARENA TABLETOP OFICIAL (V1.4)
         </div>
       </div>
     </div>

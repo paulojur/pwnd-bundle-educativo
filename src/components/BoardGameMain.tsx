@@ -35,6 +35,10 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 const BoardGameContent: React.FC = () => {
   const {
     currentPlayer,
+    allPlayers,
+    playerCount,
+    setPlayerCount,
+    activePlayerRole,
     bountyTotalCash,
     gameWinner,
     playerHand,
@@ -128,135 +132,211 @@ const BoardGameContent: React.FC = () => {
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
   return (
-    <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '16px' }}>
+    <div style={{ width: '96%', maxWidth: '1540px', margin: '0 auto', padding: '16px 12px' }}>
 
-      {/* Board Game Header */}
+      {/* COMPACT TABLETOP TOP BAR / MENU */}
       <header
         style={{
           background: '#FAF6EE',
-          border: '2.5px solid #2B2620',
+          border: '2px solid #2B2620',
           borderRadius: '10px',
-          padding: '12px 20px',
-          marginBottom: '16px',
+          padding: '8px 16px',
+          marginBottom: '14px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
           gap: '12px',
-          boxShadow: '0 4px 14px rgba(0,0,0,0.1)'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* BRAND LOGO */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             style={{
               background: '#2B2620',
-              width: '42px',
-              height: '42px',
-              borderRadius: '8px',
+              width: '34px',
+              height: '34px',
+              borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#FAF6EE'
             }}
           >
-            <Layers size={22} />
+            <Layers size={18} />
           </div>
           <div>
-            <div style={{ fontFamily: 'monospace', fontSize: '10px', color: '#B45309', fontWeight: '800', letterSpacing: '2.5px', textTransform: 'uppercase' }}>
-              PWNED! TABLETOP EDITION {roomCode ? `[SALA ONLINE: ${roomCode}]` : ''}
-            </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-              <h1 style={{ fontSize: '22px', fontWeight: '900', color: '#1E1B18', letterSpacing: '-0.5px', lineHeight: '1', margin: 0, fontFamily: 'monospace' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '16px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', letterSpacing: '-0.5px' }}>
                 PWNED!
-              </h1>
-              <span style={{ fontSize: '13px', fontWeight: '700', color: '#685F53', fontFamily: 'monospace' }}>
-                The Bug Bounty Chaos
               </span>
+              <span style={{ fontSize: '9px', fontWeight: '800', background: '#B45309', color: '#fff', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
+                V1.4
+              </span>
+              {roomCode && (
+                <span style={{ fontSize: '9px', fontWeight: '800', background: '#059669', color: '#fff', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
+                  SALA: {roomCode}
+                </span>
+              )}
             </div>
-            <div style={{ fontSize: '10px', color: '#7E7362', fontStyle: 'italic' }}>
-              Find it. Report it. Get paid.
+            <div style={{ fontSize: '9.5px', color: '#7E7362', fontFamily: 'monospace' }}>
+              The Bug Bounty Chaos
             </div>
           </div>
         </div>
 
-        {/* View Mode Toggle Buttons, Print & Play & Multiplayer Lobby Button */}
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* NAVEGAÇÃO DE VISÕES (SEGMENTED TABS) */}
+        <div
+          style={{
+            display: 'flex',
+            background: '#EDE4D4',
+            padding: '3px',
+            borderRadius: '8px',
+            border: '1.5px solid #2B2620',
+            gap: '3px'
+          }}
+        >
           <button
-            onClick={() => { soundFx.playClick(); window.location.href = '/'; }}
+            onClick={() => { soundFx.playClick(); setViewMode('myMat'); }}
             style={{
-              padding: '8px 14px',
-              background: '#FFFFFF',
-              color: '#1E1B18',
-              border: '1.5px solid #2B2620',
-              borderRadius: '6px',
-              fontSize: '11.5px',
+              padding: '6px 12px',
+              background: viewMode === 'myMat' ? '#2B2620' : 'transparent',
+              color: viewMode === 'myMat' ? '#FAF6EE' : '#2B2620',
+              border: 'none',
+              borderRadius: '5px',
+              fontSize: '11px',
               fontWeight: '800',
               fontFamily: 'monospace',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '5px'
             }}
           >
-            <Home size={14} /> Início
+            <Eye size={13} /> Meu Tapete
           </button>
 
           <button
-            onClick={() => { soundFx.playClick(); window.open('/pwned-manual-sucesso-v1.html', '_blank'); }}
+            onClick={() => { soundFx.playClick(); setViewMode('centerTable'); }}
             style={{
-              padding: '8px 14px',
-              background: '#B45309',
-              color: '#FFFFFF',
-              border: '1.5px solid #2B2620',
-              borderRadius: '6px',
-              fontSize: '11.5px',
+              padding: '6px 12px',
+              background: viewMode === 'centerTable' ? '#2B2620' : 'transparent',
+              color: viewMode === 'centerTable' ? '#FAF6EE' : '#2B2620',
+              border: 'none',
+              borderRadius: '5px',
+              fontSize: '11px',
               fontWeight: '800',
               fontFamily: 'monospace',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 2px 5px rgba(180, 83, 9, 0.3)'
+              gap: '5px'
             }}
           >
-            <BookOpen size={14} /> 📖 Manual V1.4
+            <Layers size={13} /> Mesa Central
           </button>
 
-          {/* Player Aid Modal Trigger */}
+          <button
+            onClick={() => { soundFx.playClick(); setViewMode('fullTable'); }}
+            style={{
+              padding: '6px 12px',
+              background: viewMode === 'fullTable' ? '#2B2620' : 'transparent',
+              color: viewMode === 'fullTable' ? '#FAF6EE' : '#2B2620',
+              border: 'none',
+              borderRadius: '5px',
+              fontSize: '11px',
+              fontWeight: '800',
+              fontFamily: 'monospace',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}
+          >
+            <Users size={13} /> Mesa Completa ({playerCount}P)
+          </button>
+        </div>
+
+        {/* CONTROLES DE MESA & PERSPECTIVA (PLAYTEST HUB) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* SELETOR DE JOGADORES NA PARTIDA (2 A 6) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <label style={{ fontSize: '10.5px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
+              👥 Mesa:
+            </label>
+            <select
+              value={playerCount}
+              onChange={(e) => {
+                soundFx.playClick();
+                setPlayerCount(Number(e.target.value));
+              }}
+              title="Configurar quantidade de jogadores ativos na mesa (2 a 6)"
+              style={{
+                padding: '6px 10px',
+                background: '#FFFFFF',
+                color: '#2B2620',
+                border: '1.5px solid #2B2620',
+                borderRadius: '6px',
+                fontSize: '11.5px',
+                fontWeight: '900',
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              <option value={2}>2 Jogadores (Duelo)</option>
+              <option value={3}>3 Jogadores</option>
+              <option value={4}>4 Jogadores</option>
+              <option value={5}>5 Jogadores</option>
+              <option value={6}>6 Jogadores (Cheia)</option>
+            </select>
+          </div>
+
+          {/* SELETOR DE PERSPECTIVA DO JOGADOR (OPTION / DROPDOWN) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <label style={{ fontSize: '10.5px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
+              👁️ Jogador:
+            </label>
+            <select
+              value={myRole}
+              onChange={(e) => {
+                soundFx.playClick();
+                setMyRole(e.target.value as any);
+              }}
+              title="Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador"
+              style={{
+                padding: '6px 10px',
+                background: '#FFFFFF',
+                color: currentPlayer?.color || '#1E1B18',
+                border: '1.5px solid #2B2620',
+                borderRadius: '6px',
+                fontSize: '11.5px',
+                fontWeight: '900',
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              {allPlayers.slice(0, playerCount).map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.name} {p.id === activePlayerRole ? '● (Sua Vez)' : ''} — ${p.score.toLocaleString('pt-BR')}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* UTILITIES (PLAYER AID, MANUAL, ONLINE, RESET) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <button
             onClick={() => { soundFx.playClick(); setPlayerAidModalOpen(true); }}
-            title="Abrir a carta de auxílio rápido ao jogador (Player Aid)"
+            title="Abrir Player Aid canônico V1.4"
             style={{
-              padding: '8px 14px',
-              background: '#D97706',
-              color: '#FFFFFF',
-              border: '1.5px solid #2B2620',
-              borderRadius: '6px',
-              fontSize: '11.5px',
-              fontWeight: '900',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 2px 5px rgba(217, 119, 6, 0.3)'
-            }}
-          >
-            <HelpCircle size={14} /> 📋 Player Aid
-          </button>
-
-          <button
-            onClick={() => {
-              const nextRole = myRole === 'player-1' ? 'player-2' : 'player-1';
-              soundFx.playClick();
-              setMyRole(nextRole);
-            }}
-            title="Alterna o jogador ativo no dispositivo local (ideal para testar os 2 lados)"
-            style={{
-              padding: '8px 12px',
+              padding: '6px 10px',
               background: '#FAF6EE',
-              color: myRole === 'player-1' ? '#16A34A' : '#2563EB',
-              border: `1.5px solid ${myRole === 'player-1' ? '#16A34A' : '#2563EB'}`,
+              color: '#B45309',
+              border: '1.5px solid #B45309',
               borderRadius: '6px',
               fontSize: '11px',
               fontWeight: '800',
@@ -267,88 +347,49 @@ const BoardGameContent: React.FC = () => {
               gap: '4px'
             }}
           >
-            🔄 Ver como {myRole === 'player-1' ? 'Jogador 2 (Azul)' : 'Jogador 1 (Verde)'}
+            <HelpCircle size={13} /> Player Aid
           </button>
 
           <button
-            onClick={() => { soundFx.playClick(); setMultiplayerModalOpen(true); }}
+            onClick={() => { soundFx.playClick(); window.open('/pwned-manual-sucesso-v1.html', '_blank'); }}
+            title="Abrir manual oficial de regras V1.4"
             style={{
-              padding: '8px 14px',
-              background: '#0284C7',
-              color: '#FFFFFF',
+              padding: '6px 10px',
+              background: '#FAF6EE',
+              color: '#1E1B18',
               border: '1.5px solid #2B2620',
               borderRadius: '6px',
-              fontSize: '11.5px',
+              fontSize: '11px',
               fontWeight: '800',
               fontFamily: 'monospace',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '4px'
             }}
           >
-            <Globe size={14} /> 🌐 Sala Online (Supabase)
+            <BookOpen size={13} /> Manual
           </button>
 
-          {/* VIEW SWITCHER TABS */}
           <button
-            onClick={() => { soundFx.playClick(); setViewMode('myMat'); }}
+            onClick={() => { soundFx.playClick(); setMultiplayerModalOpen(true); }}
+            title="Conectar ou criar sala multiplayer online"
             style={{
-              padding: '8px 14px',
-              background: viewMode === 'myMat' ? '#2B2620' : '#FFFFFF',
-              color: viewMode === 'myMat' ? '#FAF6EE' : '#1E1B18',
+              padding: '6px 10px',
+              background: roomCode ? '#059669' : '#0284C7',
+              color: '#FFFFFF',
               border: '1.5px solid #2B2620',
               borderRadius: '6px',
-              fontSize: '11.5px',
-              fontWeight: '900',
+              fontSize: '11px',
+              fontWeight: '800',
               fontFamily: 'monospace',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '4px'
             }}
           >
-            <Eye size={14} /> Meu Tapete
-          </button>
-
-          <button
-            onClick={() => { soundFx.playClick(); setViewMode('centerTable'); }}
-            style={{
-              padding: '8px 14px',
-              background: viewMode === 'centerTable' ? '#2B2620' : '#FFFFFF',
-              color: viewMode === 'centerTable' ? '#FAF6EE' : '#1E1B18',
-              border: '1.5px solid #2B2620',
-              borderRadius: '6px',
-              fontSize: '11.5px',
-              fontWeight: '900',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <Layers size={14} /> Visão da Mesa (Central)
-          </button>
-
-          <button
-            onClick={() => { soundFx.playClick(); setViewMode('fullTable'); }}
-            style={{
-              padding: '8px 14px',
-              background: viewMode === 'fullTable' ? '#2B2620' : '#FFFFFF',
-              color: viewMode === 'fullTable' ? '#FAF6EE' : '#1E1B18',
-              border: '1.5px solid #2B2620',
-              borderRadius: '6px',
-              fontSize: '11.5px',
-              fontWeight: '900',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <Users size={14} /> Panorama 6 Jogadores
+            <Globe size={13} /> {roomCode ? `Sala ${roomCode}` : 'Online'}
           </button>
 
           <button
@@ -360,15 +401,18 @@ const BoardGameContent: React.FC = () => {
             }}
             title="Reiniciar Tabuleiro"
             style={{
-              padding: '8px',
-              background: '#FFFFFF',
-              color: '#1E1B18',
+              padding: '6px 8px',
+              background: '#FAF6EE',
+              color: '#685F53',
               border: '1.5px solid #2B2620',
               borderRadius: '6px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
-            <RefreshCw size={14} />
+            <RefreshCw size={13} />
           </button>
         </div>
       </header>
@@ -385,7 +429,7 @@ const BoardGameContent: React.FC = () => {
           <div
             style={{
               width: '100%',
-              maxWidth: '1240px',
+              maxWidth: '1540px',
               margin: '0 auto 16px',
               display: 'flex',
               justifyContent: 'space-between',
@@ -487,6 +531,7 @@ const BoardGameContent: React.FC = () => {
           programName={currentDisplayProgram.name}
           patchSpeed={currentDisplayProgram.patchSpeed}
           isNoisy={diceRollReason === 'report' || !isStealthMode}
+          diceRollReason={diceRollReason}
           playerReputationTokens={reputacaoTokens}
           hasBypass={playerSafeguardSlot !== null}
           onUseReputationReroll={useReputacaoReroll}

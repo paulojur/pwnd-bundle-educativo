@@ -4,6 +4,7 @@ import { CardV2, getClassBadgeInfo } from '../data/cardsDataV2';
 import { ProgramCard, Archetype } from '../data/cardsData';
 import { Zap, Wrench, ShieldCheck, Sparkles, CheckCircle2, Trash2, RefreshCw } from 'lucide-react';
 import { soundFx } from '../utils/audio';
+import { checkCardScopeV14 } from '../utils/gameRulesV14';
 
 export const BoardHand: React.FC = () => {
   const {
@@ -25,45 +26,8 @@ export const BoardHand: React.FC = () => {
   const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
   const [lastActionText, setLastActionText] = useState<string | null>(null);
 
-  // HELPER PARA VALIDAR ESCOPO VISUAL INSTANTÂNEO DE CADA CARTA
-  const checkScopeStatus = (card: CardV2): { inScope: boolean; badgeLabel: string; badgeColor: string } => {
-    if (card.type !== 'exploit') {
-      return {
-        inScope: true,
-        badgeLabel: card.type === 'tool' ? '🧰 FERRAMENTA' : '🛡️ Safeguard',
-        badgeColor: card.type === 'tool' ? '#0369A1' : '#166534'
-      };
-    }
-
-    if (!playerActiveProgram) {
-      return { inScope: false, badgeLabel: '⚠️ SEM ALVO ATIVO', badgeColor: '#B45309' };
-    }
-
-    if (playerArchetype.id === 'red-teamer') {
-      return { inScope: true, badgeLabel: '🎯 ESCOPO LIVRE (RED TEAM)', badgeColor: '#166534' };
-    }
-
-    const allowed = playerActiveProgram.allowedClasses;
-    if (allowed === 'ALL') {
-      return { inScope: true, badgeLabel: '🎯 ESCOPO AMPLO', badgeColor: '#166534' };
-    }
-
-    const cardCategory = (card.technicalReference || card.name).toLowerCase();
-    const cardClass = (card.vulnClass || '').toUpperCase();
-    const isAllowed = Array.isArray(allowed) && (
-      (allowed as any[]).includes(cardClass) ||
-      allowed.some(cat =>
-        cardCategory.includes(cat.toLowerCase()) ||
-        cat.toLowerCase().includes(cardCategory)
-      )
-    );
-
-    if (isAllowed) {
-      return { inScope: true, badgeLabel: `🎯 NO ESCOPO [${cardClass || 'OK'}]`, badgeColor: '#166534' };
-    } else {
-      return { inScope: false, badgeLabel: `❌ FORA DE ESCOPO [${cardClass || 'N/A'}]`, badgeColor: '#B91C1C' };
-    }
-  };
+  // VALIDAÇÃO CANÔNICA DE ESCOPO V1.4
+  const checkScopeStatus = (card: CardV2) => checkCardScopeV14(card, playerActiveProgram, playerArchetype);
 
   const handleCardClick = (cardId: string) => {
     soundFx.playClick();
