@@ -372,6 +372,7 @@ interface BoardGameContextType {
   acceptPatch: () => void;
   endTurn: () => void;
   resetBoardGame: () => void;
+  actionSocialPhishing?: () => void;
 }
 
 const BoardGameContext = createContext<BoardGameContextType | undefined>(undefined);
@@ -596,6 +597,248 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   }, [players]);
 
   // ── Actions ────────────────────────────────────────────────────────────────
+  const getVulnFlatValue = (card: CardV2) => {
+    switch (card.rarity) {
+      case 'Common': return 1500;
+      case 'Uncommon': return 2500;
+      case 'Rare': return 4000;
+      case 'Epic': return 5000;
+      case 'Legendary': return 6000;
+      default: return 1500;
+    }
+  };
+
+  const applyEventCardEffect = (eventCard: EventCardData) => {
+    const eId = eventCard.id;
+
+    // evt-13: Responsible Disclosure!
+    // "Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem fazer 1 Report imediato SEM rolar os dados (não compra tool nem evento)"
+    if (eId === 'evt-13') {
+      soundFx.playScan();
+      setPlayers(prevPlayers => {
+        let updated = { ...prevPlayers };
+        const activeList: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
+        let reportsMade = 0;
+
+        activeList.forEach(roleId => {
+          const p = updated[roleId];
+          const pExploits = deployedExploits.filter(e => e.playerId === roleId);
+          if (pExploits.length > 0) {
+            const vulnTotal = pExploits.reduce((sum, e) => sum + getVulnFlatValue(e.card), 0);
+            const progBonus = p.activeProgram?.flatBountyBonus || 0;
+            const cash = vulnTotal + progBonus;
+            reportsMade++;
+            updated[roleId] = {
+              ...p,
+              score: p.score + cash,
+              activeProgram: null
+            };
+            addLog(`📄 Responsible Disclosure: ${p.name} reportou ${pExploits.length} vulns sem dados e faturou +$${cash.toLocaleString('pt-BR')}!`);
+          }
+        });
+
+        if (reportsMade > 0) {
+          setDiscardPile(prev => [...prev, ...deployedExploits.map(e => e.card)]);
+          setDeployedExploits([]);
+        } else {
+          addLog(`📄 Responsible Disclosure: Nenhum jogador possuía vulnerabilidades implantadas na mesa.`);
+        }
+        return updated;
+      });
+      return;
+    }
+
+    // evt-06: Bug Bounty Mediation
+    // "Todos os jogadores recebem +$1.500 na Bounty Track"
+    if (eId === 'evt-06') {
+      soundFx.playScan();
+      setPlayers(prev => {
+        const next = { ...prev };
+        Object.keys(next).forEach(k => {
+          const rId = k as PlayerRoleId;
+          next[rId] = { ...next[rId], score: next[rId].score + 1500 };
+        });
+        return next;
+      });
+      addLog(`🤝 Bug Bounty Mediation: Todos os jogadores receberam +$1.500 na Bounty Track!`);
+      return;
+    }
+
+    // evt-24: Bounty Ético
+    // "Todos os jogadores com 0 Tokens de Alerta recebem +$1.500 de bônus"
+    if (eId === 'evt-24') {
+      soundFx.playScan();
+      setPlayers(prev => {
+        const next = { ...prev };
+        let awarded = 0;
+        Object.keys(next).forEach(k => {
+          const rId = k as PlayerRoleId;
+          if (next[rId].alertaTokens === 0) {
+            next[rId] = { ...next[rId], score: next[rId].score + 1500 };
+            awarded++;
+            addLog(`🌟 Bounty Ético: ${next[rId].name} (0 Alertas) recebeu +$1.500 na Bounty Track!`);
+          }
+        });
+        if (awarded === 0) {
+          addLog(`🌟 Bounty Ético: Nenhum jogador possuía 0 Alertas.`);
+        }
+        return next;
+      });
+      return;
+    }
+
+    // evt-09: Public Disclosure!
+    // "Todos os jogadores descartam vulnerabilidades na mesa e recebem compensação"
+    if (eId === 'evt-09') {
+      soundFx.playScan();
+      setPlayers(prev => {
+        let updated = { ...prev };
+        const activeList: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
+        activeList.forEach(roleId => {
+          const p = updated[roleId];
+          const pExploits = deployedExploits.filter(e => e.playerId === roleId);
+          if (pExploits.length > 0) {
+            let compensation = pExploits.reduce((sum, e) => {
+              const r = e.card.rarity;
+              return sum + (r === 'Common' || r === 'Uncommon' ? 1000 : 2000);
+            }, 0);
+            updated[roleId] = { ...p, score: p.score + compensation };
+            addLog(`📢 Public Disclosure: ${p.name} descartou ${pExploits.length} vulns e recebeu +$${compensation.toLocaleString('pt-BR')} de compensação.`);
+          }
+        });
+        return updated;
+      });
+      setDiscardPile(prev => [...prev, ...deployedExploits.map(e => e.card)]);
+      setDeployedExploits([]);
+      return;
+    }
+
+    // evt-20: Bug Bounty Conference!
+    // "Todos os jogadores compram 2 cartas do Main Deck imediatamente"
+    if (eId === 'evt-20') {
+      soundFx.playScan();
+      setPlayers(prev => {
+        const next = { ...prev };
+        const activeList: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
+        activeList.forEach(roleId => {
+          const drawn = drawCardsFromMainDeck(2);
+          next[roleId] = { ...next[roleId], hand: [...next[roleId].hand, ...drawn] };
+        });
+        return next;
+      });
+      addLog(`🎟️ Bug Bounty Conference: Todos os jogadores compraram +2 cartas do Main Deck!`);
+      return;
+    }
+
+    // evt-23: Swag Drop!
+    // "Cada jogador compra 1 Tool Card do Tool Deck"
+    if (eId === 'evt-23') {
+      soundFx.playScan();
+      setToolDeck(tDeck => {
+        let deck = [...tDeck];
+        setPlayers(prev => {
+          const next = { ...prev };
+          const activeList: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
+          activeList.forEach(roleId => {
+            if (deck.length > 0) {
+              const tool = deck.shift()!;
+              next[roleId] = { ...next[roleId], hand: [...next[roleId].hand, tool] };
+              addLog(`🎁 Swag Drop: ${next[roleId].name} recebeu Tool [${tool.name}]!`);
+            }
+          });
+          return next;
+        });
+        return deck;
+      });
+      return;
+    }
+
+    // evt-01: Blue Team Hunt!
+    // "Todos os jogadores descartam a vulnerabilidade de maior CVSS exposta na mesa"
+    if (eId === 'evt-01') {
+      soundFx.playScan();
+      const toKeep: DeployedExploit[] = [];
+      const discarded: CardV2[] = [];
+      const activeList: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
+
+      activeList.forEach(roleId => {
+        const pExploits = deployedExploits.filter(e => e.playerId === roleId);
+        if (pExploits.length === 0) return;
+        const sorted = [...pExploits].sort((a, b) => getVulnFlatValue(b.card) - getVulnFlatValue(a.card));
+        discarded.push(sorted[0].card);
+        toKeep.push(...sorted.slice(1));
+        addLog(`🎯 Blue Team Hunt: Descartou "${sorted[0].card.name}" da mesa de ${players[roleId]?.name || roleId}.`);
+      });
+
+      setDeployedExploits(toKeep);
+      setDiscardPile(prev => [...prev, ...discarded]);
+      return;
+    }
+
+    // evt-02: Duplicate Report!
+    // "Escolha 1 oponente com vulnerabilidades na mesa: ele descarta a de maior CVSS exposta (Pentester imune)"
+    if (eId === 'evt-02') {
+      soundFx.playScan();
+      const opponents = Object.values(players).filter(p => p.id !== myRole && deployedExploits.some(e => e.playerId === p.id));
+      if (opponents.length > 0) {
+        const target = opponents[0];
+        if (target.archetype.id.includes('pentester')) {
+          addLog(`🛡️ Pentester (${target.name}): Imune ao evento Duplicate Report! (Contrato Blindado).`);
+        } else if (target.cveProtection) {
+          addLog(`📜 CVE Protection ativada por ${target.name}! Anulou o Duplicate Report!`);
+          updateCurrentPlayer(p => ({ ...p, cveProtection: null }));
+        } else {
+          const targetExploits = deployedExploits.filter(e => e.playerId === target.id);
+          const sorted = [...targetExploits].sort((a, b) => getVulnFlatValue(b.card) - getVulnFlatValue(a.card));
+          const toDiscard = sorted[0];
+          setDeployedExploits(prev => prev.filter(e => e.id !== toDiscard.id));
+          setDiscardPile(prev => [...prev, toDiscard.card]);
+          addLog(`⚠️ Duplicate Report: "${toDiscard.card.name}" descartada da mesa de ${target.name}!`);
+        }
+      } else {
+        addLog(`⚠️ Duplicate Report: Nenhum oponente possuía vulnerabilidades na mesa.`);
+      }
+      return;
+    }
+
+    // evt-14: Honeypot Triggered!
+    // "Escolha 1 oponente: descarta 1 carta aleatória da mão"
+    if (eId === 'evt-14') {
+      soundFx.playScan();
+      const opponents = Object.values(players).filter(p => p.id !== myRole && p.hand.length > 0);
+      if (opponents.length > 0) {
+        const target = opponents[0];
+        const cardToDiscard = target.hand[0];
+        setPlayers(prev => ({
+          ...prev,
+          [target.id]: {
+            ...target,
+            hand: target.hand.filter(c => c.id !== cardToDiscard.id)
+          }
+        }));
+        setDiscardPile(prev => [...prev, cardToDiscard]);
+        addLog(`🪤 Honeypot Triggered: ${target.name} descartou "${cardToDiscard.name}" da mão.`);
+      }
+      return;
+    }
+
+    // evt-17: Hall of Fame Update!
+    // "O jogador com menor saldo na Bounty Track recebe +$1.5k de bônus imediato"
+    if (eId === 'evt-17') {
+      soundFx.playScan();
+      const activeList = Object.values(players).slice(0, playerCount);
+      const lowest = [...activeList].sort((a, b) => a.score - b.score)[0];
+      if (lowest) {
+        setPlayers(prev => ({
+          ...prev,
+          [lowest.id]: { ...lowest, score: lowest.score + 1500 }
+        }));
+        addLog(`🏆 Hall of Fame Update: ${lowest.name} (menor saldo) recebeu +$1.500 de incentivo!`);
+      }
+      return;
+    }
+  };
+
   const drawEventCard = () => {
     setEventDeck(deck => {
       if (deck.length === 0) {
@@ -606,6 +849,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       setActiveEventCard(top);
       soundFx.playClick();
       addLog(`🚨 EVENTO ATIVADO: [${top.name}] — ${top.simpleDescription}`);
+      applyEventCardEffect(top);
       return rest;
     });
   };
@@ -820,43 +1064,46 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     addLog(`REPORT INICIADO (${currentPlayer.name}): Rolando teste de Patch em Modo Noisy (2D6 somados)...`);
   };
 
-  // Resolução do Payout do Report
-  const getVulnFlatValue = (card: CardV2) => {
-    switch (card.rarity) {
-      case 'Common': return 1500;
-      case 'Uncommon': return 2500;
-      case 'Rare': return 4000;
-      case 'Epic': return 5000;
-      case 'Legendary': return 6000;
-      default: return 1500;
-    }
-  };
-
   const processSuccessfulReport = (
     eligibleExploits: DeployedExploit[],
-    bypassMode = false
+    bypassMode = false,
+    overridePlayers?: Record<PlayerRoleId, PlayerState>
   ) => {
-    const program = currentPlayer.activeProgram;
+    const basePlayers = overridePlayers || players;
+    const activeCurrentPlayer = basePlayers[myRole] || currentPlayer;
+    const program = activeCurrentPlayer.activeProgram;
     if (!program) return;
 
     let vulnTotal = eligibleExploits.reduce((sum, e) => sum + getVulnFlatValue(e.card), 0);
     const programBonus = program.flatBountyBonus || 0;
     let earnedCash = vulnTotal + programBonus;
 
-    // Bônus do Bug Hunter
-    if (currentPlayer.archetype.id === 'bug-hunter' && eligibleExploits.length > 1) {
+    // 1. Bônus do Pentester (Relatório Estruturado: +$500 com 2 classes distintas, +$1.000 com 3 classes distintas)
+    if (activeCurrentPlayer.archetype.id.includes('pentester')) {
+      const distinctClasses = new Set(eligibleExploits.map(e => (e.card as any).vulnClass || e.card.rarity)).size;
+      if (distinctClasses >= 3) {
+        earnedCash += 1000;
+        addLog(`🛡️ Pentester (Relatório Estruturado): +$1.000 de bônus por 3 classes técnicas distintas!`);
+      } else if (distinctClasses === 2) {
+        earnedCash += 500;
+        addLog(`🛡️ Pentester (Relatório Estruturado): +$500 de bônus por 2 classes técnicas distintas!`);
+      }
+    }
+
+    // 2. Bônus do Bug Hunter (+$500 por cada vuln além da 1ª)
+    if (activeCurrentPlayer.archetype.id.includes('bug-hunter') && eligibleExploits.length > 1) {
       const extra = (eligibleExploits.length - 1) * 500;
       earnedCash += extra;
     }
 
-    // Bônus do Old Guard
-    if (currentPlayer.archetype.id === 'old-guard') {
+    // 3. Bônus do Old Guard (+$500 por cada vuln Epic/Legendary)
+    if (activeCurrentPlayer.archetype.id.includes('old-guard')) {
       const epicLegCount = eligibleExploits.filter(e => e.card.rarity === 'Epic' || e.card.rarity === 'Legendary').length;
       earnedCash += epicLegCount * 500;
     }
 
-    // Penalidade do Red Teamer
-    if (currentPlayer.archetype.id === 'red-teamer') {
+    // 4. Penalidade do Red Teamer (-$1.500 de custo operacional)
+    if (activeCurrentPlayer.archetype.id.includes('red-teamer')) {
       earnedCash = Math.max(0, earnedCash - 1500);
       addLog('Red Teamer: -$1.500 de custo operacional.');
     }
@@ -865,32 +1112,84 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const hasEpicOrLegendary = eligibleExploits.some(e => e.card.rarity === 'Epic' || e.card.rarity === 'Legendary');
     let repGain = 0;
     if (hasEpicOrLegendary) repGain += 1;
-    if (currentPlayer.archetype.id === 'bug-hunter' && eligibleExploits.length === 3) repGain += 1;
+    if (activeCurrentPlayer.archetype.id.includes('bug-hunter') && eligibleExploits.length === 3) repGain += 1;
 
-    if (earnedCash >= 10000) confetti({ particleCount: 80, spread: 60 });
-    const newScore = currentPlayer.score + earnedCash;
+    let specialAlertGain = 0;
+    let newScore = activeCurrentPlayer.score + earnedCash;
 
-    let updatedHand = [...currentPlayer.hand];
+    // 5. CASAS ESPECIAIS (SE E SOMENTE SE O JOGADOR PARAR EM CIMA DELA)
+    const hitMilestone = BOUNTY_MILESTONES.find(m => m.value === newScore);
+    let updatedHand = [...activeCurrentPlayer.hand];
 
-    // Compra 1 Tool do Tool Deck (se não foi bypass)
-    if (!bypassMode) {
-      setToolDeck(deck => {
-        if (deck.length > 0) {
-          const [topTool, ...rest] = deck;
-          updatedHand.push(topTool);
-          addLog(`🛠️ Report Payout: Comprou 1 Tool [${topTool.name}] do Tool Deck para ${currentPlayer.name}.`);
-          return rest;
+    if (hitMilestone) {
+      soundFx.playScan();
+      addLog(`✨ CASA ESPECIAL ATINGIDA ($${hitMilestone.value.toLocaleString('pt-BR')}) por ${activeCurrentPlayer.name}: ${hitMilestone.label} (${hitMilestone.effectDescription})!`);
+
+      if (hitMilestone.value === 4500) {
+        repGain += 1; // 🐝+
+      } else if (hitMilestone.value === 9000) {
+        specialAlertGain += 1; // 🐞+
+      } else if (hitMilestone.value === 13500) {
+        repGain += 1; // 🐝+ 🛒
+        const drawnMain = drawCardsFromMainDeck(1);
+        updatedHand.push(...drawnMain);
+      } else if (hitMilestone.value === 19000) {
+        specialAlertGain += 1; // 🐞+ 🗂️−
+        if (updatedHand.length > 0) {
+          const disc = updatedHand.pop()!;
+          setDiscardPile(prev => [...prev, disc]);
+          addLog(`Casa Especial $19k: Descartou "${disc.name}" da mão.`);
         }
-        return deck;
-      });
+      } else if (hitMilestone.value === 24500) {
+        addLog(`Casa Especial $24.5k (🛠️⚡): Instalação gratuita de Tool liberada!`);
+      } else if (hitMilestone.value === 29000) {
+        repGain += 1; // 🐝+ 🐞−
+        specialAlertGain -= 1;
+      } else if (hitMilestone.value === 33500) {
+        // 💸 -$1.5k (recua para $32.000, sem re-disparo)
+        newScore = 32000;
+        addLog(`💸 Casa Especial $33.5k: Penalidade -$1.500! Recuou para $32.000.`);
+      } else if (hitMilestone.value === 38000) {
+        specialAlertGain += 1; // 🐞+
+      }
     }
 
+    if (earnedCash >= 10000) confetti({ particleCount: 80, spread: 60 });
+
+    // 6. COMPRA DA TOOL APÓS REPORT BEM-SUCEDIDO (se não foi bypass)
+    if (!bypassMode) {
+      let currentDeck = [...toolDeck];
+      let currentDiscard = [...toolDiscard];
+      if (currentDeck.length === 0 && currentDiscard.length > 0) {
+        currentDeck = shuffleArray(currentDiscard);
+        setToolDiscard([]);
+      }
+      if (currentDeck.length > 0) {
+        const topTool = currentDeck.shift()!;
+        setToolDeck(currentDeck);
+        updatedHand.push(topTool);
+        addLog(`🛠️ Tool Adquirida no Report: [${topTool.name}] foi para a mão de ${activeCurrentPlayer.name}!`);
+      }
+    }
+
+    // Calcula balanço final de tokens de alerta
+    let finalAlerts = Math.max(0, activeCurrentPlayer.alertaTokens + specialAlertGain);
+    let penaltyAlertCash = 0;
+    if (finalAlerts >= 2) {
+      penaltyAlertCash = 2000;
+      finalAlerts = 0;
+      soundFx.playPatchDeployedAlarm();
+      addLog(`🚨 ALARME CRÍTICO (${activeCurrentPlayer.name})! Acumulou 2 Tokens de Alerta (🐞): -$2.000 imediatos na Bounty Track.`);
+    }
+    newScore = Math.max(0, newScore - penaltyAlertCash);
+
     const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
-      ...players,
+      ...basePlayers,
       [myRole]: {
-        ...currentPlayer,
+        ...activeCurrentPlayer,
         score: newScore,
-        reputacaoTokens: currentPlayer.reputacaoTokens + repGain,
+        reputacaoTokens: activeCurrentPlayer.reputacaoTokens + repGain,
+        alertaTokens: finalAlerts,
         activeProgram: null,
         hand: updatedHand
       }
@@ -903,18 +1202,18 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         id: 'rep-' + Date.now(),
         turn: currentTurn,
         type: 'Report',
-        description: `Report de ${currentPlayer.name} em ${program.name}`,
+        description: `Report de ${activeCurrentPlayer.name} em ${program.name}`,
         amount: earnedCash,
         mathBreakdown: `Vulns: $${vulnTotal} + Bonus: $${programBonus}`
       }
     ]);
 
-    // Descarte das vulnerabilidades
+    // Descarte das vulnerabilidades reportadas
     const nextExploits = deployedExploits.filter(e => e.playerId !== myRole);
     setDiscardPile(prev => [...prev, ...eligibleExploits.map(e => e.card)]);
     setDeployedExploits(nextExploits);
 
-    // Saque de Evento
+    // Saque e execução imediata de Evento de Caos
     drawEventCard();
 
     // Novo programa no mercado
@@ -928,8 +1227,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     // Meta $40k
     if (newScore >= 40000) {
-      addLog(`🏆 VITORIOSO! ${currentPlayer.name} atingiu $40.000 na Bounty Track!`);
-      setGameWinner(currentPlayer.name);
+      addLog(`🏆 VITORIOSO! ${activeCurrentPlayer.name} atingiu $40.000 na Bounty Track!`);
+      setGameWinner(activeCurrentPlayer.name);
       return;
     }
 
@@ -997,18 +1296,36 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   const defusePatch = () => {
     setIsDiceModalOpen(false);
     setPatchAlertModal(false);
-    updateCurrentPlayer(p => ({
-      ...p,
-      safeguardSlot: null,
-      alertaTokens: p.alertaTokens + 1
-    }));
+
+    const nextAlert = currentPlayer.alertaTokens + 1;
+    let penaltyCash = 0;
+    let finalAlert = nextAlert;
+    if (nextAlert >= 2) {
+      penaltyCash = 2000;
+      finalAlert = 0;
+      soundFx.playPatchDeployedAlarm();
+      addLog(`🚨 ALARME CRÍTICO (${currentPlayer.name})! 2 Tokens de Alerta (🐞): -$2.000 imediatos na Bounty Track.`);
+    } else {
+      addLog(`🐞 ${currentPlayer.name}: +1 Token de Alerta (${finalAlert}/2).`);
+    }
+
+    const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
+      ...players,
+      [myRole]: {
+        ...currentPlayer,
+        score: Math.max(0, currentPlayer.score - penaltyCash),
+        safeguardSlot: null,
+        alertaTokens: finalAlert
+      }
+    };
+    setPlayers(updatedPlayersState);
     addLog(`🛡️ BYPASS ATIVADO (${currentPlayer.name}): Anulou o Patch! Bypass descartado e recebeu 1 Token de Alerta.`);
 
     if (diceRollReason === 'report') {
       const myExploits = deployedExploits.filter(e => e.playerId === myRole);
-      processSuccessfulReport(myExploits, true);
+      processSuccessfulReport(myExploits, true, updatedPlayersState);
     } else {
-      finalizeTurnAdvance();
+      finalizeTurnAdvance(updatedPlayersState);
     }
   };
 
@@ -1019,17 +1336,67 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setDiscardPile(prev => [...prev, ...myExploits.map(e => e.card)]);
     setDeployedExploits(prev => prev.filter(e => e.playerId !== myRole));
 
+    const nextAlert = currentPlayer.alertaTokens + 1;
+    let penaltyCash = 0;
+    let finalAlert = nextAlert;
+    if (nextAlert >= 2) {
+      penaltyCash = 2000;
+      finalAlert = 0;
+      soundFx.playPatchDeployedAlarm();
+      addLog(`🚨 ALARME CRÍTICO (${currentPlayer.name})! Acumulou 2 Tokens de Alerta (🐞): -$2.000 imediatos na Bounty Track.`);
+    } else {
+      addLog(`🐞 ${currentPlayer.name}: +1 Token de Alerta (${finalAlert}/2).`);
+    }
+
     // Compra 1 carta de consolação do Main Deck
     const consolation = drawCardsFromMainDeck(1);
-    updateCurrentPlayer(p => ({
-      ...p,
-      activeProgram: null,
-      alertaTokens: p.alertaTokens + 1,
-      hand: [...p.hand, ...consolation]
-    }));
+    const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
+      ...players,
+      [myRole]: {
+        ...currentPlayer,
+        score: Math.max(0, currentPlayer.score - penaltyCash),
+        activeProgram: null,
+        alertaTokens: finalAlert,
+        hand: [...currentPlayer.hand, ...consolation]
+      }
+    };
+    setPlayers(updatedPlayersState);
 
     addLog(`💥 PATCH DEPLOYED ACEITO (${currentPlayer.name}): Exploits descartados, +1 Token de Alerta e comprou 1 carta de consolação.`);
-    finalizeTurnAdvance();
+    finalizeTurnAdvance(updatedPlayersState);
+  };
+
+  // Habilidade Social Engineer: Phishing
+  const actionSocialPhishing = () => {
+    if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
+    if (currentPlayer.actionsRemaining < 1) { alert('Sem ações restantes!'); return; }
+    if (currentPlayer.hand.length === 0) { alert('Você precisa ter pelo menos 1 carta na mão para entregar!'); return; }
+
+    const opponents = Object.values(players).filter(p => p.id !== myRole && p.hand.length > 0);
+    if (opponents.length === 0) {
+      alert('Nenhum oponente possui cartas na mão para o Phishing!');
+      return;
+    }
+
+    soundFx.playScan();
+    const target = opponents[0];
+    const pulledCard = target.hand[0];
+    const deliveredCard = currentPlayer.hand[0];
+
+    setPlayers(prev => ({
+      ...prev,
+      [target.id]: {
+        ...target,
+        hand: [...target.hand.filter(c => c.id !== pulledCard.id), deliveredCard]
+      },
+      [myRole]: {
+        ...currentPlayer,
+        hand: [...currentPlayer.hand.filter(c => c.id !== deliveredCard.id), pulledCard],
+        actionsRemaining: currentPlayer.actionsRemaining - 1
+      }
+    }));
+
+    addLog(`🎭 PHISHING (${currentPlayer.name}): Puxou "${pulledCard.name}" de ${target.name} e entregou "${deliveredCard.name}"!`);
   };
 
   const finalizeTurnAdvance = (overridePlayers?: Record<PlayerRoleId, PlayerState>) => {
@@ -1174,7 +1541,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         defusePatch,
         acceptPatch,
         endTurn,
-        resetBoardGame
+        resetBoardGame,
+        actionSocialPhishing
       }}
     >
       {children}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { CardV2 } from '../data/cardsDataV2';
 import { ProgramCard, Archetype } from '../data/cardsData';
+import { useLanguage } from '../i18n/LanguageContext';
 import { BoardHand } from './BoardHand';
 import { ShieldCheck, Wrench, Zap, DollarSign, AlertCircle, Sparkles, AlertTriangle, Bug } from 'lucide-react';
 import { soundFx } from '../utils/audio';
@@ -38,6 +39,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
   onActionRecon,
   onOpenCenterTable
 }) => {
+  const { language, t } = useLanguage();
   const {
     playerName,
     playerColor,
@@ -456,10 +458,10 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
               {/* Rótulo superior idêntico ao playtest físico */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <div style={{ fontSize: '11px', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#3A332A' }}>
-                  EXPLOITS
+                  {t('playerMat.exploitsArea')}
                 </div>
                 <div style={{ fontSize: '10px', fontWeight: '700', fontFamily: 'monospace', color: '#685F53' }}>
-                  {activeExploits.length} / 3 Vulnerabilidades Ativas
+                  {activeExploits.length} / 3 {language === 'en' ? 'Active Vulnerabilities' : 'Vulnerabilidades Ativas'}
                 </div>
               </div>
 
@@ -481,9 +483,9 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                     }}
                   >
                     <Bug size={24} color="#A89D8B" style={{ marginBottom: '6px' }} />
-                    <span>Nenhum exploit implantado neste programa ainda.</span>
+                    <span>{t('playerMat.noExploits')}</span>
                     <span style={{ fontSize: '9.5px', color: '#047857', marginTop: '2px' }}>
-                      Clique em uma vulnerabilidade da sua mão com ação [EXPLOIT] para descer na mesa (Custa 1 AP).
+                      {t('playerMat.noExploitsHint')}
                     </span>
                   </div>
                 ) : (
@@ -560,12 +562,12 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                       </div>
                     ) : (
                       <div style={{ margin: 'auto', textAlign: 'center', color: '#A89D8B', fontSize: '10px', fontFamily: 'monospace' }}>
-                        [ Slot Disponível ]
+                        [ {t('playerMat.slotAvailable')} ]
                       </div>
                     )}
 
                     <div style={{ fontSize: '8px', color: '#7E7362', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '3px', fontFamily: 'monospace' }}>
-                      {tool ? 'Ativa na mesa' : 'Vazio'}
+                      {tool ? (language === 'en' ? 'Active on mat' : 'Ativa na mesa') : t('playerMat.empty')}
                     </div>
                   </div>
                 );

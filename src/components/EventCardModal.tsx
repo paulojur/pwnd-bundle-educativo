@@ -37,7 +37,7 @@ export const EventCardModal: React.FC<EventCardModalProps> = ({ isOpen, eventCar
         </div>
 
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--alert-red)', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '4px' }}>
-          EVENT CARD ATIVADA (MANUAL V1.1 SEÇÃO 09) — #{eventCard.number}
+          EVENT CARD ATIVADA (MANUAL V1.4 SEÇÃO 07) — #{eventCard.number}
         </div>
 
         <h3 style={{ fontSize: '24px', fontWeight: '900', color: '#fff', fontFamily: 'var(--font-mono)', marginBottom: '8px' }}>
@@ -50,7 +50,25 @@ export const EventCardModal: React.FC<EventCardModalProps> = ({ isOpen, eventCar
           </div>
         )}
 
-        <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px', borderRadius: '8px', border: '1px dashed var(--alert-red)', margin: '16px 0', fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.4' }}>
+        <div style={{
+          background: 'rgba(34, 197, 94, 0.15)',
+          border: '1px solid #22c55e',
+          borderRadius: '6px',
+          padding: '6px 12px',
+          margin: '10px 0',
+          fontSize: '11.5px',
+          color: '#4ade80',
+          fontWeight: '800',
+          fontFamily: 'var(--font-mono)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '6px'
+        }}>
+          <span>⚡</span> Efeito Aplicado Automaticamente na Mesa!
+        </div>
+
+        <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px', borderRadius: '8px', border: '1px dashed var(--alert-red)', margin: '12px 0 16px', fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.4' }}>
           {eventCard.simpleDescription}
         </div>
 

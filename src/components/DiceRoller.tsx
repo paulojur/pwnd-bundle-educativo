@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../i18n/LanguageContext';
 import { ShieldCheck, ShieldAlert, Dices, RefreshCw } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 import { getPatchThreshold } from '../utils/gameRulesV14';
@@ -34,6 +35,7 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
   onAcceptPatch,
   onRollComplete
 }) => {
+  const { language, t } = useLanguage();
   const [rolling, setRolling] = useState<boolean>(false);
   const [dice, setDice] = useState<number[]>(isNoisy ? [1, 1] : [1, 1, 1]);
   const [rolled, setRolled] = useState<boolean>(false);
@@ -175,7 +177,7 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
               textTransform: 'uppercase'
             }}
           >
-            DESCARTADO
+            {language === 'en' ? 'DISCARDED' : 'DESCARTADO'}
           </span>
         )}
       </div>
@@ -362,7 +364,9 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                 gap: '8px'
               }}
             >
-              <Dices size={18} /> {rolling ? 'Rolando Dados D6...' : `Rolar Dados de Patch (${isNoisy ? '2D6' : '3D6'})`}
+              <Dices size={18} /> {rolling 
+                ? (language === 'en' ? 'Rolling D6 Dice...' : 'Rolando Dados D6...') 
+                : (language === 'en' ? `Roll Patch Defense (${isNoisy ? '2D6' : '3D6'})` : `Rolar Dados de Patch (${isNoisy ? '2D6' : '3D6'})`)}
             </button>
           ) : passed ? (
             <button
@@ -386,8 +390,8 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
               }}
             >
               {diceRollReason === 'endTurn'
-                ? 'Manter Exploits na Mesa & Encerrar Turno ✓'
-                : 'Confirmar Sucesso & Receber Payout ✅'}
+                ? (language === 'en' ? 'Keep Exploits on Table & End Turn ✓' : 'Manter Exploits na Mesa & Encerrar Turno ✓')
+                : (language === 'en' ? 'Confirm Success & Collect Payout ✅' : 'Confirmar Sucesso & Receber Payout ✅')}
             </button>
           ) : (
             <div style={{ display: 'flex', gap: '10px', width: '100%', flexWrap: 'wrap' }}>
@@ -412,12 +416,12 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                     boxShadow: '0 2px 6px rgba(22, 163, 74, 0.4)'
                   }}
                   title={diceRollReason === 'endTurn'
-                    ? 'Anula o descarte dos seus exploits na mesa, descarta o Bypass (+1 Alerta)'
-                    : 'Garante o Payout do Report, anula o descarte e descarta o Bypass (+1 Alerta)'}
+                    ? (language === 'en' ? 'Cancels exploit discard, discards Bypass (+1 Alert)' : 'Anula o descarte dos seus exploits na mesa, descarta o Bypass (+1 Alerta)')
+                    : (language === 'en' ? 'Guarantees report payout, cancels discard and discards Bypass (+1 Alert)' : 'Garante o Payout do Report, anula o descarte e descarta o Bypass (+1 Alerta)')}
                 >
                   {diceRollReason === 'endTurn'
-                    ? '🛡️ Usar Bypass (Salva Exploits & +1 Alerta)'
-                    : '🛡️ Ativar Bypass (Garante Payout & +1 Alerta)'}
+                    ? (language === 'en' ? '🛡️ Use Bypass (Saves Exploits & +1 Alert)' : '🛡️ Usar Bypass (Salva Exploits & +1 Alerta)')
+                    : (language === 'en' ? '🛡️ Activate Bypass (Guarantees Payout & +1 Alert)' : '🛡️ Ativar Bypass (Garante Payout & +1 Alerta)')}
                 </button>
               )}
 
@@ -444,11 +448,11 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                   cursor: 'pointer',
                   boxShadow: '0 2px 6px rgba(185, 28, 28, 0.4)'
                 }}
-                title="Descarta seus exploits e programa ativo, recebe 1 Alerta e compra 1 consolação"
+                title={language === 'en' ? 'Discards exploits and active program, gains 1 Alert and draws 1 consolation card' : 'Descarta seus exploits e programa ativo, recebe 1 Alerta e compra 1 consolação'}
               >
                 {diceRollReason === 'endTurn'
-                  ? '💥 Aceitar Patch (Perde Exploits, +1 Alerta & +1 Carta)'
-                  : '💥 Aceitar Patch (Perde Payout, +1 Alerta & +1 Carta)'}
+                  ? (language === 'en' ? '💥 Accept Patch (Lose Exploits, +1 Alert & +1 Card)' : '💥 Aceitar Patch (Perde Exploits, +1 Alerta & +1 Carta)')
+                  : (language === 'en' ? '💥 Accept Patch (Lose Payout, +1 Alert & +1 Card)' : '💥 Aceitar Patch (Perde Payout, +1 Alerta & +1 Carta)')}
               </button>
             </div>
           )}

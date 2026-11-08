@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../i18n/LanguageContext';
 import { BookOpen, X, ShieldAlert, Dices, Award, Zap, CheckCircle2, ChevronRight, HelpCircle } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 
@@ -9,6 +10,7 @@ interface PlayerAidModalProps {
 
 export const PlayerAidModal: React.FC<PlayerAidModalProps> = ({ isOpen, onClose }) => {
   const [activeSide, setActiveSide] = useState<'frente' | 'verso'>('frente');
+  const { language, t } = useLanguage();
 
   if (!isOpen) return null;
 
@@ -59,10 +61,10 @@ export const PlayerAidModal: React.FC<PlayerAidModalProps> = ({ isOpen, onClose 
             <span style={{ fontSize: '22px' }}>📋</span>
             <div>
               <div style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#B45309' }}>
-                PWNED! BUG BOUNTY CHAOS — GUIA DO JOGADOR
+                {language === 'en' ? 'PWND! BUG BOUNTY CHAOS — PLAYER GUIDE' : 'PWND! BUG BOUNTY CHAOS — GUIA DO JOGADOR'}
               </div>
               <h2 style={{ fontSize: '18px', fontWeight: '900', color: '#1E1B18', margin: 0, fontFamily: 'monospace' }}>
-                PLAYER AID OFICIAL (V1.4)
+                {t('playerAid.title')}
               </h2>
             </div>
           </div>
@@ -105,7 +107,7 @@ export const PlayerAidModal: React.FC<PlayerAidModalProps> = ({ isOpen, onClose 
               gap: '8px'
             }}
           >
-            <span>👉 FRENTE: O Seu Turno (3 Ações)</span>
+            <span>👉 {t('playerAid.frontTab')}</span>
           </button>
 
           <button
@@ -126,7 +128,7 @@ export const PlayerAidModal: React.FC<PlayerAidModalProps> = ({ isOpen, onClose 
               gap: '8px'
             }}
           >
-            <span>🎲 VERSO: Patch & Tabelas de Mesa</span>
+            <span>🎲 {t('playerAid.backTab')}</span>
           </button>
         </div>
 

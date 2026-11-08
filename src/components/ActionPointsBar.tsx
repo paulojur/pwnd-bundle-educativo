@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
+import { useLanguage } from '../i18n/LanguageContext';
 import { Search, Send, SkipForward, Award, Dices, UserCheck, Clock, FileText, AlertCircle, Sparkles } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 import { BountyLedgerModal } from './BountyLedgerModal';
 
 export const ActionPointsBar: React.FC = () => {
   const [isLedgerOpen, setIsLedgerOpen] = useState(false);
+  const { language, t } = useLanguage();
   const {
     playerScore,
     isMyTurn,
@@ -21,7 +23,8 @@ export const ActionPointsBar: React.FC = () => {
     needsDiscard,
     actionsRemaining,
     deployedExploits,
-    playerSafeguardSlot
+    playerSafeguardSlot,
+    actionSocialPhishing
   } = useBoardGame();
 
   const myExploitsCount = deployedExploits.filter(e => e.playerId === myRole).length;
@@ -63,14 +66,14 @@ export const ActionPointsBar: React.FC = () => {
           </div>
           <div>
             <div style={{ fontSize: '9.5px', color: '#685F53', textTransform: 'uppercase', fontFamily: 'monospace', fontWeight: '700' }}>
-              REGRA OFICIAL V1.4: 3 AÇÕES POR TURNO (REPORT CUSTA 2 AP)
+              {t('turn.officialRule')}
             </div>
             <div style={{ fontSize: '14px', fontWeight: '900', color: isMyTurn ? '#166534' : '#475569', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
               {isMyTurn ? (
-                '🟢 SUA VEZ! Execute suas ações na mesa'
+                `🟢 ${t('turn.yourTurn')}`
               ) : (
                 <>
-                  <span>⏳ Aguardando a jogada de {allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole}...</span>
+                  <span>⏳ {t('turn.waitingTurn', { name: allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole })}</span>
                   <button
                     onClick={() => {
                       soundFx.playClick();
@@ -92,7 +95,7 @@ export const ActionPointsBar: React.FC = () => {
                       gap: '4px'
                     }}
                   >
-                    👁️ Jogar como {allPlayers.find(p => p.id === activePlayerRole)?.name.split(' ')[0] || 'Próximo'} ➔
+                    {t('turn.playAs', { name: allPlayers.find(p => p.id === activePlayerRole)?.name.split(' ')[0] || 'Next' })}
                   </button>
                 </>
               )}
@@ -114,7 +117,7 @@ export const ActionPointsBar: React.FC = () => {
             }}
           >
             <span style={{ fontSize: '11px', fontFamily: 'monospace', fontWeight: '800', color: '#1E1B18' }}>
-              AÇÕES (AP):
+              {t('turn.actions')}
             </span>
             <div style={{ display: 'flex', gap: '5px' }}>
               {[1, 2, 3].map(ap => {
@@ -141,7 +144,7 @@ export const ActionPointsBar: React.FC = () => {
           </div>
 
           <div style={{ fontSize: '11px', color: '#685F53', fontFamily: 'monospace' }}>
-            Papel Local: <strong style={{ color: currentPlayer?.color || '#166534' }}>{currentPlayer?.name || myRole}</strong>
+            {t('turn.localSeat')} <strong style={{ color: currentPlayer?.color || '#166534' }}>{currentPlayer?.name || myRole}</strong>
           </div>
         </div>
       </div>
@@ -177,7 +180,7 @@ export const ActionPointsBar: React.FC = () => {
             <Award size={20} color="#059669" />
             <div>
               <div style={{ fontSize: '9.5px', color: '#065F46', textTransform: 'uppercase', fontFamily: 'monospace', fontWeight: '700' }}>
-                Bounty Acumulado (Meta $40k)
+                {t('turn.accumulatedBounty')} ({t('turn.goal')})
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px', fontWeight: '900', color: '#047857', fontFamily: 'monospace' }}>
@@ -185,7 +188,7 @@ export const ActionPointsBar: React.FC = () => {
                 </span>
                 <button
                   onClick={() => { soundFx.playClick(); setIsLedgerOpen(true); }}
-                  title="Ver extrato contábil de Bounties"
+                  title={t('turn.ledger')}
                   style={{
                     background: '#FFFFFF',
                     border: '1px solid #059669',
@@ -201,15 +204,15 @@ export const ActionPointsBar: React.FC = () => {
                     fontWeight: '800'
                   }}
                 >
-                  <FileText size={11} /> Extrato
+                  <FileText size={11} /> {t('turn.ledger')}
                 </button>
               </div>
             </div>
           </div>
 
           <div style={{ fontSize: '11px', color: '#685F53', fontFamily: 'monospace', borderLeft: '1px solid #D6CBB8', paddingLeft: '12px' }}>
-            Exploits no Alvo: <strong style={{ color: myExploitsCount > 0 ? '#B45309' : '#685F53' }}>{myExploitsCount} / 3</strong>
-            {playerSafeguardSlot && <span style={{ marginLeft: '10px', color: '#047857' }}>🛡️ Bypass Pronto</span>}
+            {t('turn.exploitsOnTarget')} <strong style={{ color: myExploitsCount > 0 ? '#B45309' : '#685F53' }}>{myExploitsCount} / 3</strong>
+            {playerSafeguardSlot && <span style={{ marginLeft: '10px', color: '#047857' }}>🛡️ {t('turn.bypassReady')}</span>}
           </div>
         </div>
 
@@ -217,19 +220,19 @@ export const ActionPointsBar: React.FC = () => {
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           {needsDiscard && (
             <div style={{ background: '#FEE2E2', border: '1.5px solid #B91C1C', color: '#991B1B', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', fontFamily: 'monospace' }}>
-              ⚠️ LIMITE DE MÃO: Descarte cartas antes de agir!
+              ⚠️ {language === 'en' ? 'HAND LIMIT: Discard cards before taking actions!' : 'LIMITE DE MÃO: Descarte cartas antes de agir!'}
             </div>
           )}
 
           {isMyTurn && actionsRemaining === 0 && myExploitsCount > 0 && (
             <div style={{ background: '#FEF3C7', border: '1.5px solid #D97706', color: '#92400E', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', fontFamily: 'monospace' }}>
-              🎲 Suas 3 Ações terminaram! Encerre o turno para rolar o Patch Stealth (3D6).
+              🎲 {language === 'en' ? 'All 3 actions spent! Pass turn to resolve Stealth Patch (3D6).' : 'Suas 3 Ações terminaram! Encerre o turno para rolar o Patch Stealth (3D6).'}
             </div>
           )}
 
           {isMyTurn && actionsRemaining === 0 && myExploitsCount === 0 && (
             <div style={{ background: '#DCFCE7', border: '1.5px solid #166534', color: '#166534', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', fontFamily: 'monospace' }}>
-              🕶️ 3 Ações gastas! Passe o turno no Modo Furtivo para remover 1 Alerta (🐞).
+              🕶️ {language === 'en' ? '3 Actions spent! Pass turn in Stealth Mode to remove 1 Alert token (🐞).' : '3 Ações gastas! Passe o turno no Modo Furtivo para remover 1 Alerta (🐞).'}
             </div>
           )}
 
@@ -237,7 +240,7 @@ export const ActionPointsBar: React.FC = () => {
           <button
             onClick={() => { soundFx.playClick(); actionVarrer(); }}
             disabled={!isMyTurn || needsDiscard || actionsRemaining < 1}
-            title="Ação RECON: Compre 2 cartas do Main Deck para sua mão (Custa 1 AP)"
+            title={t('actions.reconTooltip')}
             style={{
               padding: '10px 16px',
               background: isMyTurn && actionsRemaining >= 1 && !needsDiscard ? '#0284C7' : '#E2E8F0',
@@ -254,7 +257,7 @@ export const ActionPointsBar: React.FC = () => {
               boxShadow: isMyTurn && actionsRemaining >= 1 && !needsDiscard ? '0 2px 5px rgba(2, 132, 199, 0.3)' : 'none'
             }}
           >
-            <Search size={15} /> 1. RECON (1 AP)
+            <Search size={15} /> {t('actions.recon')}
           </button>
 
           {/* Dica de Exploit */}
@@ -269,14 +272,14 @@ export const ActionPointsBar: React.FC = () => {
               color: '#685F53'
             }}
           >
-            2. EXPLOIT (1 AP): Baixe da mão ⬇️
+            {language === 'en' ? '2. EXPLOIT (1 AP): Deploy from hand ⬇️' : '2. EXPLOIT (1 AP): Baixe da mão ⬇️'}
           </div>
 
           {/* 3. REPORT (2 AP) */}
           <button
             onClick={() => { soundFx.playClick(); actionReportar(); }}
             disabled={!isMyTurn || needsDiscard || actionsRemaining < 2 || myExploitsCount === 0}
-            title={myExploitsCount === 0 ? 'Você precisa ter pelo menos 1 Exploit na mesa para reportar!' : 'Submeta o relatório! Custa 2 AP e encerra o turno com Payout.'}
+            title={myExploitsCount === 0 ? (language === 'en' ? 'You need at least 1 active exploit on table to report!' : 'Você precisa ter pelo menos 1 Exploit na mesa para reportar!') : t('actions.reportTooltip')}
             style={{
               padding: '10px 18px',
               background: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 && !needsDiscard ? '#16A34A' : '#E2E8F0',
@@ -293,13 +296,38 @@ export const ActionPointsBar: React.FC = () => {
               boxShadow: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 ? '0 2px 6px rgba(22, 163, 74, 0.4)' : 'none'
             }}
           >
-            <Send size={15} /> 3. REPORT (2 AP)
+            <Send size={15} /> {t('actions.report')}
           </button>
+
+          {/* Habilidade Social Engineer (Phishing) */}
+          {currentPlayer?.archetype?.id?.includes('social-engineer') && (
+            <button
+              onClick={() => { soundFx.playClick(); actionSocialPhishing && actionSocialPhishing(); }}
+              disabled={!isMyTurn || needsDiscard || actionsRemaining < 1 || currentPlayer.hand.length === 0}
+              title="Phishing: Puxe 1 carta aleatória da mão de um oponente e entregue 1 da sua mão para ele"
+              style={{
+                padding: '10px 14px',
+                background: isMyTurn && actionsRemaining >= 1 && !needsDiscard && currentPlayer.hand.length > 0 ? '#EC4899' : '#E2E8F0',
+                color: isMyTurn && actionsRemaining >= 1 && !needsDiscard && currentPlayer.hand.length > 0 ? '#FFFFFF' : '#94A3B8',
+                border: '1.5px solid #2B2620',
+                borderRadius: '6px',
+                fontWeight: '800',
+                fontFamily: 'monospace',
+                fontSize: '11px',
+                cursor: isMyTurn && actionsRemaining >= 1 && !needsDiscard && currentPlayer.hand.length > 0 ? 'pointer' : 'not-allowed',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+            >
+              🎭 Phishing (1 AP)
+            </button>
+          )}
 
           {/* Simulação de Teste D6 */}
           <button
             onClick={() => { soundFx.playClick(); triggerManualDiceRoll(); }}
-            title="Simular teste de Patch Speed (D6)"
+            title={t('actions.diceRollTooltip')}
             style={{
               padding: '10px 14px',
               background: '#FAF6EE',
@@ -315,14 +343,14 @@ export const ActionPointsBar: React.FC = () => {
               gap: '5px'
             }}
           >
-            <Dices size={14} /> Dados D6
+            <Dices size={14} /> {t('actions.diceRoll')}
           </button>
 
           {/* Passar Turno */}
           <button
             onClick={() => { soundFx.playClick(); endTurn(); }}
             disabled={!isMyTurn || needsDiscard}
-            title={myExploitsCount > 0 ? 'Encerra o turno e dispara o Teste de Patch Stealth (3D6, descarta o maior).' : 'Encerra o turno no Modo Furtivo e remove 1 Token de Alerta.'}
+            title={t('actions.endTurnTooltip')}
             style={{
               padding: '10px 16px',
               background: isMyTurn && actionsRemaining === 0 ? '#B45309' : '#2B2620',
@@ -341,8 +369,10 @@ export const ActionPointsBar: React.FC = () => {
           >
             <SkipForward size={14} />
             {actionsRemaining === 0
-              ? (myExploitsCount > 0 ? 'Passar Turno & Rolar Patch 🎲' : 'Passar Turno (Furtivo) 🕶️')
-              : 'Passar Turno ⏩'}
+              ? (myExploitsCount > 0 
+                  ? (language === 'en' ? 'Pass Turn & Roll Patch 🎲' : 'Passar Turno & Rolar Patch 🎲')
+                  : (language === 'en' ? 'Pass Turn (Stealth) 🕶️' : 'Passar Turno (Furtivo) 🕶️'))
+              : (language === 'en' ? 'Pass Turn ⏩' : 'Passar Turno ⏩')}
           </button>
         </div>
       </div>

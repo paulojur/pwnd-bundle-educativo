@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
+import { useLanguage } from '../i18n/LanguageContext';
+import { getLocalizedCardDescription, getLocalizedScopeBadge } from '../i18n/cardTranslations';
 import { CardV2, getClassBadgeInfo } from '../data/cardsDataV2';
 import { ProgramCard, Archetype } from '../data/cardsData';
 import { Zap, Wrench, ShieldCheck, Sparkles, CheckCircle2, Trash2, RefreshCw } from 'lucide-react';
@@ -7,6 +9,7 @@ import { soundFx } from '../utils/audio';
 import { checkCardScopeV14 } from '../utils/gameRulesV14';
 
 export const BoardHand: React.FC = () => {
+  const { language, t } = useLanguage();
   const {
     playerHand,
     playerActiveProgram,
@@ -83,23 +86,23 @@ export const BoardHand: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '16px' }}>🃏</span>
           <h3 style={{ fontSize: '14px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace' }}>
-            SUA MÃO DE CARTAS ({playerHand.length} cartas)
+            {t('playerMat.handTitle')} ({playerHand.length} {t('playerMat.cardsCount')})
           </h3>
           <span style={{ fontSize: '10px', color: '#685F53', fontFamily: 'monospace' }}>
-            (Limite: {playerArchetype.maxHandSize || 6} cartas)
+            ({t('playerMat.limit')} {playerArchetype.maxHandSize || 6} {t('playerMat.cardsCount')})
           </span>
         </div>
 
         {/* Notificações de ação */}
         {needsDiscard && !pendingToolInstall && (
           <div style={{ fontSize: '11px', color: '#991B1B', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#FEE2E2', border: '1px solid #B91C1C', padding: '4px 10px', borderRadius: '4px', fontWeight: '800' }}>
-            ⚠️ LIMITE EXCEDIDO: Descarte {playerHand.length - playerArchetype.maxHandSize} carta(s).
+            ⚠️ {language === 'en' ? `HAND LIMIT EXCEEDED: Discard ${playerHand.length - playerArchetype.maxHandSize} card(s).` : `LIMITE EXCEDIDO: Descarte ${playerHand.length - playerArchetype.maxHandSize} carta(s).`}
           </div>
         )}
 
         {pendingToolInstall && (
           <div style={{ fontSize: '11px', color: '#0369A1', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#E0F2FE', border: '1px solid #0369A1', padding: '4px 10px', borderRadius: '4px', fontWeight: '800' }}>
-            🔧 INSTALANDO [{pendingToolInstall.name}]: Clique no botão de outra carta para sacrificar como pagamento.
+            🔧 {language === 'en' ? `INSTALLING [${pendingToolInstall.name}]: Click button on another card to sacrifice as payment.` : `INSTALANDO [${pendingToolInstall.name}]: Clique no botão de outra carta para sacrificar como pagamento.`}
           </div>
         )}
 
@@ -129,11 +132,11 @@ export const BoardHand: React.FC = () => {
               boxShadow: '0 2px 5px rgba(22, 163, 74, 0.4)'
             }}
           >
-            <RefreshCw size={14} /> ♻️ RECICLAR 2 CARTAS SELECIONADAS POR 1 NOVA
+            <RefreshCw size={14} /> {t('actions.recycleButton')}
           </button>
         ) : selectedCardIds.length === 1 && (
           <div style={{ fontSize: '10.5px', color: '#B45309', fontFamily: 'monospace' }}>
-            💡 Selecione mais 1 carta para ativar a <strong>Reciclagem 2 por 1</strong>!
+            {t('actions.recycleHint')}
           </div>
         )}
       </div>
@@ -141,7 +144,7 @@ export const BoardHand: React.FC = () => {
       {/* CONTAINER HORIZONTAL DE CARTAS */}
       {playerHand.length === 0 ? (
         <div style={{ padding: '24px', textAlign: 'center', color: '#685F53', fontSize: '12px', fontFamily: 'monospace', background: '#FAF6EE', border: '1.5px dashed #A89D8B', borderRadius: '8px' }}>
-          Sua mão está vazia. Clique em <strong>[1. RECON (1 AP)]</strong> na barra de ações acima para comprar novas cartas no seu turno!
+          {t('playerMat.emptyHand')}
         </div>
       ) : (
         <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', maxWidth: '100%', paddingBottom: '10px' }}>
@@ -196,7 +199,7 @@ export const BoardHand: React.FC = () => {
                       marginBottom: '3px'
                     }}
                   >
-                    {scopeStatus.badgeLabel}
+                    {getLocalizedScopeBadge(scopeStatus.badgeLabel, scopeStatus.inScope, language)}
                   </div>
 
                   {card.type === 'exploit' && (
@@ -223,7 +226,7 @@ export const BoardHand: React.FC = () => {
                   <span style={{ fontSize: '22px' }}>{card.icon}</span>
                   {card.points > 0 && (
                     <span style={{ fontSize: '11px', fontWeight: '900', color: '#166534', fontFamily: 'monospace' }}>
-                      +${card.points.toLocaleString('pt-BR')}
+                      +${card.points.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}
                     </span>
                   )}
                 </div>
@@ -238,9 +241,9 @@ export const BoardHand: React.FC = () => {
                   </div>
                 </div>
 
-                {/* DESCRIÇÃO EM PORTUGUÊS LEIGO */}
+                {/* DESCRIÇÃO DA CARTA LOCALIZADA */}
                 <div style={{ fontSize: '8.5px', color: '#4B4337', lineHeight: '1.3', background: '#FAF6EE', padding: '4px', borderRadius: '4px', border: '1px solid #E2D7C5' }}>
-                  {card.ptDescription || card.simpleDescription}
+                  {getLocalizedCardDescription(card, language)}
                 </div>
 
                 {/* BOTÕES DE AÇÃO NA CARTA */}

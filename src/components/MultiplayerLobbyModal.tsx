@@ -10,16 +10,11 @@ interface MultiplayerLobbyModalProps {
 }
 
 export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({ isOpen, onClose, onStartGame }) => {
-  const [activeTab, setActiveTab] = useState<'mode' | 'create' | 'join' | 'supabase'>('mode');
+  const [activeTab, setActiveTab] = useState<'mode' | 'create' | 'join'>('mode');
   const [inputCode, setInputCode] = useState<string>('');
   const [createdCode, setCreatedCode] = useState<string>('');
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
-
-  // Supabase settings state
-  const [supabaseUrl, setSupabaseUrl] = useState<string>(() => localStorage.getItem('pwnd_supabase_url') || '');
-  const [supabaseKey, setSupabaseKey] = useState<string>(() => localStorage.getItem('pwnd_supabase_anon_key') || '');
-  const [supabaseSaved, setSupabaseSaved] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
@@ -53,17 +48,6 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({ is
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  const handleSaveSupabase = () => {
-    soundFx.playClick();
-    if (supabaseUrl.trim() && supabaseKey.trim()) {
-      supabaseSync.setCustomCredentials(supabaseUrl.trim(), supabaseKey.trim());
-      setSupabaseSaved(true);
-      setTimeout(() => setSupabaseSaved(false), 2500);
-    }
-  };
-
-  const isConfigured = supabaseSync.isSupabaseConfigured();
-
   return (
     <div className="modal-overlay" style={{ zIndex: 1100 }}>
       <div
@@ -95,43 +79,12 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({ is
           </button>
         </div>
 
-        {/* Tab Selection */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-          <button
-            onClick={() => setActiveTab('mode')}
-            style={{
-              flex: 1,
-              padding: '8px',
-              background: activeTab === 'mode' ? 'rgba(0, 229, 255, 0.15)' : 'rgba(255,255,255,0.05)',
-              border: `1px solid ${activeTab === 'mode' ? '#00e5ff' : 'rgba(255,255,255,0.1)'}`,
-              color: activeTab === 'mode' ? '#00e5ff' : '#9ca3af',
-              borderRadius: '6px',
-              fontFamily: 'monospace',
-              fontSize: '11px',
-              cursor: 'pointer',
-              fontWeight: 'bold'
-            }}
-          >
-            Modos de Jogo
-          </button>
-          <button
-            onClick={() => setActiveTab('supabase')}
-            style={{
-              padding: '8px 12px',
-              background: activeTab === 'supabase' ? 'rgba(0, 255, 102, 0.15)' : 'rgba(255,255,255,0.05)',
-              border: `1px solid ${activeTab === 'supabase' ? '#00ff66' : 'rgba(255,255,255,0.1)'}`,
-              color: isConfigured ? '#00ff66' : '#ffb800',
-              borderRadius: '6px',
-              fontFamily: 'monospace',
-              fontSize: '11px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <Database size={13} /> {isConfigured ? 'Supabase Conectado' : 'Configurar Supabase'}
-          </button>
+        {/* Status Conectado */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', background: 'rgba(0, 255, 102, 0.08)', border: '1px solid rgba(0, 255, 102, 0.3)', padding: '8px 12px', borderRadius: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#00ff66', fontSize: '11px', fontFamily: 'monospace', fontWeight: 'bold' }}>
+            <span style={{ fontSize: '14px' }}>🟢</span> Servidor Realtime Ativo & Conectado
+          </div>
+          <span style={{ fontSize: '10px', color: '#9ca3af', fontFamily: 'monospace' }}>Pronto para sincronizar</span>
         </div>
 
         {/* Tab: Escolha do Modo */}
@@ -392,86 +345,6 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({ is
                 }}
               >
                 Conectar à Sala 🎲
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Tab: Configuração Supabase */}
-        {activeTab === 'supabase' && (
-          <div style={{ padding: '8px 0' }}>
-            <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '12px', lineHeight: '1.5' }}>
-              O PWND utiliza o <strong>Supabase Realtime (Broadcast & Presence)</strong> para sincronizar as jogadas entre os navegadores de qualquer lugar do mundo. Cole abaixo a URL e a Anon Key do seu projeto:
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
-              <div>
-                <label style={{ fontSize: '11px', color: '#00e5ff', fontFamily: 'monospace', display: 'block', marginBottom: '4px' }}>
-                  SUPABASE PROJECT URL
-                </label>
-                <input
-                  type="text"
-                  placeholder="https://xyzcompany.supabase.co"
-                  value={supabaseUrl}
-                  onChange={(e) => setSupabaseUrl(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    fontSize: '12px',
-                    fontFamily: 'monospace',
-                    background: 'rgba(0,0,0,0.4)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '6px',
-                    color: '#fff'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: '11px', color: '#00e5ff', fontFamily: 'monospace', display: 'block', marginBottom: '4px' }}>
-                  SUPABASE ANON PUBLIC KEY
-                </label>
-                <input
-                  type="password"
-                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                  value={supabaseKey}
-                  onChange={(e) => setSupabaseKey(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    fontSize: '12px',
-                    fontFamily: 'monospace',
-                    background: 'rgba(0,0,0,0.4)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '6px',
-                    color: '#fff'
-                  }}
-                />
-              </div>
-            </div>
-
-            {supabaseSaved && (
-              <div style={{ color: '#00ff66', fontSize: '12px', fontFamily: 'monospace', textAlign: 'center', marginBottom: '12px' }}>
-                ✅ Credenciais salvas com sucesso! O Realtime está ativo.
-              </div>
-            )}
-
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button
-                onClick={() => {
-                  supabaseSync.clearCredentials();
-                  setSupabaseUrl('');
-                  setSupabaseKey('');
-                }}
-                style={{ padding: '8px 12px', background: 'rgba(255,51,75,0.15)', color: '#ff334b', border: '1px solid #ff334b', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '11px' }}
-              >
-                Limpar
-              </button>
-              <button
-                onClick={handleSaveSupabase}
-                style={{ flex: 1, padding: '10px', background: '#00ff66', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '12px', fontWeight: '800' }}
-              >
-                Salvar & Conectar Realtime
               </button>
             </div>
           </div>

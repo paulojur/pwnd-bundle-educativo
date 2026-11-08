@@ -10,6 +10,7 @@ import { EventCardModal } from './EventCardModal';
 import { PrintAndPlayModal } from './PrintAndPlayModal';
 import { PlayerAidModal } from './PlayerAidModal';
 import { ARCHETYPES, PROGRAM_CARDS, ProgramCard } from '../data/cardsData';
+import { useLanguage } from '../i18n/LanguageContext';
 import { Layers, RefreshCw, Eye, Users, ShieldAlert, Globe, Printer, BookOpen, Trophy, Home, HelpCircle, ArrowLeft } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 
@@ -86,6 +87,8 @@ const BoardGameContent: React.FC = () => {
     return () => window.removeEventListener('pwnd_abandon_program', handleAbandon);
   }, [abandonActiveProgram]);
 
+  const { language, setLanguage, t } = useLanguage();
+
   // Program Card Fallback se estiver aguardando escolha no Program Market do Tabuleiro Central
   const currentDisplayProgram: ProgramCard = (playerActiveProgram as ProgramCard) || {
     id: 'pending',
@@ -140,280 +143,347 @@ const BoardGameContent: React.FC = () => {
           background: '#FAF6EE',
           border: '2px solid #2B2620',
           borderRadius: '10px',
-          padding: '8px 16px',
           marginBottom: '14px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+          overflow: 'hidden'
         }}
       >
-        {/* BRAND LOGO */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div
-            style={{
-              background: '#2B2620',
-              width: '34px',
-              height: '34px',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#FAF6EE'
-            }}
-          >
-            <Layers size={18} />
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '16px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', letterSpacing: '-0.5px' }}>
-                PWNED!
-              </span>
-              <span style={{ fontSize: '9px', fontWeight: '800', background: '#B45309', color: '#fff', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
-                V1.4
-              </span>
-              {roomCode && (
-                <span style={{ fontSize: '9px', fontWeight: '800', background: '#059669', color: '#fff', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
-                  SALA: {roomCode}
-                </span>
-              )}
-            </div>
-            <div style={{ fontSize: '9.5px', color: '#7E7362', fontFamily: 'monospace' }}>
-              The Bug Bounty Chaos
-            </div>
-          </div>
-        </div>
-
-        {/* NAVEGAÇÃO DE VISÕES (SEGMENTED TABS) */}
+        {/* ROW 1: BRAND LOGO + VIEW TABS + UTILITIES (ONLINE / LANG / RESET) */}
         <div
           style={{
+            padding: '8px 16px',
             display: 'flex',
-            background: '#EDE4D4',
-            padding: '3px',
-            borderRadius: '8px',
-            border: '1.5px solid #2B2620',
-            gap: '3px'
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px'
           }}
         >
-          <button
-            onClick={() => { soundFx.playClick(); setViewMode('myMat'); }}
-            style={{
-              padding: '6px 12px',
-              background: viewMode === 'myMat' ? '#2B2620' : 'transparent',
-              color: viewMode === 'myMat' ? '#FAF6EE' : '#2B2620',
-              border: 'none',
-              borderRadius: '5px',
-              fontSize: '11px',
-              fontWeight: '800',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px'
-            }}
-          >
-            <Eye size={13} /> Meu Tapete
-          </button>
-
-          <button
-            onClick={() => { soundFx.playClick(); setViewMode('centerTable'); }}
-            style={{
-              padding: '6px 12px',
-              background: viewMode === 'centerTable' ? '#2B2620' : 'transparent',
-              color: viewMode === 'centerTable' ? '#FAF6EE' : '#2B2620',
-              border: 'none',
-              borderRadius: '5px',
-              fontSize: '11px',
-              fontWeight: '800',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px'
-            }}
-          >
-            <Layers size={13} /> Mesa Central
-          </button>
-
-          <button
-            onClick={() => { soundFx.playClick(); setViewMode('fullTable'); }}
-            style={{
-              padding: '6px 12px',
-              background: viewMode === 'fullTable' ? '#2B2620' : 'transparent',
-              color: viewMode === 'fullTable' ? '#FAF6EE' : '#2B2620',
-              border: 'none',
-              borderRadius: '5px',
-              fontSize: '11px',
-              fontWeight: '800',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px'
-            }}
-          >
-            <Users size={13} /> Mesa Completa ({playerCount}P)
-          </button>
-        </div>
-
-        {/* CONTROLES DE MESA & PERSPECTIVA (PLAYTEST HUB) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* SELETOR DE JOGADORES NA PARTIDA (2 A 6) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <label style={{ fontSize: '10.5px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
-              👥 Mesa:
-            </label>
-            <select
-              value={playerCount}
-              onChange={(e) => {
-                soundFx.playClick();
-                setPlayerCount(Number(e.target.value));
-              }}
-              title="Configurar quantidade de jogadores ativos na mesa (2 a 6)"
+          {/* BRAND LOGO */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '220px' }}>
+            <div
               style={{
-                padding: '6px 10px',
-                background: '#FFFFFF',
-                color: '#2B2620',
-                border: '1.5px solid #2B2620',
+                background: '#2B2620',
+                width: '34px',
+                height: '34px',
                 borderRadius: '6px',
-                fontSize: '11.5px',
-                fontWeight: '900',
-                fontFamily: 'monospace',
-                cursor: 'pointer',
-                outline: 'none'
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FAF6EE'
               }}
             >
-              <option value={2}>2 Jogadores (Duelo)</option>
-              <option value={3}>3 Jogadores</option>
-              <option value={4}>4 Jogadores</option>
-              <option value={5}>5 Jogadores</option>
-              <option value={6}>6 Jogadores (Cheia)</option>
-            </select>
+              <Layers size={18} />
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '16px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', letterSpacing: '-0.5px' }}>
+                  PWNED!
+                </span>
+                <span style={{ fontSize: '9px', fontWeight: '800', background: '#B45309', color: '#fff', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
+                  {t('app.version')}
+                </span>
+                {roomCode && (
+                  <span style={{ fontSize: '9px', fontWeight: '800', background: '#059669', color: '#fff', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
+                    {t('app.room')}: {roomCode}
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: '9.5px', color: '#7E7362', fontFamily: 'monospace' }}>
+                {t('app.subtitle')}
+              </div>
+            </div>
           </div>
 
-          {/* SELETOR DE PERSPECTIVA DO JOGADOR (OPTION / DROPDOWN) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <label style={{ fontSize: '10.5px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
-              👁️ Jogador:
-            </label>
-            <select
-              value={myRole}
-              onChange={(e) => {
-                soundFx.playClick();
-                setMyRole(e.target.value as any);
-              }}
-              title="Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador"
+          {/* NAVEGAÇÃO DE VISÕES (SEGMENTED TABS NO CENTRO) */}
+          <div
+            style={{
+              display: 'flex',
+              background: '#EDE4D4',
+              padding: '3px',
+              borderRadius: '8px',
+              border: '1.5px solid #2B2620',
+              gap: '3px'
+            }}
+          >
+            <button
+              onClick={() => { soundFx.playClick(); setViewMode('myMat'); }}
               style={{
-                padding: '6px 10px',
-                background: '#FFFFFF',
-                color: currentPlayer?.color || '#1E1B18',
-                border: '1.5px solid #2B2620',
-                borderRadius: '6px',
-                fontSize: '11.5px',
-                fontWeight: '900',
+                padding: '6px 14px',
+                background: viewMode === 'myMat' ? '#2B2620' : 'transparent',
+                color: viewMode === 'myMat' ? '#FAF6EE' : '#2B2620',
+                border: 'none',
+                borderRadius: '5px',
+                fontSize: '11px',
+                fontWeight: '800',
                 fontFamily: 'monospace',
                 cursor: 'pointer',
-                outline: 'none'
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
               }}
             >
-              {allPlayers.slice(0, playerCount).map(p => (
-                <option key={p.id} value={p.id}>
-                  {p.name} {p.id === activePlayerRole ? '● (Sua Vez)' : ''} — ${p.score.toLocaleString('pt-BR')}
-                </option>
-              ))}
-            </select>
+              <Eye size={13} /> {t('nav.myMat')}
+            </button>
+
+            <button
+              onClick={() => { soundFx.playClick(); setViewMode('centerTable'); }}
+              style={{
+                padding: '6px 14px',
+                background: viewMode === 'centerTable' ? '#2B2620' : 'transparent',
+                color: viewMode === 'centerTable' ? '#FAF6EE' : '#2B2620',
+                border: 'none',
+                borderRadius: '5px',
+                fontSize: '11px',
+                fontWeight: '800',
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+            >
+              <Layers size={13} /> {t('nav.centerBoard')}
+            </button>
+
+            <button
+              onClick={() => { soundFx.playClick(); setViewMode('fullTable'); }}
+              style={{
+                padding: '6px 14px',
+                background: viewMode === 'fullTable' ? '#2B2620' : 'transparent',
+                color: viewMode === 'fullTable' ? '#FAF6EE' : '#2B2620',
+                border: 'none',
+                borderRadius: '5px',
+                fontSize: '11px',
+                fontWeight: '800',
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+            >
+              <Users size={13} /> {t('nav.fullTable')} ({playerCount}P)
+            </button>
+          </div>
+
+          {/* UTILITIES DIREITA (IDIOMA, SALA ONLINE, RESET) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* SELETOR DE IDIOMA (PT / EN) */}
+            <div
+              style={{
+                display: 'flex',
+                background: '#EDE4D4',
+                padding: '2px',
+                borderRadius: '6px',
+                border: '1.5px solid #2B2620',
+                gap: '2px'
+              }}
+            >
+              <button
+                onClick={() => { soundFx.playClick(); setLanguage('pt'); }}
+                title="Português do Brasil"
+                style={{
+                  padding: '4px 8px',
+                  background: language === 'pt' ? '#2B2620' : 'transparent',
+                  color: language === 'pt' ? '#FAF6EE' : '#2B2620',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '10.5px',
+                  fontWeight: '900',
+                  fontFamily: 'monospace',
+                  cursor: 'pointer'
+                }}
+              >
+                🇧🇷 PT
+              </button>
+              <button
+                onClick={() => { soundFx.playClick(); setLanguage('en'); }}
+                title="English"
+                style={{
+                  padding: '4px 8px',
+                  background: language === 'en' ? '#2B2620' : 'transparent',
+                  color: language === 'en' ? '#FAF6EE' : '#2B2620',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '10.5px',
+                  fontWeight: '900',
+                  fontFamily: 'monospace',
+                  cursor: 'pointer'
+                }}
+              >
+                🇺🇸 EN
+              </button>
+            </div>
+
+            <button
+              onClick={() => { soundFx.playClick(); setMultiplayerModalOpen(true); }}
+              title={t('nav.onlineRoom')}
+              style={{
+                padding: '6px 12px',
+                background: roomCode ? '#059669' : '#0284C7',
+                color: '#FFFFFF',
+                border: '1.5px solid #2B2620',
+                borderRadius: '6px',
+                fontSize: '11px',
+                fontWeight: '800',
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+            >
+              <Globe size={13} /> {roomCode ? `${t('app.room')} ${roomCode}` : t('nav.onlineRoom')}
+            </button>
+
+            <button
+              onClick={() => {
+                if (confirm(t('nav.resetConfirm'))) {
+                  soundFx.playClick();
+                  resetBoardGame();
+                }
+              }}
+              title={t('nav.resetGame')}
+              style={{
+                padding: '6px 8px',
+                background: '#FAF6EE',
+                color: '#685F53',
+                border: '1.5px solid #2B2620',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <RefreshCw size={13} />
+            </button>
           </div>
         </div>
 
-        {/* UTILITIES (PLAYER AID, MANUAL, ONLINE, RESET) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <button
-            onClick={() => { soundFx.playClick(); setPlayerAidModalOpen(true); }}
-            title="Abrir Player Aid canônico V1.4"
-            style={{
-              padding: '6px 10px',
-              background: '#FAF6EE',
-              color: '#B45309',
-              border: '1.5px solid #B45309',
-              borderRadius: '6px',
-              fontSize: '11px',
-              fontWeight: '800',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-          >
-            <HelpCircle size={13} /> Player Aid
-          </button>
+        {/* ROW 2: CONTROLES DA PARTIDA (SIMULATION HUB) + AJUDA / MANUAL */}
+        <div
+          style={{
+            background: 'rgba(43,38,32,0.04)',
+            borderTop: '1px solid rgba(43,38,32,0.12)',
+            padding: '6px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px'
+          }}
+        >
+          {/* ESQUERDA: SELETORES DE MESA E PERSPECTIVA */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <label style={{ fontSize: '10.5px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
+                👥 {t('nav.tableCount')}
+              </label>
+              <select
+                value={playerCount}
+                onChange={(e) => {
+                  soundFx.playClick();
+                  setPlayerCount(Number(e.target.value));
+                }}
+                title={t('nav.playersCountLabel')}
+                style={{
+                  padding: '4px 8px',
+                  background: '#FFFFFF',
+                  color: '#2B2620',
+                  border: '1.5px solid #2B2620',
+                  borderRadius: '5px',
+                  fontSize: '11px',
+                  fontWeight: '900',
+                  fontFamily: 'monospace',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                <option value={2}>2 {language === 'en' ? 'Players (Duel)' : 'Jogadores (Duelo)'}</option>
+                <option value={3}>3 {language === 'en' ? 'Players' : 'Jogadores'}</option>
+                <option value={4}>4 {language === 'en' ? 'Players' : 'Jogadores'}</option>
+                <option value={5}>5 {language === 'en' ? 'Players' : 'Jogadores'}</option>
+                <option value={6}>6 {language === 'en' ? 'Players (Full)' : 'Jogadores (Cheia)'}</option>
+              </select>
+            </div>
 
-          <button
-            onClick={() => { soundFx.playClick(); window.open('/pwned-manual-sucesso-v1.html', '_blank'); }}
-            title="Abrir manual oficial de regras V1.4"
-            style={{
-              padding: '6px 10px',
-              background: '#FAF6EE',
-              color: '#1E1B18',
-              border: '1.5px solid #2B2620',
-              borderRadius: '6px',
-              fontSize: '11px',
-              fontWeight: '800',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-          >
-            <BookOpen size={13} /> Manual
-          </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <label style={{ fontSize: '10.5px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
+                👁️ {t('nav.playerView')}
+              </label>
+              <select
+                value={myRole}
+                onChange={(e) => {
+                  soundFx.playClick();
+                  setMyRole(e.target.value as any);
+                }}
+                title="Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador"
+                style={{
+                  padding: '4px 8px',
+                  background: '#FFFFFF',
+                  color: currentPlayer?.color || '#1E1B18',
+                  border: '1.5px solid #2B2620',
+                  borderRadius: '5px',
+                  fontSize: '11px',
+                  fontWeight: '900',
+                  fontFamily: 'monospace',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                {allPlayers.slice(0, playerCount).map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} {p.id === activePlayerRole ? `● (${language === 'en' ? 'Your Turn' : 'Sua Vez'})` : ''} — ${p.score.toLocaleString('pt-BR')}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-          <button
-            onClick={() => { soundFx.playClick(); setMultiplayerModalOpen(true); }}
-            title="Conectar ou criar sala multiplayer online"
-            style={{
-              padding: '6px 10px',
-              background: roomCode ? '#059669' : '#0284C7',
-              color: '#FFFFFF',
-              border: '1.5px solid #2B2620',
-              borderRadius: '6px',
-              fontSize: '11px',
-              fontWeight: '800',
-              fontFamily: 'monospace',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-          >
-            <Globe size={13} /> {roomCode ? `Sala ${roomCode}` : 'Online'}
-          </button>
+          {/* DIREITA: AJUDA / MANUAL / PRINT */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              onClick={() => { soundFx.playClick(); setPlayerAidModalOpen(true); }}
+              title={t('playerAid.title')}
+              style={{
+                padding: '5px 10px',
+                background: '#FAF6EE',
+                color: '#B45309',
+                border: '1.5px solid #B45309',
+                borderRadius: '5px',
+                fontSize: '11px',
+                fontWeight: '800',
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <HelpCircle size={13} /> {t('nav.playerAid')}
+            </button>
 
-          <button
-            onClick={() => {
-              if (confirm('Deseja reiniciar a mesa com novas cartas?')) {
-                soundFx.playClick();
-                resetBoardGame();
-              }
-            }}
-            title="Reiniciar Tabuleiro"
-            style={{
-              padding: '6px 8px',
-              background: '#FAF6EE',
-              color: '#685F53',
-              border: '1.5px solid #2B2620',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <RefreshCw size={13} />
-          </button>
+            <button
+              onClick={() => { soundFx.playClick(); window.open('/pwned-manual-sucesso-v1.html', '_blank'); }}
+              title={t('nav.manual')}
+              style={{
+                padding: '5px 10px',
+                background: '#FAF6EE',
+                color: '#1E1B18',
+                border: '1.5px solid #2B2620',
+                borderRadius: '5px',
+                fontSize: '11px',
+                fontWeight: '800',
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <BookOpen size={13} /> {t('nav.manual')}
+            </button>
+          </div>
         </div>
       </header>
 

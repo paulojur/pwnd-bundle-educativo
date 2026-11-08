@@ -1,5 +1,6 @@
 import React from 'react';
 import { useBoardGame, PlayerState, PlayerRoleId } from '../context/BoardGameContext';
+import { useLanguage } from '../i18n/LanguageContext';
 import { PlayerMatData } from './PlayerMat';
 import { CenterMarketMat } from './CenterMarketMat';
 import { Users, Eye, ArrowLeft, ShieldCheck, Bug, Award, Sparkles, UserCheck } from 'lucide-react';
@@ -13,6 +14,7 @@ interface FullTableViewProps {
 export const FullTableView: React.FC<FullTableViewProps> = ({
   onFocusMyMat
 }) => {
+  const { language, t } = useLanguage();
   const {
     allPlayers,
     deployedExploits,
@@ -135,19 +137,19 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
         {/* STATUS RÁPIDO DO JOGADOR NA MESA */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', textAlign: 'center', marginBottom: '8px', fontSize: '9.5px', fontFamily: 'monospace' }}>
           <div style={{ background: '#FFFFFF', border: '1px solid #D6CBB8', borderRadius: '4px', padding: '4px 2px' }}>
-            <div style={{ color: '#685F53' }}>Mão</div>
+            <div style={{ color: '#685F53' }}>{t('fullTable.handCount')}</div>
             <div style={{ fontWeight: '800' }}>🃏 {player.hand.length}</div>
           </div>
 
           <div style={{ background: '#FFFFFF', border: '1px solid #D6CBB8', borderRadius: '4px', padding: '4px 2px' }}>
-            <div style={{ color: '#685F53' }}>Exploits</div>
+            <div style={{ color: '#685F53' }}>{t('fullTable.exploitsCount')}</div>
             <div style={{ fontWeight: '800', color: activeExploits.length > 0 ? '#B45309' : '#685F53' }}>
               💉 {activeExploits.length}/3
             </div>
           </div>
 
           <div style={{ background: '#FFFFFF', border: '1px solid #D6CBB8', borderRadius: '4px', padding: '4px 2px' }}>
-            <div style={{ color: '#685F53' }}>Defesa</div>
+            <div style={{ color: '#685F53' }}>{t('fullTable.defense')}</div>
             <div style={{ fontWeight: '800', color: player.safeguardSlot ? '#166534' : '#9CA3AF' }}>
               {player.safeguardSlot ? '🛡️ Bypass' : '—'}
             </div>
@@ -165,7 +167,7 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
             </span>
             {isCurrentTurnActive && (
               <span style={{ background: '#16A34A', color: '#fff', padding: '1px 5px', borderRadius: '3px', fontWeight: '900', fontSize: '8.5px' }}>
-                SUA VEZ
+                {language === 'en' ? 'YOUR TURN' : 'SUA VEZ'}
               </span>
             )}
           </div>
@@ -190,7 +192,7 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
               gap: '4px'
             }}
           >
-            <Eye size={11} /> {isSelectedLocalView ? 'Visualizando' : 'Assumir Mesa'}
+            <Eye size={11} /> {isSelectedLocalView ? t('fullTable.viewing') : t('fullTable.takeSeat')}
           </button>
         </div>
       </div>
@@ -226,10 +228,10 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
           <Users size={22} color="#B45309" />
           <div>
             <h2 style={{ fontSize: '17px', fontWeight: '900', color: '#1E1B18', margin: 0, fontFamily: 'monospace' }}>
-              MESA COMPLETA DE PLAYTEST ({playerCount} JOGADORES ATIVOS)
+              {t('fullTable.headerTitle')} ({playerCount} {t('fullTable.activePlayers')})
             </h2>
             <div style={{ fontSize: '10.5px', color: '#685F53', fontFamily: 'monospace' }}>
-              Clique no assento de qualquer jogador para assumir sua visão de mesa e jogar com seu tapete!
+              {t('fullTable.headerSubtitle')}
             </div>
           </div>
         </div>
@@ -237,7 +239,7 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
         {/* SELETOR DE JOGADORES NA MESA (2 A 6) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '10.5px', fontFamily: 'monospace', fontWeight: '800', color: '#685F53' }}>
-            Jogadores na Partida:
+            {t('nav.playersCountLabel')}
           </span>
           <div style={{ display: 'flex', gap: '4px', background: '#FFFFFF', padding: '3px', borderRadius: '6px', border: '1.5px solid #2B2620' }}>
             {[2, 3, 4, 5, 6].map(count => (
@@ -258,9 +260,9 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
                   fontWeight: '900',
                   cursor: 'pointer'
                 }}
-                title={count === 2 ? 'Modo Duelo Oficial V1.4 (2 Jogadores)' : `${count} Jogadores ao redor da mesa`}
+                title={count === 2 ? t('nav.duelTitle') : t('nav.fullSeatsTitle')}
               >
-                {count}{count === 2 ? ' (Duelo)' : ''}
+                {count}{count === 2 ? ` (${language === 'en' ? 'Duel' : 'Duelo'})` : ''}
               </button>
             ))}
           </div>
@@ -283,7 +285,7 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
               marginLeft: '8px'
             }}
           >
-            <ArrowLeft size={14} /> Voltar ao Meu Tapete
+            <ArrowLeft size={14} /> {t('centerBoard.returnToMyMat')}
           </button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
+import { useLanguage } from '../i18n/LanguageContext';
 import { ProgramCard } from '../data/cardsData';
 import { Layers, ShieldAlert, ArrowRight, Wrench, AlertTriangle, Trophy, Eye, CheckCircle2 } from 'lucide-react';
 import { soundFx } from '../utils/audio';
@@ -16,6 +17,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
   selectedProgramId,
   onSelectProgram
 }) => {
+  const { language, t } = useLanguage();
   const {
     programMarket,
     playerActiveProgram,
@@ -81,10 +83,10 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
         >
           <div>
             <div style={{ fontSize: '10px', fontWeight: '800', letterSpacing: '2.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53' }}>
-              TABULEIRO CENTRAL OFICIAL (V1.4)
+              {t('centerBoard.title')}
             </div>
             <h2 style={{ fontSize: '20px', fontWeight: '900', fontFamily: 'monospace', letterSpacing: '-0.5px', margin: '2px 0 0 0', color: '#1E1B18' }}>
-              BOUNTY TRACK & PROGRAM MARKET
+              {t('centerBoard.subtitle')}
             </h2>
           </div>
 
@@ -102,10 +104,10 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
               }}
             >
               <span style={{ fontSize: '11px', fontWeight: '700', fontFamily: 'monospace', color: '#685F53' }}>
-                Bounty Acumulado:
+                {t('centerBoard.accumulatedTotal')}
               </span>
               <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'monospace', color: '#047857' }}>
-                ${currentCash.toLocaleString('pt-BR')}
+                ${currentCash.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}
               </span>
               <span style={{ fontSize: '11px', color: '#7E7362', fontFamily: 'monospace' }}>
                 / $40.000
@@ -125,7 +127,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
               }}
             >
               <span style={{ fontSize: '11px', fontWeight: '700', fontFamily: 'monospace', color: '#685F53' }}>
-                RODADA:
+                {t('centerBoard.round')}
               </span>
               <span style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'monospace', color: '#B45309' }}>
                 {currentRound} / {totalRounds}
@@ -150,19 +152,19 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '14px' }}>🐝</span>
               <span style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'monospace', letterSpacing: '1px', textTransform: 'uppercase', color: '#1E1B18' }}>
-                TRILHA HONEYCOMB DE RECOMPENSAS ($0 A $40.000)
+                {t('centerBoard.honeycombTrack')}
               </span>
             </div>
 
             <div style={{ display: 'flex', gap: '12px', fontSize: '10px', fontFamily: 'monospace', color: '#685F53' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '10px', height: '10px', background: '#EFF2B5', border: '1px solid #2B241D', display: 'inline-block' }} /> Zona 1 ($0 - $15.5k)
+                <span style={{ width: '10px', height: '10px', background: '#EFF2B5', border: '1px solid #2B241D', display: 'inline-block' }} /> {t('centerBoard.zone1')}
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '10px', height: '10px', background: '#FBD2AF', border: '1px solid #2B241D', display: 'inline-block' }} /> Zona 2 ($16k - $29.5k)
+                <span style={{ width: '10px', height: '10px', background: '#FBD2AF', border: '1px solid #2B241D', display: 'inline-block' }} /> {t('centerBoard.zone2')}
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '10px', height: '10px', background: '#F29672', border: '1px solid #2B241D', display: 'inline-block' }} /> Zona 3 ($30k - $40k)
+                <span style={{ width: '10px', height: '10px', background: '#F29672', border: '1px solid #2B241D', display: 'inline-block' }} /> {t('centerBoard.zone3')}
               </span>
             </div>
           </div>
