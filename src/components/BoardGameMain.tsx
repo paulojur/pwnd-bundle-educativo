@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BoardGameProvider, useBoardGame } from '../context/BoardGameContext';
+import React, { useState, useEffect } from 'react';
+import { BoardGameProvider, useBoardGame, PlayerRoleId, formatPlayerName } from '../context/BoardGameContext';
 import { CenterMarketMat } from './CenterMarketMat';
 import { PlayerMat, PlayerMatData } from './PlayerMat';
 import { FullTableView } from './FullTableView';
@@ -9,10 +9,13 @@ import { MultiplayerLobbyModal } from './MultiplayerLobbyModal';
 import { EventCardModal } from './EventCardModal';
 import { PrintAndPlayModal } from './PrintAndPlayModal';
 import { PlayerAidModal } from './PlayerAidModal';
+import { ProgramSelectorModal } from './ProgramSelectorModal';
+import { ObserverMetricsModal, DeckPeekModal } from './ObserverMetricsModal';
 import { ARCHETYPES, PROGRAM_CARDS, ProgramCard } from '../data/cardsData';
 import { useLanguage } from '../i18n/LanguageContext';
-import { Layers, RefreshCw, Eye, Users, ShieldAlert, Globe, Printer, BookOpen, Trophy, Home, HelpCircle, ArrowLeft } from 'lucide-react';
+import { Layers, RefreshCw, Eye, Users, ShieldAlert, Globe, Printer, BookOpen, Trophy, Home, HelpCircle, ArrowLeft, Activity, LogOut } from 'lucide-react';
 import { soundFx } from '../utils/audio';
+import { supabaseSync } from '../utils/supabaseSync';
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
   constructor(props: { children: React.ReactNode }) {
@@ -70,14 +73,33 @@ const BoardGameContent: React.FC = () => {
     defusePatch,
     acceptPatch,
     resetBoardGame,
-    actionInfiltrar
+    leaveLanRoom,
+    startLanMatch,
+    setPlayerNickname,
+    actionInfiltrar,
+    awaitingProgramPick,
+    programPickReason,
+    duelRotationsRemaining,
+    programMarket,
+    programDeckCount,
+    drawSurpriseProgramFromDeck,
+    rotateMarketProgram,
+    activateInstalledTool,
+    playerActiveEventsList,
+    lastEventResolutionSummary,
+    pendingTargetedEvent,
+    resolveTargetedEvent,
+    auditLogs,
+    roomCode,
+    setRoomCode
   } = useBoardGame();
 
   const [viewMode, setViewMode] = useState<'myMat' | 'centerTable' | 'fullTable'>('myMat');
   const [multiplayerModalOpen, setMultiplayerModalOpen] = useState<boolean>(false);
   const [playerAidModalOpen, setPlayerAidModalOpen] = useState<boolean>(false);
   const [printModalOpen, setPrintModalOpen] = useState<boolean>(false);
-  const [roomCode, setRoomCode] = useState<string | null>(null);
+  const [observerModalOpen, setObserverModalOpen] = useState<boolean>(false);
+  const [voluntaryProgramModalOpen, setVoluntaryProgramModalOpen] = useState<boolean>(false);
 
   // Escutar evento de desistência/troca de programa ativo
   const { abandonActiveProgram } = useBoardGame();
@@ -117,6 +139,7 @@ const BoardGameContent: React.FC = () => {
     hand: playerHand,
     activeTools: playerActiveTools,
     activeExploits: myExploitsCards,
+    activeEvents: playerActiveEventsList,
     hasDefuse: playerSafeguardSlot !== null,
     hasCve: playerCveProtection !== null,
     isCurrentTurnPlayer: isMyTurn,
@@ -124,13 +147,49 @@ const BoardGameContent: React.FC = () => {
     reputacaoTokens
   };
 
-  const handleStartGameMode = (mode: 'solo' | 'hotseat' | 'lan', code?: string, role?: 'player-1' | 'player-2') => {
+  const handleStartGameMode = (mode: 'solo' | 'hotseat' | 'lan', code?: string, role?: PlayerRoleId, nickname?: string) => {
     setGameMode(mode);
     if (code) setRoomCode(code);
     if (role) {
       setMyRole(role);
+      if (nickname !== undefined) {
+        setPlayerNickname(role, nickname);
+      }
+    }
+    if (mode === 'lan' && code) {
+      if (role === 'player-1') {
+        startLanMatch(code, playerCount, nickname);
+      } else if (role) {
+        const formattedName = formatPlayerName(role, nickname);
+        setTimeout(() => {
+          supabaseSync.broadcast('REQUEST_STATE', { from: role, playerName: formattedName });
+        }, 300);
+      }
     }
   };
+
+  const handleLeaveRoom = () => {
+    leaveLanRoom();
+    setRoomCode(null);
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const roomParam = params.get('room');
+    const roleParam = params.get('role') as PlayerRoleId | null;
+
+    if (roomParam) {
+      const code = roomParam.toUpperCase().trim();
+      setRoomCode(code);
+      if (roleParam) {
+        handleStartGameMode('lan', code, roleParam);
+      } else {
+        // Link neutro recebido: abre modal direto para escolha de assento
+        setMultiplayerModalOpen(true);
+      }
+    }
+  }, []);
 
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
@@ -336,24 +395,62 @@ const BoardGameContent: React.FC = () => {
               <Globe size={13} /> {roomCode ? `${t('app.room')} ${roomCode}` : t('nav.onlineRoom')}
             </button>
 
+            {gameMode === 'lan' && (
+              <button
+                onClick={() => {
+                  const isHost = myRole === 'player-1';
+                  const msg = isHost
+                    ? 'Deseja realmente encerrar a mesa online para todos os jogadores?'
+                    : 'Deseja realmente sair desta mesa online?';
+                  if (confirm(msg)) {
+                    soundFx.playClick();
+                    handleLeaveRoom();
+                  }
+                }}
+                title={myRole === 'player-1' ? 'Encerrar mesa online para todos' : 'Sair desta mesa online'}
+                style={{
+                  padding: '6px 10px',
+                  background: '#DC2626',
+                  color: '#FFFFFF',
+                  border: '1.5px solid #2B2620',
+                  borderRadius: '6px',
+                  fontSize: '11px',
+                  fontWeight: '800',
+                  fontFamily: 'monospace',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                <LogOut size={13} /> {myRole === 'player-1' ? 'Encerrar Mesa' : 'Sair da Mesa'}
+              </button>
+            )}
+
             <button
               onClick={() => {
+                if (gameMode === 'lan' && myRole !== 'player-1') {
+                  alert('Em partidas online, apenas o anfitrião (Jogador 1) pode reiniciar o jogo.');
+                  return;
+                }
                 if (confirm(t('nav.resetConfirm'))) {
                   soundFx.playClick();
                   resetBoardGame();
                 }
               }}
-              title={t('nav.resetGame')}
+              disabled={gameMode === 'lan' && myRole !== 'player-1'}
+              title={gameMode === 'lan' && myRole !== 'player-1' ? 'Reiniciar partida (Apenas o Host pode reiniciar)' : t('nav.resetGame')}
               style={{
                 padding: '6px 8px',
-                background: '#FAF6EE',
-                color: '#685F53',
+                background: gameMode === 'lan' && myRole !== 'player-1' ? '#E5E7EB' : '#FAF6EE',
+                color: gameMode === 'lan' && myRole !== 'player-1' ? '#9CA3AF' : '#685F53',
                 border: '1.5px solid #2B2620',
                 borderRadius: '6px',
-                cursor: 'pointer',
+                cursor: gameMode === 'lan' && myRole !== 'player-1' ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                opacity: gameMode === 'lan' && myRole !== 'player-1' ? 0.6 : 1
               }}
             >
               <RefreshCw size={13} />
@@ -440,8 +537,29 @@ const BoardGameContent: React.FC = () => {
             </div>
           </div>
 
-          {/* DIREITA: AJUDA / MANUAL / PRINT */}
+          {/* DIREITA: OBSERVADOR / AJUDA / MANUAL / PRINT */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              onClick={() => { soundFx.playClick(); setObserverModalOpen(true); }}
+              title="Métricas do Observador & Log Completo de Telemetria"
+              style={{
+                padding: '5px 10px',
+                background: '#0F172A',
+                color: '#38BDF8',
+                border: '1.5px solid #0284C7',
+                borderRadius: '5px',
+                fontSize: '11px',
+                fontWeight: '900',
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+            >
+              <Activity size={13} /> 🔭 Observador ({auditLogs.length})
+            </button>
+
             <button
               onClick={() => { soundFx.playClick(); setPlayerAidModalOpen(true); }}
               title={t('playerAid.title')}
@@ -485,6 +603,36 @@ const BoardGameContent: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* LIVE OBSERVER TICKER BAR */}
+        {auditLogs.length > 0 && (
+          <div
+            onClick={() => setObserverModalOpen(true)}
+            style={{
+              background: '#0F172A',
+              color: '#E2E8F0',
+              padding: '5px 16px',
+              fontSize: '10.5px',
+              fontFamily: 'monospace',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              borderTop: '1px solid #1E293B'
+            }}
+            title="Clique para abrir o painel completo de Métricas do Observador"
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+              <span style={{ color: '#38BDF8', fontWeight: 900 }}>[LOG R{auditLogs[0].round}]</span>
+              <span style={{ color: '#FACC15', fontWeight: 800 }}>{auditLogs[0].playerName} {auditLogs[0].archetypeName ? `(${auditLogs[0].archetypeName}):` : ':'}</span>
+              <span style={{ color: '#F8FAFC', fontWeight: 700 }}>{auditLogs[0].title}</span>
+              <span style={{ color: '#94A3B8' }}>— {auditLogs[0].details}</span>
+            </div>
+            <span style={{ color: '#38BDF8', fontWeight: 800, flexShrink: 0, marginLeft: '10px' }}>
+              Ver Histórico Completo →
+            </span>
+          </div>
+        )}
       </header>
 
       {/* RENDER VIEW MODE */}
@@ -543,8 +691,7 @@ const BoardGameContent: React.FC = () => {
           <CenterMarketMat
             totalRounds={8}
             selectedProgramId={playerActiveProgram?.id}
-            onSelectProgram={(program) => {
-              selectNewProgram(program);
+            onSelectProgram={() => {
               setViewMode('myMat');
             }}
           />
@@ -563,15 +710,51 @@ const BoardGameContent: React.FC = () => {
               }
             }}
             onOpenCenterTable={() => setViewMode('centerTable')}
+            onOpenProgramSelector={() => setVoluntaryProgramModalOpen(true)}
+            onActivateTool={(toolId) => activateInstalledTool(toolId)}
           />
         </>
       )}
+
+      {/* MODAL DE SELEÇÃO DE PROGRAMA (OBRIGATÓRIO APÓS REPORT/PATCH OU TROCA 1 AP) */}
+      <ProgramSelectorModal
+        isOpen={awaitingProgramPick || voluntaryProgramModalOpen}
+        marketPrograms={programMarket}
+        programDeckCount={programDeckCount}
+        isMandatory={awaitingProgramPick}
+        reasonLabel={programPickReason || undefined}
+        duelRotationsRemaining={duelRotationsRemaining}
+        onRotateMarketProgram={rotateMarketProgram}
+        onSelectExposedProgram={(prog: ProgramCard) => {
+          selectNewProgram(prog);
+          setVoluntaryProgramModalOpen(false);
+        }}
+        onDrawSurpriseFromDeck={() => {
+          drawSurpriseProgramFromDeck();
+          setVoluntaryProgramModalOpen(false);
+        }}
+        onClose={() => {
+          if (!awaitingProgramPick) setVoluntaryProgramModalOpen(false);
+        }}
+      />
+
+      {/* MODAL DE MÉTRICAS DO OBSERVADOR & LOG COMPLETO */}
+      <ObserverMetricsModal
+        isOpen={observerModalOpen}
+        onClose={() => setObserverModalOpen(false)}
+      />
+
+      {/* MODAL DE INSPEÇÃO DE TOPO DE BARALHO (FUZZSTORM / HEX KITCHEN / PANÓPTICO / N00B) */}
+      <DeckPeekModal />
 
       {/* EVENT CARD MODAL (DISPARO DE CAOS) */}
       <EventCardModal
         isOpen={activeEventCard !== null}
         eventCard={activeEventCard}
         onClose={closeEventModal}
+        resolutionSummary={lastEventResolutionSummary}
+        targetOptions={pendingTargetedEvent ? pendingTargetedEvent.targets : undefined}
+        onSelectTarget={(targetId) => resolveTargetedEvent(targetId)}
       />
 
       {/* PRINT AND PLAY MODAL (GERAÇÃO DE PAPEL A4) */}
@@ -582,11 +765,17 @@ const BoardGameContent: React.FC = () => {
         />
       </ErrorBoundary>
 
-      {/* MODAL MULTIPLAYER LOBBY (2 JOGADORES REAIS) */}
+      {/* MODAL MULTIPLAYER LOBBY */}
       <MultiplayerLobbyModal
         isOpen={multiplayerModalOpen}
         onClose={() => setMultiplayerModalOpen(false)}
         onStartGame={handleStartGameMode}
+        initialRoomCode={roomCode}
+        playerCount={playerCount}
+        onSetPlayerCount={setPlayerCount}
+        onLeaveRoom={handleLeaveRoom}
+        currentRole={myRole}
+        gameMode={gameMode}
       />
 
       {/* MODAL PLAYER AID (GUIA RÁPIDO DO JOGADOR V1.4) */}
@@ -715,89 +904,193 @@ const BoardGameContent: React.FC = () => {
         </div>
       )}
 
-      {/* Victory Modal Overlay Tabletop Style */}
-      {gameWinner && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.7)',
-            backdropFilter: 'blur(3px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999
-          }}
-        >
+      {/* Victory Modal Overlay Tabletop Style (Pódio & Classificação Final) */}
+      {gameWinner && (() => {
+        const activeStandings = allPlayers
+          .slice(0, playerCount)
+          .map(p => {
+            const repBonus = (p.reputacaoTokens || 0) * 500;
+            const alertPenalty = (p.alertaTokens || 0) * 500;
+            const finalTotal = p.score + repBonus - alertPenalty;
+            return { p, repBonus, alertPenalty, finalTotal };
+          })
+          .sort((a, b) =>
+            (b.finalTotal - a.finalTotal) ||
+            (b.p.reputacaoTokens - a.p.reputacaoTokens) ||
+            (a.p.alertaTokens - b.p.alertaTokens)
+          );
+        const topWinner = activeStandings[0];
+        const didLocalWin = topWinner?.p.id === myRole || gameWinner.includes(currentPlayer?.name || '');
+        const canRestart = gameMode !== 'lan' || myRole === 'player-1';
+
+        return (
           <div
             style={{
-              maxWidth: '480px',
-              width: '90%',
-              padding: '32px',
-              textAlign: 'center',
-              background: '#FAF6EE',
-              border: '3px solid #D97706',
-              borderRadius: '12px',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-              color: '#1E1B18'
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.78)',
+              backdropFilter: 'blur(4px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9000,
+              padding: '16px'
             }}
           >
             <div
               style={{
-                margin: '0 auto 16px',
-                width: '72px',
-                height: '72px',
-                borderRadius: '50%',
-                background: '#FEF3C7',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: '2px solid #D97706'
+                maxWidth: '640px',
+                width: '96%',
+                padding: '28px 24px',
+                textAlign: 'center',
+                background: '#FAF6EE',
+                border: '3px solid #D97706',
+                borderRadius: '14px',
+                boxShadow: '0 24px 60px rgba(0,0,0,0.6)',
+                color: '#1E1B18',
+                maxHeight: '92vh',
+                overflowY: 'auto'
               }}
             >
-              <Trophy size={40} color="#D97706" />
+              <div
+                style={{
+                  margin: '0 auto 12px',
+                  width: '68px',
+                  height: '68px',
+                  borderRadius: '50%',
+                  background: '#FEF3C7',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px solid #D97706'
+                }}
+              >
+                <Trophy size={38} color="#D97706" />
+              </div>
+
+              <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#B45309', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '900', marginBottom: '4px' }}>
+                HALL OF FAME — PÓDIO FINAL
+              </div>
+
+              <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', marginBottom: '6px' }}>
+                🏆 VENCEDOR: {gameWinner}
+              </h2>
+
+              <p style={{ fontSize: '13px', color: didLocalWin ? '#166534' : '#4B4337', fontWeight: didLocalWin ? '800' : '600', marginBottom: '18px', fontFamily: 'monospace' }}>
+                {didLocalWin
+                  ? '🎉 PARABÉNS! Você conquistou o 1º lugar na trilha de Bug Bounty!'
+                  : `Partida encerrada! Confira a contabilização oficial de Bounty, Reputação (🐝 +$500) e Alertas (🐞 -$500):`}
+              </p>
+
+              {/* TABELA DO PÓDIO */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px', textAlign: 'left' }}>
+                {activeStandings.map((item, idx) => {
+                  const isFirst = idx === 0;
+                  const isMe = item.p.id === myRole;
+                  const medal = idx === 0 ? '🥇 1º' : idx === 1 ? '🥈 2º' : idx === 2 ? '🥉 3º' : `${idx + 1}º`;
+
+                  return (
+                    <div
+                      key={item.p.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '8px',
+                        padding: '10px 14px',
+                        borderRadius: '8px',
+                        background: isFirst ? '#FEF3C7' : isMe ? '#F0FDF4' : '#FFFFFF',
+                        border: isFirst ? '2px solid #D97706' : isMe ? '1.5px solid #16A34A' : '1px solid #D6CBB8'
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'monospace', fontSize: '13px', fontWeight: '900', color: '#1E1B18' }}>
+                          <span>{medal}</span>
+                          <span style={{ color: item.p.color }}>{item.p.name}</span>
+                          {isMe && <span style={{ fontSize: '10px', background: '#DCFCE7', color: '#166534', padding: '1px 5px', borderRadius: '4px' }}>VOCÊ</span>}
+                        </div>
+                        <div style={{ fontSize: '10.5px', color: '#685F53', fontFamily: 'monospace', marginTop: '2px' }}>
+                          {item.p.archetype?.avatarIcon} {item.p.archetype?.name} • Bounty: ${item.p.score.toLocaleString('pt-BR')} | 🐝 {item.p.reputacaoTokens} (+${item.repBonus}) | 🐞 {item.p.alertaTokens} (-${item.alertPenalty})
+                        </div>
+                      </div>
+
+                      <div style={{ textAlign: 'right', fontFamily: 'monospace' }}>
+                        <div style={{ fontSize: '16px', fontWeight: '900', color: isFirst ? '#B45309' : '#047857' }}>
+                          ${item.finalTotal.toLocaleString('pt-BR')}
+                        </div>
+                        <div style={{ fontSize: '9px', color: '#685F53', fontWeight: '700' }}>
+                          TOTAL FINAL
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* AÇÕES FINAIS */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <button
+                  onClick={() => {
+                    soundFx.playClick();
+                    setObserverModalOpen(true);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: '#1E293B',
+                    color: '#F8FAFC',
+                    border: '2px solid #0F172A',
+                    borderRadius: '8px',
+                    fontWeight: '900',
+                    fontFamily: 'monospace',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <Activity size={16} color="#38BDF8" /> 📊 Ver Telemetria & Baixar Log da Partida
+                </button>
+
+                {canRestart ? (
+                  <button
+                    onClick={() => {
+                      soundFx.playClick();
+                      resetBoardGame();
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      background: '#16A34A',
+                      color: '#FFFFFF',
+                      border: '2px solid #2B2620',
+                      borderRadius: '8px',
+                      fontWeight: '900',
+                      fontFamily: 'monospace',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)'
+                    }}
+                  >
+                    <RefreshCw size={16} /> Jogar Nova Partida
+                  </button>
+                ) : (
+                  <div style={{ padding: '10px', background: '#F3EFE6', border: '1px dashed #A89D8B', borderRadius: '8px', fontSize: '11.5px', fontFamily: 'monospace', color: '#5A5245', fontWeight: '700' }}>
+                    ⏳ Aguardando o anfitrião (Host) iniciar uma nova partida...
+                  </div>
+                )}
+              </div>
             </div>
-
-            <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#B45309', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '900', marginBottom: '4px' }}>
-              HALL OF FAME CHAMPION
-            </div>
-
-            <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', marginBottom: '8px' }}>
-              PWNED! VITÓRIA CONQUISTADA!
-            </h2>
-
-            <p style={{ fontSize: '13.5px', color: '#4B4337', marginBottom: '22px' }}>
-              Você faturou um total de <strong style={{ color: '#047857' }}>${bountyTotalCash.toLocaleString('pt-BR')}</strong> em recompensas no Bug Bounty!
-            </p>
-
-            <button
-              onClick={() => {
-                soundFx.playClick();
-                resetBoardGame();
-              }}
-              style={{
-                width: '100%',
-                padding: '14px',
-                background: '#16A34A',
-                color: '#FFFFFF',
-                border: '2px solid #2B2620',
-                borderRadius: '8px',
-                fontWeight: '900',
-                fontFamily: 'monospace',
-                fontSize: '14px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)'
-              }}
-            >
-              <RefreshCw size={16} /> Jogar Nova Partida
-            </button>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };

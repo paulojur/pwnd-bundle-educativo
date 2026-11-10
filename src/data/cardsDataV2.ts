@@ -2,6 +2,7 @@ import { ALL_ACTION_CARDS } from './full80DeckData';
 
 export interface CardV2 {
   id: string;
+  canonicalId?: string;
   name: string;
   enName?: string;
   technicalReference: string;
@@ -11,6 +12,11 @@ export interface CardV2 {
   icon: string;
   simpleDescription: string;
   ptDescription?: string;
+  shortFlavor?: string;
+  toolId?: string;
+  toolType?: 'PASSIVA' | 'ATIVA';
+  toolMoment?: string;
+  cvssValue?: number;
   maxCharges?: number;
   charges?: number;
   isNoisy?: boolean;

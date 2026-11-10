@@ -1,0 +1,25 @@
+Id	Title	Subtitle	DeckLabel	Moment	Type	Body	TypeSync	MomentSync
+evt-04	Legal Threat!	Cease & Desist	EVENTS	ALVO 	DELAY	Escolha 1 oponente: ele deve pagar $1.5k da sua Bounty Track ou fica impedido de realizar a ação Report no seu próximo turno.	Type=DELAY	Moment=ALVO 
+evt-14	Honeypot Triggered!	Decoy Server Trap	EVENTS	ALVO 	DELAY	Escolha 1 oponente: ele descarta 2 cartas aleatórias da mão (em 2 jogadores, descarta apenas 1 carta).	Type=DELAY	Moment=ALVO 
+evt-02	Duplicate Report!	Duplicated Vulnerability Submission	EVENTS	ALVO 	DUPLICATE	Escolha 1 oponente com vulnerabilidades na mesa: ele descarta a sua vulnerabilidade de maior CVSS exposta.	Type=DUPLICATE	Moment=ALVO 
+evt-05	Triage Delay!	Corporate Backlog Delay	EVENTS	AUTOR 	DELAY	Você fica impedido de instalar ou ativar Tools no seu próximo turno.	Type=DELAY	Moment=AUTOR 
+evt-03	Out of Scope!	Out of Scope Boundary Rejection	EVENTS	AUTOR 	SCOPE	Você fica impedido de realizar a ação Exploit (baixar vulnerabilidades) no seu próximo turno.	Type=SCOPE	Moment=AUTOR 
+evt-08	Scope Expansion!	Corporate Scope Window Expansion	EVENTS	AUTOR 	SCOPE	No seu próximo turno, você pode jogar qualquer vulnerabilidade na mesa ignorando restrições de escopo.	Type=SCOPE	Moment=AUTOR 
+evt-10	Bounty Increase!	Double Bounty Multiplier	EVENTS	AUTOR / TODOS	BOUNTY	Ativo por 1 rodada (descarte no início do seu próximo turno). Qualquer jogador que fizer um Report bem-sucedido recebe $1.5k de bônus na Bounty Track.	Type=BOUNTY	Moment=AUTOR / TODOS
+evt-12	DNS Hijack!	Compulsory Target Switch	EVENTS	LÍDER	META	O jogador com maior saldo na Bounty Track descarta seu programa, compra o próximo do deck e descarta vulnerabilidades da mesa fora de escopo.	Type=META	Moment=LÍDER
+evt-06	Bug Bounty Mediation	Consensus Bounty Settlement	EVENTS	TODOS	BOUNTY	Todos os jogadores recebem $1.5k imediatamente na Bounty Track.	Type=BOUNTY	Moment=TODOS
+evt-09	Public Disclosure!	Public Zero-Day Exfiltration	EVENTS	TODOS	BOUNTY	Todos os jogadores descartam suas vulnerabilidades na mesa e recebem indenização na Bounty Track por raridade: $1k (Comum/Incomum), $2k (Rara), $2.5k (Épica) e $3k (Lendária).	Type=BOUNTY	Moment=TODOS
+evt-13	Responsible Disclosure!	Instant Free Submission Window	EVENTS	TODOS	BOUNTY	Jogadores com vulnerabilidades válidas na mesa podem fazer 1 Report imediato sem rolar dados (não compra Tool nem Evento), seguindo a ordem da mesa.	Type=BOUNTY	Moment=TODOS
+evt-24	Bounty Ético	Coordinated Vulnerability Disclosure	EVENTS	TODOS	BOUNTY	Cada jogador com zero Tokens de Alerta na mesa recebe imediatamente $1.5k de bônus na Bounty Track.	Type=BOUNTY	Moment=TODOS
+evt-15	CVE Assignment Delayed!	Defuse Blockade Window	EVENTS	TODOS	DELAY	Cartas de Defesa (Safeguard) ficam bloqueadas por 1 rodada (efeito imediato, vale contra patches do mesmo turno).	Type=DELAY	Moment=TODOS
+evt-18	Rate Limited!	Network Traffic Restriction	EVENTS	TODOS	DELAY	Todos os jogadores ficam impedidos de realizar a ação Recon (comprar cartas) no seu próximo turno.	Type=DELAY	Moment=TODOS
+evt-16	Bug Collision!	Lowest CVSS Discard Event	EVENTS	TODOS	DUPLICATE	Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta na mesa.	Type=DUPLICATE	Moment=TODOS
+evt-21	Acquisition!	Corporate Acquisition & Scope Flush	EVENTS	TODOS	DUPLICATE	Descarte e reponha os programas do mercado. Se ao menos um permitir escopo ALL, todos os jogadores avançam $500 na Bounty Track.	Type=DUPLICATE	Moment=TODOS
+evt-11	WAF Deployed!	Web Application Firewall Block	EVENTS	TODOS	META	Vulnerabilidades da classe INJ não podem ser baixadas na mesa por 1 rodada completa.	Type=META	Moment=TODOS
+evt-19	2FA Enforced!	Auth Class Lockdown	EVENTS	TODOS	META	Vulnerabilidades da classe Authentication não podem ser baixadas na mesa por 1 rodada.	Type=META	Moment=TODOS
+evt-20	Bug Bounty Conference!	Global Networking Event	EVENTS	TODOS	META	Todos os jogadores compram 2 cartas do Main Deck imediatamente.	Type=META	Moment=TODOS
+evt-22	Security Audit!	Compliance Audit Cycle	EVENTS	TODOS	META	Todos os jogadores revelam a mão e descartam a carta de maior CVSS.	Type=META	Moment=TODOS
+evt-23	Swag Drop!	Consolation Gear Reward	EVENTS	TODOS	META	Cada jogador compra 1 Tool Card do Tool Deck.	Type=META	Moment=TODOS
+evt-01	Blue Team Hunt!	Proactive Threat Hunting	EVENTS	TODOS	PATCH	Todos os jogadores descartam a vulnerabilidade de maior CVSS exposta na mesa.	Type=PATCH	Moment=TODOS
+evt-07	Zero Day Disclosure	Discard Pile Rescue	EVENTS	ÚLTIMO	META	O jogador com menor saldo na Bounty Track resgata 1 Tool Card da pilha de descarte para a mão (se houver).	Type=META	Moment=ÚLTIMO
+evt-17	Hall of Fame Update!	Underdog Catch-Up Boost	EVENTS	ÚLTIMO	META	O jogador com menor saldo na Bounty Track recebe $1.5k de bônus no seu próximo Report bem-sucedido.	Type=META	Moment=ÚLTIMO

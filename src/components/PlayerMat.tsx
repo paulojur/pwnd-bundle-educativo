@@ -30,6 +30,8 @@ interface PlayerMatProps {
   onActionReport?: () => void;
   onActionRecon?: () => void;
   onOpenCenterTable?: () => void;
+  onOpenProgramSelector?: () => void;
+  onActivateTool?: (toolId: string) => void;
 }
 
 export const PlayerMat: React.FC<PlayerMatProps> = ({
@@ -37,7 +39,9 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
   onExploitSelect,
   onActionReport,
   onActionRecon,
-  onOpenCenterTable
+  onOpenCenterTable,
+  onOpenProgramSelector,
+  onActivateTool
 }) => {
   const { language, t } = useLanguage();
   const {
@@ -208,9 +212,9 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '170px 1fr 140px',
+            gridTemplateColumns: '215px 1fr 175px',
             gap: '16px',
-            minHeight: '380px'
+            minHeight: '390px'
           }}
           className="responsive-player-mat-grid"
         >
@@ -226,27 +230,33 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 border: '1.5px solid #2B2620',
                 borderRadius: '8px',
                 background: '#FAF6EE',
-                padding: '10px',
+                padding: '10px 12px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 position: 'relative'
               }}
             >
-              <div style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53' }}>
+              <div style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#4B4337' }}>
                 ARCHETYPE
               </div>
               <div style={{ textAlign: 'center', margin: '4px 0' }}>
                 <div style={{ fontSize: '26px', lineHeight: '1' }}>{archetype.avatarIcon || '🌱'}</div>
-                <div style={{ fontSize: '13px', fontWeight: '800', fontFamily: 'monospace', color: '#1E1B18', marginTop: '4px' }}>
+                <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'monospace', color: '#1E1B18', marginTop: '4px' }}>
                   {archetype.name}
                 </div>
-                <div style={{ fontSize: '9px', color: '#5A5245', lineHeight: '1.2', marginTop: '2px' }}>
-                  {archetype.specialPowers?.[0] || archetype.presentation?.slice(0, 50)}
+                {archetype.specialPowers?.[0] && (
+                  <div style={{ fontSize: '10.5px', fontWeight: '800', color: '#B45309', fontFamily: 'monospace', marginTop: '2px' }}>
+                    ★ {archetype.specialPowers[0]}
+                  </div>
+                )}
+                <div style={{ fontSize: '10px', color: '#2B2620', fontWeight: '600', lineHeight: '1.35', marginTop: '5px', textAlign: 'left', background: '#FFFFFF', padding: '5px 7px', borderRadius: '4px', border: '1px solid #D6CBB8' }}>
+                  {archetype.presentation}
                 </div>
               </div>
-              <div style={{ fontSize: '8.5px', fontWeight: '700', color: '#7E7362', fontFamily: 'monospace', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '4px' }}>
-                Mão Máx: {archetype.maxHandSize || 6}
+              <div style={{ fontSize: '10px', fontWeight: '800', color: '#4B4337', fontFamily: 'monospace', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '4px' }}>
+                Mão Máx: {(archetype.maxHandSize || 6) + activeTools.filter(t => (t.toolId || t.id).startsWith('T-01') || t.name.includes('Browser DevTools')).length}
+                {activeTools.some(t => (t.toolId || t.id).startsWith('T-01') || t.name.includes('Browser DevTools')) ? ' (+DevTools)' : ''}
               </div>
             </div>
 
@@ -257,7 +267,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 border: isPendingProgram ? '2px dashed #B45309' : '1.5px solid #2B2620',
                 borderRadius: '8px',
                 background: isPendingProgram ? '#FFFBEB' : '#FAF6EE',
-                padding: '10px',
+                padding: '10px 12px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -265,11 +275,11 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: isPendingProgram ? '#B45309' : '#685F53' }}>
+                <span style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: isPendingProgram ? '#B45309' : '#4B4337' }}>
                   PROGRAM
                 </span>
                 {!isPendingProgram && (
-                  <span style={{ fontSize: '8px', fontWeight: '800', background: '#D97706', color: '#fff', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
+                  <span style={{ fontSize: '10px', fontWeight: '900', background: '#D97706', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontFamily: 'monospace' }}>
                     {currentProgram.bountyRange || '+$0'}
                   </span>
                 )}
@@ -277,50 +287,54 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
 
               {isPendingProgram ? (
                 <div style={{ textAlign: 'center', margin: 'auto 0' }}>
-                  <div style={{ fontSize: '11px', fontWeight: '800', color: '#B45309', fontFamily: 'monospace' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: '#B45309', fontFamily: 'monospace' }}>
                     [ NENHUM PROGRAMA ]
                   </div>
-                  <div style={{ fontSize: '9px', color: '#78350F', margin: '4px 0 8px 0' }}>
-                    Escolha um alvo no Mercado do Tabuleiro Central.
+                  <div style={{ fontSize: '10px', color: '#78350F', fontWeight: '600', margin: '4px 0 8px 0' }}>
+                    Escolha 1 dos 3 expostos ou compre surpresa do Deck!
                   </div>
-                  {onOpenCenterTable && (
+                  {(onOpenProgramSelector || onOpenCenterTable) && (
                     <button
-                      onClick={() => { soundFx.playClick(); onOpenCenterTable(); }}
+                      onClick={() => {
+                        soundFx.playClick();
+                        if (onOpenProgramSelector) onOpenProgramSelector();
+                        else if (onOpenCenterTable) onOpenCenterTable();
+                      }}
                       style={{
                         padding: '6px 12px',
                         background: '#B45309',
                         color: '#FFFFFF',
                         border: 'none',
                         borderRadius: '4px',
-                        fontSize: '9.5px',
+                        fontSize: '10.5px',
                         fontWeight: '900',
                         fontFamily: 'monospace',
                         cursor: 'pointer',
                         boxShadow: '0 2px 5px rgba(180, 83, 9, 0.3)'
                       }}
                     >
-                      🛒 Ir ao Mercado ➔
+                      🛒 Escolher Programa ➔
                     </button>
                   )}
                 </div>
               ) : (
                 <div>
-                  <div style={{ fontSize: '12px', fontWeight: '800', color: '#1E1B18', fontFamily: 'monospace', margin: '4px 0 2px' }}>
+                  <div style={{ fontSize: '13.5px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', margin: '4px 0 2px' }}>
                     {currentProgram.name}
                   </div>
-                  <div style={{ fontSize: '9px', color: '#5A5245', marginBottom: '4px' }}>
+                  <div style={{ fontSize: '10.5px', color: '#3A332A', fontWeight: '600', marginBottom: '6px' }}>
                     {currentProgram.companyType}
                   </div>
 
                   {/* Escopo de Classes Permitidas */}
-                  <div style={{ display: 'flex', gap: '3px', flexWrap: 'wrap', margin: '4px 0' }}>
-                    {currentProgram.allowedClasses === 'ALL' ? (
-                      <span style={{ fontSize: '8px', fontWeight: '800', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '1px 4px', borderRadius: '3px', fontFamily: 'monospace' }}>
+                  <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', margin: '4px 0' }}>
+                    {currentProgram.allowedClasses === 'ALL' || (Array.isArray(currentProgram.allowedClasses) && currentProgram.allowedClasses.some(c => String(c).includes('ALL'))) ? (
+                      <span style={{ fontSize: '9.5px', fontWeight: '800', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '2px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
                         ESCOPO AMPLO
                       </span>
                     ) : (
                       Array.isArray(currentProgram.allowedClasses) && currentProgram.allowedClasses.map(c => (
-                        <span key={c} style={{ fontSize: '7.5px', fontWeight: '800', background: '#E0F2FE', color: '#0369A1', border: '1px solid #0369A1', padding: '1px 3px', borderRadius: '2px', fontFamily: 'monospace' }}>
+                        <span key={c} style={{ fontSize: '9.5px', fontWeight: '800', background: '#E0F2FE', color: '#0369A1', border: '1px solid #0369A1', padding: '1px 4px', borderRadius: '3px', fontFamily: 'monospace' }}>
                           {c}
                         </span>
                       ))
@@ -329,31 +343,34 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '4px', fontSize: '8.5px', fontFamily: 'monospace' }}>
-                <span style={{ color: '#B91C1C', fontWeight: '700' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '5px', fontSize: '10px', fontFamily: 'monospace' }}>
+                <span style={{ color: '#B91C1C', fontWeight: '800' }}>
                   Patch: {currentProgram?.patchSpeed || 'Moderada'}
                 </span>
                 {!isPendingProgram && (
                   <button
                     onClick={() => {
-                      if (confirm('Deseja trocar este programa por outro do mercado? Exploits na mesa serão descartados.')) {
-                        soundFx.playClick();
-                        const evt = new CustomEvent('pwnd_abandon_program');
-                        window.dispatchEvent(evt);
-                        if (onOpenCenterTable) onOpenCenterTable();
+                      soundFx.playClick();
+                      if (onOpenProgramSelector) {
+                        onOpenProgramSelector();
+                      } else if (onOpenCenterTable) {
+                        onOpenCenterTable();
                       }
                     }}
                     style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#B45309',
-                      fontSize: '8px',
+                      background: '#FEF3C7',
+                      border: '1px solid #D97706',
+                      borderRadius: '4px',
+                      padding: '2px 7px',
+                      color: '#92400E',
+                      fontSize: '9.5px',
                       cursor: 'pointer',
-                      textDecoration: 'underline',
-                      fontWeight: '700'
+                      fontWeight: '800',
+                      fontFamily: 'monospace'
                     }}
+                    title="RECON (1 AP): Trocar programa por 1 dos 3 expostos ou 1 surpresa do deck"
                   >
-                    Trocar
+                    🔄 Trocar (1 AP)
                   </button>
                 )}
               </div>
@@ -366,7 +383,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 border: '1.5px solid #2B2620',
                 borderRadius: '8px',
                 background: (hasDefuse || hasCve) ? '#ECFDF5' : '#FAF6EE',
-                padding: '10px',
+                padding: '10px 12px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -374,10 +391,10 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: (hasDefuse || hasCve) ? '#047857' : '#685F53' }}>
+                <span style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: (hasDefuse || hasCve) ? '#047857' : '#4B4337' }}>
                   SAFEGUARD
                 </span>
-                <span style={{ fontSize: '8px', color: '#7E7362', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: '9px', color: '#5A5245', fontWeight: '700', fontFamily: 'monospace' }}>
                   (Empilhável)
                 </span>
               </div>
@@ -387,20 +404,20 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 <div
                   style={{
                     background: hasDefuse ? '#FFFFFF' : 'rgba(0,0,0,0.03)',
-                    border: hasDefuse ? '1px solid #059669' : '1px dashed #D6CBB8',
+                    border: hasDefuse ? '1.5px solid #059669' : '1px dashed #D6CBB8',
                     borderRadius: '5px',
-                    padding: '4px 6px',
+                    padding: '5px 7px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '6px'
+                    gap: '7px'
                   }}
                 >
-                  <ShieldCheck size={18} color={hasDefuse ? '#059669' : '#A89D8B'} />
+                  <ShieldCheck size={19} color={hasDefuse ? '#059669' : '#A89D8B'} />
                   <div>
-                    <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'monospace', color: hasDefuse ? '#065F46' : '#9CA3AF' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'monospace', color: hasDefuse ? '#065F46' : '#6B7280' }}>
                       {hasDefuse ? '🛡️ Bypass Pronto' : '🛡️ Bypass [Vazio]'}
                     </div>
-                    <div style={{ fontSize: '7.5px', color: '#685F53' }}>
+                    <div style={{ fontSize: '9.5px', color: '#3A332A', fontWeight: '600' }}>
                       {hasDefuse ? 'Anula 1 Patch (+1 Alerta)' : 'Descartado'}
                     </div>
                   </div>
@@ -410,27 +427,27 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 <div
                   style={{
                     background: hasCve ? '#FFFFFF' : 'rgba(0,0,0,0.03)',
-                    border: hasCve ? '1px solid #0284C7' : '1px dashed #D6CBB8',
+                    border: hasCve ? '1.5px solid #0284C7' : '1px dashed #D6CBB8',
                     borderRadius: '5px',
-                    padding: '4px 6px',
+                    padding: '5px 7px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '6px'
+                    gap: '7px'
                   }}
                 >
-                  <span style={{ fontSize: '14px' }}>📜</span>
+                  <span style={{ fontSize: '15px' }}>📜</span>
                   <div>
-                    <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'monospace', color: hasCve ? '#0369A1' : '#9CA3AF' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'monospace', color: hasCve ? '#0369A1' : '#6B7280' }}>
                       {hasCve ? 'CVE Protection Ativa' : 'CVE Protection [Livre]'}
                     </div>
-                    <div style={{ fontSize: '7.5px', color: '#685F53' }}>
+                    <div style={{ fontSize: '9.5px', color: '#3A332A', fontWeight: '600' }}>
                       {hasCve ? 'Anula Eventos adversários' : 'Slot adicional'}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div style={{ fontSize: '8px', color: '#5A5245', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '3px' }}>
+              <div style={{ fontSize: '9.5px', color: '#4B4337', fontWeight: '600', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '4px' }}>
                 Até 1 Bypass + 1 CVE empilhados
               </div>
             </div>
@@ -460,7 +477,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 <div style={{ fontSize: '11px', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#3A332A' }}>
                   {t('playerMat.exploitsArea')}
                 </div>
-                <div style={{ fontSize: '10px', fontWeight: '700', fontFamily: 'monospace', color: '#685F53' }}>
+                <div style={{ fontSize: '10.5px', fontWeight: '800', fontFamily: 'monospace', color: '#4B4337' }}>
                   {activeExploits.length} / 3 {language === 'en' ? 'Active Vulnerabilities' : 'Vulnerabilidades Ativas'}
                 </div>
               </div>
@@ -475,8 +492,8 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                       flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#7E7362',
-                      fontSize: '11px',
+                      color: '#685F53',
+                      fontSize: '11.5px',
                       fontFamily: 'monospace',
                       textAlign: 'center',
                       padding: '16px'
@@ -484,7 +501,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                   >
                     <Bug size={24} color="#A89D8B" style={{ marginBottom: '6px' }} />
                     <span>{t('playerMat.noExploits')}</span>
-                    <span style={{ fontSize: '9.5px', color: '#047857', marginTop: '2px' }}>
+                    <span style={{ fontSize: '10px', color: '#047857', fontWeight: '700', marginTop: '3px' }}>
                       {t('playerMat.noExploitsHint')}
                     </span>
                   </div>
@@ -495,9 +512,9 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                       style={{
                         flex: 1,
                         background: '#FAF6EE',
-                        border: '1.5px solid #2B2620',
+                        border: exploit.isNoisy ? '1.5px solid #EF4444' : '1.5px solid #2B2620',
                         borderRadius: '6px',
-                        padding: '10px',
+                        padding: '10px 12px',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
@@ -505,18 +522,40 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '16px' }}>{exploit.icon || '💉'}</span>
-                        <span style={{ fontSize: '9px', fontWeight: '800', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
+                        <span style={{ fontSize: '18px' }}>{exploit.icon || '💉'}</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: '900', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '2px 6px', borderRadius: '3px', fontFamily: 'monospace' }}>
                           ${exploit.points?.toLocaleString('pt-BR')}
                         </span>
                       </div>
-                      <div style={{ fontSize: '11px', fontWeight: '800', color: '#1E1B18', fontFamily: 'monospace', margin: '4px 0' }}>
+                      <div style={{ fontSize: '12.5px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', margin: '4px 0 2px' }}>
                         {exploit.name}
                       </div>
-                      <div style={{ fontSize: '8.5px', color: '#5A5245', lineHeight: '1.2' }}>
+                      <div style={{ fontSize: '10px', color: '#3A332A', fontWeight: '600', lineHeight: '1.25' }}>
                         {exploit.technicalReference}
                       </div>
-                      <div style={{ marginTop: '4px', borderTop: '1px solid #E2D7C5', paddingTop: '3px', display: 'flex', justifyContent: 'space-between', fontSize: '8px', color: exploit.isNoisy ? '#B91C1C' : '#047857', fontWeight: '700', fontFamily: 'monospace' }}>
+
+                      {/* PODER DA CARTA (ESPECIALMENTE NOISY) */}
+                      {(exploit.simpleDescription || exploit.ptDescription) && (
+                        <div
+                          style={{
+                            marginTop: '5px',
+                            background: exploit.isNoisy ? '#FEF2F2' : '#F5F0E6',
+                            border: exploit.isNoisy ? '1px solid #F87171' : '1px solid #D6CBB8',
+                            borderRadius: '4px',
+                            padding: '5px 7px',
+                            fontSize: '10px',
+                            color: exploit.isNoisy ? '#991B1B' : '#2B2620',
+                            fontWeight: '600',
+                            lineHeight: '1.3',
+                            fontFamily: 'monospace'
+                          }}
+                        >
+                          {exploit.isNoisy && <span style={{ fontWeight: '900', color: '#B91C1C' }}>⚡ PODER: </span>}
+                          {exploit.simpleDescription || exploit.ptDescription}
+                        </div>
+                      )}
+
+                      <div style={{ marginTop: '5px', borderTop: '1px solid #E2D7C5', paddingTop: '4px', display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: exploit.isNoisy ? '#B91C1C' : '#047857', fontWeight: '800', fontFamily: 'monospace' }}>
                         <span>{exploit.vulnClass || 'VULN'}</span>
                         <span>{exploit.isNoisy ? '⚡ NOISY' : '🕶️ STEALTH'}</span>
                       </div>
@@ -527,47 +566,100 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
             </div>
 
             {/* ÁREA INFERIOR: 3 SLOTS DE TOOLS (TOOL 1, TOOL 2, TOOL 3) */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', minHeight: '130px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', minHeight: '165px' }}>
               {[0, 1, 2].map(slotIdx => {
                 const tool = activeTools[slotIdx];
                 const slotLabel = `TOOL ${slotIdx + 1}`;
+                const isToolActiveType = tool && (tool.toolType === 'ATIVA' || (tool.simpleDescription || '').toUpperCase().includes('[ATIVA]'));
+                const isReactiveTool = tool && (tool.toolMoment === 'REATIVA' || (tool.toolId || tool.id).startsWith('T-09') || tool.name.includes('Interceptor Pro'));
 
                 return (
                   <div
                     key={slotIdx}
                     style={{
-                      border: '1.5px solid #2B2620',
+                      border: tool ? (isToolActiveType ? '2px solid #D97706' : '2px solid #166534') : '1.5px solid #2B2620',
                       borderRadius: '8px',
-                      background: tool ? '#F0FDF4' : '#FAF6EE',
-                      padding: '10px',
+                      background: tool ? (isToolActiveType ? '#FFFBEB' : '#F0FDF4') : '#FAF6EE',
+                      padding: '10px 12px',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
                       position: 'relative'
                     }}
                   >
-                    <div style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: tool ? '#166534' : '#7E7362' }}>
-                      {slotLabel}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: tool ? '#166534' : '#5A5245' }}>
+                        {slotLabel}
+                      </span>
+                      {tool && (
+                        <span
+                          style={{
+                            fontSize: '9px',
+                            fontWeight: '900',
+                            fontFamily: 'monospace',
+                            padding: '2px 6px',
+                            borderRadius: '3px',
+                            background: isToolActiveType ? '#FEF3C7' : '#DCFCE7',
+                            color: isToolActiveType ? '#92400E' : '#166534',
+                            border: isToolActiveType ? '1px solid #D97706' : '1px solid #166534'
+                          }}
+                        >
+                          {isReactiveTool ? '🛡️ REATIVA' : isToolActiveType ? '⚡ ATIVA' : '🟢 PASSIVA'}
+                        </span>
+                      )}
                     </div>
 
                     {tool ? (
-                      <div style={{ textAlign: 'center', margin: 'auto 0' }}>
-                        <span style={{ fontSize: '20px' }}>{tool.icon || '🛠️'}</span>
-                        <div style={{ fontSize: '11px', fontWeight: '800', color: '#1E1B18', fontFamily: 'monospace', marginTop: '2px' }}>
-                          {tool.name}
+                      <div style={{ textAlign: 'center', margin: '6px 0' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+                          <span style={{ fontSize: '18px' }}>{tool.icon || '🛠️'}</span>
+                          <div style={{ fontSize: '12.5px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace' }}>
+                            {tool.name}
+                          </div>
                         </div>
-                        <div style={{ fontSize: '8.5px', color: '#5A5245', marginTop: '2px' }}>
-                          {tool.simpleDescription?.slice(0, 45) || tool.technicalReference}
+                        <div style={{ fontSize: '10px', color: '#1E1B18', fontWeight: '600', marginTop: '5px', lineHeight: '1.35', textAlign: 'left', background: 'rgba(255,255,255,0.85)', padding: '6px 7px', borderRadius: '4px', border: '1px solid #D6CBB8' }}>
+                          {tool.simpleDescription || tool.ptDescription || tool.technicalReference}
                         </div>
                       </div>
                     ) : (
-                      <div style={{ margin: 'auto', textAlign: 'center', color: '#A89D8B', fontSize: '10px', fontFamily: 'monospace' }}>
+                      <div style={{ margin: 'auto', textAlign: 'center', color: '#7E7362', fontSize: '10.5px', fontWeight: '600', fontFamily: 'monospace' }}>
                         [ {t('playerMat.slotAvailable')} ]
                       </div>
                     )}
 
-                    <div style={{ fontSize: '8px', color: '#7E7362', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '3px', fontFamily: 'monospace' }}>
-                      {tool ? (language === 'en' ? 'Active on mat' : 'Ativa na mesa') : t('playerMat.empty')}
+                    <div style={{ fontSize: '9.5px', color: '#5A5245', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '5px', fontFamily: 'monospace' }}>
+                      {tool ? (
+                        isToolActiveType && !isReactiveTool ? (
+                          <button
+                            onClick={() => {
+                              soundFx.playClick();
+                              if (onActivateTool) onActivateTool(tool.id);
+                            }}
+                            disabled={!isCurrentTurnPlayer}
+                            style={{
+                              width: '100%',
+                              padding: '5px 8px',
+                              background: isCurrentTurnPlayer ? '#D97706' : '#D1D5DB',
+                              color: isCurrentTurnPlayer ? '#FFFFFF' : '#6B7280',
+                              border: '1px solid #2B2620',
+                              borderRadius: '4px',
+                              fontSize: '9.5px',
+                              fontWeight: '900',
+                              fontFamily: 'monospace',
+                              cursor: isCurrentTurnPlayer ? 'pointer' : 'not-allowed'
+                            }}
+                            title="Ativar o efeito desta Tool agora e descartá-la para a pilha de descarte"
+                          >
+                            ⚡ ATIVAR TOOL (DESCARTA)
+                          </button>
+                        ) : isReactiveTool ? (
+                          <span style={{ color: '#0369A1', fontWeight: '800' }}>🛡️ Dispara automático contra Evento negativo</span>
+                        ) : (
+                          <span style={{ color: '#166534', fontWeight: '800' }}>✓ Efeito Passivo Ativo na Mesa</span>
+                        )
+                      ) : (
+                        t('playerMat.empty')
+                      )}
                     </div>
                   </div>
                 );
@@ -588,37 +680,37 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                   key={eventSlot}
                   style={{
                     flex: 1,
-                    border: '1.5px solid #2B2620',
+                    border: activeEvent ? '2px solid #B91C1C' : '1.5px solid #2B2620',
                     borderRadius: '8px',
                     background: activeEvent ? '#FEF2F2' : '#FAF6EE',
-                    padding: '10px',
+                    padding: '10px 12px',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     position: 'relative'
                   }}
                 >
-                  <div style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: activeEvent ? '#991B1B' : '#685F53' }}>
+                  <div style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: activeEvent ? '#991B1B' : '#4B4337' }}>
                     {eventSlot}
                   </div>
 
                   {activeEvent ? (
                     <div style={{ margin: 'auto 0' }}>
-                      <div style={{ fontSize: '11px', fontWeight: '800', color: '#991B1B', fontFamily: 'monospace' }}>
+                      <div style={{ fontSize: '12.5px', fontWeight: '900', color: '#991B1B', fontFamily: 'monospace' }}>
                         {activeEvent.name}
                       </div>
-                      <div style={{ fontSize: '8.5px', color: '#5A5245', marginTop: '3px', lineHeight: '1.2' }}>
-                        {activeEvent.simpleDescription?.slice(0, 60)}
+                      <div style={{ fontSize: '10px', color: '#2B2620', fontWeight: '600', marginTop: '5px', lineHeight: '1.35', background: '#FFFFFF', padding: '5px 7px', borderRadius: '4px', border: '1px solid #FCA5A5' }}>
+                        {activeEvent.simpleDescription}
                       </div>
                     </div>
                   ) : (
-                    <div style={{ margin: 'auto', textAlign: 'center', color: '#A89D8B', fontSize: '9.5px', fontFamily: 'monospace' }}>
+                    <div style={{ margin: 'auto', textAlign: 'center', color: '#7E7362', fontSize: '10.5px', fontWeight: '600', fontFamily: 'monospace' }}>
                       [ Sem Evento Ativo ]
                     </div>
                   )}
 
-                  <div style={{ fontSize: '8px', color: '#7E7362', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '3px', fontFamily: 'monospace' }}>
-                    {activeEvent ? 'Efeito Persistente' : 'Slot Livre'}
+                  <div style={{ fontSize: '9.5px', color: activeEvent ? '#991B1B' : '#5A5245', fontWeight: activeEvent ? '800' : '600', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '4px', fontFamily: 'monospace' }}>
+                    {activeEvent ? '🚨 Efeito Ativo na Rodada/Turno' : 'Slot Livre'}
                   </div>
                 </div>
               );

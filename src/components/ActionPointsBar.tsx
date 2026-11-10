@@ -220,7 +220,7 @@ export const ActionPointsBar: React.FC = () => {
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           {needsDiscard && (
             <div style={{ background: '#FEE2E2', border: '1.5px solid #B91C1C', color: '#991B1B', padding: '6px 14px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', fontFamily: 'monospace' }}>
-              ⚠️ {language === 'en' ? 'HAND LIMIT: Discard cards before taking actions!' : 'LIMITE DE MÃO: Descarte cartas antes de agir!'}
+              ⚠️ {language === 'en' ? 'HAND LIMIT: discard down to the limit before ending your turn!' : 'LIMITE DE MÃO: descarte até o limite para encerrar o turno!'}
             </div>
           )}
 
@@ -239,22 +239,22 @@ export const ActionPointsBar: React.FC = () => {
           {/* 1. RECON (1 AP) -> COMPRA 2 CARTAS */}
           <button
             onClick={() => { soundFx.playClick(); actionVarrer(); }}
-            disabled={!isMyTurn || needsDiscard || actionsRemaining < 1}
+            disabled={!isMyTurn || actionsRemaining < 1}
             title={t('actions.reconTooltip')}
             style={{
               padding: '10px 16px',
-              background: isMyTurn && actionsRemaining >= 1 && !needsDiscard ? '#0284C7' : '#E2E8F0',
-              color: isMyTurn && actionsRemaining >= 1 && !needsDiscard ? '#FFFFFF' : '#94A3B8',
+              background: isMyTurn && actionsRemaining >= 1 ? '#0284C7' : '#E2E8F0',
+              color: isMyTurn && actionsRemaining >= 1 ? '#FFFFFF' : '#94A3B8',
               border: '1.5px solid #2B2620',
               borderRadius: '6px',
               fontWeight: '900',
               fontFamily: 'monospace',
               fontSize: '12px',
-              cursor: isMyTurn && !needsDiscard && actionsRemaining >= 1 ? 'pointer' : 'not-allowed',
+              cursor: isMyTurn && actionsRemaining >= 1 ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: isMyTurn && actionsRemaining >= 1 && !needsDiscard ? '0 2px 5px rgba(2, 132, 199, 0.3)' : 'none'
+              boxShadow: isMyTurn && actionsRemaining >= 1 ? '0 2px 5px rgba(2, 132, 199, 0.3)' : 'none'
             }}
           >
             <Search size={15} /> {t('actions.recon')}
@@ -278,18 +278,18 @@ export const ActionPointsBar: React.FC = () => {
           {/* 3. REPORT (2 AP) */}
           <button
             onClick={() => { soundFx.playClick(); actionReportar(); }}
-            disabled={!isMyTurn || needsDiscard || actionsRemaining < 2 || myExploitsCount === 0}
+            disabled={!isMyTurn || actionsRemaining < 2 || myExploitsCount === 0}
             title={myExploitsCount === 0 ? (language === 'en' ? 'You need at least 1 active exploit on table to report!' : 'Você precisa ter pelo menos 1 Exploit na mesa para reportar!') : t('actions.reportTooltip')}
             style={{
               padding: '10px 18px',
-              background: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 && !needsDiscard ? '#16A34A' : '#E2E8F0',
-              color: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 && !needsDiscard ? '#FFFFFF' : '#94A3B8',
+              background: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 ? '#16A34A' : '#E2E8F0',
+              color: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 ? '#FFFFFF' : '#94A3B8',
               border: '1.5px solid #2B2620',
               borderRadius: '6px',
               fontWeight: '900',
               fontFamily: 'monospace',
               fontSize: '12px',
-              cursor: isMyTurn && !needsDiscard && actionsRemaining >= 2 && myExploitsCount > 0 ? 'pointer' : 'not-allowed',
+              cursor: isMyTurn && actionsRemaining >= 2 && myExploitsCount > 0 ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -303,18 +303,18 @@ export const ActionPointsBar: React.FC = () => {
           {currentPlayer?.archetype?.id?.includes('social-engineer') && (
             <button
               onClick={() => { soundFx.playClick(); actionSocialPhishing && actionSocialPhishing(); }}
-              disabled={!isMyTurn || needsDiscard || actionsRemaining < 1 || currentPlayer.hand.length === 0}
+              disabled={!isMyTurn || actionsRemaining < 1 || currentPlayer.hand.length === 0}
               title="Phishing: Puxe 1 carta aleatória da mão de um oponente e entregue 1 da sua mão para ele"
               style={{
                 padding: '10px 14px',
-                background: isMyTurn && actionsRemaining >= 1 && !needsDiscard && currentPlayer.hand.length > 0 ? '#EC4899' : '#E2E8F0',
-                color: isMyTurn && actionsRemaining >= 1 && !needsDiscard && currentPlayer.hand.length > 0 ? '#FFFFFF' : '#94A3B8',
+                background: isMyTurn && actionsRemaining >= 1 && currentPlayer.hand.length > 0 ? '#EC4899' : '#E2E8F0',
+                color: isMyTurn && actionsRemaining >= 1 && currentPlayer.hand.length > 0 ? '#FFFFFF' : '#94A3B8',
                 border: '1.5px solid #2B2620',
                 borderRadius: '6px',
                 fontWeight: '800',
                 fontFamily: 'monospace',
                 fontSize: '11px',
-                cursor: isMyTurn && actionsRemaining >= 1 && !needsDiscard && currentPlayer.hand.length > 0 ? 'pointer' : 'not-allowed',
+                cursor: isMyTurn && actionsRemaining >= 1 && currentPlayer.hand.length > 0 ? 'pointer' : 'not-allowed',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '5px'

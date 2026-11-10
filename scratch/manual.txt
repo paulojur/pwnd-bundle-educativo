@@ -1,0 +1,1630 @@
+
+ PWNED! The Bug Bounty Chaos - Manual de Regras Oficial (V1.4) 
+ Tabletop Edition v1.4 
+ PWNED!
+ The Bug Bounty Chaos
+ Find it. Report it. Get paid.
+ 👥 2 a 6 Jogadores  |  ⏳ 45–90 min  |  🎂 14+ anos
+ 01 O Jogo & Objetivo 
+ 02 Setup Rápido & Decks 
+ 03 Turno (As 3 Ações) 
+ 04 Noisy, Stealth & Patch 
+ 05 Tokens de Alerta &
+ Reputação 
+ 06 Arsenal (Arquétipos &
+ Tools) 
+ 07 Fator Caos (Eventos) 
+ 08 Bounty Track & Vitória 
+ 09 Guia Rápido 
+ 10 Compêndio de Cartas
+ (80+) 
+ 01 O Jogo & Objetivo
+ Os jogadores assumem o papel de pesquisadores de segurança cibernética em uma disputa de bug bounty:
+ encontram brechas no código, submetem relatórios à triagem e recebem recompensas em dinheiro.
+ O Objetivo de Vitória 
+ O primeiro jogador a alcançar $40.000 na Bounty Track vence a partida! Se a 8ª rodada for
+ concluída sem que ninguém atinja os $40k, somam-se as
+ recompensas de prestígio (+ $500 por Token de Reputação 🐝) e desconta-se a penalidade
+ defensiva (- $500 por Token de Alerta 🐞 restante na mesa). O maior saldo total leva a
+ vitória!
+ Regra de Arredondamento: Todos os bônus, divisões ou cálculos fora da grade
+ arredondam para o múltiplo de $500 mais próximo; em caso de empate exato, arredonda-se para baixo.
+ 02 Setup Rápido & Decks
+ Arrume a mesa rapidamente seguindo esse esquema de componentes:
+ Componente 
+ Qtd na Mesa 
+ Especificação & Regras de Setup 
+ Main Deck 
+ 84 cartas 
+ 80 Vulnerabilidades + 12 Safeguards (8 Bypass + 4 CVE Assignment Protection). Quando esvaziar,
+ reembaralhe a pilha de descarte para formar um novo baralho. 
+ Tool Deck 
+ 48 cartas 
+ 12 tipos de ferramentas táticas × 4 cópias de cada, posicionado ao lado do tabuleiro central. Quando
+ esvaziar, reembaralhe a pilha de descarte. 
+ Program Deck 
+ 36 cartas 
+ 18 contratos corporativos × 2 cópias. Revele 3 cartas abertas no Program Market e mantenha o baralho
+ de compras ao lado. 
+ Event Deck 
+ 24 cartas 
+ 24 cartas de eventos de caos únicas posicionadas no tabuleiro central. Quando esvaziar, reembaralhe
+ a pilha de descarte. 
+ Cartas de Arquétipo 
+ 6 cartas 
+ Os 6 personagens com habilidades assimétricas exclusivas (1 sorteada para cada jogador). 
+ Safeguards Iniciais (Bypass) 
+ até 6 cartas 
+ 1 carta Bypass entregue a cada jogador no início (instalada no slot SAFEGUARD do seu tabuleiro
+ individual). 
+ Cartas de Ajuda (Player Aids) 
+ 6 cartas 
+ Cartas de referência rápida frente e verso entregues aos jogadores com resumo de ações, patch e
+ tabelas. 
+ Tokens de Alerta (🐞) 
+ 18 tokens 
+ Suprimento central de alertas e atenção defensiva do Blue Team. 
+ Tokens de Reputação (🐝) 
+ 18 tokens 
+ Suprimento central de excelência técnica, prestígio e reroll. 
+ Dados D6 
+ 3 dados 
+ Utilizados nos Patch Speed Checks (o modo Stealth rola 3D6 e descarta o maior). 
+ Tabuleiro Central 
+ 1 tabuleiro 
+ Hospeda a Bounty Track ($0 a $40k), o Round Tracker (rodadas 1 a 8) e o Program Market (com 3 slots
+ de programas revelados). 
+ Tabuleiros Individuais 
+ 2 a 6 tabuleiros 
+ Área de cada jogador contendo PROGRAM, EXPLOITS (máx. 3), SAFEGUARD, TOOLS (1 a 3) e EVENTS (1 e 2).
+ ℹ️ Cartas Especiais na Caixa (6 cartas — Uso Opcional) 
+ A caixa traz 6 cartas extras que não entram no jogo normal (pode deixar guardado):
+ 3 Coringas de Customização (Jokers): 1x Vulnerabilidade Zero-Day, 1x Ferramenta (Tool)
+ e 1x Contrato Corporativo (Program). Cartas com campos em branco para criar regras exclusivas em workshops
+ ou partidas personalizadas.
+ 2 Variantes Oficiais de Jogo: Modo Hackathon Blitz (partidas rápidas de 5
+ rodadas com meta de $25k) e Modo Nightmare Ops (partidas hardcore para veteranos).
+ 1 Carta de Créditos Oficiais & Autoria: Registro de concepção, game design e autoria do
+ jogo.
+ Mão Inicial & Preparação dos Jogadores
+ Distribua 1 Carta de Arquétipo para cada jogador (sorteada aleatoriamente).
+ Cada jogador recebe 5 cartas do Main Deck + 1 carta Bypass (posicionada no slot
+ SAFEGUARD do seu tabuleiro individual).
+ Montagem do Main Deck: Embaralhe no Main Deck exatamente 2 cartas Bypass
+ adicionais e as 2 cartas CVE Assignment Protection . Quaisquer cartas Bypass
+ excedentes ao número de jogadores retornam para a caixa do jogo.
+ Limite de Mão: O limite padrão de cartas na mão é de 6 cartas para todos
+ os jogadores, exceto The Old Guard (que possui limite expandido para 8 cartas).
+ Revele 3 Program Cards no Program Market. No seu primeiro turno,
+ cada jogador seleciona 1 programa disponível gratuitamente.
+ 03 Turno (3 Ações)
+ Cada jogador tem direito a 3 Ações por turno. Poderá distribuir as ações livremente entre
+ as opções abaixo:
+ As 3 Ações Disponíveis -->
+ RECON (Custa 1 ação): Compre 2 cartas do Main Deck OU troque o seu programa por
+ outro (ao trocar de programa voluntariamente, descarte as
+ vulnerabilidades da sua Zona de Exploits).
+ EXPLOIT (Custa 1 ação): Baixe 1 carta de vulnerabilidade da sua mão para a sua Zona de
+ Exploits, respeitando o escopo aceito pelo seu programa. Limite máximo de 3
+ vulnerabilidades na Zona de Exploits ao mesmo tempo. 
+ REPORT (Custa 2 ações): Submeta o seu relatório para pagamento! Role 2D6 e some os
+ dados no teste de Patch (Modo Noisy). Se passar, receba o pagamento na Bounty Track, compre 1 Tool e saque
+ 1 Evento.
+ IMPORTANTE: O REPORT é SEMPRE a última ação do turno. O turno encerra ao realizar
+ o Report, independente do momento em que foi realizada a ação.
+ Ação Livre (não desconta das ações)
+ Instalar Tool Card: Uma vez por turno, você pode instalar 1 Tool da sua mão em 1 dos
+ 3 slots de ferramentas do seu tabuleiro pagando, como custo, 1 carta qualquer da sua mão 
+ (limite de 3 Tools instaladas simultaneamente). Isso pode ser feito em qualquer momento ANTES de realizar a
+ ação
+ REPORT.
+ Uso de Tools (Passivas vs. Ativas): 
+ PASSIVA: O efeito permanece ativo continuamente enquanto a carta estiver instalada nos
+ slots de Tools.
+ ATIVA: Deve ser instalada em um dos slots. No momento em que decidir ativar o poder da
+ carta, aplique o efeito e descarte-a para a pilha de descarte.
+ Modo Duelo (2 Jogadores) - Rotação Forçada de Mercado
+ Em partidas com apenas 2 jogadores, sempre que um jogador concluir um Report com sucesso, antes de escolher o
+ seu novo programa no Program Market, ele pode descartar até 2 programas abertos à sua escolha 
+ e revelar novos do baralho. Em seguida, escolhe o seu novo programa normalmente.
+ Sequência Fixa do Report Bem-Sucedido (1 - 2 - 3)
+ Sempre nesta exata ordem:
+ Receba o Payout: Some o valor das vulnerabilidades da sua Zona de Exploits + bônus do
+ programa e avance o seu marcador na Bounty Track. Se o Report incluir pelo menos uma
+ vulnerabilidade de raridade Épica ou Lendária , ganhe 1 Token de Reputação
+ (🐝) do
+ suprimento central (limite de 1 por Report)!
+ Compre 1 Tool: Saque a carta de cima do Tool Deck pra sua mão.
+ Saque e Ative 1 Evento: Compre 1 carta do Event Deck e aplique seu
+ efeito imediatamente na mesa ! Em seguida, descarte as vulnerabilidades da sua Zona de Exploits e
+ escolha um novo programa no Program Market,
+ descartando o antigo.
+ 04 Noisy, Stealth & Patch
+ No final do turno (ou durante a ação de Report), você deve testar a velocidade de atualização de segurança
+ corporativa rolando dados D6.
+ Noisy vs Stealth
+ NOISY (Reportou no turno): Role 2D6 e some os dados no momento do
+ Report, ANTES de esvaziar a Zona de Exploits e ANTES de receber o payout.
+ STEALTH (Só desceu vulnerabilidades na mesa e passou o turno): No fim do turno, role
+ 3D6, DESCARTE o MAIOR e some os dois restantes .
+ Marcador [NOISY]: Se a sua Zona de Exploits incluir qualquer vulnerabilidade com o marcador [NOISY] ,
+ o teste de patch do turno é feito obrigatoriamente em modo Noisy (2D6 somados) , mesmo que
+ você não tenha reportado!
+ Mesa Limpa: Se você terminar o turno com a Zona de Exploits completamente vazia, você não rola
+ nenhum dado!
+ Velocidade do Programa 
+ Limiar de Patch (Soma D6) 
+ Risco Noisy (2D6) 
+ Risco Stealth (Menores 2 de 3D6) 
+ Lenta 
+ 10+ (10, 11, 12) 
+ 16,7% 
+ 5,1% 
+ Moderada 
+ 9+ (9, 10, 11, 12) 
+ 27,8% 
+ 10,6% 
+ Rápida 
+ 8+ (8, 9, 10, 11, 12) 
+ 41,7% 
+ 19,4% 
+ Extrema 
+ 7+ (7, 8, 9, 10, 11, 12) 
+ 58,3% 
+ 31,9% 
+ PATCH DEPLOYED! 
+ Se a soma dos dados empatar ou ultrapassar o limiar de velocidade do seu programa, ocorre o PATCH
+ DEPLOYED! :
+ Perda de Ativos: O jogador descarta todas as vulnerabilidades da sua Zona de Exploits e
+ o seu programa.
+ Alerta & Consolação: Receba 1 Token de Alerta (🐞) e compre
+ 1 carta de consolação do Main Deck.
+ A Defesa do Bypass: A única defesa preventiva contra a perda de ativos em um Patch
+ Deployed é utilizar uma carta de Bypass instalada no slot Safeguard. O Bypass
+ anula o descarte e permite concluir o Report normalmente, recebendo o Payout. Atenção: O jogador
+ ainda recebe 1 Token de Alerta e descarta o Bypass após o uso, mas não recebe
+ Tool Card nem carta de consolação (pois seus ativos não foram perdidos).
+ 05 Tokens de Alerta & Reputação
+ 🐞 Sistema de Alerta (Atenção do Blue Team) 
+ Mandar mal nos dados ou causar muito barulho joga um holofote na sua cabeça. O Blue Team da empresa tá de olho.
+ Alarme Crítico (2 Tokens de Alerta): Ao acumular 2 Tokens de Alerta na mesa, o Blue
+ Team fecha o
+ cerco: perca $2.000 na Bounty Track imediatamente (o saldo nunca fica abaixo de zero) e
+ devolva os 2 Tokens de Alerta ao suprimento central.
+ Penalidade de Fim de Jogo: Se o jogador terminar a 8ª rodada com 1 Token de Alerta
+ restante na
+ mesa, desconte -$500 do seu saldo final.
+ Modo Furtivo (Limpeza de Alerta): Ao final do turno, se o jogador não realizou a ação
+ de Report, não sofreu Patch Deployed e a sua Zona de Exploits estiver vazia (operando em
+ Modo Furtivo, sem incidentes e sem brechas ativas), remova 1 Token de Alerta da mesa e
+ devolva-o ao
+ suprimento central.
+ 🐝 Sistema de Reputação (Bounty Bees) 
+ Ganho de Reputação: Todo Report bem-sucedido que incluir pelo menos 1 vulnerabilidade
+ de
+ raridade Épica ou Lendária concede 1 Token de Reputação (🐝) (limite de
+ 1 por
+ Report, independentemente da quantidade de cartas). Se o suprimento estiver vazio, não há ganho.
+ Valor Final: Cada Token de Reputação mantido na mesa vale +$500 de
+ saldo no
+ cálculo de pontuação e desempate no fim do jogo.
+ Reroll de Patch: O jogador pode devolver 2 Tokens de Reputação ao
+ suprimento para rolar novamente 1 dos dados no Patch Speed Check. No modo Noisy (2D6),
+ substitui o dado escolhido. No modo Stealth (3D6), após rolar o dado escolhido novamente, descarte o maior
+ resultante e recalcule a soma dos 2 menores.
+ Roubo de Reputação: Um Report de alto risco que incluir 2 cartas de raridade
+ Lendária OU 3 cartas de raridade Épica no mesmo Report rouba 1 Token de Reputação de 1 oponente
+ à escolha
+ que possua reputação acumulada.
+ 06 Arsenal (Arquétipos & Tools)
+ Arquétipos de Pesquisador (6 Especialidades)
+ n00b (🌱)
+ O Iniciante Dedicado - Script Kiddie / Aprendiz 
+ Garimpeiro de Ferramentas: Ao reportar com sucesso, olhe as 3 primeiras cartas do Tool
+ Deck, escolha 1 para a sua mão e devolva as outras 2 ao topo na ordem que desejar.
+ The Old Guard (🧠)
+ Hacker Raiz - Senior
+ Exploit Developer 
+ Hacker Raiz: Seu limite de mão é permanentemente 8 cartas após o início do
+ jogo. 
+ Mestre da Baixa Camada: Ao reportar, receba +$500 adicionais para cada vulnerabilidade
+ Épica ou Lendária incluída no seu Report.
+ Bug Hunter (⚡)
+ O Caçador em Escala - High-Volume Bounty Hunter 
+ Volume Puro: Você ganha na força bruta, mas o prêmio é menor: só tem permissão pra reportar cartas Comuns e Incomuns. 
+ Caçador em Escala: Cada vulnerabilidade além da primeira no mesmo Report soma +$500 ao
+ payout. 
+ Eficiência: Concluir um Report com 3 vulnerabilidades concede 1 Token de Reputação
+ (🐝).
+ Nota de Regra (Bug Hunter & Chained Exploits): A restrição "Volume Puro" aplica-se
+ estritamente à Raridade (apenas cartas Comuns e Incomuns). Como a carta
+ #LEG-1 (O Efeito Dominó) possui raridade Incomum (+$2.5k), o Bug Hunter tem permissão
+ legal de reportá-la normalmente, desde que o programa inclua a classe de escopo [⚡ APT].
+ Social Engineer (🎭)
+ O Engenheiro Social - Human Recon & Phishing Specialist 
+ Phishing: Uma vez no seu turno, puxe 1 carta aleatória da mão de um oponente e entregue
+ 1
+ carta da sua mão para ele. 
+ Caos Redirecionado: Uma vez por rodada, ao ser alvo de um Evento individual negativo,
+ transfira o efeito para outro oponente.
+ Red Teamer (⚔️)
+ O Operador Ofensivo - Offensive Adversary Operator 
+ Sem Limites: Suas vulnerabilidades ignoram qualquer restrição de escopo dos programas
+ (podem ser exploradas em qualquer alvo). 
+ Custo Operacional: A ousadia tem seu preço: abater multas. Desconte -$1.500 do dinheiro ganho em cada Report.
+ The Pentester (🛡️)
+ O Auditor Metódico - Methodical Security Auditor 
+ Contrato Blindado: Você é imune aos Event Cards Duplicate Report! e Triage
+ Delay! . 
+ Relatório Estruturado: Ao reportar, se combinar 2 classes técnicas diferentes receba
+ +$500; se combinar 3 classes diferentes, receba +$1.000.
+ Cartas SAFEGUARD 
+ 🛡️ 
+ Bypass 
+ Safeguard Suprema (8 cópias)
+ Rare 
+ Efeito Supremo: Anula o PATCH DEPLOYED! . Se jogada durante o
+ Report (Noisy): garante o payout completo na Bounty Track sem receber Tool Card, saca o
+ Evento normalmente e renova o programa. Se em Stealth : preserva intactos os seus exploits
+ e o programa.
+ Nota Tática: O Bypass salva seu dinheiro e seus exploits, mas você ainda recebe 1 Token de
+ Alerta!
+ O jogador não recebe Tool Card nem carta de consolação. Descarte o Bypass após o uso.
+ 📜 
+ CVE Assignment Protection 
+ Proteção de Escopo (4 cópias)
+ Uncommon 
+ Efeito de Escudo (Uso único): Reação instantânea. Pode ser mantida no slot SAFEGUARD
+ (empilhada) ou na mão. Anula os Event Cards Duplicate Report! , Out of Scope! e DNS
+ Hijack! direcionados contra você. Descarte após o uso.
+ Limitação: Não protege contra PATCH DEPLOYED! .
+ Tool Cards (12 Tipos Oficiais — 48 Cartas no Deck)
+ 📡 
+ PortSweep 
+ Network Scanner (4 cópias no deck)
+ Common 
+ PASSIVA: O seu Recon tem upgrade. Ao invés de puxar 2 cartas, puxe 3.
+ PASSIVA 
+ Instalação: Paga 1 carta da mão 
+ 🎯 
+ FuzzStorm 
+ Web Fuzzer (4 cópias no deck)
+ Common 
+ ATIVA: Olhe as 3 primeiras cartas do Main Deck: compre 1 para a sua mão e organize as outras 2 no topo
+ como desejar.
+ ATIVA 
+ Instalação: Paga 1 carta da mão 
+ 🧰 
+ Interceptor Pro 
+ Interception Proxy (4 cópias no deck)
+ Epic 
+ ATIVA: INTERCEPTION - Ao ser alvo de um Event Card negativo, anule o efeito do Evento contra você (não
+ protege contra PATCH DEPLOYED!).
+ ATIVA 
+ Instalação: Paga 1 carta da mão 
+ 🛠️ 
+ Exploit Forge 
+ Exploit Automation Suite (4 cópias no deck)
+ Epic 
+ ATIVA: Descarte os 3 Programas expostos e revele 3 novos. Se algum deles aceitar a classe APT
+ (ou escopo ALL), receba +$500 na Bounty Track; caso contrário, compre 1 carta do Main Deck.
+ ATIVA 
+ Instalação: Paga 1 carta da mão 
+ ⚡ 
+ SpiderScan 
+ Automated Web Scanner (4 cópias no deck)
+ Common 
+ PASSIVA: Na sua primeira ação de Exploit, jogue 2 vulnerabilidades na mesa de uma tacada só.
+ PASSIVA 
+ Instalação: Paga 1 carta da mão 
+ 🚀 
+ Endpoint Lab 
+ API Testing Environment (4 cópias no deck)
+ Common 
+ PASSIVA: Fura-escopo: você ganha passe livre para descer cartas da classe BAC em qualquer programa que estiver atacando.
+ PASSIVA 
+ Instalação: Paga 1 carta da mão 
+ 🔍 
+ DOM Inspector 
+ Client-Side Analysis Tool (4 cópias no deck)
+ Common 
+ PASSIVA: Cada classe XSS no Report te rende mais +$500 gordos no final.
+ PASSIVA 
+ Instalação: Paga 1 carta da mão 
+ 🖥️ 
+ Browser DevTools 
+ Browser Console & Storage (4 cópias no deck)
+ Common 
+ PASSIVA: Aumenta o seu limite de mão em +1 carta enquanto estiver com ela equipada.
+ PASSIVA 
+ Instalação: Paga 1 carta da mão 
+ 🛢️ 
+ Injection Lab 
+ Database Injection Tool (4 cópias no deck)
+ Uncommon 
+ PASSIVA: Fura-escopo: pode descer cartas da classe INJ livremente em qualquer alvo.
+ PASSIVA 
+ Instalação: Paga 1 carta da mão 
+ 🛰️ 
+ Echo Beacon 
+ Out-of-band Listener (4 cópias no deck)
+ Rare 
+ PASSIVA: Ao reportar qualquer vulnerabilidade da classe SSRF ou com a tag [NOISY], compre 1 carta do
+ Main Deck.
+ PASSIVA 
+ Instalação: Paga 1 carta da mão 
+ 🍳 
+ Hex Kitchen 
+ Data Decoding Toolkit (4 cópias no deck)
+ Uncommon 
+ ATIVA: Decodifique o tráfego - olhe as 3 primeiras cartas do Event Deck, descarte 1 delas e devolva as
+ demais em qualquer ordem.
+ ATIVA 
+ Instalação: Paga 1 carta da mão 
+ 🔐 
+ Token Cracker 
+ Token Engineering Harness (4 cópias no deck)
+ Uncommon 
+ PASSIVA: Toda carta AUTH no seu Report vai te render +$500 na fatura.
+ PASSIVA 
+ Instalação: Paga 1 carta da mão 
+ Habilidades Especiais de Vulnerabilidades
+ Algumas vulnerabilidades avançadas possuem habilidades especiais descritas diretamente em seu texto:
+ PASSIVA: O efeito permanece ativo continuamente enquanto a carta estiver na sua Zona de
+ Exploits.
+ ATIVA: Dispara no momento exato em que a vulnerabilidade é reportada com sucesso (ou ao
+ ser baixada na mesa, conforme especificado no texto da carta).
+ Regra de Conflito: Se o texto de uma carta contradizer este manual, a carta prevalece.
+ Relação Oficial das 14 Habilidades Especiais 
+ Abaixo estão as 14 habilidades mecânicas que quebram as regras padrão do jogo quando ativadas por
+ vulnerabilidades específicas:
+ PROVA OOB 
+ PASSIVA 
+ Efeito: Esta vulnerabilidade é imune a Event Cards: não pode ser descartada, anulada ou
+ roubada enquanto estiver na sua Zona de Exploits.
+ Presente em: O Selo Violado (#AUTH-9), O Pombo Correio (#SSRF-7) e O Reflexo Cego (#XSS-11).
+ CORINGA DE ESCOPO 
+ PASSIVA 
+ Efeito: Ignora o escopo do alvo: conta como aceita pelo seu programa mesmo que o
+ programa não liste a classe desta carta.
+ Presente em: O Veneno Lento (#INJ-12) e O Molho de Chaves (#BAC-11).
+ BÔNUS CRÍTICO 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, adicione +$1.000
+ ao
+ payout total na Bounty Track.
+ Presente em: A Esteira Quebrada (#INJ-13) e A Nota Duplicada (#BL-8).
+ ROTAÇÃO DE MERCADO 
+ ATIVA
+ (AO DESCER) 
+ Efeito: Ao descer esta vulnerabilidade, você pode descartar 1 Program
+ Card do mercado e abrir 1 novo do topo do Program Deck.
+ Presente em: A Catraca Livre (#BAC-13) e O Padrão Repetido (#CRYPTO-6).
+ ZERO-DAY 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, ignore a etapa do Custo do
+ Sucesso: nenhum
+ Event Card é sacado ou ativado.
+ Presente em: A Caixa de Pandora (#APT-6).
+ DESVIO DE PAGAMENTO 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, transfira $1.000 
+ do
+ jogador com o maior saldo para a sua Bounty Track (se for você, avance +$500).
+ Presente em: O Sósia do Executivo (#AUTH-10).
+ INJEÇÃO HOSTIL 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, transfira 1 Token de
+ Alerta seu para o jogador à sua direita (se você não tiver nenhum, ele
+ recebe 1 do suprimento central).
+ Presente em: O Fio Transparente (#XSS-12).
+ ACESSO INTERNO 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, resgate 1 Tool
+ Card da pilha de
+ descarte diretamente para a sua mão.
+ Presente em: O Mensageiro Cego (#SSRF-8) e A Amostra Grátis Eterna (#BL-6).
+ MERCADO EM CAOS 
+ ATIVA
+ (AO DESCER) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, descarte até 3
+ programas do mercado e revele novos.
+ Presente em: O Apocalipse Primaveril (#APT-3).
+ ESTOURO 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, o vazamento transborda: compre
+ 2 cartas do Main
+ Deck e force 1 oponente à escolha a descartar 1 carta da mão .
+ Presente em: O Tubo Estourado (#INJ-15).
+ PANÓPTICO 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, olhe as 3 primeiras
+ cartas do Event Deck : você pode descartar 1 delas e organizar as restantes no topo na ordem
+ que desejar.
+ Presente em: A Sala do Trono (#BAC-14).
+ EFEITO DOMINÓ 
+ ATIVA
+ (AO DESCER) 
+ Efeito: Ao descer esta vulnerabilidade, baixe imediatamente +1 vulnerabilidade
+ adicional da mão na Zona de Exploits (respeita limite de 3 e escopo).
+ Presente em: O Efeito Dominó (#APT-1).
+ TÍTERE 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, você assume os controles: ative
+ imediatamente o efeito de 1 Tool Card de qualquer oponente na mesa como se fosse sua (o
+ oponente mantém a carta).
+ Presente em: O Mestre dos Títeres (#APT-4).
+ MARIONETE 
+ ATIVA
+ (REPORT) 
+ Efeito: Ao reportar com sucesso esta vulnerabilidade, force 1 oponente à sua
+ escolha a descartar 1 Tool Card ativa (se ele não tiver nenhuma Tool ativa, escolha 1 carta
+ da mão dele às cegas para ser descartada).
+ Presente em: O Boneco de Marionete (#APT-5).
+ ℹ️ Efeitos Técnicos Singulares (Impressos na Face) 
+ Além das 14 habilidades catalogadas acima, 3 cartas do baralho de vulnerabilidades possuem efeitos
+ técnicos próprios descritos diretamente no texto da sua face:
+ #INJ-2 (A Injeção da Vovó): Compra Extra — Quando reportada com sucesso,
+ compre 3 cartas do Main Deck imediatamente.
+ #INJ-14 (O Operário Zumbi): [NOISY] PROCESSO ZUMBI — Ao reportar com
+ sucesso, compre 1 carta do Main Deck imediatamente.
+ #XSS-10 (O Espelho Narcisista): Sinergia DevTools — Se jogada com a
+ ferramenta Browser DevTools instalada e ativa, duplica a compra de cartas na ação Recon.
+ Cartas de Ajuda Rápida (Player Aids — 6 Cartas na Caixa)
+ Cada jogador recebe 1 carta de consulta rápida em formato Pôquer (63×88mm), mantida ao lado do seu tabuleiro
+ individual para consulta imediata durante as partidas:
+ Lado A: O Seu Turno (3 Ações)
+ RECON (1 ação): Compre 2 cartas do Main Deck OU troque o seu programa por outro
+ aberto do mercado.
+ EXPLOIT (1 ação): Baixe 1 Vulnerabilidade na mesa (escopo permitido, máx. 3).
+ REPORT (2 ações): Teste de Patch (Noisy 2D6) + Payout + compre 1 Tool + saque 1
+ Evento + novo programa. Sempre encerra o turno imediatamente! 
+ INSTALAR TOOL (Ação Livre): Descarte 1 carta da mão para equipar 1 Tool (máx. 3).
+ ATIVAR TOOL (Ação Livre): Ative o efeito e descarte a carta (precisa estar no slot).
+ MODO FURTIVO: Passe sem Report, sem Patch e com mesa vazia para remover 1 Alerta
+ (🐞).
+ Lado B: Patch & Tabelas de Mesa
+ DADOS: Stealth = 3D6 (some os 2 menores); Noisy = 2D6 somados.
+ LIMIAR DE PATCH: Lenta = 10+ | Moderada = 9+ | Rápida = 8+ | Extrema = 7+.
+ PATCH DEPLOYED: Descarte mesa e programa; recebe 1 🐞 Alerta e compra consolação.
+ Bypass anula o descarte e garante payout! 
+ PAYOUT: Comum +$1.5k | Incomum +$2.5k | Rara +$4.0k | Épica +$5.0k | Lendária +$6.0k.
+ TOKENS: 🐝 Reputação (2 tokens = 1 reroll de dado; +$500 endgame) | 🐞 Alerta (2
+ tokens = -$2.000 multa; -$500 endgame).
+ CASAS ESPECIAIS (ao parar): $4.5k (🐝+) | $9k (🐞+) | $13.5k (🐝+ 🛒) | $19k (🐞+
+ 🗂️−) | $24.5k (🛠️⚡) | $29k (🐝+ 🐞−) | $33.5k (💸 -$1.5k) | $38k (🐞+).
+ VITÓRIA: $40.000 instantâneo ou maior saldo após 8 rodadas.
+ 07 Fator Caos (Eventos)
+ A cada Report bem-sucedido, o autor compra 1 carta do Event Deck e a ativa imediatamente:
+ 🕵️ 
+ Blue Team Hunt! 
+ Proactive Threat Hunting (Evento #01)
+ Todos os Jogadores
+ O time de defesa entra em ação proativa! Todos os jogadores devem descartar a vulnerabilidade de
+ maior CVSS que possuírem exposta na mesa.
+ Tipo: PATCH 
+ Gatilho: Imediato ao sacar 
+ 📝 
+ Duplicate Report! 
+ Duplicated Vulnerability Submission (Evento #02)
+ Escolha 1 Oponente
+ Alguém reportou a vulnerabilidade minutos antes! Escolha 1 oponente com vulnerabilidades na mesa: ele
+ descarta a vulnerabilidade de maior CVSS exposta.
+ Tipo: DUPLICATE 
+ Gatilho: Imediato ao sacar 
+ ❌ 
+ Out of Scope! 
+ Out of Scope Boundary Rejection (Evento #03)
+ O Autor do Report
+ Seu reporte gerou alerta no comitê de escopo! Você fica impedido de realizar a ação Exploit (baixar
+ vulnerabilidades) no seu próximo turno.
+ Tipo: SCOPE 
+ Gatilho: Imediato ao sacar 
+ ⚖️ 
+ Legal Threat! 
+ Cease & Desist (Evento #04)
+ Escolha 1 Oponente
+ AMEAÇA JURÍDICA! Carta de Cease & Desist dos advogados da empresa. Escolha 1 oponente: ele deve pagar
+ $1.500 da sua Bounty Track para advogados de defesa, ou fica impedido de realizar a ação Report no seu
+ próximo turno.
+ Tipo: DELAY 
+ Gatilho: Imediato ao sacar 
+ ⏳ 
+ Triage Delay! 
+ Corporate Backlog Delay (Evento #05)
+ O Autor do Report
+ A triagem virou bagunça e o backlog explodiu! Você tá proibido de instalar ou ativar Tools no seu próximo turno.
+ Tipo: DELAY 
+ Gatilho: Imediato ao sacar 
+ 🤝 
+ Bug Bounty Mediation 
+ Consensus Bounty Settlement (Evento #06)
+ Todos os Jogadores
+ Sorte grande! Fizeram um acordo na comunidade. Todo mundo fatura $1.500 limpos na Bounty Track agora.
+ Tipo: BOUNTY 
+ Gatilho: Imediato ao sacar 
+ 🔓 
+ Zero Day Disclosure 
+ Discard Pile Rescue (Evento #07)
+ Jogador em Último Lugar
+ Vazamento oportuno! O jogador com o menor saldo na Bounty Track resgata 1 Tool Card da pilha de descarte
+ para a mão (se houver).
+ Tipo: META 
+ Gatilho: Imediato ao sacar 
+ 🌐 
+ Scope Expansion! 
+ Corporate Scope Window Expansion (Evento #08)
+ O Autor do Report
+ A empresa expandiu o programa! No seu próximo turno, você pode jogar qualquer vulnerabilidade na mesa
+ ignorando as restrições de escopo.
+ Tipo: SCOPE 
+ Gatilho: Imediato ao sacar 
+ 📢 
+ Public Disclosure! 
+ Public Zero-Day Exfiltration (Evento #09)
+ Todos os Jogadores
+ Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem
+ indenização na Bounty Track conforme a raridade: +$1.000 (Comum/Incomum), +$2.000 (Rara), +$2.500
+ (Épica) e +$3.000 (Lendária).
+ Tipo: BOUNTY 
+ Gatilho: Imediato ao sacar 
+ 💰 
+ Bounty Increase! 
+ Double Bounty Multiplier (Evento #10)
+ Mesa (1 Volta Completa)
+ Verba de emergência liberada! Posicione este evento no centro da mesa: ele permanece ativo por 1 volta
+ completa (descarte-o no início do seu próximo turno). Qualquer jogador que realizar um Report
+ bem-sucedido enquanto este evento estiver ativo recebe +$1.500 de bônus na Bounty Track.
+ Tipo: BOUNTY 
+ Gatilho: Imediato ao sacar 
+ 🛡️ 
+ WAF Deployed! 
+ Web Application Firewall Block (Evento #11)
+ Todos os Jogadores
+ Filtro de WAF ativado! Vulnerabilidades da classe Injection não podem ser baixadas na mesa por 1 rodada
+ completa.
+ Tipo: META 
+ Gatilho: Imediato ao sacar 
+ 🌐 
+ DNS Hijack! 
+ Compulsory Target Switch (Evento #12)
+ Jogador com Maior Saldo (Líder)
+ Sequestro de tráfego! O jogador com o MAIOR saldo na Bounty Track descarta o seu programa, pega o
+ próximo do deck e descarta as vulnerabilidades na mesa que ficarem fora de escopo.
+ Tipo: META 
+ Gatilho: Imediato ao sacar 
+ 📄 
+ Responsible Disclosure! 
+ Instant Free Submission Window (Evento #13)
+ Todos os Jogadores
+ Janela de divulgação responsável! Todos os jogadores que tiverem vulnerabilidades válidas na mesa podem
+ fazer 1 Report imediato SEM rolar os dados (não compra tool nem evento), respeitando a ordem da mesa.
+ Tipo: BOUNTY 
+ Gatilho: Imediato ao sacar 
+ 🍯 
+ Honeypot Triggered! 
+ Decoy Server Trap (Evento #14)
+ Escolha 1 Oponente
+ Armadilha de servidor honeypot! Escolha 1 oponente: ele é forçado a descartar 2 cartas aleatórias da
+ própria mão (em partidas de 2 jogadores, descarta apenas 1 carta).
+ Tipo: DELAY 
+ Gatilho: Imediato ao sacar 
+ ⏳ 
+ CVE Assignment Delayed! 
+ Defuse Blockade Window (Evento #15)
+ Todos os Jogadores
+ Burocracia na atribuição de CVE! Cartas de Defesa (Safeguard) ficam bloqueadas por 1 rodada completa
+ (efeito imediato, vale contra patches do mesmo turno).
+ Tipo: DELAY 
+ Gatilho: Imediato ao sacar 
+ 💥 
+ Bug Collision! 
+ Lowest CVSS Discard Event (Evento #16)
+ Todos os Jogadores
+ Colisão de relatórios no mercado! Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta
+ em suas mesas.
+ Tipo: DUPLICATE 
+ Gatilho: Imediato ao sacar 
+ 🏆 
+ Hall of Fame Update! 
+ Underdog Catch-Up Boost (Evento #17)
+ Jogador em Último Lugar
+ Reconhecimento na comunidade! O jogador em último lugar na Bounty Track recebe +$1.500 de bônus no seu
+ próximo Report bem-sucedido.
+ Tipo: META 
+ Gatilho: Imediato ao sacar 
+ 🛑 
+ Rate Limited! 
+ Network Traffic Restriction (Evento #18)
+ Todos os Jogadores
+ Restrição de tráfego na rede! Todos os jogadores ficam impedidos de realizar a ação Recon (comprar
+ cartas) no seu próximo turno.
+ Tipo: DELAY 
+ Gatilho: Imediato ao sacar 
+ 🔐 
+ 2FA Enforced! 
+ Auth Class Lockdown (Evento #19)
+ Todos os Jogadores
+ Autenticação em dois fatores ativada! Vulnerabilidades da classe Authentication ficam bloqueadas de
+ serem baixadas por 1 rodada.
+ Tipo: META 
+ Gatilho: Imediato ao sacar 
+ 🎪 
+ Bug Bounty Conference! 
+ Global Networking Event (Evento #20)
+ Todos os Jogadores
+ Todo mundo tá convidado! De grátis: cada jogador puxa 2 cartas do Main Deck sem gastar ação.
+ Tipo: META 
+ Gatilho: Imediato ao sacar 
+ 🤝 
+ Acquisition! 
+ Corporate Acquisition & Scope Flush (Evento #21)
+ Todos os Jogadores
+ Fusão corporativa! Descarte os programas expostos do mercado e reponha-os. Se pelo menos um permitir
+ todas as classes de escopo (ALL), todos os jogadores avançam +$500 na Bounty Track.
+ Tipo: DUPLICATE 
+ Gatilho: Imediato ao sacar 
+ 📅 
+ Security Audit! 
+ Compliance Audit Cycle (Evento #22)
+ Todos os Jogadores
+ Auditoria tensa pra cima de todo mundo! Abre a mão na mesa agora e atira no lixo a carta com o maior CVSS.
+ Tipo: META 
+ Gatilho: Imediato ao sacar 
+ 🎁 
+ Swag Drop! 
+ Consolation Gear Reward (Evento #23)
+ Todos os Jogadores
+ Caiu swag do patrocinador! Ninguém sai de mãos vazias: cada jogador compra 1 Tool Card do baralho.
+ Tipo: META 
+ Gatilho: Imediato ao sacar 
+ 🏅 
+ Bounty Ético 
+ Coordinated Vulnerability Disclosure (Evento #24)
+ Todos os Jogadores
+ Auditoria de conformidade corporativa! Cada jogador que possuir zero Tokens de Alerta na mesa recebe
+ imediatamente +$1.500 de bônus de conduta ética na Bounty Track.
+ Tipo: BOUNTY 
+ Gatilho: Imediato ao sacar 
+ 08 Bounty Track & Vitória
+ O Tabuleiro Central é a própria Bounty Track: uma colmeia de 81 hexágonos numerados de START a $40k em
+ degraus de $500. Basta avançar o seu marcador conforme acumula recompensas.
+ Vitória Instantânea & Critérios de Desempate
+ Vitória Instantânea: O primeiro jogador a alcançar $40.000 vence a
+ partida!
+ Encerramento na 8ª Rodada: Se a 8ª rodada acabar e ninguém tiver chegado lá, a gente vai pro desempate suado:
+ Some +$500 por cada Token de Reputação (🐝) presente na mesa.
+ Subtraia -$500 por cada Token de Alerta (🐞) restante na mesa.
+ Quem sobrar com a conta mais recheada vence a partida.
+ Desempate: Se houver empate no saldo, vence quem possuir mais Tokens de
+ Reputação . Se
+ persistir, vence quem tiver menos Tokens de Alerta restantes . Se ainda assim empatar, a
+ vitória é compartilhada com honra!
+ Casas Especiais da Bounty Track
+ A Bounty Track possui 8 Casas Especiais marcadas no tabuleiro. Ao concluir um Report e avançar o marcador,
+ se o seu token PARAR exatamente sobre uma Casa Especial , aplique o seu efeito imediatamente.
+ Passar por cima de uma casa não ativa o efeito. Recuos de pontuação nunca disparam casas especiais. Ganhos
+ indiretos de dinheiro provenientes de cartas de Evento ou habilidades movem o marcador, mas
+ não ativam casas especiais (apenas o avanço do Payout oficial da ação Report ativa casas
+ especiais):
+ $4.500 
+ 🐝+ 
+ Ganhe 1 Token de Reputação (🐝) do
+ suprimento central.
+ $9.000 
+ 🐞+ 
+ Ganhe 1 Token de Alerta (🐞) do suprimento
+ central.
+ $13.500 
+ 🐝+ 🛒 
+ Ganhe 1 Token de Reputação (🐝) e compre
+ 1 carta do Main Deck .
+ $19.000 
+ 🐞+ 🗂️− 
+ Ganhe 1 Token de Alerta (🐞) e descarte
+ 1 carta da sua mão à sua escolha.
+ $24.500 
+ 🛠️⚡ 
+ Instalação Imediata: você pode equipar 1
+ Tool da sua mão em um slot livre sem pagar o custo de descarte .
+ $29.000 
+ 🐝+ 🐞− 
+ Ganhe 1 Token de Reputação (🐝) e
+ remova 1 Token de Alerta (🐞) da sua mesa.
+ $33.500 
+ 💸 
+ Perca $1.500 na Bounty Track (o marcador
+ recua para $32.000, sem re-disparo).
+ $38.000 
+ 🐞+ 
+ Ganhe 1 Token de Alerta (🐞) do suprimento
+ central.
+ 09 Guia Rápido
+ Tá com pressa? Dá uma lida rápida nesse resumão e já bora jogar:
+ Objetivo: Chegar a $40k na Bounty Track ou terminar a 8ª rodada com o maior saldo.
+ Seu Turno (3 Ações): 
+ RECON (1 ação): Compra 2 cartas do Main Deck ou troca de programa (limpe sua zona de
+ exploit).
+ EXPLOIT (1 ação): Baixa 1 vulnerabilidade no escopo do programa (máximo de 3 na
+ mesa).
+ REPORT (2 ações): Submete a invasão (sempre a última ação do turno, que encerra
+ imediatamente).
+ Risco & Patch Check (D6): Reportou = Noisy (role 2D6 somados). Só baixou
+ vulnerabilidades e esperou = Stealth (role 3D6, descarte o maior, some os 2 menores). Se a soma for igual
+ ou maior que a velocidade do programa (Lenta 10+, Moderada 9+, Rápida 8+, Extrema 7+), ocorreu PATCH
+ DEPLOYED!
+ Sofreu Patch Deployed? Use o Bypass instalado para finalizar o report sem receber tool.
+ Se não tiver bypass, perde os exploits
+ da mesa e o programa. Ganha 1 Token de Alerta
+ e 1
+ carta de consolação. 2 Tokens de Alerta custam -$2.000 imediatos. Operar em Modo Furtivo (sem report, sem
+ patch e com mesa
+ limpa) remove 1 Token de Alerta.
+ Report Bem-Sucedido? Recebe o dinheiro na Bounty Track, compra 1 Tool e saca 1
+ Evento de Caos imediato. Se o Report contiver vulnerabilidade Épica ou Lendária, ganha 1 Token de
+ Reputação (+$500 no final;
+ gaste 2 de reputação para rerrolar 1 dado de patch).
+ 10 Compêndio Completo de Cartas
+ Registro de todos os 18 Programas e das 80 Vulnerabilidades do baralho:
+ Os 18 Programas (36 Cartas no Deck)
+ ShopAll Global 
+ E-Commerce Multinacional (3 cópias)
+ Moderada (9-12)
+ Classes Aceitas: ALL (Aceita todas as classes)
+ Bônus de Contrato: +$1.000 de Bônus Fixo
+ Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.
+ BankSafe Financial 
+ Instituição Financeira Digital (2 cópias)
+ Rápida (8-12)
+ Classes Aceitas: AUTH, CRYPTO, BAC, INJ
+ Bônus de Contrato: +$2.500 de Bônus Fixo
+ Escopo restrito a APIs, Autenticação e Criptografia. Pagamentos elevados!
+ GovPortal Legacy 
+ Sistema Governamental Legado (2 cópias)
+ Lenta (10-12)
+ Classes Aceitas: BAC (Apenas Broken Access Control)
+ Bônus de Contrato: +$0 Bônus Fixo
+ Demora para corrigir (patch lento). Ideal para acumular combos longos sem risco de queda rápida.
+ HealthLock EHR 
+ Prontuário Médico Digital (2 cópias)
+ Rápida (8-12)
+ Classes Aceitas: CRYPTO, AUTH, SSRF, BAC
+ Bônus de Contrato: +$2.500 de Bônus Fixo
+ Focado em sigilo de dados sensíveis e criptografia de registros hospitalares.
+ CloudNine Cloud Services 
+ Provedor de Infraestrutura em Nuvem (1 cópia)
+ Extrema (7-12)
+ Classes Aceitas: SSRF, INJ, APT
+ Bônus de Contrato: +$4.000 de Bônus Fixo
+ Recompensas astronômicas para RCE, SSRF e vulnerabilidades de infraestrutura. Alto risco de Patch!
+ SocialHive Media 
+ Rede Social Global (3 cópias)
+ Moderada (9-12)
+ Classes Aceitas: XSS, LOGIC, BAC
+ Bônus de Contrato: +$1.000 de Bônus Fixo
+ Focado em vulnerabilidades de privacidade, XSS e lógica de engajamento social.
+ GameVerse MMO 
+ Plataforma Massiva de Jogos (2 cópias)
+ Moderada (9-12)
+ Classes Aceitas: LOGIC, INJ, XSS
+ Bônus de Contrato: +$1.000 de Bônus Fixo
+ Injeção de itens, manipulação de saldo virtual e exploits em WebSockets.
+ EduConnect LMS 
+ Plataforma Educacional (2 cópias)
+ Lenta (10-12)
+ Classes Aceitas: ALL (Aceita todas as classes)
+ Bônus de Contrato: +$0 Bônus Fixo
+ Ambiente seguro para iniciantes praticarem. Quase sem risco de Patch instantâneo.
+ CryptoX Exchange 
+ Corretora de Criptomoedas (1 cópia)
+ Extrema (7-12)
+ Classes Aceitas: AUTH, CRYPTO, LOGIC, APT
+ Bônus de Contrato: +$4.000 de Bônus Fixo
+ Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.
+ AI Core Systems 
+ Infraestrutura de IA Generativa (1 cópia)
+ Extrema (7-12)
+ Classes Aceitas: INJ, SSRF, APT
+ Bônus de Contrato: +$4.000 de Bônus Fixo
+ Clusters de treinamento de LLMs vulneráveis a Prompt Injection e RCE.
+ PayGateway Prime 
+ Processadora de Pagamentos (2 cópias)
+ Rápida (8-12)
+ Classes Aceitas: BAC, AUTH, INJ
+ Bônus de Contrato: +$2.500 de Bônus Fixo
+ Gateway financeiro global conectando cartões de crédito e pagamentos instantâneos.
+ DeliveryDash App 
+ Plataforma Logística e Entregas (3 cópias)
+ Moderada (9-12)
+ Classes Aceitas: LOGIC, BAC, SSRF
+ Bônus de Contrato: +$1.000 de Bônus Fixo
+ App móvel de entregas urbanas suscetível a manipulação de pedidos, IDOR e SSRF em webhooks.
+ BioGen Genomics 
+ Biotecnologia & Pesquisa Clínica (2 cópias)
+ Rápida (8-12)
+ Classes Aceitas: CRYPTO, BAC, SSRF
+ Bônus de Contrato: +$2.500 de Bônus Fixo
+ Pesquisa genômica confidencial. Foco em servidores internos de sequenciamento e controle de prontuários.
+ Veloce AutoTech 
+ Firmware Automotivo & IoT (2 cópias)
+ Extrema (7-12)
+ Classes Aceitas: INJ, LOGIC, AUTH
+ Bônus de Contrato: +$4.000 de Bônus Fixo
+ Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de elite.
+ Voltz PowerGrid 
+ Infraestrutura Crítica & SCADA (2 cópias)
+ Lenta (10-12)
+ Classes Aceitas: INJ, BAC
+ Bônus de Contrato: +$0 Bônus Fixo
+ Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.
+ PulseStream Media 
+ Mídia Digital & Distribuição DRM (2 cópias)
+ Moderada (9-12)
+ Classes Aceitas: XSS, LOGIC, CRYPTO
+ Bônus de Contrato: +$1.000 de Bônus Fixo
+ Distribuição de streaming. Foco em falhas de DRM, portal web e validação de assinaturas.
+ AeroOrbit Avionics 
+ Tecnologia Aeroespacial & Satélites (2 cópias)
+ Extrema (7-12)
+ Classes Aceitas: SSRF, AUTH, CRYPTO
+ Bônus de Contrato: +$4.000 de Bônus Fixo
+ Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.
+ TaxCore Federal 
+ Administração Tributária Pública (2 cópias)
+ Moderada (9-12)
+ Classes Aceitas: LOGIC, BAC, AUTH
+ Bônus de Contrato: +$1.000 de Bônus Fixo
+ Sistema fiscal e emissão de notas eletrônicas. Auditoria em regras de cálculo e autorizações.
+ As 80 Vulnerabilidades Oficiais (Por Classe Técnica)
+ Injeção (Injection) (16 cartas) 
+ Escopo [INJ] 
+ #INJ-1 
+ Injeção de Boato
+ SQL Injection (SQLi)
+ +$1.5k 
+ Common 
+ Você cochicha um boato falso no campo de texto e o banco de dados acredita, entregando a lista de
+ senhas.
+ [STEALTH] 
+ INJ 
+ CVSS 5.5 
+ #INJ-2 
+ A Injeção da Vovó
+ SQL Injection (SQLi)
+ +$4.0k 
+ Rare 
+ OR 1=1 - Entrada de banco de dados clássica. Quando reportada com sucesso, compre 3 cartas do deck.
+ [STEALTH] 
+ INJ 
+ CVSS 7.8 
+ #INJ-3 
+ Sopa de Comandos
+ OS Command Injection
+ +$1.5k 
+ Common 
+ Insere comandos de sistema operacional em campos de formulários desprotegidos.
+ [STEALTH] 
+ INJ 
+ CVSS 5.7 
+ #INJ-4 
+ A Entidade Fantasma
+ XXE Injection
+ +$1.5k 
+ Common 
+ O parser XML lê arquivos do servidor local ao processar notas fiscais digitais.
+ [STEALTH] 
+ INJ 
+ CVSS 5.8 
+ #INJ-5 
+ O Molde Quebrado
+ Server-Side Template Injection
+ +$1.5k 
+ Common 
+ Comandos executados através de variáveis no motor de templates de e-mail.
+ [STEALTH] 
+ INJ 
+ CVSS 5.9 
+ #INJ-6 
+ O Cabeçalho Falso
+ HTTP Header Injection
+ +$1.5k 
+ Common 
+ Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.
+ [STEALTH] 
+ INJ 
+ CVSS 4 
+ #INJ-7 
+ O Operador Vazado
+ NoSQL Injection
+ +$2.5k 
+ Uncommon 
+ Injeta operadores $gt e $ne no MongoDB bypassando autenticação de usuário.
+ [STEALTH] 
+ INJ 
+ CVSS 6 
+ #INJ-8 
+ O Mapa Invertido
+ ORM Injection
+ +$2.5k 
+ Uncommon 
+ Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.
+ [STEALTH] 
+ INJ 
+ CVSS 6.1 
+ #INJ-9 
+ O Atalho Cego
+ XPath Injection
+ +$2.5k 
+ Uncommon 
+ Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.
+ [STEALTH] 
+ INJ 
+ CVSS 6.1 
+ #INJ-10 
+ O Filtro Furado
+ LDAP Injection
+ +$2.5k 
+ Uncommon 
+ Bypassa autenticação de diretório corporativo Active Directory via filtro wildcard.
+ [STEALTH] 
+ INJ 
+ CVSS 6.1 
+ #INJ-11 
+ A Bomba-Relógio
+ Time-Based Blind SQLi
+ +$4.0k 
+ Rare 
+ Força o banco a pausar por 10 segundos para extrair caracteres de senhas hash.
+ [STEALTH] 
+ INJ 
+ CVSS 7.2 
+ #INJ-12 
+ O Veneno Lento
+ Second-Order SQLi
+ +$4.0k 
+ Rare 
+ CORINGA DE ESCOPO: Esta vulnerabilidade conta como dentro do escopo do seu programa, mesmo que
+ ele não permita a sua classe.
+ [STEALTH] 
+ INJ 
+ CVSS 7.2 
+ #INJ-13 
+ A Esteira Quebrada
+ Automated Injection
+ +$5.0k 
+ Epic 
+ [NOISY] BÔNUS CRÍTICO: Receba +$1.000 adicionais no payout deste Report.
+ [NOISY] INJ 
+ CVSS 8.3 
+ #INJ-14 
+ O Operário Zumbi
+ Async Worker RCE
+ +$5.0k 
+ Epic 
+ [NOISY] PROCESSO ZUMBI: Ao reportar com sucesso, compre 2 cartas do Main Deck.
+ [NOISY] INJ 
+ CVSS 8.3 
+ #INJ-15 
+ O Tubo Estourado
+ Critical Database Takeover
+ +$6.0k 
+ Legendary 
+ [NOISY] ESTOURO: Ao reportar com sucesso, o vazamento transborda: compre 2 cartas do Main Deck e force
+ 1 oponente à escolha a descartar 1 carta da mão.
+ [NOISY] INJ 
+ CVSS 9.4 
+ #INJ-16 
+ O Enxerto Tóxico
+ DLL Search Order Hijacking
+ +$1.5k 
+ Common 
+ Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.
+ [STEALTH] 
+ INJ 
+ CVSS 4.9 
+ Controle de Acesso Quebrado (Broken Access Control) (14 cartas) 
+ Escopo [BAC] 
+ #BAC-1 
+ Porta Escancarada
+ Insecure Direct Object Reference
+ (IDOR)
+ +$1.5k 
+ Common 
+ Você muda o número no final do endereço do site (de /usuario/10 para /usuario/1) e entra na conta do
+ diretor.
+ [STEALTH] 
+ BAC 
+ CVSS 4.8 
+ #BAC-2 
+ O Plebeu Privilegiado
+ Privilege Escalation (PrivEsc)
+ +$1.5k 
+ Common 
+ Estagiário altera parâmetro de perfil no request e vira administrador do sistema.
+ [STEALTH] 
+ BAC 
+ CVSS 4.9 
+ #BAC-3 
+ O Corredor Secreto
+ Directory Traversal
+ +$1.5k 
+ Common 
+ Usa ../../../etc/passwd no parâmetro de imagem para baixar arquivos do servidor.
+ [STEALTH] 
+ BAC 
+ CVSS 5 
+ #BAC-4 
+ A Fronteira Aberta
+ Cross-Origin Resource Sharing
+ +$1.5k 
+ Common 
+ Configuração Access-Control-Allow-Origin: * vazando dados privados de usuários.
+ [STEALTH] 
+ BAC 
+ CVSS 5.1 
+ #BAC-5 
+ A Maçaneta Quebrada
+ Direct Resource Leak
+ +$1.5k 
+ Common 
+ URLs de download de faturas em PDF expostas publicamente sem chave de checagem.
+ [STEALTH] 
+ BAC 
+ CVSS 5.2 
+ #BAC-6 
+ O Quarto do Vizinho
+ Broken Object Level Auth (BOLA)
+ +$2.5k 
+ Uncommon 
+ Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.
+ [STEALTH] 
+ BAC 
+ CVSS 6.6 
+ #BAC-7 
+ O Elevador de Serviço
+ Broken Function Level Auth
+ +$2.5k 
+ Uncommon 
+ Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.
+ [STEALTH] 
+ BAC 
+ CVSS 6.7 
+ #BAC-8 
+ A Parede de Papel
+ Multi-Tenant Isolation Bypass
+ +$2.5k 
+ Uncommon 
+ Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.
+ [STEALTH] 
+ BAC 
+ CVSS 6.7 
+ #BAC-9 
+ A Passagem Secreta
+ Unprotected Admin Route
+ +$2.5k 
+ Uncommon 
+ Rota oculta /management/dashboard disponível sem exigência de login.
+ [STEALTH] 
+ BAC 
+ CVSS 6.8 
+ #BAC-10 
+ O Degrau Oculto
+ JWT Role Manipulation
+ +$4.0k 
+ Rare 
+ Altera o campo "role": "user" para "role": "superadmin" no token assinado fracamente.
+ [STEALTH] 
+ BAC 
+ CVSS 7.8 
+ #BAC-11 
+ O Molho de Chaves
+ Mass Assignment / Auto-Binding
+ +$4.0k 
+ Rare 
+ [NOISY] CORINGA DE ESCOPO: Esta vulnerabilidade conta como dentro do escopo do seu programa,
+ mesmo que ele não permita a sua classe.
+ [NOISY] BAC 
+ CVSS 7.8 
+ #BAC-12 
+ O Arquivo Destrancado
+ Bulk Export IDOR
+ +$4.0k 
+ Rare 
+ Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.
+ [STEALTH] 
+ BAC 
+ CVSS 7.9 
+ #BAC-13 
+ A Catraca Livre
+ Global Authorization Bypass
+ +$5.0k 
+ Epic 
+ [NOISY] ROTAÇÃO DE MERCADO: Ao descer esta vulnerabilidade na mesa, descarte 1 Program Card do mercado
+ e revele 1 nova do Program Deck.
+ [NOISY] BAC 
+ CVSS 8.9 
+ #BAC-14 
+ A Sala do Trono
+ Root Organization Takeover
+ +$6.0k 
+ Legendary 
+ [NOISY] PANÓPTICO: Ao reportar com sucesso esta vulnerabilidade, olhe as 3 primeiras cartas do Event
+ Deck, descarte 1 se desejar e organize as restantes no topo na ordem que preferir.
+ [NOISY] 
+ BAC 
+ CVSS 9.5 
+ Cross-Site Scripting (XSS) (12 cartas) 
+ Escopo [XSS] 
+ #XSS-1 
+ Espelho Falso
+ Cross-Site Scripting (Reflected
+ XSS)
+ +$1.5k 
+ Common 
+ Você coloca um espelho na tela do usuário. Quando ele clica, está na verdade enviando o código para
+ você.
+ [STEALTH] 
+ XSS 
+ CVSS 4.4 
+ #XSS-2 
+ O Labirinto de Espelhos
+ DOM-based XSS
+ +$1.5k 
+ Common 
+ DOM-based XSS encadeado em rotas dinâmicas do Single Page App.
+ [STEALTH] 
+ XSS 
+ CVSS 4.5 
+ #XSS-3 
+ O Eco Mortal
+ Reflected XSS
+ +$1.5k 
+ Common 
+ Injeta script malicioso no campo de busca que é refletido sem sanitização na página.
+ [STEALTH] 
+ XSS 
+ CVSS 4.6 
+ #XSS-4 
+ A Sombra Enganosa
+ DOM Manipulation XSS
+ +$1.5k 
+ Common 
+ Manipula window.location.hash para executar código JavaScript na leitura do elemento.
+ [STEALTH] 
+ XSS 
+ CVSS 4.7 
+ #XSS-5 
+ A Ilusão de Ótica
+ HTML Injection
+ +$1.5k 
+ Common 
+ Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.
+ [STEALTH] 
+ XSS 
+ CVSS 4.8 
+ #XSS-6 
+ O Reflexo Congelado
+ Stored XSS
+ +$2.5k 
+ Uncommon 
+ Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.
+ [STEALTH] 
+ XSS 
+ CVSS 6.4 
+ #XSS-7 
+ O Quadro Amaldiçoado
+ SVG File Upload XSS
+ +$2.5k 
+ Uncommon 
+ Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.
+ [STEALTH] 
+ XSS 
+ CVSS 6.5 
+ #XSS-8 
+ A Máscara Rachada
+ Attribute Injection XSS
+ +$2.5k 
+ Uncommon 
+ Escapa da aspa do atributo input com " onfocus="alert(1) e dispara a vulnerabilidade.
+ [STEALTH] 
+ XSS 
+ CVSS 6.5 
+ #XSS-9 
+ A Tinta Invisível
+ Markdown Parser XSS
+ +$2.5k 
+ Uncommon 
+ Explora o interpretador de Markdown na caixa de texto do editor de chamados.
+ [STEALTH] 
+ XSS 
+ CVSS 6.6 
+ #XSS-10 
+ O Espelho Narcisista
+ Reflected XSS Advanced
+ +$4.0k 
+ Rare 
+ Se jogado com a ferramenta Browser DevTools ativa, duplica a compra de cartas na ação Recon.
+ [STEALTH] 
+ XSS 
+ CVSS 7.6 
+ #XSS-11 
+ O Reflexo Cego
+ Blind Stored XSS
+ +$4.0k 
+ Rare 
+ PROVA OOB: Esta vulnerabilidade é imune a Event Cards (não pode ser descartada por Eventos enquanto
+ estiver na Zona de Exploits).
+ [STEALTH] 
+ XSS 
+ CVSS 7.6 
+ #XSS-12 
+ O Fio Transparente
+ WebSocket XSS Hijack
+ +$5.0k 
+ Epic 
+ [NOISY] INJEÇÃO HOSTIL: Transfira 1 Token de Alerta seu para o jogador à sua direita (se você não
+ tiver, ele
+ recebe 1).
+ [NOISY] XSS 
+ CVSS 8.7 
+ Autenticação & Sessão (Authentication) (10 cartas) 
+ Escopo [AUTH] 
+ #AUTH-1 
+ Chave Mestra
+ Authentication Bypass
+ +$1.5k 
+ Common 
+ Você descobre uma brecha na catraca e entra direto sem precisar digitar senha ou mostrar documento.
+ [STEALTH] 
+ AUTH 
+ CVSS 4.8 
+ #AUTH-2 
+ Cookie Unsigned
+ Cookie Tampering
+ +$1.5k 
+ Common 
+ Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.
+ [STEALTH] 
+ AUTH 
+ CVSS 4.9 
+ #AUTH-3 
+ A Senha do Caderno
+ Weak Reset Token
+ +$1.5k 
+ Common 
+ O token de redefinição de senha usa a hora exata em segundos e é facilmente adivinhado.
+ [STEALTH] 
+ AUTH 
+ CVSS 5 
+ #AUTH-4 
+ O Porteiro Esquecido
+ Persistent Session Leak
+ +$1.5k 
+ Common 
+ O token de "Lembrar de Mim" nunca expira e permite reuso infinito de sessão.
+ [STEALTH] 
+ AUTH 
+ CVSS 5.1 
+ #AUTH-5 
+ O Distintivo Falso
+ Authentication Bypass (JWT None)
+ +$2.5k 
+ Uncommon 
+ Altera o algoritmo do cabeçalho JWT para "none" e entra sem digitar senha.
+ [STEALTH] 
+ AUTH 
+ CVSS 6.6 
+ #AUTH-6 
+ O Clone de Identidade
+ Automated Account Takeover
+ +$2.5k 
+ Uncommon 
+ Testa vazamentos de senhas conhecidas em massa contra a tela de login.
+ [STEALTH] 
+ AUTH 
+ CVSS 6.6 
+ #AUTH-7 
+ O Gêmeo Maligno
+ OAuth CSRF / State Fixation
+ +$2.5k 
+ Uncommon 
+ Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.
+ [STEALTH] 
+ AUTH 
+ CVSS 6.7 
+ #AUTH-8 
+ O Guarda Distraído
+ Multi-Factor Auth Bypass
+ +$4.0k 
+ Rare 
+ Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.
+ [STEALTH] 
+ AUTH 
+ CVSS 7.7 
+ #AUTH-9 
+ O Selo Violado
+ Alg None JWT Attack
+ +$4.0k 
+ Rare 
+ [NOISY] PROVA OOB: Esta vulnerabilidade não pode ser descartada por Eventos.
+ [NOISY] AUTH 
+ CVSS 7.8 
+ #AUTH-10 
+ O Sósia do Executivo
+ SAML Response Tampering
+ +$5.0k 
+ Epic 
+ [NOISY] DESVIO DE PAGAMENTO: Ao reportar com sucesso e ANTES do payout, transfira $1.000 do jogador com o maior saldo para a sua Bounty Track.
+ [NOISY] AUTH 
+ CVSS 8.8 
+ Server-Side Request Forgery (SSRF) (8 cartas) 
+ Escopo [SSRF] 
+ #SSRF-1 
+ O Espião Interno
+ Server-Side Request Forgery
+ (SSRF)
+ +$1.5k 
+ Common 
+ Você convence o servidor da recepção a dar uma voltinha no porão secreto da empresa e trazer fotos dos
+ arquivos.
+ [STEALTH] 
+ SSRF 
+ CVSS 4 
+ #SSRF-2 
+ A Carta Forjada
+ Cross-Site Request Forgery
+ +$1.5k 
+ Common 
+ Faz o usuário transferir saldo ao clicar em um link malicioso sem token CSRF.
+ [STEALTH] 
+ SSRF 
+ CVSS 4.1 
+ #SSRF-3 
+ O Radar Subterrâneo
+ Network Scanning via SSRF
+ +$1.5k 
+ Common 
+ Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.
+ [STEALTH] 
+ SSRF 
+ CVSS 4.2 
+ #SSRF-4 
+ O Fantasma na Máquina
+ SSRF via Webhook
+ +$2.5k 
+ Uncommon 
+ O webhook de notificação enviou a chave de API interna de volta para você.
+ [STEALTH] 
+ SSRF 
+ CVSS 6.1 
+ #SSRF-5 
+ O Segredo do Servidor
+ AWS EC2 Metadata SSRF
+ +$2.5k 
+ Uncommon 
+ Acessa http://169.254.169.254 e obtém credenciais temporárias do servidor AWS.
+ [STEALTH] 
+ SSRF 
+ CVSS 6.2 
+ #SSRF-6 
+ O Endereço Traiçoeiro
+ DNS Rebinding Bypass
+ +$4.0k 
+ Rare 
+ Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.
+ [STEALTH] 
+ SSRF 
+ CVSS 7.2 
+ #SSRF-7 
+ O Pombo Correio
+ OOB Interaction SSRF
+ +$4.0k 
+ Rare 
+ [NOISY] PROVA OOB: Esta vulnerabilidade não pode ser descartada por Eventos.
+ [NOISY] SSRF 
+ CVSS 7.3 
+ #SSRF-8 
+ O Mensageiro Cego
+ Gopher SSRF to Redis RCE
+ +$5.0k 
+ Epic 
+ [NOISY] ACESSO INTERNO: Ao reportar com sucesso, recupere 1 Tool Card do descarte para a sua mão.
+ [NOISY] SSRF 
+ CVSS 8.3 
+ Lógica de Negócio (Business Logic) (8 cartas) 
+ Escopo [LOGIC] 
+ #BL-1 
+ O Relógio Quebrado
+ Business Logic Error
+ +$1.5k 
+ Common 
+ Você descobre que se clicar no botão de confirmação exatamente na virada do minuto, o sistema não
+ cobra o valor.
+ [STEALTH] 
+ LOGIC 
+ CVSS 4 
+ #BL-2 
+ O Troco Infinito
+ Negative Amount Logic Flaw
+ +$1.5k 
+ Common 
+ Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar você.
+ [STEALTH] 
+ LOGIC 
+ CVSS 4.1 
+ #BL-3 
+ A Pilha de Cupons
+ Coupon Reuse Logic
+ +$1.5k 
+ Common 
+ Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.
+ [STEALTH] 
+ LOGIC 
+ CVSS 4.2 
+ #BL-4 
+ A Entrega Fantasma
+ Race Condition
+ +$2.5k 
+ Uncommon 
+ Você clica no botão de saque 50 vezes no mesmo segundo antes do banco perceber que o saldo acabou.
+ [STEALTH] 
+ LOGIC 
+ CVSS 6.1 
+ #BL-5 
+ O Centavo de Ouro
+ Floating Point Currency Flaw
+ +$2.5k 
+ Uncommon 
+ Arredondamento de frações de centavos acumuladas em transações bancárias.
+ [STEALTH] 
+ LOGIC 
+ CVSS 6.2 
+ #BL-6 
+ A Amostra Grátis Eterna
+ Subscription Logic Bypass
+ +$4.0k 
+ Rare 
+ ACESSO INTERNO: Ao reportar com sucesso esta vulnerabilidade, resgate 1 Tool Card da pilha de descarte
+ diretamente para a sua mão. Explora falha na validação de cupons para obter itens sem cobrança.
+ [STEALTH] 
+ LOGIC 
+ CVSS 7.2 
+ #BL-7 
+ O Carrinho Sem Fundo
+ Integer Overflow in Cart
+ +$4.0k 
+ Rare 
+ Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.
+ [STEALTH] 
+ LOGIC 
+ CVSS 7.3 
+ #BL-8 
+ A Nota Duplicada
+ State Machine Duplication
+ +$5.0k 
+ Epic 
+ [NOISY] BÔNUS CRÍTICO: Receba +$1.000 adicionais no payout deste Report.
+ [NOISY] LOGIC 
+ CVSS 8.3 
+ Falhas Criptográficas (Cryptographic Failures) (6 cartas) 
+ Escopo [CRYPTO] 
+ #CRYPTO-1 
+ Cadeado de Papel
+ Weak Cryptography (MD5 / Single
+ Hash)
+ +$1.5k 
+ Common 
+ A empresa trancou os segredos com uma senha boba tipo "123456" que você descobre em 2 segundos.
+ [STEALTH] 
+ CRYPTO 
+ CVSS 4.7 
+ #CRYPTO-2 
+ O Cofre de Plástico
+ Weak Hash / No Salt
+ +$1.5k 
+ Common 
+ Senhas salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.
+ [STEALTH] 
+ CRYPTO 
+ CVSS 4.8 
+ #CRYPTO-3 
+ A Chave debaixo do Tapete
+ Embedded Secret Key
+ +$2.5k 
+ Uncommon 
+ A chave privada RSA de produção estava salva dentro do código JavaScript do frontend.
+ [STEALTH] 
+ CRYPTO 
+ CVSS 6.4 
+ #CRYPTO-4 
+ O Diário Aberto
+ Insecure Data Transmission
+ +$2.5k 
+ Uncommon 
+ Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.
+ [STEALTH] 
+ CRYPTO 
+ CVSS 6.5 
+ #CRYPTO-5 
+ O Oráculo Fofoqueiro
+ CBC Padding Oracle
+ +$4.0k 
+ Rare 
+ Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.
+ [STEALTH] 
+ CRYPTO 
+ CVSS 7.5 
+ #CRYPTO-6 
+ O Padrão Repetido
+ AES ECB Pattern Leak
+ +$5.0k 
+ Epic 
+ [NOISY] ROTAÇÃO DE MERCADO: Ao descer esta vulnerabilidade na mesa, descarte 1 Program Card do mercado
+ e revele 1 nova do Program Deck.
+ [NOISY] CRYPTO 
+ CVSS 8.6 
+ Exploits Avançados & Ameaças Globais (APT) (6 cartas) 
+ Escopo [⚡ APT] 
+ #APT-1 
+ O Efeito Dominó
+ Multi-Stage Chained Exploit
+ +$2.5k 
+ Uncommon 
+ [NOISY] EFEITO DOMINÓ: Ao descer esta vulnerabilidade, você pode baixar imediatamente 1
+ vulnerabilidade adicional da mão na Zona de Exploits (respeitando escopo e limite de 3 cartas).
+ [NOISY] ⚡ APT 
+ CVSS 6.3 
+ #APT-2 
+ A Tempestade Perfeita
+ SSRF to Internal Admin Chain
+ +$4.0k 
+ Rare 
+ Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.
+ [STEALTH] 
+ ⚡ APT 
+ CVSS 7.3 
+ #APT-3 
+ O Apocalipse Primaveril
+ Remote Code Execution (RCE)
+ +$5.0k 
+ Epic 
+ [NOISY] MERCADO EM CAOS: Ao reportar com sucesso esta vulnerabilidade, descarte até 3 programas do
+ mercado e revele novos.
+ [NOISY] ⚡ APT 
+ CVSS 8.4 
+ #APT-4 
+ O Mestre dos Títeres
+ Remote Code Execution (RCE)
+ +$6.0k 
+ Legendary 
+ [NOISY] TÍTERE: Ao reportar com sucesso, ative imediatamente o efeito de 1 Tool Card de qualquer
+ oponente na mesa como se fosse sua (o oponente mantém a carta).
+ [NOISY] ⚡ APT 
+ CVSS 9.5 
+ #APT-5 
+ O Boneco de Marionete
+ Remote Code Execution (RCE root)
+ +$6.0k 
+ Legendary 
+ [NOISY] MARIONETE: Ao reportar com sucesso, force 1 oponente a descartar 1 Tool ativa à sua escolha.
+ Se ele não tiver Tools ativas, descarte 1 carta aleatória da mão dele.
+ [NOISY] ⚡ APT 
+ CVSS 9.5 
+ #APT-6 
+ A Caixa de Pandora
+ Log4Shell / Java Deserialization
+ +$6.0k 
+ Legendary 
+ [NOISY] ZERO-DAY: Ao reportar esta vulnerabilidade, ignore o Custo do Sucesso: não saque nenhum Event
+ Card.
+ [NOISY] ⚡ APT 
+ CVSS 9.6 
+Exibindo pwned-manual-sucesso-v1-humanized-fixed.html…

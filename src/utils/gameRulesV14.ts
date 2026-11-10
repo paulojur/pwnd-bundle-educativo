@@ -96,7 +96,7 @@ export interface BountyMilestone {
 export const BOUNTY_MILESTONES: BountyMilestone[] = [
   { value: 4500, label: '$4.5k', icon: '🐝', effectDescription: 'Ganhe 1 Token de Reputação (🐝)' },
   { value: 9000, label: '$9.0k', icon: '🐞', effectDescription: 'Receba 1 Token de Alerta (🐞)' },
-  { value: 13500, label: '$13.5k', icon: '🐝🛒', effectDescription: 'Ganhe 1 Token de Reputação (🐝) e compre 1 Tool' },
+  { value: 13500, label: '$13.5k', icon: '🐝🛒', effectDescription: 'Ganhe 1 Token de Reputação (🐝) e compre 1 carta do Main Deck' },
   { value: 19000, label: '$19.0k', icon: '🐞🗂️−', effectDescription: 'Receba 1 Token de Alerta (🐞) e descarte 1 carta da mão' },
   { value: 24500, label: '$24.5k', icon: '🛠️⚡', effectDescription: 'Instale 1 Tool imediatamente sem custo de descarte' },
   { value: 29000, label: '$29.0k', icon: '🐝🐞−', effectDescription: 'Ganhe 1 Token de Reputação (🐝) e remova 1 Token de Alerta' },
@@ -121,22 +121,33 @@ export interface ScopeCheckResult {
   rejectionReason?: string;
 }
 
+export interface ScopeCheckOptions {
+  scopeExpansion?: boolean;
+  wafBlocked?: boolean;
+  twoFaBlocked?: boolean;
+  exploitBlocked?: boolean;
+}
+
 /**
  * Validação Canônica de Escopo (Manual V1.4 Seção 03 & 06)
  * - Identifica 'ALL' e 'TODAS AS CLASSES (ALL)'
  * - Aplica regra 'Volume Puro' do Bug Hunter (apenas Comum e Incomum)
  * - Aplica 'Escopo Livre' do Red Teamer
- * - Checa siglas canônicas: INJ, BAC, XSS, AUTH, SSRF, LOGIC, CRYPTO, APT
+ * - Aplica Tools Passivas: Endpoint Lab (T-04 -> BAC) e Injection Lab (T-08 -> INJ)
+ * - Aplica Habilidade Especial: CORINGA DE ESCOPO (#INJ-12, #BAC-11)
+ * - Aplica Eventos de Rodada/Turno: Out of Scope!, Scope Expansion!, WAF Deployed! (INJ), 2FA Enforced! (AUTH)
  */
 export const checkCardScopeV14 = (
   card: CardV2,
   program: ProgramCard | null,
-  archetype?: Archetype
+  archetype?: Archetype,
+  activeTools: CardV2[] = [],
+  options: ScopeCheckOptions = {}
 ): ScopeCheckResult => {
   if (card.type !== 'exploit') {
     return {
       inScope: true,
-      badgeLabel: card.type === 'tool' ? '🧰 FERRAMENTA' : '🛡️ Safeguard',
+      badgeLabel: card.type === 'tool' ? `🧰 TOOL (${card.toolType || 'TÁTICA'})` : '🛡️ SAFEGUARD',
       badgeColor: card.type === 'tool' ? '#0369A1' : '#166534'
     };
   }
@@ -150,11 +161,38 @@ export const checkCardScopeV14 = (
     };
   }
 
+  if (options.exploitBlocked) {
+    return {
+      inScope: false,
+      badgeLabel: '⛔ OUT OF SCOPE! (EVENTO)',
+      badgeColor: '#B91C1C',
+      rejectionReason: 'Evento Out of Scope! ativo: você está impedido de realizar a ação Exploit neste turno.'
+    };
+  }
+
   const cardRarity = (card.rarity || '').toLowerCase();
   const cardClass = (card.vulnClass || '').toUpperCase();
+  const baseId = (card.canonicalId || card.id || '').toUpperCase();
+
+  // Bloqueios globais de Eventos de Rodada (WAF Deployed! e 2FA Enforced!)
+  if (options.wafBlocked && cardClass === 'INJ') {
+    return {
+      inScope: false,
+      badgeLabel: '🛡️ WAF DEPLOYED! [INJ BLOQUEADO]',
+      badgeColor: '#B91C1C',
+      rejectionReason: 'Evento WAF Deployed! ativo na rodada: vulnerabilidades da classe INJ não podem ser baixadas!'
+    };
+  }
+  if (options.twoFaBlocked && cardClass === 'AUTH') {
+    return {
+      inScope: false,
+      badgeLabel: '🔐 2FA ENFORCED! [AUTH BLOQUEADO]',
+      badgeColor: '#B91C1C',
+      rejectionReason: 'Evento 2FA Enforced! ativo na rodada: vulnerabilidades da classe AUTH não podem ser baixadas!'
+    };
+  }
 
   // 1. Regra de Arquétipo: Bug Hunter (Volume Puro - manual V1.4 linhas 716-726)
-  // "Volume Puro: Você ganha na força bruta, mas o prêmio é menor: só tem permissão pra reportar cartas Comuns e Incomuns."
   if (archetype?.id === 'bug-hunter') {
     if (cardRarity === 'rare' || cardRarity === 'epic' || cardRarity === 'legendary') {
       return {
@@ -166,8 +204,7 @@ export const checkCardScopeV14 = (
     }
   }
 
-  // 2. Regra de Arquétipo: Red Teamer
-  // "Escopo Livre: Pode explorar qualquer classe de vulnerabilidade em qualquer programa"
+  // 2. Regra de Arquétipo: Red Teamer (Sem Limites)
   if (archetype?.id === 'red-teamer') {
     return {
       inScope: true,
@@ -176,9 +213,47 @@ export const checkCardScopeV14 = (
     };
   }
 
+  // 3. Evento Scope Expansion! (evt-08)
+  if (options.scopeExpansion) {
+    return {
+      inScope: true,
+      badgeLabel: `🌐 SCOPE EXPANSION [${cardClass || 'OK'}]`,
+      badgeColor: '#0284C7'
+    };
+  }
+
+  // 4. Habilidade Especial da Vulnerabilidade: CORINGA DE ESCOPO (#INJ-12, #BAC-11)
+  const descUpper = ((card.simpleDescription || '') + ' ' + (card.ptDescription || '')).toUpperCase();
+  if (baseId === 'INJ-12' || baseId === 'BAC-11' || descUpper.includes('CORINGA DE ESCOPO') || descUpper.includes('IGNORA O ESCOPO')) {
+    return {
+      inScope: true,
+      badgeLabel: `🃏 CORINGA DE ESCOPO [${cardClass}]`,
+      badgeColor: '#059669'
+    };
+  }
+
+  // 5. Tools Passivas Fura-Escopo: Endpoint Lab (T-04 -> BAC) e Injection Lab (T-08 -> INJ)
+  const hasEndpointLab = activeTools.some(t => (t.toolId || t.id).startsWith('T-04') || t.name.includes('Endpoint Lab'));
+  if (hasEndpointLab && cardClass === 'BAC') {
+    return {
+      inScope: true,
+      badgeLabel: `🚀 ENDPOINT LAB [BAC LIBERADO]`,
+      badgeColor: '#0284C7'
+    };
+  }
+
+  const hasInjectionLab = activeTools.some(t => (t.toolId || t.id).startsWith('T-08') || t.name.includes('Injection Lab'));
+  if (hasInjectionLab && cardClass === 'INJ') {
+    return {
+      inScope: true,
+      badgeLabel: `🛢️ INJECTION LAB [INJ LIBERADO]`,
+      badgeColor: '#0284C7'
+    };
+  }
+
   const allowed = program.allowedClasses;
 
-  // 3. Checagem de Escopo Amplo / Todas as Classes (ex: ShopAll Global, MegaCorp)
+  // 6. Checagem de Escopo Amplo / Todas as Classes (ex: ShopAll Global, EduConnect)
   const isAllClasses = allowed === 'ALL' ||
     (Array.isArray(allowed) && allowed.some(c => {
       const u = String(c).toUpperCase();
@@ -193,7 +268,7 @@ export const checkCardScopeV14 = (
     };
   }
 
-  // 4. Checagem de Classes Específicas
+  // 7. Checagem de Classes Específicas
   const cardRef = (card.technicalReference || card.name).toLowerCase();
   const isClassMatch = Array.isArray(allowed) && allowed.some(cat => {
     const catUpper = String(cat).toUpperCase();

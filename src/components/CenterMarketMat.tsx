@@ -20,9 +20,10 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
   const { language, t } = useLanguage();
   const {
     programMarket,
+    programDeckCount,
     playerActiveProgram,
     selectNewProgram,
-    drawEventCard,
+    drawSurpriseProgramFromDeck,
     mainDeckCount,
     toolDeckCount,
     eventDeckCount,
@@ -298,7 +299,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
           </div>
         </div>
 
-        {/* 2. PROGRAM MARKET (3 CARTAS ABERTAS NO TABULEIRO CENTRAL) */}
+        {/* 2. PROGRAM MARKET (3 CARTAS ABERTAS NO TABULEIRO CENTRAL + TOPO DO DECK) */}
         <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <div>
@@ -306,13 +307,13 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                 {isPendingProgram ? '👉 SELEÇÃO DE ALVO OBRIGATÓRIA:' : 'MERCADO CORPORATIVO CENTRAL:'}
               </div>
               <h3 style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'monospace', margin: '2px 0 0 0', color: '#1E1B18' }}>
-                PROGRAM MARKET (3 ALVOS DISPONÍVEIS NA MESA)
+                PROGRAM MARKET (3 ALVOS EXPOSTOS + COMPRA SURPRESA DO DECK)
               </h3>
             </div>
 
             {isPendingProgram && (
               <span style={{ fontSize: '11px', fontWeight: '800', background: '#FEF3C7', color: '#92400E', border: '1px solid #D97706', padding: '4px 10px', borderRadius: '4px', fontFamily: 'monospace' }}>
-                ⚠️ Clique em uma das cartas abaixo para pegar para seu tapete!
+                ⚠️ Escolha 1 dos 3 expostos abaixo OU compre do topo do Program Deck!
               </span>
             )}
           </div>
@@ -320,7 +321,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
               gap: '14px'
             }}
           >
@@ -332,8 +333,11 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                   key={program.id}
                   onClick={() => {
                     soundFx.playClick();
-                    selectNewProgram(program);
-                    if (onSelectProgram) onSelectProgram(program);
+                    if (onSelectProgram) {
+                      onSelectProgram(program);
+                    } else {
+                      selectNewProgram(program);
+                    }
                   }}
                   style={{
                     background: isSelected ? '#ECFDF5' : '#FAF6EE',
@@ -367,7 +371,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
 
                     {/* Classes Permitidas no Escopo */}
                     <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                      {program.allowedClasses === 'ALL' ? (
+                      {program.allowedClasses === 'ALL' || (Array.isArray(program.allowedClasses) && program.allowedClasses.some(c => String(c).includes('ALL'))) ? (
                         <span style={{ fontSize: '8.5px', fontWeight: '800', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
                           🌐 ESCOPO AMPLO (TODAS AS CLASSES)
                         </span>
@@ -395,8 +399,11 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                       onClick={(e) => {
                         e.stopPropagation();
                         soundFx.playClick();
-                        selectNewProgram(program);
-                        if (onSelectProgram) onSelectProgram(program);
+                        if (onSelectProgram) {
+                          onSelectProgram(program);
+                        } else {
+                          selectNewProgram(program);
+                        }
                       }}
                       style={{
                         padding: '4px 10px',
@@ -413,12 +420,77 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                         gap: '4px'
                       }}
                     >
-                      {isSelected ? '✓ SEU ALVO ATIVO' : 'PEGAR PROGRAMA'} <ArrowRight size={10} />
+                      {isSelected ? '✓ SEU ALVO ATIVO' : 'PEGAR EXPOSTO'} <ArrowRight size={10} />
                     </button>
                   </div>
                 </div>
               );
             })}
+
+            {/* 4º CARD: COMPRAR SURPRESA DO TOPO DO PROGRAM DECK */}
+            <div
+              onClick={() => {
+                soundFx.playClick();
+                drawSurpriseProgramFromDeck();
+              }}
+              style={{
+                background: 'linear-gradient(145deg, #2B2620 0%, #1E1B18 100%)',
+                border: '2px dashed #F59E0B',
+                borderRadius: '8px',
+                padding: '14px',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                color: '#FAF6EE',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.18)'
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: '800', color: '#FCD34D', fontFamily: 'monospace' }}>
+                    PROGRAM DECK (SURPRESA)
+                  </span>
+                  <span style={{ fontSize: '10px', fontWeight: '900', background: 'rgba(245, 158, 11, 0.2)', color: '#FCD34D', border: '1px solid #F59E0B', padding: '2px 6px', borderRadius: '4px', fontFamily: 'monospace' }}>
+                    {programDeckCount} restantes
+                  </span>
+                </div>
+                <h4 style={{ fontSize: '15px', fontWeight: '900', color: '#FFFFFF', fontFamily: 'monospace', margin: '6px 0' }}>
+                  🎲 Puxar do Topo do Deck
+                </h4>
+                <p style={{ fontSize: '11px', color: '#D6CBB8', lineHeight: '1.4', margin: '0 0 10px 0' }}>
+                  Prefere arriscar um alvo corporativo inédito? Puxe a carta fechada do topo do baralho de programas sem mexer nos 3 expostos!
+                </p>
+              </div>
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '10px', fontWeight: '800', color: '#FCD34D', fontFamily: 'monospace' }}>
+                  Carta Fechada
+                </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    soundFx.playClick();
+                    drawSurpriseProgramFromDeck();
+                  }}
+                  style={{
+                    padding: '4px 10px',
+                    background: '#F59E0B',
+                    color: '#1E1B18',
+                    border: 'none',
+                    borderRadius: '4px',
+                    fontSize: '9.5px',
+                    fontWeight: '900',
+                    fontFamily: 'monospace',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  PEGAR DO DECK <ArrowRight size={10} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -490,8 +562,8 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
 
             {/* EVENT DECK (24 CARTAS) */}
             <div
-              onClick={() => { soundFx.playClick(); drawEventCard(); }}
-              title="Clique para sacar 1 Carta de Evento!"
+              onClick={() => { soundFx.playClick(); }}
+              title="O Evento só é sacado e ativado após um Report bem-sucedido (Manual §03)."
               style={{
                 width: '105px',
                 height: '125px',
@@ -503,7 +575,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 textAlign: 'center',
-                cursor: 'pointer',
+                cursor: 'not-allowed',
                 boxShadow: '2px 3px 0 #B91C1C',
                 transition: 'transform 0.15s ease'
               }}

@@ -12,6 +12,7 @@ export const BoardHand: React.FC = () => {
   const { language, t } = useLanguage();
   const {
     playerHand,
+    playerActiveTools,
     playerActiveProgram,
     playerArchetype,
     isMyTurn,
@@ -23,14 +24,18 @@ export const BoardHand: React.FC = () => {
     needsDiscard,
     pendingToolInstall,
     cancelToolInstall,
-    confirmToolInstall
+    confirmToolInstall,
+    dynamicMaxHandSize,
+    freeExploitDeploysRemaining,
+    currentScopeOptions
   } = useBoardGame();
 
   const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
   const [lastActionText, setLastActionText] = useState<string | null>(null);
 
-  // VALIDAÇÃO CANÔNICA DE ESCOPO V1.4
-  const checkScopeStatus = (card: CardV2) => checkCardScopeV14(card, playerActiveProgram, playerArchetype);
+  // VALIDAÇÃO CANÔNICA DE ESCOPO V1.4 (com Tools Passivas e Eventos de Rodada)
+  const checkScopeStatus = (card: CardV2) =>
+    checkCardScopeV14(card, playerActiveProgram, playerArchetype, playerActiveTools, currentScopeOptions);
 
   const handleCardClick = (cardId: string) => {
     soundFx.playClick();
@@ -89,14 +94,20 @@ export const BoardHand: React.FC = () => {
             {t('playerMat.handTitle')} ({playerHand.length} {t('playerMat.cardsCount')})
           </h3>
           <span style={{ fontSize: '10px', color: '#685F53', fontFamily: 'monospace' }}>
-            ({t('playerMat.limit')} {playerArchetype.maxHandSize || 6} {t('playerMat.cardsCount')})
+            ({t('playerMat.limit')} {dynamicMaxHandSize} {t('playerMat.cardsCount')})
           </span>
         </div>
+
+        {freeExploitDeploysRemaining > 0 && (
+          <div style={{ fontSize: '11px', color: '#166534', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#DCFCE7', border: '1.5px solid #166534', padding: '4px 10px', borderRadius: '4px', fontWeight: '900' }}>
+            ⚡ BÔNUS ATIVO (SpiderScan / Efeito Dominó): Você pode descer +{freeExploitDeploysRemaining} vulnerabilidade(s) na mesa por 0 AP!
+          </div>
+        )}
 
         {/* Notificações de ação */}
         {needsDiscard && !pendingToolInstall && (
           <div style={{ fontSize: '11px', color: '#991B1B', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#FEE2E2', border: '1px solid #B91C1C', padding: '4px 10px', borderRadius: '4px', fontWeight: '800' }}>
-            ⚠️ {language === 'en' ? `HAND LIMIT EXCEEDED: Discard ${playerHand.length - playerArchetype.maxHandSize} card(s).` : `LIMITE EXCEDIDO: Descarte ${playerHand.length - playerArchetype.maxHandSize} carta(s).`}
+            ⚠️ {language === 'en' ? `HAND LIMIT EXCEEDED: Discard ${playerHand.length - dynamicMaxHandSize} card(s).` : `LIMITE EXCEDIDO: Descarte ${playerHand.length - dynamicMaxHandSize} carta(s).`}
           </div>
         )}
 
@@ -112,31 +123,49 @@ export const BoardHand: React.FC = () => {
           </div>
         )}
 
-        {/* RECICLAGEM 2 POR 1 */}
+        {/* RECICLAGEM 2 POR 1 (0 AP - SEMPRE VISÍVEL PARA ORIENTAR O JOGADOR) */}
         {selectedCardIds.length === 2 ? (
           <button
             onClick={handleRecycleTwoForOne}
+            disabled={!isMyTurn}
             style={{
               padding: '6px 14px',
-              background: '#16A34A',
+              background: isMyTurn ? '#16A34A' : '#9CA3AF',
               color: '#FFFFFF',
               border: '1.5px solid #2B2620',
               borderRadius: '6px',
-              fontSize: '11px',
+              fontSize: '11.5px',
               fontWeight: '900',
               fontFamily: 'monospace',
-              cursor: 'pointer',
+              cursor: isMyTurn ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: '0 2px 5px rgba(22, 163, 74, 0.4)'
+              boxShadow: '0 2px 6px rgba(22, 163, 74, 0.4)'
             }}
           >
-            <RefreshCw size={14} /> {t('actions.recycleButton')}
+            <RefreshCw size={14} /> ♻️ {language === 'en' ? 'Recycle 2:1 (0 AP) — Confirm Swap!' : 'Reciclar 2:1 (0 AP) — Confirmar Troca!'}
           </button>
-        ) : selectedCardIds.length === 1 && (
-          <div style={{ fontSize: '10.5px', color: '#B45309', fontFamily: 'monospace' }}>
-            {t('actions.recycleHint')}
+        ) : (
+          <div
+            style={{
+              fontSize: '11px',
+              color: selectedCardIds.length === 1 ? '#B45309' : '#4B4337',
+              background: selectedCardIds.length === 1 ? '#FEF3C7' : '#F3EFE6',
+              border: selectedCardIds.length === 1 ? '1.5px solid #D97706' : '1px dashed #A89D8B',
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontFamily: 'monospace',
+              fontWeight: selectedCardIds.length === 1 ? '800' : '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <RefreshCw size={13} color={selectedCardIds.length === 1 ? '#D97706' : '#685F53'} />
+            {selectedCardIds.length === 1
+              ? (language === 'en' ? 'Recycle 2:1 (0 AP): 1/2 selected — click 1 more card to swap for free!' : 'Reciclar 2:1 (0 AP): 1/2 selecionada — clique em mais 1 carta para trocar grátis!')
+              : (language === 'en' ? 'Recycle 2:1 (0 AP): Click any 2 cards in hand to swap for 1 new card (0 AP)' : 'Reciclar 2:1 (0 AP): Clique em 2 cartas da mão para trocar por 1 nova sem gastar AP')}
           </div>
         )}
       </div>
@@ -166,17 +195,17 @@ export const BoardHand: React.FC = () => {
                 key={card.id}
                 onClick={() => handleCardClick(card.id)}
                 style={{
-                  width: '170px',
-                  minWidth: '170px',
-                  height: '255px',
-                  padding: '10px',
+                  width: '230px',
+                  minWidth: '230px',
+                  minHeight: '340px',
+                  padding: '14px 12px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   border: isSelected ? '2.5px solid #D97706' : `1.5px solid ${cardBorderColor}`,
-                  borderRadius: '8px',
+                  borderRadius: '10px',
                   background: '#FFFFFF',
-                  boxShadow: isSelected ? '0 4px 12px rgba(217, 119, 6, 0.35)' : '0 2px 6px rgba(0,0,0,0.08)',
+                  boxShadow: isSelected ? '0 6px 16px rgba(217, 119, 6, 0.35)' : '0 2px 8px rgba(0,0,0,0.08)',
                   opacity: scopeStatus.inScope ? 1 : 0.65,
                   position: 'relative',
                   cursor: 'pointer',
@@ -184,19 +213,18 @@ export const BoardHand: React.FC = () => {
                 }}
               >
                 {/* TOPO DA CARTA: STATUS DE ESCOPO E CLASSE */}
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <div
                     style={{
-                      fontSize: '8px',
+                      fontSize: '10px',
                       fontWeight: '800',
                       color: scopeStatus.badgeColor,
                       fontFamily: 'monospace',
                       background: '#FAF6EE',
-                      padding: '2px 4px',
-                      borderRadius: '3px',
-                      border: `1px solid ${scopeStatus.badgeColor}`,
-                      textAlign: 'center',
-                      marginBottom: '3px'
+                      padding: '4px 6px',
+                      borderRadius: '4px',
+                      border: `1.5px solid ${scopeStatus.badgeColor}`,
+                      textAlign: 'center'
                     }}
                   >
                     {getLocalizedScopeBadge(scopeStatus.badgeLabel, scopeStatus.inScope, language)}
@@ -205,13 +233,13 @@ export const BoardHand: React.FC = () => {
                   {card.type === 'exploit' && (
                     <div
                       style={{
-                        fontSize: '7.5px',
+                        fontSize: '9.5px',
                         fontWeight: '800',
                         color: classInfo.color,
                         background: '#FAF6EE',
                         border: `1px solid ${classInfo.color}`,
-                        borderRadius: '3px',
-                        padding: '1px 4px',
+                        borderRadius: '4px',
+                        padding: '3px 5px',
                         textAlign: 'center',
                         fontFamily: 'monospace'
                       }}
@@ -222,10 +250,10 @@ export const BoardHand: React.FC = () => {
                 </div>
 
                 {/* ÍCONE E PONTOS */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '22px' }}>{card.icon}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '6px 0' }}>
+                  <span style={{ fontSize: '28px' }}>{card.icon}</span>
                   {card.points > 0 && (
-                    <span style={{ fontSize: '11px', fontWeight: '900', color: '#166534', fontFamily: 'monospace' }}>
+                    <span style={{ fontSize: '14px', fontWeight: '900', color: '#166534', fontFamily: 'monospace' }}>
                       +${card.points.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}
                     </span>
                   )}
@@ -233,21 +261,37 @@ export const BoardHand: React.FC = () => {
 
                 {/* NOME DA CARTA E REFERÊNCIA TÉCNICA */}
                 <div>
-                  <h4 style={{ fontSize: '11px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', lineHeight: '1.2', margin: 0 }}>
+                  <h4 style={{ fontSize: '14px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', lineHeight: '1.25', margin: 0 }}>
                     {card.name}
                   </h4>
-                  <div style={{ fontSize: '8px', color: '#685F53', fontFamily: 'monospace', marginTop: '2px' }}>
+                  <div style={{ fontSize: '11px', color: '#5A5245', fontFamily: 'monospace', marginTop: '3px' }}>
                     {card.technicalReference}
                   </div>
                 </div>
 
-                {/* DESCRIÇÃO DA CARTA LOCALIZADA */}
-                <div style={{ fontSize: '8.5px', color: '#4B4337', lineHeight: '1.3', background: '#FAF6EE', padding: '4px', borderRadius: '4px', border: '1px solid #E2D7C5' }}>
+                {/* DESCRIÇÃO DA CARTA LOCALIZADA (COM DESTAQUE PARA PODERES NOISY) */}
+                <div
+                  style={{
+                    fontSize: '11px',
+                    color: card.isNoisy ? '#991B1B' : '#2B2620',
+                    lineHeight: '1.4',
+                    background: card.isNoisy ? '#FEF2F2' : '#FAF6EE',
+                    padding: '8px 10px',
+                    borderRadius: '6px',
+                    border: card.isNoisy ? '1.5px solid #F87171' : '1px solid #E2D7C5',
+                    fontFamily: 'monospace'
+                  }}
+                >
+                  {card.isNoisy && (
+                    <div style={{ fontWeight: '900', color: '#B91C1C', marginBottom: '4px', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      ⚡ PODER ATIVO:
+                    </div>
+                  )}
                   {getLocalizedCardDescription(card, language)}
                 </div>
 
                 {/* BOTÕES DE AÇÃO NA CARTA */}
-                <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
+                <div style={{ display: 'flex', gap: '4px', marginTop: '6px' }}>
                   {pendingToolInstall ? (
                     card.id === pendingToolInstall.id ? (
                       <button
@@ -273,7 +317,7 @@ export const BoardHand: React.FC = () => {
                     )
                   ) : (
                     <>
-                      {!needsDiscard && card.type === 'exploit' && scopeStatus.inScope && (
+                      {card.type === 'exploit' && scopeStatus.inScope && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -284,7 +328,7 @@ export const BoardHand: React.FC = () => {
                           style={{
                             flex: 2,
                             padding: '5px',
-                            background: '#B45309',
+                            background: freeExploitDeploysRemaining > 0 ? '#16A34A' : '#B45309',
                             color: '#FFFFFF',
                             border: 'none',
                             borderRadius: '3px',
@@ -294,11 +338,11 @@ export const BoardHand: React.FC = () => {
                             cursor: isMyTurn ? 'pointer' : 'not-allowed'
                           }}
                         >
-                          EXPLOIT (1 AP)
+                          {freeExploitDeploysRemaining > 0 ? '⚡ EXPLOIT (0 AP)' : 'EXPLOIT (1 AP)'}
                         </button>
                       )}
 
-                      {!needsDiscard && card.type === 'tool' && (
+                      {card.type === 'tool' && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -323,7 +367,7 @@ export const BoardHand: React.FC = () => {
                         </button>
                       )}
 
-                      {!needsDiscard && card.type === 'defuse' && (
+                      {card.type === 'defuse' && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();

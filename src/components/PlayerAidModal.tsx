@@ -182,6 +182,9 @@ export const PlayerAidModal: React.FC<PlayerAidModalProps> = ({ isOpen, onClose 
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px', color: '#4B4337' }}>
                   <div>
+                    <strong style={{ color: '#1E1B18' }}>♻️ Reciclagem 2:1 (0 AP):</strong> Descarte 2 cartas quaisquer da sua mão para comprar 1 carta nova do Main Deck sem gastar ação.
+                  </div>
+                  <div>
                     <strong style={{ color: '#1E1B18' }}>🔧 Instalar Tool:</strong> Descarte 1 carta qualquer da mão para equipar 1 Ferramenta no Tools Rack (máximo de 3 ferramentas instaladas).
                   </div>
                   <div>

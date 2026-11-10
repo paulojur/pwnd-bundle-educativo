@@ -3,26 +3,26 @@ import { Language } from './translations';
 
 export const getLocalizedCardDescription = (card: CardV2, language: Language): string => {
   if (language === 'pt') {
-    return card.ptDescription || card.simpleDescription || card.technicalReference;
+    return card.simpleDescription || card.ptDescription || card.technicalReference;
   }
 
   // Language is 'en'
-  // 1. Tool cards translation
+  // 1. Tool cards translation (canonical V1.4)
   if (card.type === 'tool') {
-    const tRef = (card.technicalReference || card.name).toLowerCase();
-    if (tRef.includes('burp')) return 'Interception proxy: inspect and manipulate HTTP traffic in real time.';
-    if (tRef.includes('nmap')) return 'Network scanner: discover open ports, active services, and OS footprints.';
-    if (tRef.includes('sqlmap')) return 'Automated SQL injection detection and database exploitation tool.';
-    if (tRef.includes('wireshark')) return 'Packet analyzer: capture and inspect raw network packets in depth.';
-    if (tRef.includes('metasploit')) return 'Penetration testing framework with modular exploit execution payloads.';
-    if (tRef.includes('gobuster') || tRef.includes('ffuf') || tRef.includes('dirb')) return 'High-speed directory and file brute-forcing utility.';
-    if (tRef.includes('hashcat') || tRef.includes('john')) return 'Advanced password cracker using rule-based dictionary attacks.';
-    if (tRef.includes('hydra')) return 'Fast network login cracker supporting numerous authentication protocols.';
-    if (tRef.includes('nuclei')) return 'Fast and customizable vulnerability scanner based on simple YAML templates.';
-    if (tRef.includes('nikto')) return 'Web server scanner for dangerous files, outdated versions, and CGIs.';
-    if (tRef.includes('postman')) return 'API platform for building, testing, and debugging REST/GraphQL requests.';
-    if (tRef.includes('amass')) return 'In-depth attack surface mapping and external asset discovery tool.';
-    return `Tactical Security Tool: equips in tool rack to grant tactical gameplay bonuses.`;
+    const tId = (card.toolId || card.id || '').toUpperCase();
+    if (tId.startsWith('T-01')) return '[PASSIVE] Hand limit +1 card while installed.';
+    if (tId.startsWith('T-02')) return '[PASSIVE] +$500 per XSS card in your Report.';
+    if (tId.startsWith('T-03')) return '[PASSIVE] Draw 1 Main Deck card when reporting SSRF or [NOISY].';
+    if (tId.startsWith('T-04')) return '[PASSIVE] Deploy BAC vulnerabilities ignoring program scope.';
+    if (tId.startsWith('T-05')) return '[ACTIVE] Refresh the 3 exposed Market Programs (+$500 if APT/ALL, else draw 1 card).';
+    if (tId.startsWith('T-06')) return '[ACTIVE] Look at top 3 Main Deck cards: draw 1 and order the other 2 on top.';
+    if (tId.startsWith('T-07')) return '[ACTIVE] Look at top 3 Event Deck cards: discard 1 and order the other 2 on top.';
+    if (tId.startsWith('T-08')) return '[PASSIVE] Deploy INJ vulnerabilities ignoring program scope.';
+    if (tId.startsWith('T-09')) return '[ACTIVE] Cancel a negative Event Card targeting you (does not block Patch).';
+    if (tId.startsWith('T-10')) return '[PASSIVE] Draw 3 cards instead of 2 on Recon action.';
+    if (tId.startsWith('T-11')) return '[PASSIVE] On your first Exploit action of the turn, deploy 2 vulnerabilities instead of 1.';
+    if (tId.startsWith('T-12')) return '[PASSIVE] +$500 per AUTH card in your Report.';
+    return card.simpleDescription || `Tactical Security Tool: equips in tool rack to grant tactical gameplay bonuses.`;
   }
 
   // 2. Defuse / Safeguard cards translation
@@ -34,6 +34,10 @@ export const getLocalizedCardDescription = (card: CardV2, language: Language): s
   }
 
   // 3. Exploit / Vulnerability cards translation
+  if (card.isNoisy && card.simpleDescription) {
+    return card.simpleDescription;
+  }
+
   const vClass = (card.vulnClass || '').toUpperCase();
   const tech = card.technicalReference || card.name;
 

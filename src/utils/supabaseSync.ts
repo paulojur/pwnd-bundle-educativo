@@ -25,6 +25,8 @@ class SupabaseSyncManager {
   private playerName: string = 'Jogador 1';
   private listeners: RoomCallback[] = [];
   private presenceUsers: Record<string, any> = {};
+  private presenceListeners: ((presence: Record<string, any>) => void)[] = [];
+  private isSubscribed: boolean = false;
 
   constructor() {
     this.initClient();
@@ -107,13 +109,30 @@ class SupabaseSyncManager {
     return Object.keys(this.presenceUsers);
   }
 
+  public onPresenceChange(cb: (presence: Record<string, any>) => void) {
+    this.presenceListeners.push(cb);
+    cb(this.presenceUsers);
+    return () => {
+      this.presenceListeners = this.presenceListeners.filter(l => l !== cb);
+    };
+  }
+
   public joinRoom(roomCode: string, playerId: string, playerName: string = 'Hacker') {
-    this.roomCode = roomCode.toUpperCase().trim();
+    const formattedCode = roomCode.toUpperCase().trim();
+
+    // Se já estiver no mesmo canal e mesmo player, não desconecta nem recria
+    if (this.channel && this.roomCode === formattedCode && this.playerId === playerId) {
+      console.log(`[PWND Supabase] Mantendo canal existente na sala ${formattedCode} como ${playerId}.`);
+      return;
+    }
+
+    this.roomCode = formattedCode;
     this.playerId = playerId;
     this.playerName = playerName;
 
-    // Se houver canal antigo, desconecta
+    // Se houver canal antigo com outra sala ou role, desconecta
     if (this.channel) {
+      this.isSubscribed = false;
       this.channel.unsubscribe();
       this.channel = null;
     }
@@ -136,15 +155,23 @@ class SupabaseSyncManager {
         .on('presence', { event: 'sync' }, () => {
           const state = this.channel?.presenceState() || {};
           this.presenceUsers = state;
+          this.presenceListeners.forEach(cb => {
+            try { cb(state); } catch (err) { console.error('[PWND Supabase] Erro listener presença:', err); }
+          });
         })
         .subscribe((status) => {
           console.log(`[PWND Supabase] Status da sala ${this.roomCode}:`, status);
-          if (status === 'SUBSCRIBED' && this.channel) {
-            this.channel.track({
-              playerId: this.playerId,
-              playerName: this.playerName,
-              onlineAt: new Date().toISOString()
-            });
+          if (status === 'SUBSCRIBED') {
+            this.isSubscribed = true;
+            if (this.channel) {
+              this.channel.track({
+                playerId: this.playerId,
+                playerName: this.playerName,
+                onlineAt: new Date().toISOString()
+              });
+            }
+          } else {
+            this.isSubscribed = false;
           }
         });
     } else {
@@ -153,15 +180,19 @@ class SupabaseSyncManager {
   }
 
   public leaveRoom() {
+    this.isSubscribed = false;
     if (this.channel) {
       this.channel.unsubscribe();
       this.channel = null;
     }
     this.roomCode = null;
     this.presenceUsers = {};
+    this.presenceListeners.forEach(cb => {
+      try { cb({}); } catch (e) {}
+    });
   }
 
-  public broadcast(actionType: string, payload: any) {
+  public async broadcastAsync(actionType: string, payload: any): Promise<void> {
     if (!this.roomCode) return;
 
     const message: RoomMessage = {
@@ -173,18 +204,28 @@ class SupabaseSyncManager {
       timestamp: Date.now()
     };
 
-    if (this.channel && this.client) {
-      this.channel.send({
-        type: 'broadcast',
-        event: 'game_action',
-        payload: message
-      });
-    }
-
     // Sempre envia também no fallback para suportar abas locais mesmo se Supabase falhar
     if (this.fallbackChannel) {
-      this.fallbackChannel.postMessage(message);
+      try {
+        this.fallbackChannel.postMessage(message);
+      } catch (err) {}
     }
+
+    if (this.channel && this.client && this.isSubscribed) {
+      try {
+        await this.channel.send({
+          type: 'broadcast',
+          event: 'game_action',
+          payload: message
+        });
+      } catch (err) {
+        console.warn('[PWND Supabase] Falha ao enviar broadcast:', err);
+      }
+    }
+  }
+
+  public broadcast(actionType: string, payload: any) {
+    this.broadcastAsync(actionType, payload).catch(() => {});
   }
 
   public subscribe(callback: RoomCallback) {
