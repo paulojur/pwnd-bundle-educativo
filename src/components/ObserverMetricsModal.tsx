@@ -61,7 +61,7 @@ export const ObserverMetricsModal: React.FC<ObserverMetricsModalProps> = ({ isOp
     const lines: string[] = [];
     lines.push(`# 📊 PWNED! Relatório Oficial de Playtest & Telemetria`);
     lines.push(`- **Data / Hora**: ${nowStr}`);
-    lines.push(`- **Rodada**: ${currentTurn}/8`);
+    lines.push(`- **Rodada**: ${currentTurn}/10`);
     lines.push(`- **Jogadores na Mesa**: ${playerCount}`);
     lines.push(`- **Total de Eventos Auditados**: ${auditLogs.length}`);
     lines.push(``);
@@ -181,7 +181,7 @@ export const ObserverMetricsModal: React.FC<ObserverMetricsModalProps> = ({ isOp
     <div style="background:#2B2620;color:#FAF6EE;padding:20px 24px;border-radius:12px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
       <div>
         <h1 style="font-size:22px;margin:0 0 4px 0;color:#F59E0B">📊 PWNED! Bug Bounty Chaos — Relatório de Partida</h1>
-        <div style="font-size:12px;color:#D6CBB8">Exportado em ${nowStr} • Rodada ${currentTurn}/8 • ${playerCount} Jogadores • ${auditLogs.length} Eventos Auditados</div>
+        <div style="font-size:12px;color:#D6CBB8">Exportado em ${nowStr} • Rodada ${currentTurn}/10 • ${playerCount} Jogadores • ${auditLogs.length} Eventos Auditados</div>
       </div>
     </div>
 
@@ -276,7 +276,7 @@ export const ObserverMetricsModal: React.FC<ObserverMetricsModalProps> = ({ isOp
                 📊 MÉTRICAS DO OBSERVADOR & LOG DE AUDITORIA COMPLETO
               </h2>
               <div style={{ fontSize: '10.5px', color: '#D6CBB8', fontFamily: 'monospace' }}>
-                Rodada {currentTurn}/8 • {auditLogs.length} eventos auditados na partida • Playtest & Balanceamento
+                Rodada {currentTurn}/10 • {auditLogs.length} eventos auditados na partida • Playtest & Balanceamento
               </div>
             </div>
           </div>

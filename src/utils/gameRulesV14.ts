@@ -204,21 +204,35 @@ export const checkCardScopeV14 = (
     }
   }
 
-  // 2. Regra de Arquétipo: Red Teamer (Sem Limites)
-  if (archetype?.id === 'red-teamer') {
+  const allowed = program.allowedClasses;
+
+  // 2. Checagem Nativa do Programa: Escopo Amplo / Todas as Classes (ex: ShopAll Global, EduConnect)
+  const isAllClasses = allowed === 'ALL' ||
+    (Array.isArray(allowed) && allowed.some(c => {
+      const u = String(c).toUpperCase();
+      return u === 'ALL' || u.includes('TODAS') || u.includes('ALL');
+    }));
+
+  if (isAllClasses) {
     return {
       inScope: true,
-      badgeLabel: `🎯 RED TEAM [${cardClass || 'OK'}]`,
+      badgeLabel: `🎯 NO ESCOPO [${cardClass || 'ALL'}]`,
       badgeColor: '#166534'
     };
   }
 
-  // 3. Evento Scope Expansion! (evt-08)
-  if (options.scopeExpansion) {
+  // 3. Checagem Nativa do Programa: Classes Específicas (comparação estrita por vulnClass)
+  const isClassMatch = Boolean(
+    cardClass &&
+    Array.isArray(allowed) &&
+    allowed.some(cat => String(cat).trim().toUpperCase() === cardClass)
+  );
+
+  if (isClassMatch) {
     return {
       inScope: true,
-      badgeLabel: `🌐 SCOPE EXPANSION [${cardClass || 'OK'}]`,
-      badgeColor: '#0284C7'
+      badgeLabel: `🎯 NO ESCOPO [${cardClass}]`,
+      badgeColor: '#166534'
     };
   }
 
@@ -251,36 +265,20 @@ export const checkCardScopeV14 = (
     };
   }
 
-  const allowed = program.allowedClasses;
-
-  // 6. Checagem de Escopo Amplo / Todas as Classes (ex: ShopAll Global, EduConnect)
-  const isAllClasses = allowed === 'ALL' ||
-    (Array.isArray(allowed) && allowed.some(c => {
-      const u = String(c).toUpperCase();
-      return u === 'ALL' || u.includes('TODAS') || u.includes('ALL');
-    }));
-
-  if (isAllClasses) {
+  // 6. Evento Scope Expansion! (evt-08)
+  if (options.scopeExpansion) {
     return {
       inScope: true,
-      badgeLabel: `🎯 NO ESCOPO [${cardClass || 'ALL'}]`,
-      badgeColor: '#166534'
+      badgeLabel: `🌐 SCOPE EXPANSION [${cardClass || 'OK'}]`,
+      badgeColor: '#0284C7'
     };
   }
 
-  // 7. Checagem de Classes Específicas
-  const cardRef = (card.technicalReference || card.name).toLowerCase();
-  const isClassMatch = Array.isArray(allowed) && allowed.some(cat => {
-    const catUpper = String(cat).toUpperCase();
-    if (cardClass && catUpper === cardClass) return true;
-    const catLower = String(cat).toLowerCase();
-    return cardRef.includes(catLower) || catLower.includes(cardRef);
-  });
-
-  if (isClassMatch) {
+  // 7. Regra de Arquétipo: Red Teamer (Sem Limites)
+  if (archetype?.id === 'red-teamer') {
     return {
       inScope: true,
-      badgeLabel: `🎯 NO ESCOPO [${cardClass || 'OK'}]`,
+      badgeLabel: `🎯 RED TEAM [${cardClass || 'OK'}]`,
       badgeColor: '#166534'
     };
   }

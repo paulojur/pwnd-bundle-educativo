@@ -182,7 +182,7 @@ export const PlayerAidModal: React.FC<PlayerAidModalProps> = ({ isOpen, onClose 
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px', color: '#4B4337' }}>
                   <div>
-                    <strong style={{ color: '#1E1B18' }}>♻️ Reciclagem 2:1 (0 AP):</strong> Descarte 2 cartas quaisquer da sua mão para comprar 1 carta nova do Main Deck sem gastar ação.
+                    <strong style={{ color: '#1E1B18' }}>♻️ Reciclagem 2:1 (0 AP — 1x/turno):</strong> Uma vez por turno, descarte 2 cartas quaisquer da sua mão para comprar 1 carta nova do Main Deck sem gastar ação.
                   </div>
                   <div>
                     <strong style={{ color: '#1E1B18' }}>🔧 Instalar Tool:</strong> Descarte 1 carta qualquer da mão para equipar 1 Ferramenta no Tools Rack (máximo de 3 ferramentas instaladas).
@@ -273,10 +273,10 @@ export const PlayerAidModal: React.FC<PlayerAidModalProps> = ({ isOpen, onClose 
                     <strong>🐝 Reputação:</strong> 2 tokens = 1 Reroll no Patch Check | +$500 cada na pontuação final.
                   </div>
                   <div>
-                    <strong>🐞 Alerta:</strong> 2 tokens ativos = ⚠️ <strong>Multa imediata de -$2.000</strong> | -$500 cada na pontuação final.
+                    <strong>🐞 Alerta:</strong> 2 tokens ativos = ⚠️ <strong>Multa imediata de -$2.000</strong> (sofrer Patch aceito estaciona em 1🐞 sem multa; usar Bypass com 1🐞 soma o 2º e cobra -$2.000) | -$500 cada na pontuação final.
                   </div>
                   <div>
-                    <strong>🏆 Condição de Vitória:</strong> Quem atingir <strong>$40.000</strong> instantaneamente na Trilha Honeycomb, ou quem somar o maior saldo total após a 8ª rodada!
+                    <strong>🏆 Condição de Vitória:</strong> Quem atingir <strong>$40.000</strong> instantaneamente na Trilha Honeycomb, ou quem somar o maior saldo total após a 10ª rodada!
                   </div>
                 </div>
               </div>

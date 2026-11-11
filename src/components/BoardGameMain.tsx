@@ -689,7 +689,7 @@ const BoardGameContent: React.FC = () => {
           </div>
 
           <CenterMarketMat
-            totalRounds={8}
+            totalRounds={10}
             selectedProgramId={playerActiveProgram?.id}
             onSelectProgram={() => {
               setViewMode('myMat');

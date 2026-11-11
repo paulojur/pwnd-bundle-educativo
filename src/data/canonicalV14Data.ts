@@ -1814,9 +1814,9 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeed": "Lenta",
     "patchThreshold": 10,
     "patchSpeedRaw": "Lenta (10-12)",
-    "bonusBounty": "$0",
-    "bonusBountyValue": 0,
-    "description": "Demora para corrigir (patch lento). Ideal para acumular combos longos!",
+    "bonusBounty": "$1.500",
+    "bonusBountyValue": 1500,
+    "description": "Especialista em controle de acesso legado (BAC). Patch lento e bônus de +$1.500 no Report!",
     "category": "PROGRAM"
   },
   {
@@ -1829,9 +1829,9 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeed": "Lenta",
     "patchThreshold": 10,
     "patchSpeedRaw": "Lenta (10-12)",
-    "bonusBounty": "$0",
-    "bonusBountyValue": 0,
-    "description": "Sistema legado em servidores locais antigos com ritmo de patch lento.",
+    "bonusBounty": "$1.500",
+    "bonusBountyValue": 1500,
+    "description": "Sistema legado em servidores antigos com escopo exclusivo BAC, ritmo lento e +$1.500 de bônus.",
     "category": "PROGRAM"
   },
   {
@@ -2312,7 +2312,7 @@ export const V14_EVENTS: CanonicalEventCard[] = [
     "subtitle": "Duplicated Vulnerability Submission",
     "moment": "ALVO",
     "type": "DUPLICATE",
-    "description": "Escolha 1 oponente com vulnerabilidades na mesa: ele descarta a sua vulnerabilidade de maior CVSS exposta.",
+    "description": "Escolha 1 oponente: ele descarta a vulnerabilidade de maior CVSS exposta na mesa (se não tiver nenhuma na mesa, descarta 1 carta aleatória da mão).",
     "category": "EVENT"
   },
   {
@@ -2375,7 +2375,7 @@ export const V14_EVENTS: CanonicalEventCard[] = [
     "subtitle": "Public Zero-Day Exfiltration",
     "moment": "TODOS",
     "type": "BOUNTY",
-    "description": "Todos os jogadores descartam suas vulnerabilidades na mesa e recebem indenização na Bounty Track por raridade: $1k (Comum/Incomum), $2k (Rara), $2.5k (Épica) e $3k (Lendária).",
+    "description": "Todos os jogadores descartam suas vulnerabilidades na mesa e recebem indenização por raridade ($1k Comum/Incomum, $2k Rara, $2.5k Épica, $3k Lendária). Oponentes sem mesa descartam 1 carta aleatória da mão.",
     "category": "EVENT"
   },
   {
@@ -2420,7 +2420,7 @@ export const V14_EVENTS: CanonicalEventCard[] = [
     "subtitle": "Lowest CVSS Discard Event",
     "moment": "TODOS",
     "type": "DUPLICATE",
-    "description": "Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta na mesa.",
+    "description": "Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta na mesa (oponentes sem mesa descartam 1 carta aleatória da mão).",
     "category": "EVENT"
   },
   {
@@ -2483,7 +2483,7 @@ export const V14_EVENTS: CanonicalEventCard[] = [
     "subtitle": "Proactive Threat Hunting",
     "moment": "TODOS",
     "type": "PATCH",
-    "description": "Todos os jogadores descartam a vulnerabilidade de maior CVSS exposta na mesa.",
+    "description": "Todos os jogadores descartam a vulnerabilidade de maior CVSS exposta na mesa (oponentes sem mesa descartam 1 carta aleatória da mão).",
     "category": "EVENT"
   },
   {

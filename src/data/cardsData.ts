@@ -236,10 +236,10 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     companyType: 'Sistema Governamental Legado',
     allowedClasses: ['Broken Access Control'],
     patchSpeed: 'Lenta',
-    bountyRange: '+$0 Bónus Fixos',
-    flatBountyBonus: 0,
-    description: 'Demora para corrigir (patch lento). Ideal para acumular combos longos!',
-    ptDescription: 'Demora para corrigir (patch lento). Ideal para acumular combos longos!'
+    bountyRange: '+$1.5k Bônus Fixos',
+    flatBountyBonus: 1500,
+    description: 'Especialista em controle de acesso legado (BAC). Patch lento e bônus de +$1.500 no Report!',
+    ptDescription: 'Especialista em controle de acesso legado (BAC). Patch lento e bônus de +$1.500 no Report!'
   },
   {
     id: 'govportal-2',
@@ -247,10 +247,10 @@ export const PROGRAM_CARDS: ProgramCard[] = [
     companyType: 'Sistema Governamental Legado',
     allowedClasses: ['Broken Access Control'],
     patchSpeed: 'Lenta',
-    bountyRange: '+$0 Bónus Fixos',
-    flatBountyBonus: 0,
-    description: 'Sistema legado em servidores locais antigos com ritmo de patch lento.',
-    ptDescription: 'Sistema legado em servidores locais antigos com ritmo de patch lento.'
+    bountyRange: '+$1.5k Bônus Fixos',
+    flatBountyBonus: 1500,
+    description: 'Sistema legado em servidores antigos com escopo exclusivo BAC, ritmo lento e +$1.500 de bônus.',
+    ptDescription: 'Sistema legado em servidores antigos com escopo exclusivo BAC, ritmo lento e +$1.500 de bônus.'
   },
 
   // --- 4. HealthLock EHR (2 cópias) ---

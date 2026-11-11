@@ -22,6 +22,7 @@ export const BoardHand: React.FC = () => {
     moveCardToToolsRack,
     moveCardToDefuseSlot,
     needsDiscard,
+    recycledThisTurn,
     pendingToolInstall,
     cancelToolInstall,
     confirmToolInstall,
@@ -51,10 +52,10 @@ export const BoardHand: React.FC = () => {
   };
 
   const handleRecycleTwoForOne = () => {
-    if (selectedCardIds.length !== 2) return;
+    if (selectedCardIds.length !== 2 || recycledThisTurn) return;
     recycleHandCards(selectedCardIds[0], selectedCardIds[1]);
     setSelectedCardIds([]);
-    setLastActionText('♻️ Reciclagem 2:1 realizada! 2 cartas descartadas e +1 nova comprada.');
+    setLastActionText('♻️ Reciclagem 2:1 realizada (1/1 neste turno)! 2 cartas descartadas e +1 nova comprada.');
   };
 
   const handlePlayCard = (card: CardV2) => {
@@ -123,8 +124,27 @@ export const BoardHand: React.FC = () => {
           </div>
         )}
 
-        {/* RECICLAGEM 2 POR 1 (0 AP - SEMPRE VISÍVEL PARA ORIENTAR O JOGADOR) */}
-        {selectedCardIds.length === 2 ? (
+        {/* RECICLAGEM 2 POR 1 (0 AP - 1x POR TURNO) */}
+        {recycledThisTurn ? (
+          <div
+            style={{
+              fontSize: '11px',
+              color: '#685F53',
+              background: '#EFECE6',
+              border: '1px solid #C8BFB0',
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontFamily: 'monospace',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <RefreshCw size={13} color="#685F53" />
+            {language === 'en' ? '♻️ Recycle 2:1 (0 AP): Already used this turn (1x/turn)' : '♻️ Reciclagem 2:1 (0 AP): Já utilizada neste turno (1x/turno)'}
+          </div>
+        ) : selectedCardIds.length === 2 ? (
           <button
             onClick={handleRecycleTwoForOne}
             disabled={!isMyTurn}
@@ -144,7 +164,7 @@ export const BoardHand: React.FC = () => {
               boxShadow: '0 2px 6px rgba(22, 163, 74, 0.4)'
             }}
           >
-            <RefreshCw size={14} /> ♻️ {language === 'en' ? 'Recycle 2:1 (0 AP) — Confirm Swap!' : 'Reciclar 2:1 (0 AP) — Confirmar Troca!'}
+            <RefreshCw size={14} /> ♻️ {language === 'en' ? 'Recycle 2:1 (0 AP, 1x/turn) — Confirm Swap!' : 'Reciclar 2:1 (0 AP, 1x/turno) — Confirmar Troca!'}
           </button>
         ) : (
           <div
@@ -164,8 +184,8 @@ export const BoardHand: React.FC = () => {
           >
             <RefreshCw size={13} color={selectedCardIds.length === 1 ? '#D97706' : '#685F53'} />
             {selectedCardIds.length === 1
-              ? (language === 'en' ? 'Recycle 2:1 (0 AP): 1/2 selected — click 1 more card to swap for free!' : 'Reciclar 2:1 (0 AP): 1/2 selecionada — clique em mais 1 carta para trocar grátis!')
-              : (language === 'en' ? 'Recycle 2:1 (0 AP): Click any 2 cards in hand to swap for 1 new card (0 AP)' : 'Reciclar 2:1 (0 AP): Clique em 2 cartas da mão para trocar por 1 nova sem gastar AP')}
+              ? (language === 'en' ? 'Recycle 2:1 (0 AP, 1x/turn): 1/2 selected — click 1 more card to swap!' : 'Reciclar 2:1 (0 AP, 1x/turno): 1/2 selecionada — clique em mais 1 carta para trocar!')
+              : (language === 'en' ? 'Recycle 2:1 (0 AP, 1x/turn): Click any 2 cards in hand to swap for 1 new card' : 'Reciclar 2:1 (0 AP, 1x/turno): Clique em 2 cartas da mão para trocar por 1 nova')}
           </div>
         )}
       </div>

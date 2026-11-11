@@ -13,7 +13,7 @@ interface CenterMarketMatProps {
 }
 
 export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
-  totalRounds = 8,
+  totalRounds = 10,
   selectedProgramId,
   onSelectProgram
 }) => {
@@ -115,7 +115,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
               </span>
             </div>
 
-            {/* Marcador da Rodada (1 a 8) */}
+            {/* Marcador da Rodada (1 a 10) */}
             <div
               style={{
                 background: '#FAF6EE',
@@ -593,7 +593,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
 
           </div>
 
-          {/* TRILHA DE RODADAS (ROUND TRACK: 1 A 8) */}
+          {/* TRILHA DE RODADAS (ROUND TRACK: 1 A 10) */}
           <div
             style={{
               background: '#FAF6EE',
@@ -604,7 +604,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
             }}
           >
             <div style={{ fontSize: '10px', fontWeight: '800', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '10px' }}>
-              ROUND TRACK (8 RODADAS OFICIAIS)
+              ROUND TRACK (10 RODADAS OFICIAIS)
             </div>
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
               {Array.from({ length: totalRounds }, (_, i) => i + 1).map(round => {

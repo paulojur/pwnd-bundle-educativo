@@ -347,7 +347,7 @@
 
         <div class="callout">
           <span class="label">O Objetivo de Vitória</span>
-          <p>O primeiro jogador a alcançar <strong>$40.000</strong> na Bounty Track vence a partida! Se a 8ª rodada for
+          <p>O primeiro jogador a alcançar <strong>$40.000</strong> na Bounty Track vence a partida! Se a 10ª rodada for
             concluída sem que ninguém atinja os $40k, somam-se as
             recompensas de prestígio (+ $500 por <strong>Token de Reputação</strong> 🐝) e desconta-se a penalidade
             defensiva (- $500 por <strong>Token de Alerta</strong> 🐞 restante na mesa). O maior saldo total leva a
@@ -433,7 +433,7 @@
               <tr>
                 <td><strong>Tabuleiro Central</strong></td>
                 <td>1 tabuleiro</td>
-                <td>Hospeda a Bounty Track ($0 a $40k), o Round Tracker (rodadas 1 a 8) e o Program Market (com 3 slots
+                <td>Hospeda a Bounty Track ($0 a $40k), o Round Tracker (rodadas 1 a 10) e o Program Market (com 3 slots
                   de programas revelados).</td>
               </tr>
               <tr>
@@ -503,7 +503,7 @@
         </div>
 
         <h3>Ação Livre (não desconta das ações)</h3>
-        <p><strong>Reciclagem Tática 2:1 (0 Ações):</strong> Em seu turno, a qualquer momento antes de realizar o Report, você pode descartar <strong>2 cartas quaisquer da sua mão</strong> para comprar <strong>1 carta nova do Main Deck</strong> sem gastar ações.</p>
+        <p><strong>Reciclagem Tática 2:1 (0 Ações):</strong> Uma vez por turno, a qualquer momento antes de realizar o Report, você pode descartar <strong>2 cartas quaisquer da sua mão</strong> para comprar <strong>1 carta nova do Main Deck</strong> sem gastar ações.</p>
         <p><strong>Instalar Tool Card:</strong> Uma vez por turno, você pode instalar 1 Tool da sua mão em 1 dos
           3 slots de ferramentas do seu tabuleiro pagando, como custo, <strong>1 carta qualquer da sua mão</strong>
           (limite de 3 Tools instaladas simultaneamente). Isso pode ser feito em qualquer momento ANTES de realizar a
@@ -606,13 +606,13 @@
           <ul>
             <li><strong>Perda de Ativos:</strong> O jogador descarta todas as vulnerabilidades da sua Zona de Exploits e
               o seu programa.</li>
-            <li><strong>Alerta & Consolação:</strong> Receba <strong>1 Token de Alerta (🐞)</strong> e compre
+            <li><strong>Alerta & Consolação:</strong> Receba <strong>+1 Token de Alerta (🐞)</strong> apenas se estiver com 0🐞 (aceitar um Patch normal estaciona em 1/2🐞 sem multa) e compre
               <strong>1 carta de consolação</strong> do Main Deck.
             </li>
             <li><strong>A Defesa do Bypass:</strong> A única defesa preventiva contra a perda de ativos em um Patch
               Deployed é utilizar uma carta de <strong>Bypass</strong> instalada no slot Safeguard. O Bypass
               anula o descarte e permite concluir o Report normalmente, recebendo o Payout. <em>Atenção:</em> O jogador
-              ainda recebe <strong>1 Token de Alerta</strong> e descarta o Bypass após o uso, mas <strong>não recebe
+              sempre recebe <strong>+1 Token de Alerta</strong> (mesmo se já tiver 1🐞, disparando a multa de -$2.000 ao atingir 2/2🐞) e descarta o Bypass após o uso, mas <strong>não recebe
                 Tool Card nem carta de consolação</strong> (pois seus ativos não foram perdidos).</li>
           </ul>
         </div>
@@ -626,11 +626,11 @@
           <span class="label">🐞 Sistema de Alerta (Atenção do Blue Team)</span>
           <p>Mandar mal nos dados ou causar muito barulho joga um holofote na sua cabeça. O Blue Team da empresa tá de olho.</p>
           <ul>
-            <li><strong>Alarme Crítico (2 Tokens de Alerta):</strong> Ao acumular 2 Tokens de Alerta na mesa, o Blue
+            <li><strong>Alarme Crítico (2 Tokens de Alerta):</strong> Ao acumular 2 Tokens de Alerta na mesa (via Bypass ou cartas/eventos), o Blue
               Team fecha o
               cerco: perca <strong>$2.000</strong> na Bounty Track imediatamente (o saldo nunca fica abaixo de zero) e
-              devolva os 2 Tokens de Alerta ao suprimento central.</li>
-            <li><strong>Penalidade de Fim de Jogo:</strong> Se o jogador terminar a 8ª rodada com 1 Token de Alerta
+              devolva os 2 Tokens de Alerta ao suprimento central. <em>Nota:</em> Aceitar um Patch normal sem Bypass estaciona no máximo em 1/2🐞 e não dispara a multa de $2.000.</li>
+            <li><strong>Penalidade de Fim de Jogo:</strong> Se o jogador terminar a 10ª rodada com 1 Token de Alerta
               restante na
               mesa, desconte <strong>-$500</strong> do seu saldo final.</li>
             <li><strong>Modo Furtivo (Limpeza de Alerta):</strong> Ao final do turno, se o jogador não realizou a ação
@@ -805,8 +805,8 @@
             </div>
             <div
               style="font-size: 0.8rem; color: #ffb800; border-top: 1px solid #222; padding-top: 0.5rem; margin-top: 0.5rem;">
-              <em>Nota Tática:</em> O Bypass salva seu dinheiro e seus exploits, mas você ainda recebe 1 Token de
-              Alerta!
+              <em>Nota Tática:</em> O Bypass salva seu dinheiro e seus exploits, mas sempre soma +1 Token de
+              Alerta (podendo atingir 2/2🐞 e acionar a multa de -$2.000)!
               O jogador não recebe Tool Card nem carta de consolação. Descarte o Bypass após o uso.
             </div>
           </div>
@@ -1492,6 +1492,7 @@
               <li><strong>EXPLOIT (1 ação):</strong> Baixe 1 Vulnerabilidade na mesa (escopo permitido, máx. 3).</li>
               <li><strong>REPORT (2 ações):</strong> Teste de Patch (Noisy 2D6) + Payout + compre 1 Tool + saque 1
                 Evento + novo programa. <em>Sempre encerra o turno imediatamente!</em></li>
+              <li><strong>RECICLAGEM 2:1 (Ação Livre — 1x/turno):</strong> Descarte 2 cartas da mão para comprar 1 carta nova do Main Deck.</li>
               <li><strong>INSTALAR TOOL (Ação Livre):</strong> Descarte 1 carta da mão para equipar 1 Tool (máx. 3).
               </li>
               <li><strong>ATIVAR TOOL (Ação Livre):</strong> Ative o efeito e descarte a carta (precisa estar no slot).
@@ -1508,8 +1509,8 @@
             <ul style="font-size: 0.85rem; line-height: 1.5; color: #d1d5db; padding-left: 1.2rem; margin-bottom: 0;">
               <li><strong>DADOS:</strong> Stealth = 3D6 (some os 2 menores); Noisy = 2D6 somados.</li>
               <li><strong>LIMIAR DE PATCH:</strong> Lenta = 10+ | Moderada = 9+ | Rápida = 8+ | Extrema = 7+.</li>
-              <li><strong>PATCH DEPLOYED:</strong> Descarte mesa e programa; recebe 1 🐞 Alerta e compra consolação.
-                <em>Bypass anula o descarte e garante payout!</em>
+              <li><strong>PATCH DEPLOYED:</strong> Descarte mesa e programa; recebe +1 🐞 Alerta apenas se estiver com 0🐞 (estaciona em 1/2🐞) e compra consolação.
+                <em>Bypass anula o descarte, garante payout e sempre soma +1🐞 (pode atingir 2/2🐞)!</em>
               </li>
               <li><strong>PAYOUT:</strong> Comum +$1.5k | Incomum +$2.5k | Rara +$4.0k | Épica +$5.0k | Lendária +$6.0k.
               </li>
@@ -1517,7 +1518,7 @@
                 tokens = -$2.000 multa; -$500 endgame).</li>
               <li><strong>CASAS ESPECIAIS (ao parar):</strong> $4.5k (🐝+) | $9k (🐞+) | $13.5k (🐝+ 🛒) | $19k (🐞+
                 🗂️−) | $24.5k (🛠️⚡) | $29k (🐝+ 🐞−) | $33.5k (💸 -$1.5k) | $38k (🐞+).</li>
-              <li><strong>VITÓRIA:</strong> $40.000 instantâneo ou maior saldo após 8 rodadas.</li>
+              <li><strong>VITÓRIA:</strong> $40.000 instantâneo ou maior saldo após 10 rodadas.</li>
             </ul>
           </div>
         </div>
@@ -1549,7 +1550,7 @@
               </div>
               <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
                 O time de defesa entra em ação proativa! Todos os jogadores devem descartar a vulnerabilidade de
-                maior CVSS que possuírem exposta na mesa.
+                maior CVSS que possuírem exposta na mesa (oponentes sem vulnerabilidades na mesa descartam 1 carta aleatória da mão).
               </div>
             </div>
             <div
@@ -1575,8 +1576,8 @@
                 </span>
               </div>
               <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                Alguém reportou a vulnerabilidade minutos antes! Escolha 1 oponente com vulnerabilidades na mesa: ele
-                descarta a vulnerabilidade de maior CVSS exposta.
+                Alguém reportou a vulnerabilidade minutos antes! Escolha 1 oponente: ele
+                descarta a vulnerabilidade de maior CVSS exposta na mesa (se não tiver nenhuma na mesa, descarta 1 carta aleatória da mão).
               </div>
             </div>
             <div
@@ -1765,7 +1766,7 @@
               <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
                 Vazamento público! Todos os jogadores descartam suas vulnerabilidades expostas na mesa, mas recebem
                 indenização na Bounty Track conforme a raridade: +$1.000 (Comum/Incomum), +$2.000 (Rara), +$2.500
-                (Épica) e +$3.000 (Lendária).
+                (Épica) e +$3.000 (Lendária). Oponentes sem vulnerabilidades na mesa descartam 1 carta aleatória da mão.
               </div>
             </div>
             <div
@@ -1955,7 +1956,7 @@
               </div>
               <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
                 Colisão de relatórios no mercado! Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta
-                em suas mesas.
+                em suas mesas (oponentes sem vulnerabilidades na mesa descartam 1 carta aleatória da mão).
               </div>
             </div>
             <div
@@ -2191,7 +2192,7 @@
         <ul>
           <li><strong>Vitória Instantânea:</strong> O primeiro jogador a alcançar <strong>$40.000</strong> vence a
             partida!</li>
-          <li><strong>Encerramento na 8ª Rodada:</strong> Se a 8ª rodada acabar e ninguém tiver chegado lá, a gente vai pro desempate suado:
+          <li><strong>Encerramento na 10ª Rodada:</strong> Se a 10ª rodada acabar e ninguém tiver chegado lá, a gente vai pro desempate suado:
             <ul>
               <li>Some <strong>+$500 por cada Token de Reputação (🐝)</strong> presente na mesa.</li>
               <li>Subtraia <strong>-$500 por cada Token de Alerta (🐞)</strong> restante na mesa.</li>
@@ -2316,7 +2317,7 @@
         <div class="callout">
 
           <ul>
-            <li><strong>Objetivo:</strong> Chegar a $40k na Bounty Track ou terminar a 8ª rodada com o maior saldo.</li>
+            <li><strong>Objetivo:</strong> Chegar a $40k na Bounty Track ou terminar a 10ª rodada com o maior saldo.</li>
             <li><strong>Seu Turno (3 Ações):</strong>
               <ul>
                 <li><em>RECON (1 ação):</em> Compra 2 cartas do Main Deck ou troca de programa (limpe sua zona de
@@ -2325,17 +2326,16 @@
                   mesa).</li>
                 <li><em>REPORT (2 ações):</em> Submete a invasão (sempre a última ação do turno, que encerra
                   imediatamente).</li>
-                <li><em>Ação Livre — Reciclagem 2:1 (0 ações):</em> Descarte 2 cartas quaisquer da mão para comprar 1 carta nova do Main Deck.</li>
+                <li><em>Ação Livre — Reciclagem 2:1 (0 ações — 1x/turno):</em> Uma vez por turno, descarte 2 cartas quaisquer da mão para comprar 1 carta nova do Main Deck.</li>
               </ul>
             </li>
             <li><strong>Risco & Patch Check (D6):</strong> Reportou = Noisy (role 2D6 somados). Só baixou
               vulnerabilidades e esperou = Stealth (role 3D6, descarte o maior, some os 2 menores). Se a soma for igual
               ou maior que a velocidade do programa (Lenta 10+, Moderada 9+, Rápida 8+, Extrema 7+), ocorreu PATCH
               DEPLOYED!</li>
-            <li><strong>Sofreu Patch Deployed?</strong> Use o Bypass instalado para finalizar o report sem receber tool.
+            <li><strong>Sofreu Patch Deployed?</strong> Use o Bypass instalado para finalizar o report sem receber tool (sempre soma +1 Token de Alerta).
               Se não tiver bypass, perde os exploits
-              da mesa e o programa. Ganha 1 Token de Alerta
-              e 1
+              da mesa e o programa, ganha +1 Token de Alerta apenas se estiver com 0🐞 (estaciona em 1/2🐞 sem multa) e 1
               carta de consolação. 2 Tokens de Alerta custam -$2.000 imediatos. Operar em Modo Furtivo (sem report, sem
               patch e com mesa
               limpa) remove 1 Token de Alerta.</li>
@@ -2422,7 +2422,7 @@
             </div>
             <div
               style="font-size: 0.85rem; color: #ffb800; background: rgba(255,184,0,0.05); padding: 6px 8px; border-radius: 4px; margin-bottom: 0.5rem;">
-              <strong>Bônus de Contrato:</strong> +$0 Bônus Fixo
+              <strong>Bônus de Contrato:</strong> +$1.500 de Bônus Fixo
             </div>
             <div style="font-size: 0.8rem; color: #9ca3af; font-style: italic;">
               Demora para corrigir (patch lento). Ideal para acumular combos longos sem risco de queda rápida.

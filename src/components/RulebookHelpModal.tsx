@@ -108,6 +108,7 @@ export const RulebookHelpModal: React.FC<RulebookHelpModalProps> = ({ isOpen, on
                 <div style={{ background: 'rgba(255, 184, 0, 0.08)', padding: '10px 14px', borderRadius: '6px', borderLeft: '3px solid #ffb800' }}>
                   <strong style={{ color: '#ffb800' }}>Ações Livres (não gastam pontos de ação):</strong>
                   <ul style={{ margin: '4px 0 0 16px', padding: 0 }}>
+                    <li><strong>Reciclagem 2:1 (0 AP — 1x/turno):</strong> Uma vez por turno, descarte 2 cartas quaisquer da mão para comprar 1 carta nova do Main Deck.</li>
                     <li><strong>Instalar Tool:</strong> 1x por turno, descarte 1 carta qualquer da mão para equipar 1 Tool no seu rack (máx 3).</li>
                     <li><strong>Ativar Tool:</strong> Aplique o poder e descarte a carta.</li>
                     <li><strong>Modo Furtivo:</strong> Termine o turno sem Report, sem Patch e com Exploits vazio para remover 1 Token de Alerta.</li>
@@ -182,9 +183,9 @@ export const RulebookHelpModal: React.FC<RulebookHelpModalProps> = ({ isOpen, on
               <div style={{ marginTop: '12px', background: 'rgba(255,51,75,0.08)', padding: '10px', borderRadius: '6px', border: '1px solid #ff334b' }}>
                 <strong style={{ color: '#ff334b' }}>Consequência do Patch Deployed:</strong>
                 <p style={{ margin: '4px 0 0 0', fontSize: '11px' }}>
-                  Descarta todos os exploits e o programa ativo. Receba <strong>1 Token de Alerta (🐞)</strong> e compre <strong>1 carta de consolação</strong> do Main Deck.
+                  Descarta todos os exploits e o programa ativo. Receba <strong>+1 Token de Alerta (🐞)</strong> apenas se estiver com 0🐞 (estaciona em 1/2🐞 sem multa) e compre <strong>1 carta de consolação</strong> do Main Deck.
                   <br />
-                  <em>Defesa do Bypass:</em> Se tiver carta de Bypass no Safeguard, anule a perda e garanta o payout (recebe 1 Alerta e descarta o Bypass; sem Tool nem consolação).
+                  <em>Defesa do Bypass:</em> Se tiver carta de Bypass no Safeguard, anule a perda e garanta o payout (soma +1🐞 mesmo se já tiver 1🐞, disparando multa de -$2.000 ao atingir 2/2🐞; descarta o Bypass, sem Tool nem consolação).
                 </p>
               </div>
             </div>
@@ -200,8 +201,8 @@ export const RulebookHelpModal: React.FC<RulebookHelpModalProps> = ({ isOpen, on
                 <div style={{ background: 'rgba(255,51,75,0.06)', padding: '12px', borderRadius: '8px', borderLeft: '4px solid #ff334b' }}>
                   <h4 style={{ color: '#ff334b', margin: '0 0 6px 0', fontSize: '13px' }}>🐞 Tokens de Alerta (Atenção do Blue Team)</h4>
                   <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '11px' }}>
-                    <li><strong>Alarme Crítico (2 Tokens de Alerta):</strong> Ao acumular 2 Alertas, perca <strong>$2.000</strong> na Bounty Track imediatamente e devolva os 2 tokens ao banco central.</li>
-                    <li><strong>Penalidade de Fim de Jogo:</strong> Se terminar a 8ª rodada com 1 Alerta restante, desconte <strong>-$500</strong> do seu total.</li>
+                    <li><strong>Alarme Crítico (2 Tokens de Alerta):</strong> Ao acumular 2 Alertas (via Bypass ou cartas/eventos), perca <strong>$2.000</strong> na Bounty Track imediatamente e devolva os 2 tokens ao banco central. <em>Nota:</em> Aceitar um Patch normal sem Bypass estaciona no máximo em 1/2🐞 e não dispara a multa.</li>
+                    <li><strong>Penalidade de Fim de Jogo:</strong> Se terminar a 10ª rodada com 1 Alerta restante, desconte <strong>-$500</strong> do seu total.</li>
                     <li><strong>Limpeza Furtiva:</strong> Fim de turno sem report, sem patch e mesa vazia devolve 1 Alerta ao suprimento.</li>
                   </ul>
                 </div>

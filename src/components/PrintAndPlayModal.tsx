@@ -1123,12 +1123,12 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
                     <span style={{ fontSize: '9px', fontStyle: 'italic', color: '#666', marginTop: '2px' }}>(Retrato 63×88mm)</span>
                   </div>
 
-                  {/* Round Tracker (1 a 8) */}
+                  {/* Round Tracker (1 a 10) */}
                   <div style={{ border: '2px solid #000', padding: '16px', borderRadius: '8px', textAlign: 'center', background: '#fff' }}>
-                    <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}>ROUND TRACK (RODADAS 1 A 8)</div>
-                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                      {[1, 2, 3, 4, 5, 6, 7, 8].map(r => (
-                        <div key={r} style={{ width: '32px', height: '32px', border: '2px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}>ROUND TRACK (RODADAS 1 A 10)</div>
+                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(r => (
+                        <div key={r} style={{ width: '28px', height: '28px', border: '2px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '13px' }}>
                           {r}
                         </div>
                       ))}

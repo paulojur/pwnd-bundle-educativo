@@ -6,8 +6,8 @@ veloce-1	Veloce AutoTech	Firmware Automotivo & IoT	INJ, LOGIC, AUTH	Extrema (7-1
 veloce-2	Veloce AutoTech	Firmware Automotivo & IoT	INJ, LOGIC, AUTH	Extrema (7-12)	$4.000	Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de elite.
 aeroorbit-1	AeroOrbit Avionics	Tecnologia Aeroespacial & Satélites	SSRF, AUTH, CRYPTO	Extrema (7-12)	$4.000	Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.
 aeroorbit-2	AeroOrbit Avionics	Tecnologia Aeroespacial & Satélites	SSRF, AUTH, CRYPTO	Extrema (7-12)	$4.000	Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.
-govportal-1	GovPortal Legacy	Sistema Governamental Legado	BAC	Lenta (10-12)	$0	Demora para corrigir (patch lento). Ideal para acumular combos longos!
-govportal-2	GovPortal Legacy	Sistema Governamental Legado	BAC	Lenta (10-12)	$0	Sistema legado em servidores locais antigos com ritmo de patch lento.
+govportal-1	GovPortal Legacy	Sistema Governamental Legado	BAC	Lenta (10-12)	$1.500	Especialista em controle de acesso legado (BAC). Patch lento e bônus de +$1.500 no Report!
+govportal-2	GovPortal Legacy	Sistema Governamental Legado	BAC	Lenta (10-12)	$1.500	Sistema legado em servidores antigos com escopo exclusivo BAC, ritmo lento e +$1.500 de bônus.
 educonnect-1	EduConnect LMS	Plataforma Educacional	TODAS AS CLASSES (ALL)	Lenta (10-12)	$0	Ambiente seguro para iniciantes praticarem. Quase sem risco de Patch instantâneo.
 educonnect-2	EduConnect LMS	Plataforma Educacional	TODAS AS CLASSES (ALL)	Lenta (10-12)	$0	Sistema acadêmico comunitário com tolerância prolongada de patches.
 voltz-1	Voltz PowerGrid	Infraestrutura Crítica & SCADA	INJ, BAC	Lenta (10-12)	$0	Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.

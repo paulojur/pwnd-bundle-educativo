@@ -235,11 +235,26 @@ let auditSeqCounter = 1;
 
 const mergeAuditLogs = (existing: AuditLogEntry[], incoming: AuditLogEntry[]): AuditLogEntry[] => {
   const map = new Map<string, AuditLogEntry>();
+  let setupEntry: AuditLogEntry | null = null;
+
   for (const item of [...incoming, ...existing]) {
-    if (item && item.id && !map.has(item.id)) {
+    if (!item || !item.id) continue;
+    const isSetup = item.category === 'SETUP' || item.id.startsWith('0000000000000') || item.id.startsWith('init-');
+    if (isSetup) {
+      if (!setupEntry) {
+        setupEntry = { ...item, id: '0000000000000-init-setup' };
+      }
+      continue;
+    }
+    if (!map.has(item.id)) {
       map.set(item.id, item);
     }
   }
+
+  if (setupEntry) {
+    map.set(setupEntry.id, setupEntry);
+  }
+
   return Array.from(map.values()).sort((a, b) => {
     const isInitA = a.id.startsWith('0000000000000') || a.id.startsWith('init-');
     const isInitB = b.id.startsWith('0000000000000') || b.id.startsWith('init-');
@@ -374,7 +389,7 @@ const createInitialGameState = (count: number = 2, customNames?: Partial<Record<
     .join(' | ');
 
   const initialAuditLog: AuditLogEntry = {
-    id: `0000000000000-init-${Date.now()}`,
+    id: '0000000000000-init-setup',
     timestamp: new Date().toLocaleTimeString('pt-BR', { hour12: false }),
     round: 1,
     category: 'SETUP',
@@ -440,6 +455,7 @@ interface BoardGameContextType {
   currentTurn: number;
   bountyLedger: BountyTransaction[];
   needsDiscard: boolean;
+  recycledThisTurn: boolean;
   pendingToolInstall: CardV2 | null;
   actionsRemaining: number;
 
@@ -551,6 +567,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [exploitsPlayedThisTurn, setExploitsPlayedThisTurn] = useState<number>(0);
   const [freeExploitDeploysRemaining, setFreeExploitDeploysRemaining] = useState<number>(0);
   const [phishingUsedThisTurn, setPhishingUsedThisTurn] = useState<boolean>(false);
+  const [recycledThisTurn, setRecycledThisTurn] = useState<boolean>(false);
 
   const [servers] = useState<ServerRegion[]>(SERVERS_DATA);
   const [deployedExploits, setDeployedExploits] = useState<DeployedExploit[]>([]);
@@ -642,7 +659,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const time = new Date().toLocaleTimeString('pt-BR', { hour12: false });
     const seq = ++auditSeqCounter;
     const entry: AuditLogEntry = {
-      id: `${Date.now()}-${String(seq).padStart(6, '0')}-${Math.random().toString(36).slice(2, 6)}`,
+      id: category === 'SETUP' ? '0000000000000-init-setup' : `${Date.now()}-${String(seq).padStart(6, '0')}-${Math.random().toString(36).slice(2, 6)}`,
       timestamp: time,
       round: roundOverride ?? currentTurn,
       playerId: player?.id,
@@ -653,7 +670,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       details,
       status
     };
-    const nextAudit = [entry, ...auditLogsRef.current.filter(e => e.id !== entry.id)];
+    const filteredPrev = auditLogsRef.current.filter(e =>
+      category === 'SETUP' ? e.category !== 'SETUP' && !e.id.startsWith('0000000000000') : e.id !== entry.id
+    );
+    const nextAudit = category === 'SETUP' ? [...filteredPrev, entry] : [entry, ...filteredPrev];
     auditLogsRef.current = nextAudit;
     setAuditLogs(nextAudit);
     setLogs(prev => [`[${time}] [${category}] ${title}: ${details}`, ...prev.slice(0, 120)]);
@@ -886,6 +906,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setExploitsPlayedThisTurn(0);
     setFreeExploitDeploysRemaining(0);
     setPhishingUsedThisTurn(false);
+    setRecycledThisTurn(false);
     setActiveEventCard(null);
     setLastEventResolutionSummary(null);
     setPendingTargetedEvent(null);
@@ -971,6 +992,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setExploitsPlayedThisTurn(0);
     setFreeExploitDeploysRemaining(0);
     setPhishingUsedThisTurn(false);
+    setRecycledThisTurn(false);
     setActiveEventCard(null);
     setLastEventResolutionSummary(null);
     setPendingTargetedEvent(null);
@@ -1143,6 +1165,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         setExploitsPlayedThisTurn(0);
         setFreeExploitDeploysRemaining(0);
         setPhishingUsedThisTurn(false);
+        setRecycledThisTurn(false);
       } else if (msg.actionType === 'STATE_SYNC') {
         if (msg.payload.deployedExploits) setDeployedExploits(msg.payload.deployedExploits);
         if (msg.payload.programMarket) setProgramMarket(msg.payload.programMarket);
@@ -1241,6 +1264,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         setExploitsPlayedThisTurn(0);
         setFreeExploitDeploysRemaining(0);
         setPhishingUsedThisTurn(false);
+        setRecycledThisTurn(false);
         setActiveEventCard(null);
         setLastEventResolutionSummary(null);
         setPendingTargetedEvent(null);
@@ -1377,12 +1401,16 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     // Verifica eventos que exigem escolha de 1 oponente (evt-02, evt-04, evt-14)
     if (!explicitTargetId && (eId === 'evt-02' || eId === 'evt-04' || eId === 'evt-14')) {
-      const candidateIds = activeIds.filter(id => {
+      let candidateIds = activeIds.filter(id => {
         if (id === authorRole) return false;
         if (eId === 'evt-02') return nextExploits.some(e => e.playerId === id);
         if (eId === 'evt-14') return nextPlayers[id].hand.length > 0;
         return true;
       });
+      // Fallback evt-02 (Duplicate Report!): se nenhum oponente tiver vuln na mesa, qualquer oponente com cartas na mão é elegível (descarta 1 carta da mão)
+      if (eId === 'evt-02' && candidateIds.length === 0) {
+        candidateIds = activeIds.filter(id => id !== authorRole && nextPlayers[id].hand.length > 0);
+      }
 
       if (candidateIds.length > 1) {
         setPendingTargetedEvent({
@@ -1407,42 +1435,63 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     let status: AuditLogEntry['status'] = 'EXECUTED';
 
     switch (eId) {
-      // evt-01: Blue Team Hunt! (Todos descartam a vuln de maior CVSS na mesa; PROVA OOB imune)
+      // evt-01: Blue Team Hunt! (Todos descartam a vuln de maior CVSS na mesa; se ninguém tiver vuln na mesa, oponentes descartam 1 carta da mão)
       case 'evt-01': {
         const logsParts: string[] = [];
         const keptExploits: DeployedExploit[] = [];
-        activeIds.forEach(rId => {
-          const pExp = nextExploits.filter(e => e.playerId === rId);
-          if (pExp.length === 0) return;
-          const def = checkNegativeEventDefense(rId, false, false);
-          if (def.blocked) {
-            keptExploits.push(...pExp);
-            logsParts.push(def.reason!);
-            return;
-          }
-          const vulnerableExp = pExp.filter(e => !isProvaOob(e.card));
-          const immuneExp = pExp.filter(e => isProvaOob(e.card));
-          if (vulnerableExp.length === 0) {
-            keptExploits.push(...pExp);
-            logsParts.push(`${nextPlayers[rId].name}: exploits protegidos por PROVA OOB!`);
-            return;
-          }
-          const sorted = [...vulnerableExp].sort((a, b) => getCardCvssScore(b.card) - getCardCvssScore(a.card));
-          const removed = sorted[0];
-          nextDiscard.push(removed.card);
-          keptExploits.push(...sorted.slice(1), ...immuneExp);
-          logsParts.push(`${nextPlayers[rId].name} perdeu [${removed.card.name}]`);
-        });
-        nextExploits = keptExploits;
-        summary = logsParts.length > 0 ? logsParts.join(' | ') : 'Nenhum jogador possuía vulnerabilidades expostas na mesa.';
+        const anyTableExploits = nextExploits.length > 0;
+        if (anyTableExploits) {
+          activeIds.forEach(rId => {
+            const pExp = nextExploits.filter(e => e.playerId === rId);
+            if (pExp.length === 0) return;
+            const def = checkNegativeEventDefense(rId, false, false);
+            if (def.blocked) {
+              keptExploits.push(...pExp);
+              logsParts.push(def.reason!);
+              return;
+            }
+            const vulnerableExp = pExp.filter(e => !isProvaOob(e.card));
+            const immuneExp = pExp.filter(e => isProvaOob(e.card));
+            if (vulnerableExp.length === 0) {
+              keptExploits.push(...pExp);
+              logsParts.push(`${nextPlayers[rId].name}: exploits protegidos por PROVA OOB!`);
+              return;
+            }
+            const sorted = [...vulnerableExp].sort((a, b) => getCardCvssScore(b.card) - getCardCvssScore(a.card));
+            const removed = sorted[0];
+            nextDiscard.push(removed.card);
+            keptExploits.push(...sorted.slice(1), ...immuneExp);
+            logsParts.push(`${nextPlayers[rId].name} perdeu [${removed.card.name}] da mesa`);
+          });
+          nextExploits = keptExploits;
+        } else {
+          activeIds.filter(rId => rId !== authorRole).forEach(rId => {
+            const tPlayer = nextPlayers[rId];
+            if (!tPlayer || tPlayer.hand.length === 0) return;
+            const def = checkNegativeEventDefense(rId, false, false);
+            if (def.blocked) {
+              logsParts.push(def.reason!);
+              return;
+            }
+            const randIdx = Math.floor(Math.random() * tPlayer.hand.length);
+            const dropped = tPlayer.hand[randIdx];
+            nextPlayers[rId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
+            nextDiscard.push(dropped);
+            logsParts.push(`${tPlayer.name} (sem vuln na mesa) descartou [${dropped.name}] da mão`);
+          });
+        }
+        summary = logsParts.length > 0 ? logsParts.join(' | ') : 'Nenhum oponente possuía cartas para descarte.';
         break;
       }
 
-      // evt-02: Duplicate Report! (Escolha 1 oponente c/ vulns na mesa: descarta a de maior CVSS)
+      // evt-02: Duplicate Report! (Escolha 1 oponente: descarta a vuln de maior CVSS na mesa; se não tiver vuln na mesa, descarta 1 carta da mão)
       case 'evt-02': {
-        let targetId = explicitTargetId || activeIds.find(id => id !== authorRole && nextExploits.some(e => e.playerId === id));
+        let targetId =
+          explicitTargetId ||
+          activeIds.find(id => id !== authorRole && nextExploits.some(e => e.playerId === id)) ||
+          activeIds.find(id => id !== authorRole && nextPlayers[id].hand.length > 0);
         if (!targetId) {
-          summary = 'Nenhum oponente possuía vulnerabilidades na mesa para o Duplicate Report.';
+          summary = 'Nenhum oponente possuía vulnerabilidades na mesa nem cartas na mão para o Duplicate Report.';
           status = 'BLOCKED';
           break;
         }
@@ -1454,16 +1503,25 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           break;
         }
         const tExp = nextExploits.filter(e => e.playerId === targetId && !isProvaOob(e.card));
-        if (tExp.length === 0) {
-          summary = `${nextPlayers[targetId].name} não possui vulnerabilidades elegíveis (ou estão protegidas por PROVA OOB).`;
-          status = 'BLOCKED';
-          break;
+        if (tExp.length > 0) {
+          const sorted = [...tExp].sort((a, b) => getCardCvssScore(b.card) - getCardCvssScore(a.card));
+          const toRemove = sorted[0];
+          nextExploits = nextExploits.filter(e => e.id !== toRemove.id);
+          nextDiscard.push(toRemove.card);
+          summary = `${nextPlayers[targetId].name} descartou a vulnerabilidade de maior CVSS [${toRemove.card.name}] da mesa!`;
+        } else {
+          const tPlayer = nextPlayers[targetId];
+          if (tPlayer && tPlayer.hand.length > 0) {
+            const randIdx = Math.floor(Math.random() * tPlayer.hand.length);
+            const dropped = tPlayer.hand[randIdx];
+            nextPlayers[targetId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
+            nextDiscard.push(dropped);
+            summary = `${tPlayer.name} não tinha vulnerabilidades elegíveis na mesa e foi obrigado a descartar [${dropped.name}] da mão!`;
+          } else {
+            summary = `${nextPlayers[targetId].name} não possuía vulnerabilidades na mesa nem cartas na mão.`;
+            status = 'BLOCKED';
+          }
         }
-        const sorted = [...tExp].sort((a, b) => getCardCvssScore(b.card) - getCardCvssScore(a.card));
-        const toRemove = sorted[0];
-        nextExploits = nextExploits.filter(e => e.id !== toRemove.id);
-        nextDiscard.push(toRemove.card);
-        summary = `${nextPlayers[targetId].name} descartou a vulnerabilidade de maior CVSS [${toRemove.card.name}] da mesa!`;
         break;
       }
 
@@ -1570,28 +1628,46 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         break;
       }
 
-      // evt-09: Public Disclosure! (Todos descartam vulns na mesa e recebem indenização por raridade)
+      // evt-09: Public Disclosure! (Todos descartam vulns na mesa e recebem indenização por raridade; se mesa vazia, oponentes descartam 1 carta da mão)
       case 'evt-09': {
         const parts: string[] = [];
-        activeIds.forEach(rId => {
-          const p = nextPlayers[rId];
-          const pExp = nextExploits.filter(e => e.playerId === rId);
-          if (pExp.length > 0) {
-            const comp = pExp.reduce((sum, e) => {
-              const r = e.card.rarity;
-              if (r === 'Common' || r === 'Uncommon') return sum + 1000;
-              if (r === 'Rare') return sum + 2000;
-              if (r === 'Epic') return sum + 2500;
-              if (r === 'Legendary') return sum + 3000;
-              return sum + 1000;
-            }, 0);
-            nextPlayers[rId] = { ...p, score: p.score + comp };
-            nextDiscard.push(...pExp.map(e => e.card));
-            parts.push(`${p.name}: +$${comp.toLocaleString('pt-BR')} (${pExp.length} vuln)`);
-          }
-        });
-        nextExploits = [];
-        summary = parts.length > 0 ? `Indenizações pagas: ${parts.join(' | ')}` : 'Nenhuma vulnerabilidade estava exposta na mesa.';
+        if (nextExploits.length > 0) {
+          activeIds.forEach(rId => {
+            const p = nextPlayers[rId];
+            const pExp = nextExploits.filter(e => e.playerId === rId);
+            if (pExp.length > 0) {
+              const comp = pExp.reduce((sum, e) => {
+                const r = e.card.rarity;
+                if (r === 'Common' || r === 'Uncommon') return sum + 1000;
+                if (r === 'Rare') return sum + 2000;
+                if (r === 'Epic') return sum + 2500;
+                if (r === 'Legendary') return sum + 3000;
+                return sum + 1000;
+              }, 0);
+              nextPlayers[rId] = { ...p, score: p.score + comp };
+              nextDiscard.push(...pExp.map(e => e.card));
+              parts.push(`${p.name}: +$${comp.toLocaleString('pt-BR')} (${pExp.length} vuln)`);
+            }
+          });
+          nextExploits = [];
+          summary = `Indenizações pagas: ${parts.join(' | ')}`;
+        } else {
+          activeIds.filter(rId => rId !== authorRole).forEach(rId => {
+            const tPlayer = nextPlayers[rId];
+            if (!tPlayer || tPlayer.hand.length === 0) return;
+            const def = checkNegativeEventDefense(rId, false, false);
+            if (def.blocked) {
+              parts.push(def.reason!);
+              return;
+            }
+            const randIdx = Math.floor(Math.random() * tPlayer.hand.length);
+            const dropped = tPlayer.hand[randIdx];
+            nextPlayers[rId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
+            nextDiscard.push(dropped);
+            parts.push(`${tPlayer.name} (sem vuln na mesa) descartou [${dropped.name}] da mão`);
+          });
+          summary = parts.length > 0 ? `Mesa vazia — vazamento atingiu a mão: ${parts.join(' | ')}` : 'Nenhuma vulnerabilidade na mesa nem cartas na mão dos oponentes.';
+        }
         break;
       }
 
@@ -1748,33 +1824,50 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         break;
       }
 
-      // evt-16: Bug Collision! (Todos descartam a vulnerabilidade de menor CVSS exposta na mesa)
+      // evt-16: Bug Collision! (Todos descartam a vulnerabilidade de menor CVSS exposta na mesa; se mesa vazia, oponentes descartam 1 carta da mão)
       case 'evt-16': {
         const parts: string[] = [];
         const kept: DeployedExploit[] = [];
-        activeIds.forEach(rId => {
-          const pExp = nextExploits.filter(e => e.playerId === rId);
-          if (pExp.length === 0) return;
-          const def = checkNegativeEventDefense(rId, false, false);
-          if (def.blocked) {
-            kept.push(...pExp);
-            parts.push(def.reason!);
-            return;
-          }
-          const vulnerableExp = pExp.filter(e => !isProvaOob(e.card));
-          const immuneExp = pExp.filter(e => isProvaOob(e.card));
-          if (vulnerableExp.length === 0) {
-            kept.push(...pExp);
-            return;
-          }
-          const sorted = [...vulnerableExp].sort((a, b) => getCardCvssScore(a.card) - getCardCvssScore(b.card));
-          const lowestExp = sorted[0];
-          nextDiscard.push(lowestExp.card);
-          kept.push(...sorted.slice(1), ...immuneExp);
-          parts.push(`${nextPlayers[rId].name} perdeu [${lowestExp.card.name}]`);
-        });
-        nextExploits = kept;
-        summary = parts.length > 0 ? parts.join(' | ') : 'Nenhum jogador possuía vulnerabilidades na mesa.';
+        if (nextExploits.length > 0) {
+          activeIds.forEach(rId => {
+            const pExp = nextExploits.filter(e => e.playerId === rId);
+            if (pExp.length === 0) return;
+            const def = checkNegativeEventDefense(rId, false, false);
+            if (def.blocked) {
+              kept.push(...pExp);
+              parts.push(def.reason!);
+              return;
+            }
+            const vulnerableExp = pExp.filter(e => !isProvaOob(e.card));
+            const immuneExp = pExp.filter(e => isProvaOob(e.card));
+            if (vulnerableExp.length === 0) {
+              kept.push(...pExp);
+              return;
+            }
+            const sorted = [...vulnerableExp].sort((a, b) => getCardCvssScore(a.card) - getCardCvssScore(b.card));
+            const lowestExp = sorted[0];
+            nextDiscard.push(lowestExp.card);
+            kept.push(...sorted.slice(1), ...immuneExp);
+            parts.push(`${nextPlayers[rId].name} perdeu [${lowestExp.card.name}] da mesa`);
+          });
+          nextExploits = kept;
+        } else {
+          activeIds.filter(rId => rId !== authorRole).forEach(rId => {
+            const tPlayer = nextPlayers[rId];
+            if (!tPlayer || tPlayer.hand.length === 0) return;
+            const def = checkNegativeEventDefense(rId, false, false);
+            if (def.blocked) {
+              parts.push(def.reason!);
+              return;
+            }
+            const randIdx = Math.floor(Math.random() * tPlayer.hand.length);
+            const dropped = tPlayer.hand[randIdx];
+            nextPlayers[rId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
+            nextDiscard.push(dropped);
+            parts.push(`${tPlayer.name} (sem vuln na mesa) descartou [${dropped.name}] da mão`);
+          });
+        }
+        summary = parts.length > 0 ? parts.join(' | ') : 'Nenhum oponente possuía cartas para descarte.';
         break;
       }
 
@@ -2154,6 +2247,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       alert('Aguarde a sua vez para reciclar cartas!');
       return;
     }
+    if (recycledThisTurn) {
+      alert('Regra de Ação Livre: A Reciclagem 2:1 (0 AP) só pode ser utilizada 1 vez por turno!');
+      return;
+    }
     soundFx.playScan();
     const c1 = currentPlayer.hand.find(c => c.id === cardId1);
     const c2 = currentPlayer.hand.find(c => c.id === cardId2);
@@ -2162,6 +2259,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const popped = popCardsFromMainDeck(1, mainDeck, nextDisc);
     setMainDeck(popped.nextMain);
     setDiscardPile(popped.nextDiscard);
+    setRecycledThisTurn(true);
     const updatedPlayers: Record<PlayerRoleId, PlayerState> = {
       ...players,
       [myRole]: {
@@ -2170,7 +2268,11 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
     };
     setPlayers(updatedPlayers);
-    supabaseSync.broadcast('STATE_SYNC', { players: updatedPlayers });
+    supabaseSync.broadcast('STATE_SYNC', {
+      players: updatedPlayers,
+      mainDeck: popped.nextMain,
+      discardPile: popped.nextDiscard
+    });
     recordAudit('RECON', 'Reciclagem 2:1 (0 AP)', `${currentPlayer.name} reciclou [${c1?.name}, ${c2?.name}] por 0 AP e comprou [${popped.drawn[0]?.name}].`, updatedPlayers[myRole], 'EXECUTED');
   };
 
@@ -3129,25 +3231,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const nextExploits = deployedExploits.filter(e => e.playerId !== myRole);
     setDeployedExploits(nextExploits);
 
-    const nextAlert = currentPlayer.alertaTokens + 1;
-    let penaltyCash = 0;
-    let finalAlert = nextAlert;
-    if (nextAlert >= 2) {
-      penaltyCash = 2000;
-      finalAlert = 0;
-      soundFx.playPatchDeployedAlarm();
-      setBountyLedger(prev => [
-        ...prev,
-        {
-          id: 'pen-' + Date.now(),
-          turn: currentTurn,
-          type: 'Penalty',
-          description: `Alarme Crítico (2🐞 no Patch) — ${currentPlayer.name}`,
-          amount: -2000,
-          mathBreakdown: `2 Tokens de Alerta acumulados (-$2.000)`
-        }
-      ]);
-    }
+    // Regra de Balanceamento: Sofrer Patch (sem Bypass) adiciona +1🐞 apenas se o jogador tiver 0🐞;
+    // se já tiver 1🐞, permanece em 1🐞 (não acumula o 2º alerta nem cobra multa de -$2.000 no Patch Aceito)
+    const addedAlert = currentPlayer.alertaTokens === 0 ? 1 : 0;
+    const finalAlert = Math.min(1, currentPlayer.alertaTokens + addedAlert);
 
     const popped = popCardsFromMainDeck(1, mainDeck, [...discardPile, ...myExploits.map(e => e.card)]);
     setMainDeck(popped.nextMain);
@@ -3161,7 +3248,6 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       ...players,
       [myRole]: {
         ...currentPlayer,
-        score: Math.max(0, currentPlayer.score - penaltyCash),
         activeProgram: null,
         alertaTokens: finalAlert,
         hand: [...currentPlayer.hand, ...popped.drawn]
@@ -3170,26 +3256,16 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setPlayers(updatedPlayersState);
     bumpMetric(myRole, m => ({
       patchesSuffered: m.patchesSuffered + 1,
-      alertsReceived: m.alertsReceived + 1,
-      criticalAlarmPenalties: penaltyCash > 0 ? m.criticalAlarmPenalties + 1 : m.criticalAlarmPenalties
+      alertsReceived: m.alertsReceived + addedAlert
     }));
 
     recordAudit(
       'PATCH',
       `💥 Patch Aceito por ${currentPlayer.name}`,
-      `Exploits e programa [${currentPlayer.activeProgram?.name}] descartados. Recebeu +1 Alerta (${penaltyCash > 0 ? '2🐞 = -$2.000 na trilha!' : `${finalAlert}/2`}) e comprou 1 carta de consolação [${popped.drawn[0]?.name}].`,
+      `Exploits e programa [${currentPlayer.activeProgram?.name}] descartados. ${addedAlert > 0 ? `Recebeu +1 Alerta (${finalAlert}/2)` : `Manteve ${finalAlert}/2 Alerta (sem multa extra no Patch Aceito)`} e comprou 1 carta de consolação [${popped.drawn[0]?.name}].`,
       updatedPlayersState[myRole],
       'PENALTY'
     );
-    if (penaltyCash > 0) {
-      recordAudit(
-        'ALERT',
-        `🚨 Multa Crítica de Alerta (2🐞): -$2.000`,
-        `${currentPlayer.name} atingiu 2 Tokens de Alerta! Perdeu -$2.000 na trilha (Novo saldo: $${updatedPlayersState[myRole].score.toLocaleString('pt-BR')}) e devolveu os 2 tokens.`,
-        updatedPlayersState[myRole],
-        'PENALTY'
-      );
-    }
 
     // Regra: Nenhum jogador fica sem programa ativo -> escolhe imediatamente o novo programa antes de passar a vez!
     setAwaitingProgramPick(true);
@@ -3258,9 +3334,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const nextIndex = (currentIndex + 1) % activeList.length;
     const nextRole = activeList[nextIndex];
     const isNewRound = nextIndex === 0;
-    const nextRound = isNewRound ? Math.min(8, currentTurn + 1) : currentTurn;
+    const nextRound = isNewRound ? Math.min(10, currentTurn + 1) : currentTurn;
 
-    if (isNewRound && currentTurn >= 8) {
+    if (isNewRound && currentTurn >= 10) {
       const ranked = activeList.map(pId => {
         const p = currentPlayersState[pId];
         const repBonus = (p.reputacaoTokens || 0) * 500;
@@ -3275,16 +3351,16 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       const breakdownStr = ranked
         .map((r, idx) => `${idx + 1}º ${r.p.name}: $${r.total.toLocaleString('pt-BR')} (Bounty $${r.p.score.toLocaleString('pt-BR')} + ${r.p.reputacaoTokens}🐝 [+$${r.repBonus}] - ${r.p.alertaTokens}🐞 [-$${r.alertPenalty}])`)
         .join(' | ');
-      const endTitle = `🏁 Fim da 8ª Rodada! Vencedor: ${winnerNames}`;
+      const endTitle = `🏁 Fim da 10ª Rodada! Vencedor: ${winnerNames}`;
       const endDetails = `Contabilização Final (Bounty + Reputação - Alertas): ${breakdownStr}`;
-      recordAudit('TURN', endTitle, endDetails, winners[0].p, 'EXECUTED', 8);
+      recordAudit('TURN', endTitle, endDetails, winners[0].p, 'EXECUTED', 10);
       setGameWinner(winnerNames);
       supabaseSync.broadcast('GAME_OVER', {
         winner: winnerNames,
         players: currentPlayersState,
         deployedExploits: overrideExploits || deployedExploits,
         programMarket: overrideMarket || programMarket,
-        currentTurn: 8,
+        currentTurn: 10,
         auditLogs: auditLogsRef.current,
         playerMetrics: playerMetricsRef.current
       });
@@ -3329,6 +3405,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setExploitsPlayedThisTurn(0);
     setFreeExploitDeploysRemaining(0);
     setPhishingUsedThisTurn(false);
+    setRecycledThisTurn(false);
 
     setActivePlayerRole(nextRole);
     if (isNewRound) {
@@ -3339,7 +3416,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       setMyRoleState(nextRole);
     }
 
-    recordAudit('TURN', `Vez de ${updatedPlayersState[nextRole]?.name}`, `Iniciando turno na Rodada ${nextRound}/8 com 3 APs. Alvo ativo: [${updatedPlayersState[nextRole]?.activeProgram?.name || 'Nenhum'}].`, updatedPlayersState[nextRole], 'EXECUTED', nextRound);
+    recordAudit('TURN', `Vez de ${updatedPlayersState[nextRole]?.name}`, `Iniciando turno na Rodada ${nextRound}/10 com 3 APs. Alvo ativo: [${updatedPlayersState[nextRole]?.activeProgram?.name || 'Nenhum'}].`, updatedPlayersState[nextRole], 'EXECUTED', nextRound);
 
     const syncPayload = {
       activePlayerRole: nextRole,
@@ -3396,6 +3473,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         currentTurn,
         bountyLedger,
         needsDiscard,
+        recycledThisTurn,
         pendingToolInstall,
         actionsRemaining: currentPlayer.actionsRemaining,
 

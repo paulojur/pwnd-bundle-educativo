@@ -78,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({ toggleTerminal, terminalOpen }) 
           <div style={{ display: 'flex', gap: '12px', fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <Award size={14} color="var(--electric-purple-light)" />
-              <span>Rodada: <strong style={{ color: '#fff' }}>{turnNumber} / 8</strong></span>
+              <span>Rodada: <strong style={{ color: '#fff' }}>{turnNumber} / 10</strong></span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <Layers size={14} color="var(--cyber-blue)" />
