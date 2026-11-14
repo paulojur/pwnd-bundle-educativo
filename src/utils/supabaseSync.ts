@@ -235,6 +235,64 @@ class SupabaseSyncManager {
     };
   }
 
+  public async saveMatchLog(payload: {
+    roomCode?: string | null;
+    gameMode?: string;
+    playerCount: number;
+    round: number;
+    winner?: string | null;
+    metrics?: any;
+    auditLogs: any[];
+    markdownReport?: string;
+  }): Promise<{ success: boolean; error?: any; data?: any }> {
+    if (!this.client) {
+      console.warn('[PWND Supabase] Cliente Supabase não configurado para salvar log.');
+      return { success: false, error: 'Cliente Supabase não configurado.' };
+    }
+
+    try {
+      const row = {
+        room_code: payload.roomCode || 'SOLO_LOCAL',
+        player_count: payload.playerCount,
+        round: payload.round,
+        winner: payload.winner || 'Em andamento',
+        metrics: payload.metrics || {},
+        audit_logs: payload.auditLogs || [],
+        markdown_report: payload.markdownReport || '',
+        created_at: new Date().toISOString()
+      };
+
+      const { data, error } = await this.client
+        .from('match_logs')
+        .insert([row]);
+
+      if (error) {
+        console.warn('[PWND Supabase] Falha ao persistir na tabela match_logs:', error);
+        return { success: false, error };
+      }
+
+      console.log('[PWND Supabase] Log da partida persistido com sucesso no banco!');
+      return { success: true, data };
+    } catch (err: any) {
+      console.warn('[PWND Supabase] Exceção ao gravar log da partida:', err);
+      return { success: false, error: err };
+    }
+  }
+
+  public async getMatchLogs(limit: number = 25): Promise<{ data: any[] | null; error: any }> {
+    if (!this.client) return { data: null, error: 'Cliente Supabase não configurado.' };
+    try {
+      const { data, error } = await this.client
+        .from('match_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      return { data, error };
+    } catch (err: any) {
+      return { data: null, error: err };
+    }
+  }
+
   private handleIncoming(msg: RoomMessage) {
     if (!this.roomCode || msg.roomCode !== this.roomCode) return;
     if (msg.senderId === this.playerId) return; // ignora mensagens enviadas por si mesmo

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useBoardGame, AuditLogEntry, PlayerRoleId } from '../context/BoardGameContext';
-import { X, Activity, Filter, ShieldAlert, Wrench, Sparkles, Layers, Award, CheckCircle2, Ban, ArrowUp, ArrowDown, Download, FileText } from 'lucide-react';
+import { X, Activity, Filter, ShieldAlert, Wrench, Sparkles, Layers, Award, CheckCircle2, Ban, ArrowUp, ArrowDown, Download, FileText, CloudUpload } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 
 interface ObserverMetricsModalProps {
@@ -29,11 +29,32 @@ export const ObserverMetricsModal: React.FC<ObserverMetricsModalProps> = ({ isOp
     allPlayers,
     playerCount,
     currentTurn,
-    deployedExploits
+    deployedExploits,
+    saveMatchLogToDatabase
   } = useBoardGame();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedPlayer, setSelectedPlayer] = useState<string>('ALL');
+  const [dbSaveStatus, setDbSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
+  const [dbSaveError, setDbSaveError] = useState<string | null>(null);
+
+  const handleSaveToCloud = async () => {
+    soundFx.playClick();
+    setDbSaveStatus('saving');
+    setDbSaveError(null);
+    const result = await saveMatchLogToDatabase();
+    if (result.success) {
+      setDbSaveStatus('success');
+      setTimeout(() => setDbSaveStatus('idle'), 4000);
+    } else {
+      setDbSaveStatus('error');
+      const errMsg = typeof result.error === 'string'
+        ? result.error
+        : result.error?.message || 'Falha ao salvar. Verifique se a tabela match_logs foi criada no Supabase.';
+      setDbSaveError(errMsg);
+      setTimeout(() => setDbSaveStatus('idle'), 7000);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -325,6 +346,29 @@ export const ObserverMetricsModal: React.FC<ObserverMetricsModalProps> = ({ isOp
             </button>
 
             <button
+              onClick={handleSaveToCloud}
+              disabled={dbSaveStatus === 'saving'}
+              style={{
+                background: dbSaveStatus === 'success' ? '#16A34A' : dbSaveStatus === 'error' ? '#DC2626' : '#7C3AED',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '6px',
+                padding: '6px 12px',
+                fontFamily: 'monospace',
+                fontWeight: '900',
+                fontSize: '11.5px',
+                cursor: dbSaveStatus === 'saving' ? 'wait' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+              title="Gravar este log completo diretamente no Supabase para consulta remota"
+            >
+              <CloudUpload size={14} />
+              {dbSaveStatus === 'saving' ? 'Gravando...' : dbSaveStatus === 'success' ? 'Salvo no Supabase! ✓' : dbSaveStatus === 'error' ? 'Erro ao Salvar ⚠️' : 'Gravar no Banco ☁️'}
+            </button>
+
+            <button
               onClick={() => { soundFx.playClick(); onClose(); }}
               style={{
                 background: '#B91C1C',
@@ -345,6 +389,12 @@ export const ObserverMetricsModal: React.FC<ObserverMetricsModalProps> = ({ isOp
             </button>
           </div>
         </div>
+
+        {dbSaveError && (
+          <div style={{ background: '#FEE2E2', borderBottom: '1px solid #DC2626', padding: '8px 20px', fontSize: '11px', color: '#991B1B', fontFamily: 'monospace' }}>
+            ⚠️ <strong>Aviso Supabase:</strong> {dbSaveError} (Execute o script SQL fornecido no Supabase SQL Editor para criar a tabela <code>match_logs</code>).
+          </div>
+        )}
 
         {/* BODY SCROLLABLE */}
         <div style={{ padding: '18px 22px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '18px' }}>

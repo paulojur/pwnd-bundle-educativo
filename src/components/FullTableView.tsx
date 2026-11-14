@@ -22,10 +22,16 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
     myRole,
     activePlayerRole,
     playerCount,
-    setPlayerCount
+    setPlayerCount,
+    gameMode
   } = useBoardGame();
 
   const handleSelectSeat = (playerId: PlayerRoleId) => {
+    if (gameMode === 'lan') {
+      // No modo online, o assento do jogador é fixo e não pode ser alternado pela visão da mesa
+      onFocusMyMat();
+      return;
+    }
     soundFx.playClick();
     setMyRole(playerId);
     onFocusMyMat();

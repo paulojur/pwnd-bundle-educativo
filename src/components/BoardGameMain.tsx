@@ -506,25 +506,27 @@ const BoardGameContent: React.FC = () => {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <label style={{ fontSize: '10.5px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
-                👁️ {t('nav.playerView')}
+                {gameMode === 'lan' ? '🔒' : '👁️'} {t('nav.playerView')}
               </label>
               <select
                 value={myRole}
+                disabled={gameMode === 'lan'}
                 onChange={(e) => {
                   soundFx.playClick();
                   setMyRole(e.target.value as any);
                 }}
-                title="Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador"
+                title={gameMode === 'lan' ? 'Seu assento é fixo nesta sala online' : 'Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador'}
                 style={{
                   padding: '4px 8px',
-                  background: '#FFFFFF',
+                  background: gameMode === 'lan' ? '#F3F4F6' : '#FFFFFF',
                   color: currentPlayer?.color || '#1E1B18',
                   border: '1.5px solid #2B2620',
                   borderRadius: '5px',
                   fontSize: '11px',
                   fontWeight: '900',
                   fontFamily: 'monospace',
-                  cursor: 'pointer',
+                  cursor: gameMode === 'lan' ? 'not-allowed' : 'pointer',
+                  opacity: gameMode === 'lan' ? 0.85 : 1,
                   outline: 'none'
                 }}
               >

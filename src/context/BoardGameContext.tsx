@@ -529,6 +529,7 @@ interface BoardGameContextType {
   endTurn: () => void;
   resetBoardGame: () => void;
   actionSocialPhishing?: () => void;
+  saveMatchLogToDatabase: (winnerOverride?: string) => Promise<{ success: boolean; error?: any; data?: any }>;
 }
 
 const BoardGameContext = createContext<BoardGameContextType | undefined>(undefined);
@@ -844,6 +845,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   const customNicknamesRef = useRef<Partial<Record<PlayerRoleId, string>>>({});
 
   const setMyRole = (role: PlayerRoleId) => {
+    if (gameMode === 'lan') {
+      console.warn('[PWND LAN] Troca de assento bloqueada durante partida online.');
+      return;
+    }
     setMyRoleState(role);
   };
 
@@ -2896,6 +2901,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         playerMetrics: playerMetricsRef.current,
         currentTurn
       });
+      saveMatchLogToDatabase(winnerTitle).catch(() => {});
       return;
     }
 
@@ -3364,6 +3370,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         auditLogs: auditLogsRef.current,
         playerMetrics: playerMetricsRef.current
       });
+      saveMatchLogToDatabase(winnerNames).catch(() => {});
       return;
     }
 
@@ -3439,6 +3446,57 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     };
     mpSync.sendAction('END_TURN', syncPayload);
     supabaseSync.broadcast('END_TURN', syncPayload);
+  };
+
+  const generateAuditMarkdownReport = (winnerOverride?: string): string => {
+    const nowStr = new Date().toLocaleString('pt-BR');
+    const winnerDisplay = winnerOverride || gameWinner || 'Partida em Andamento';
+    const activeList = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[])
+      .slice(0, playerCount)
+      .map(id => players[id]);
+
+    const lines: string[] = [];
+    lines.push(`# 📊 PWNED! Relatório Oficial de Playtest & Telemetria`);
+    lines.push(`- **Data / Hora**: ${nowStr}`);
+    lines.push(`- **Sala**: ${roomCode || 'SOLO / LOCAL'}`);
+    lines.push(`- **Modo**: ${gameMode.toUpperCase()}`);
+    lines.push(`- **Rodada**: ${currentTurn}/10`);
+    lines.push(`- **Jogadores**: ${playerCount}`);
+    lines.push(`- **Vencedor**: ${winnerDisplay}`);
+    lines.push(`- **Eventos Auditados**: ${auditLogsRef.current.length}`);
+    lines.push(``);
+    lines.push(`## 📈 Desempenho dos Jogadores`);
+    lines.push(`| Jogador | Arquétipo | Score | Reputação | Alertas | Reports OK | Patches / Bypass | Multas 2🐞 |`);
+    lines.push(`| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |`);
+    activeList.forEach(p => {
+      const m = playerMetricsRef.current[p.id] || { reportsCompleted: 0, patchesSuffered: 0, bypassUsed: 0, criticalAlarmPenalties: 0, alertsReceived: 0 };
+      lines.push(`| **${p.name}** | ${p.archetype.name} | $${p.score.toLocaleString('pt-BR')} | ${p.reputacaoTokens}🐝 | ${p.alertaTokens}🐞 | ${m.reportsCompleted} | ${m.patchesSuffered} / ${m.bypassUsed} | ${m.criticalAlarmPenalties}x |`);
+    });
+    lines.push(``);
+    lines.push(`## 📜 Log Cronológico de Auditoria (${auditLogsRef.current.length} eventos)`);
+    lines.push(``);
+    [...auditLogsRef.current].reverse().forEach((entry, i) => {
+      lines.push(`### ${i + 1}. [${entry.category}] Rodada ${entry.round} • ${entry.timestamp} — ${entry.title}`);
+      lines.push(`- **Autor**: ${entry.playerName || 'Sistema'} | **Status**: \`${entry.status}\``);
+      lines.push(`- **Detalhes**: ${entry.details}`);
+      lines.push(``);
+    });
+
+    return lines.join('\n');
+  };
+
+  const saveMatchLogToDatabase = async (winnerOverride?: string) => {
+    const md = generateAuditMarkdownReport(winnerOverride);
+    return await supabaseSync.saveMatchLog({
+      roomCode: roomCode || 'SOLO_LOCAL',
+      gameMode,
+      playerCount,
+      round: currentTurn,
+      winner: winnerOverride || gameWinner || 'Em andamento',
+      metrics: playerMetricsRef.current,
+      auditLogs: auditLogsRef.current,
+      markdownReport: md
+    });
   };
 
   return (
@@ -3545,7 +3603,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         acceptPatch,
         endTurn,
         resetBoardGame,
-        actionSocialPhishing
+        actionSocialPhishing,
+        saveMatchLogToDatabase
       }}
     >
       {children}

@@ -24,7 +24,8 @@ export const ActionPointsBar: React.FC = () => {
     actionsRemaining,
     deployedExploits,
     playerSafeguardSlot,
-    actionSocialPhishing
+    actionSocialPhishing,
+    gameMode
   } = useBoardGame();
 
   const myExploitsCount = deployedExploits.filter(e => e.playerId === myRole).length;
@@ -74,29 +75,31 @@ export const ActionPointsBar: React.FC = () => {
               ) : (
                 <>
                   <span>⏳ {t('turn.waitingTurn', { name: allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole })}</span>
-                  <button
-                    onClick={() => {
-                      soundFx.playClick();
-                      setMyRole(activePlayerRole);
-                    }}
-                    title="Alterna sua visão para controlar o jogador da vez"
-                    style={{
-                      padding: '3px 8px',
-                      background: '#2B2620',
-                      color: '#FAF6EE',
-                      border: 'none',
-                      borderRadius: '4px',
-                      fontSize: '10.5px',
-                      fontWeight: '800',
-                      fontFamily: 'monospace',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}
-                  >
-                    {t('turn.playAs', { name: allPlayers.find(p => p.id === activePlayerRole)?.name.split(' ')[0] || 'Next' })}
-                  </button>
+                  {gameMode !== 'lan' && (
+                    <button
+                      onClick={() => {
+                        soundFx.playClick();
+                        setMyRole(activePlayerRole);
+                      }}
+                      title="Alterna sua visão para controlar o jogador da vez"
+                      style={{
+                        padding: '3px 8px',
+                        background: '#2B2620',
+                        color: '#FAF6EE',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '10.5px',
+                        fontWeight: '800',
+                        fontFamily: 'monospace',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      {t('turn.playAs', { name: allPlayers.find(p => p.id === activePlayerRole)?.name.split(' ')[0] || 'Next' })}
+                    </button>
+                  )}
                 </>
               )}
             </div>
