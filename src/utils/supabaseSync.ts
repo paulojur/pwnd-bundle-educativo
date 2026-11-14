@@ -251,13 +251,27 @@ class SupabaseSyncManager {
     }
 
     try {
+      // Sanitiza os audit logs de forma compacta (garantindo que strings sejam limpas de caracteres nulos ou excessivos)
+      const sanitizedLogs = (payload.auditLogs || []).map(entry => ({
+        id: String(entry.id || ''),
+        timestamp: String(entry.timestamp || ''),
+        round: Number(entry.round) || 1,
+        playerId: entry.playerId ? String(entry.playerId) : undefined,
+        playerName: entry.playerName ? String(entry.playerName) : undefined,
+        archetypeName: entry.archetypeName ? String(entry.archetypeName) : undefined,
+        category: String(entry.category || 'TURN'),
+        title: String(entry.title || ''),
+        details: String(entry.details || ''),
+        status: String(entry.status || 'EXECUTED')
+      }));
+
       const row = {
         room_code: payload.roomCode || 'SOLO_LOCAL',
         player_count: payload.playerCount,
         round: payload.round,
         winner: payload.winner || 'Em andamento',
         metrics: payload.metrics || {},
-        audit_logs: payload.auditLogs || [],
+        audit_logs: sanitizedLogs,
         markdown_report: payload.markdownReport || '',
         created_at: new Date().toISOString()
       };
@@ -271,7 +285,7 @@ class SupabaseSyncManager {
         return { success: false, error };
       }
 
-      console.log('[PWND Supabase] Log da partida persistido com sucesso no banco!');
+      console.log(`[PWND Supabase] Log da partida gravado com sucesso! (${sanitizedLogs.length} eventos, Rodada ${payload.round}, Vencedor: ${payload.winner || 'Em andamento'})`);
       return { success: true, data };
     } catch (err: any) {
       console.warn('[PWND Supabase] Exceção ao gravar log da partida:', err);

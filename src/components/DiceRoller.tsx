@@ -11,6 +11,8 @@ interface DiceRollerProps {
   diceRollReason?: 'report' | 'endTurn' | 'manualTest';
   playerReputationTokens?: number;
   hasBypass?: boolean;
+  exploitsAtRisk?: { name: string; vulnClass?: string; points: number }[];
+  programBonusAtRisk?: number;
   onUseReputationReroll?: () => void;
   onDefusePatch?: () => void;
   onAcceptPatch?: () => void;
@@ -30,6 +32,8 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
   diceRollReason = 'report',
   playerReputationTokens = 0,
   hasBypass = false,
+  exploitsAtRisk = [],
+  programBonusAtRisk = 0,
   onUseReputationReroll,
   onDefusePatch,
   onAcceptPatch,
@@ -336,6 +340,43 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
             {playerReputationTokens >= 2 && !passed && (
               <div style={{ fontSize: '11px', color: '#ffb800', marginTop: '6px' }}>
                 💡 Você possui {playerReputationTokens} 🐝 Tokens! Pode clicar no botão "Reroll" acima de qualquer dado para tentar escapar do Patch.
+              </div>
+            )}
+
+            {/* QUADRO DE TELEMETRIA: VALOR SOB RISCO (EXPLOITS NA MESA + PROGRAMA) */}
+            {!passed && exploitsAtRisk.length > 0 && (
+              <div
+                style={{
+                  background: '#1F1715',
+                  border: '1.5px solid #ff334b',
+                  borderRadius: '8px',
+                  padding: '10px 14px',
+                  marginTop: '12px',
+                  textAlign: 'left',
+                  fontFamily: 'monospace'
+                }}
+              >
+                <div style={{ fontSize: '10.5px', fontWeight: '900', color: '#ff334b', marginBottom: '6px' }}>
+                  💰 RECURSOS EM RISCO (PERDIDOS SE ACEITAR O PATCH):
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '11px', color: '#E0E7FF' }}>
+                  {exploitsAtRisk.map((exp, idx) => (
+                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span>• {exp.name} ({exp.vulnClass || 'EXPLOIT'})</span>
+                      <span style={{ fontWeight: '800', color: '#00ff66' }}>+${exp.points.toLocaleString('pt-BR')}</span>
+                    </div>
+                  ))}
+                  {programBonusAtRisk > 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span>• Bônus Contrato [{programName}]</span>
+                      <span style={{ fontWeight: '800', color: '#00ff66' }}>+${programBonusAtRisk.toLocaleString('pt-BR')}</span>
+                    </div>
+                  )}
+                  <div style={{ borderTop: '1px dashed #666', paddingTop: '4px', marginTop: '4px', display: 'flex', justifyContent: 'space-between', fontWeight: '900', fontSize: '12px', color: '#00ff66' }}>
+                    <span>TOTAL PRESERVADO SE USAR BYPASS:</span>
+                    <span>+${(exploitsAtRisk.reduce((acc, cur) => acc + cur.points, 0) + programBonusAtRisk).toLocaleString('pt-BR')}</span>
+                  </div>
+                </div>
               </div>
             )}
           </div>

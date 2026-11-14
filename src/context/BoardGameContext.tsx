@@ -487,6 +487,15 @@ interface BoardGameContextType {
   pendingDeckPeek: DeckPeekState | null;
   resolveDeckPeek: (selectedIndex: number, remainingOrder: number[]) => void;
 
+  incomingAlertNotification: {
+    id: string;
+    title: string;
+    message: string;
+    type: 'alert' | 'info' | 'positive';
+  } | null;
+  dismissIncomingAlert: () => void;
+  triggerEventAlert: (title: string, message: string, targetRole?: PlayerRoleId | 'all', type?: 'alert' | 'info' | 'positive') => void;
+
   patchAlertModal: boolean;
   alertServerName: string | null;
   isDiceModalOpen: boolean;
@@ -528,7 +537,7 @@ interface BoardGameContextType {
   acceptPatch: () => void;
   endTurn: () => void;
   resetBoardGame: () => void;
-  actionSocialPhishing?: () => void;
+  actionSocialPhishing?: (chosenCardIdToGive?: string, chosenTargetId?: PlayerRoleId) => void;
   saveMatchLogToDatabase: (winnerOverride?: string) => Promise<{ success: boolean; error?: any; data?: any }>;
 }
 
@@ -599,10 +608,45 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const [bots] = useState<any[]>([]);
   const [gameWinner, setGameWinner] = useState<string | null>(null);
+  const [targetHitRound, setTargetHitRound] = useState<number | null>(null);
   const [awaitingProgramPick, setAwaitingProgramPick] = useState<boolean>(false);
   const [programPickReason, setProgramPickReason] = useState<string | null>(null);
   const [duelRotationsRemaining, setDuelRotationsRemaining] = useState<number>(0);
   const [pendingTurnAdvance, setPendingTurnAdvance] = useState<boolean>(false);
+  const [incomingAlertNotification, setIncomingAlertNotification] = useState<{
+    id: string;
+    title: string;
+    message: string;
+    type: 'alert' | 'info' | 'positive';
+  } | null>(null);
+
+  const dismissIncomingAlert = useCallback(() => {
+    setIncomingAlertNotification(null);
+  }, []);
+
+  const triggerEventAlert = useCallback((
+    title: string,
+    message: string,
+    targetRole?: PlayerRoleId | 'all',
+    type?: 'alert' | 'info' | 'positive'
+  ) => {
+    const alertData = {
+      id: String(Date.now()),
+      title,
+      message,
+      type: type || 'alert'
+    };
+    if (!targetRole || targetRole === myRole || targetRole === 'all') {
+      soundFx.playPatchDeployedAlarm();
+      setIncomingAlertNotification(alertData);
+    }
+    supabaseSync.broadcast('EVENT_ALERT', {
+      title,
+      message,
+      targetRole: targetRole || 'all',
+      type: type || 'alert'
+    });
+  }, [myRole]);
 
   const currentPlayer = players[myRole] || players['player-1'];
   const isMyTurn = myRole === activePlayerRole;
@@ -643,11 +687,17 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   ];
 
   const updateCurrentPlayer = useCallback((updater: (prev: PlayerState) => PlayerState) => {
-    setPlayers(prev => ({
-      ...prev,
-      [myRole]: updater(prev[myRole] || prev['player-1'])
-    }));
-  }, [myRole]);
+    setPlayers(prev => {
+      const updated = {
+        ...prev,
+        [myRole]: updater(prev[myRole] || prev['player-1'])
+      };
+      if (gameMode === 'lan' || Boolean(roomCode)) {
+        supabaseSync.broadcast('STATE_SYNC', { players: updated });
+      }
+      return updated;
+    });
+  }, [myRole, gameMode, roomCode]);
 
   const recordAudit = useCallback((
     category: AuditLogEntry['category'],
@@ -697,7 +747,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   const popProgramsFromDeck = (
     count: number,
     deck: ProgramCard[],
-    discard: ProgramCard[]
+    discard: ProgramCard[],
+    avoidProgramName?: string
   ): { drawn: ProgramCard[]; nextDeck: ProgramCard[]; nextDiscard: ProgramCard[] } => {
     let availDeck = [...deck];
     let availDiscard = [...discard];
@@ -705,6 +756,16 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       availDeck = [...availDeck, ...shuffleArray(availDiscard)];
       availDiscard = [];
     }
+
+    // Se solicitado evitar um programa com mesmo nome (ex.: substituir slot no mercado sem repetir imediatamente o mesmo alvo)
+    if (avoidProgramName && availDeck.length > 1 && availDeck[0].name === avoidProgramName) {
+      const altIdx = availDeck.findIndex(p => p.name !== avoidProgramName);
+      if (altIdx !== -1) {
+        const [chosen] = availDeck.splice(altIdx, 1);
+        availDeck.unshift(chosen);
+      }
+    }
+
     const drawn = availDeck.slice(0, count);
     const nextDeck = availDeck.slice(count);
     return { drawn, nextDeck, nextDiscard: availDiscard };
@@ -746,8 +807,15 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   const removeAlertaToken = (count: number = 1) => {
     if (currentPlayer.alertaTokens <= 0) return;
     const next = Math.max(0, currentPlayer.alertaTokens - count);
-    updateCurrentPlayer(p => ({ ...p, alertaTokens: next }));
-    recordAudit('ALERT', `Modo Furtivo: -${count} Token de Alerta`, `${currentPlayer.name} limpou ${count} Token de Alerta (${next}/2 restantes).`, currentPlayer, 'EXECUTED');
+    const updated = {
+      ...players,
+      [myRole]: { ...currentPlayer, alertaTokens: next }
+    };
+    setPlayers(updated);
+    if (gameMode === 'lan' || Boolean(roomCode)) {
+      supabaseSync.broadcast('STATE_SYNC', { players: updated });
+    }
+    recordAudit('ALERT', `Modo Furtivo: -${count} Token de Alerta`, `${currentPlayer.name} limpou ${count} Token de Alerta (${next}/2 restantes).`, updated[myRole], 'EXECUTED');
   };
 
   const addReputacaoToken = (count: number = 1) => {
@@ -842,10 +910,21 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   // ── Setup & Reset ──────────────────────────────────────────────────────────
-  const customNicknamesRef = useRef<Partial<Record<PlayerRoleId, string>>>({});
+  const customNicknamesRef = useRef<Partial<Record<PlayerRoleId, string>>>((() => {
+    const init: Partial<Record<PlayerRoleId, string>> = {};
+    if (typeof window !== 'undefined') {
+      try {
+        (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).forEach(r => {
+          const stored = localStorage.getItem(`pwnd_nick_${r}`);
+          if (stored) init[r] = stored;
+        });
+      } catch {}
+    }
+    return init;
+  })());
 
   const setMyRole = (role: PlayerRoleId) => {
-    if (gameMode === 'lan') {
+    if (gameMode === 'lan' || Boolean(roomCode)) {
       console.warn('[PWND LAN] Troca de assento bloqueada durante partida online.');
       return;
     }
@@ -855,10 +934,38 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   const setPlayerNickname = (role: PlayerRoleId, nickname: string) => {
     const formatted = formatPlayerName(role, nickname);
     customNicknamesRef.current[role] = formatted;
-    setPlayers(prev => ({
-      ...prev,
-      [role]: { ...prev[role], name: formatted }
-    }));
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(`pwnd_nick_${role}`, formatted);
+        if (role === myRole) {
+          localStorage.setItem('pwnd_player_nickname', nickname.trim());
+        }
+      } catch {}
+    }
+    setPlayers(prev => {
+      const updated = {
+        ...prev,
+        [role]: { ...prev[role], name: formatted }
+      };
+      // Atualiza também o log de SETUP #1 para refletir o nome real dos jogadores
+      setAuditLogs(currLogs => {
+        return currLogs.map(log => {
+          if (log.category === 'SETUP') {
+            const activeList = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[])
+              .slice(0, playerCount);
+            const setupSummary = activeList
+              .map(id => `${updated[id]?.name || id}: [${updated[id]?.archetype?.name || 'Arquétipo'}] c/ alvo [${updated[id]?.activeProgram?.name || 'Sem Alvo'}]`)
+              .join(' | ');
+            return {
+              ...log,
+              details: `${setupSummary}. Mercado exposto: [${programMarket.map(m => m.name).join(', ')}] (${programDeck.length} no Program Deck).`
+            };
+          }
+          return log;
+        });
+      });
+      return updated;
+    });
     supabaseSync.broadcast('UPDATE_PLAYER_NAME', { role, name: formatted });
   };
 
@@ -878,7 +985,27 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       return;
     }
 
-    const fresh = createInitialGameState(playerCount, customNicknamesRef.current);
+    // Salva o log da partida anterior no banco se houver eventos jogados
+    if (auditLogsRef.current.length > 3) {
+      saveMatchLogToDatabase('Partida reiniciada pelo Host').catch(() => {});
+    }
+
+    // Preserva com rigor todos os apelidos dos jogadores (do state atual, do ref e do localStorage)
+    const preservedNames: Partial<Record<PlayerRoleId, string>> = { ...customNicknamesRef.current };
+    (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).forEach(r => {
+      if (players[r]?.name && !players[r].name.startsWith('Jogador ')) {
+        preservedNames[r] = players[r].name;
+      }
+      if (!preservedNames[r] && typeof window !== 'undefined') {
+        try {
+          const stored = localStorage.getItem(`pwnd_nick_${r}`);
+          if (stored) preservedNames[r] = stored;
+        } catch {}
+      }
+    });
+    customNicknamesRef.current = preservedNames;
+
+    const fresh = createInitialGameState(playerCount, preservedNames);
     setPlayers(fresh.playersInitial);
     setMainDeck(fresh.remainingMain);
     setDiscardPile([]);
@@ -958,11 +1085,28 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   const startLanMatch = (code: string, count?: number, hostNickname?: string) => {
-    if (hostNickname !== undefined) {
-      customNicknamesRef.current['player-1'] = formatPlayerName('player-1', hostNickname);
+    const preservedNames: Partial<Record<PlayerRoleId, string>> = { ...customNicknamesRef.current };
+    if (hostNickname !== undefined && hostNickname.trim()) {
+      preservedNames['player-1'] = formatPlayerName('player-1', hostNickname);
+      try {
+        localStorage.setItem('pwnd_nick_player-1', preservedNames['player-1']);
+        localStorage.setItem('pwnd_player_nickname', hostNickname.trim());
+      } catch {}
     }
+    (['player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).forEach(r => {
+      if (players[r]?.name && !players[r].name.startsWith('Jogador ')) {
+        preservedNames[r] = players[r].name;
+      }
+      if (!preservedNames[r] && typeof window !== 'undefined') {
+        try {
+          const stored = localStorage.getItem(`pwnd_nick_${r}`);
+          if (stored) preservedNames[r] = stored;
+        } catch {}
+      }
+    });
+    customNicknamesRef.current = preservedNames;
     const targetCount = count || playerCount;
-    const fresh = createInitialGameState(targetCount, customNicknamesRef.current);
+    const fresh = createInitialGameState(targetCount, preservedNames);
     setPlayers(fresh.playersInitial);
     setMainDeck(fresh.remainingMain);
     setDiscardPile([]);
@@ -1099,17 +1243,38 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const roomParam = params.get('room');
-    const roleParam = params.get('role') as PlayerRoleId | null;
+    let roleParam = params.get('role') as PlayerRoleId | null;
 
-    if (roomParam && roleParam) {
+    if (roomParam) {
       const code = roomParam.toUpperCase().trim();
-      supabaseSync.joinRoom(code, roleParam, `Jogador (${roleParam})`);
-      setMyRoleState(roleParam);
+      setRoomCode(code);
       setGameModeState('lan');
-      if (roleParam !== 'player-1') {
-        setTimeout(() => {
-          supabaseSync.broadcast('REQUEST_STATE', { from: roleParam });
-        }, 500);
+
+      if (!roleParam) {
+        try {
+          const savedRole = localStorage.getItem('pwnd_active_role') as PlayerRoleId | null;
+          if (savedRole) roleParam = savedRole;
+        } catch {}
+      }
+
+      if (roleParam) {
+        setMyRoleState(roleParam);
+        let nick = '';
+        try {
+          nick = localStorage.getItem(`pwnd_nick_${roleParam}`) || localStorage.getItem('pwnd_player_nickname') || '';
+        } catch {}
+        const finalName = nick ? formatPlayerName(roleParam, nick) : `Jogador (${roleParam})`;
+        customNicknamesRef.current[roleParam] = finalName;
+
+        supabaseSync.joinRoom(code, roleParam, finalName);
+        if (roleParam !== 'player-1') {
+          setTimeout(() => {
+            supabaseSync.broadcast('REQUEST_STATE', { from: roleParam, playerName: finalName });
+          }, 350);
+          setTimeout(() => {
+            supabaseSync.broadcast('UPDATE_PLAYER_NAME', { role: roleParam, name: finalName });
+          }, 700);
+        }
       }
     }
 
@@ -1183,10 +1348,41 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         const { role, name } = msg.payload as { role: PlayerRoleId; name: string };
         if (role && name) {
           customNicknamesRef.current[role] = name;
-          setPlayers(prev => ({
-            ...prev,
-            [role]: { ...prev[role], name }
-          }));
+          setPlayers(prev => {
+            const updated = {
+              ...prev,
+              [role]: { ...prev[role], name }
+            };
+            setAuditLogs(currLogs =>
+              currLogs.map(log => {
+                if (log.category === 'SETUP') {
+                  const activeList = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[])
+                    .slice(0, latestStateRef.current.playerCount);
+                  const setupSummary = activeList
+                    .map(id => `${updated[id]?.name || id}: [${updated[id]?.archetype?.name || 'Arquétipo'}] c/ alvo [${updated[id]?.activeProgram?.name || 'Sem Alvo'}]`)
+                    .join(' | ');
+                  return {
+                    ...log,
+                    details: `${setupSummary}. Mercado exposto: [${latestStateRef.current.programMarket.map(m => m.name).join(', ')}] (${latestStateRef.current.programDeck.length} no Program Deck).`
+                  };
+                }
+                return log;
+              })
+            );
+            return updated;
+          });
+        }
+      } else if (msg.actionType === 'EVENT_ALERT') {
+        const { title, message, targetRole, type } = (msg.payload || {}) as { title?: string; message?: string; targetRole?: string; type?: 'alert' | 'info' | 'positive' };
+        const myCurrentRole = latestStateRef.current.myRole;
+        if (!targetRole || targetRole === myCurrentRole || targetRole === 'all') {
+          soundFx.playPatchDeployedAlarm();
+          setIncomingAlertNotification({
+            id: String(Date.now()),
+            title: title || 'Alerta de Evento',
+            message: message || '',
+            type: type || 'alert'
+          });
         }
       } else if (msg.actionType === 'GAME_OVER') {
         if (msg.payload.players) setPlayers(msg.payload.players);
@@ -1199,6 +1395,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           const merged = mergeAuditLogs(auditLogsRef.current, [msg.payload.auditEntry]);
           auditLogsRef.current = merged;
           setAuditLogs(merged);
+        }
+        if (latestStateRef.current.myRole === 'player-1') {
+          saveMatchLogToDatabase(msg.payload.winner).catch(() => {});
         }
       } else if (msg.actionType === 'REQUEST_STATE') {
         const currentRef = latestStateRef.current;
@@ -1236,8 +1435,34 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         }
       } else if (msg.actionType === 'RESET_GAME') {
         const count = typeof msg.payload.playerCount === 'number' ? msg.payload.playerCount : latestStateRef.current.playerCount;
+        
+        // Reidrata apelido local do convidado
+        const myCurrRole = latestStateRef.current.myRole;
+        let myStoredNick = customNicknamesRef.current[myCurrRole];
+        if (!myStoredNick && typeof window !== 'undefined') {
+          try {
+            myStoredNick = localStorage.getItem(`pwnd_nick_${myCurrRole}`) || localStorage.getItem('pwnd_player_nickname') || undefined;
+          } catch {}
+        }
+        if (myStoredNick) {
+          customNicknamesRef.current[myCurrRole] = formatPlayerName(myCurrRole, myStoredNick);
+        }
+
         const fresh = createInitialGameState(count, customNicknamesRef.current);
-        setPlayers(msg.payload.players || fresh.playersInitial);
+        const incomingPlayers = msg.payload.players || fresh.playersInitial;
+        
+        // Garante que o próprio jogador nunca regrida para 'Jogador X'
+        if (myStoredNick && incomingPlayers[myCurrRole]) {
+          incomingPlayers[myCurrRole].name = formatPlayerName(myCurrRole, myStoredNick);
+        }
+
+        setPlayers(incomingPlayers);
+        
+        if (myStoredNick && myCurrRole !== 'player-1') {
+          setTimeout(() => {
+            supabaseSync.broadcast('UPDATE_PLAYER_NAME', { role: myCurrRole, name: formatPlayerName(myCurrRole, myStoredNick!) });
+          }, 400);
+        }
         setMainDeck(msg.payload.mainDeck || fresh.remainingMain);
         setDiscardPile([]);
         setToolDeck(msg.payload.toolDeck || fresh.shuffledTools);
@@ -1296,7 +1521,17 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
     });
 
-    return () => unsubscribe();
+    const handleBeforeUnload = () => {
+      if (auditLogsRef.current.length > 5 && latestStateRef.current.myRole === 'player-1') {
+        saveMatchLogToDatabase('Aba fechada').catch(() => {});
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      unsubscribe();
+    };
   }, []);
 
   const getVulnFlatValue = (card: CardV2) => {
@@ -1323,19 +1558,28 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     basePlayers: Record<PlayerRoleId, PlayerState>,
     baseExploits: DeployedExploit[],
     authorRole: PlayerRoleId,
-    explicitTargetId?: PlayerRoleId
+    explicitTargetId?: PlayerRoleId,
+    overrideDecks?: {
+      tools?: CardV2[];
+      toolDiscard?: CardV2[];
+      mainDeck?: CardV2[];
+      discardPile?: CardV2[];
+      market?: ProgramCard[];
+      programDeck?: ProgramCard[];
+      programDiscard?: ProgramCard[];
+    }
   ) => {
     const eId = eventCard.id;
     const activeIds: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
     let nextPlayers: Record<PlayerRoleId, PlayerState> = { ...basePlayers };
     let nextExploits: DeployedExploit[] = [...baseExploits];
-    let nextMain = [...mainDeck];
-    let nextDiscard = [...discardPile];
-    let nextTools = [...toolDeck];
-    let nextToolDiscard = [...toolDiscard];
-    let nextMarket = [...programMarket];
-    let nextProgDeck = [...programDeck];
-    let nextProgDiscard = [...programDiscard];
+    let nextMain = overrideDecks?.mainDeck ? [...overrideDecks.mainDeck] : [...mainDeck];
+    let nextDiscard = overrideDecks?.discardPile ? [...overrideDecks.discardPile] : [...discardPile];
+    let nextTools = overrideDecks?.tools ? [...overrideDecks.tools] : [...toolDeck];
+    let nextToolDiscard = overrideDecks?.toolDiscard ? [...overrideDecks.toolDiscard] : [...toolDiscard];
+    let nextMarket = overrideDecks?.market ? [...overrideDecks.market] : [...programMarket];
+    let nextProgDeck = overrideDecks?.programDeck ? [...overrideDecks.programDeck] : [...programDeck];
+    let nextProgDiscard = overrideDecks?.programDiscard ? [...overrideDecks.programDiscard] : [...programDiscard];
     let nextRoundEvents = [...activeRoundEvents];
     const authorPlayer = nextPlayers[authorRole];
     const safeguardsBlocked = nextRoundEvents.some(re => re.id === 'evt-15');
@@ -1352,7 +1596,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       // 1. Pentester: Imune a Duplicate Report! (evt-02) e Triage Delay! (evt-05)
       if (canPentesterBlock && target.archetype.id === 'the-pentester') {
         bumpMetric(targetId, m => ({ archetypeTriggers: m.archetypeTriggers + 1 }));
-        return { blocked: true, reason: `🛡️ Pentester (${target.name} - Contrato Blindado) é imune a [${eventCard.name}]!` };
+        const reason = `🛡️ Pentester (${target.name} - Contrato Blindado) é imune a [${eventCard.name}]!`;
+        triggerEventAlert('🛡️ Imunidade Ativa (Pentester)', reason, targetId, 'positive');
+        return { blocked: true, reason };
       }
 
       // 2. Social Engineer: Caos Redirecionado (1x por rodada em eventos individuais negativos)
@@ -1363,13 +1609,16 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       ) {
         const otherOpponents = activeIds.filter(id => id !== targetId);
         if (otherOpponents.length > 0) {
+          // Em 2 jogadores, redireciona de volta para o autor! Em 3+, prioriza um oponente diferente do autor ou o próprio autor
           const redirected = otherOpponents.find(id => id !== authorRole) || otherOpponents[0];
           nextPlayers[targetId] = {
             ...target,
             statusEffects: { ...target.statusEffects, redirectUsedThisRound: true }
           };
           bumpMetric(targetId, m => ({ archetypeTriggers: m.archetypeTriggers + 1 }));
-          recordAudit('ARCHETYPE', 'Caos Redirecionado (Social Engineer)', `${target.name} redirecionou o evento [${eventCard.name}] para ${nextPlayers[redirected].name}!`, target, 'EXECUTED');
+          const reason = `🎭 Caos Redirecionado! ${target.name} redirecionou o evento [${eventCard.name}] para ${nextPlayers[redirected].name}!`;
+          recordAudit('ARCHETYPE', 'Caos Redirecionado (Social Engineer)', reason, target, 'EXECUTED');
+          triggerEventAlert('🎭 Caos Redirecionado!', reason, 'all', 'alert');
           return { blocked: false, redirectedTo: redirected };
         }
       }
@@ -1380,13 +1629,17 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           const cveCard = target.cveProtection;
           nextPlayers[targetId] = { ...target, cveProtection: null };
           nextDiscard.push(cveCard);
-          return { blocked: true, reason: `📜 CVE Assignment Protection de ${target.name} ativada e descartada: anulou [${eventCard.name}]!` };
+          const reason = `📜 CVE Assignment Protection de ${target.name} ativada e descartada: anulou [${eventCard.name}]!`;
+          triggerEventAlert('📜 CVE Protection Ativada!', reason, targetId, 'positive');
+          return { blocked: true, reason };
         }
         const handCve = target.hand.find(c => (c.canonicalId || c.id).includes('cve') || c.name.includes('CVE'));
         if (handCve) {
           nextPlayers[targetId] = { ...target, hand: target.hand.filter(c => c.id !== handCve.id) };
           nextDiscard.push(handCve);
-          return { blocked: true, reason: `📜 CVE Assignment Protection da mão de ${target.name} ativada: anulou [${eventCard.name}]!` };
+          const reason = `📜 CVE Assignment Protection da mão de ${target.name} ativada: anulou [${eventCard.name}]!`;
+          triggerEventAlert('📜 CVE Protection Ativada!', reason, targetId, 'positive');
+          return { blocked: true, reason };
         }
       }
 
@@ -1398,7 +1651,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         nextPlayers[targetId] = { ...target, activeTools: remainingTools };
         nextToolDiscard.push(interceptorCard);
         bumpMetric(targetId, m => ({ toolsActivatedOrTriggered: m.toolsActivatedOrTriggered + 1 }));
-        return { blocked: true, reason: `🧰 Tool Ativa Reativa [Interceptor Pro] de ${target.name} interceptou e anulou [${eventCard.name}] (descartada)!` };
+        const reason = `🧰 Tool Ativa Reativa [Interceptor Pro] de ${target.name} interceptou e anulou [${eventCard.name}] (descartada)!`;
+        triggerEventAlert('🧰 Interceptor Pro Disparado!', reason, 'all', 'positive');
+        return { blocked: true, reason };
       }
 
       return { blocked: false };
@@ -1467,6 +1722,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
             nextDiscard.push(removed.card);
             keptExploits.push(...sorted.slice(1), ...immuneExp);
             logsParts.push(`${nextPlayers[rId].name} perdeu [${removed.card.name}] da mesa`);
+            if (rId !== authorRole) {
+              triggerEventAlert('🚨 Blue Team Hunt!', `${authorPlayer.name} disparou Blue Team Hunt!: você perdeu [${removed.card.name}] da mesa!`, rId, 'alert');
+            }
           });
           nextExploits = keptExploits;
         } else {
@@ -1483,20 +1741,20 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
             nextPlayers[rId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
             nextDiscard.push(dropped);
             logsParts.push(`${tPlayer.name} (sem vuln na mesa) descartou [${dropped.name}] da mão`);
+            triggerEventAlert('🚨 Blue Team Hunt!', `${authorPlayer.name} disparou Blue Team Hunt!: você descartou [${dropped.name}] da sua mão!`, rId, 'alert');
           });
         }
         summary = logsParts.length > 0 ? logsParts.join(' | ') : 'Nenhum oponente possuía cartas para descarte.';
         break;
       }
 
-      // evt-02: Duplicate Report! (Escolha 1 oponente: descarta a vuln de maior CVSS na mesa; se não tiver vuln na mesa, descarta 1 carta da mão)
+      // evt-02: Duplicate Report! (Escolha 1 oponente: descarta a vuln de maior CVSS na mesa; se mesa vazia, whiff/sem efeito)
       case 'evt-02': {
         let targetId =
           explicitTargetId ||
-          activeIds.find(id => id !== authorRole && nextExploits.some(e => e.playerId === id)) ||
-          activeIds.find(id => id !== authorRole && nextPlayers[id].hand.length > 0);
+          activeIds.find(id => id !== authorRole && nextExploits.some(e => e.playerId === id));
         if (!targetId) {
-          summary = 'Nenhum oponente possuía vulnerabilidades na mesa nem cartas na mão para o Duplicate Report.';
+          summary = 'Nenhum oponente possuía vulnerabilidades expostas na mesa (Whiff seguro: nenhum exploit descartado).';
           status = 'BLOCKED';
           break;
         }
@@ -1514,18 +1772,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           nextExploits = nextExploits.filter(e => e.id !== toRemove.id);
           nextDiscard.push(toRemove.card);
           summary = `${nextPlayers[targetId].name} descartou a vulnerabilidade de maior CVSS [${toRemove.card.name}] da mesa!`;
+          triggerEventAlert('📋 Duplicate Report!', `${authorPlayer.name} direcionou Duplicate Report! contra você: sua vulnerabilidade [${toRemove.card.name}] na mesa foi descartada!`, targetId, 'alert');
         } else {
-          const tPlayer = nextPlayers[targetId];
-          if (tPlayer && tPlayer.hand.length > 0) {
-            const randIdx = Math.floor(Math.random() * tPlayer.hand.length);
-            const dropped = tPlayer.hand[randIdx];
-            nextPlayers[targetId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
-            nextDiscard.push(dropped);
-            summary = `${tPlayer.name} não tinha vulnerabilidades elegíveis na mesa e foi obrigado a descartar [${dropped.name}] da mão!`;
-          } else {
-            summary = `${nextPlayers[targetId].name} não possuía vulnerabilidades na mesa nem cartas na mão.`;
-            status = 'BLOCKED';
-          }
+          summary = `${nextPlayers[targetId].name} não possuía vulnerabilidades vulneráveis na mesa (Whiff: nenhum descarte).`;
+          status = 'BLOCKED';
         }
         break;
       }
@@ -1546,6 +1796,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           statusEffects: { ...tPlayer.statusEffects, noExploitNextTurn: true }
         };
         summary = `${tPlayer.name} está impedido de realizar a ação EXPLOIT no seu próximo turno!`;
+        if (targetId !== authorRole) {
+          triggerEventAlert('⛔ Out of Scope!', `${authorPlayer.name} redirecionou Out of Scope!: você está impedido de realizar EXPLOIT no próximo turno!`, targetId, 'alert');
+        }
         break;
       }
 
@@ -1563,12 +1816,14 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         if (tPlayer.score >= 1500) {
           nextPlayers[targetId] = { ...tPlayer, score: tPlayer.score - 1500 };
           summary = `⚖️ ${tPlayer.name} pagou -$1.500 de honorários advocatícios (saldo: $${(tPlayer.score - 1500).toLocaleString('pt-BR')}) para não perder o Report!`;
+          triggerEventAlert('⚖️ Legal Threat!', `${authorPlayer.name} acionou Legal Threat!: você pagou -$1.500 de honorários!`, targetId, 'alert');
         } else {
           nextPlayers[targetId] = {
             ...tPlayer,
             statusEffects: { ...tPlayer.statusEffects, noReportNextTurn: true }
           };
           summary = `⚖️ ${tPlayer.name} não tinha $1.500 e ficou impedido de realizar REPORT no próximo turno!`;
+          triggerEventAlert('⚖️ Legal Threat!', `${authorPlayer.name} acionou Legal Threat!: você está impedido de realizar REPORT no próximo turno!`, targetId, 'alert');
         }
         break;
       }
@@ -1633,7 +1888,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         break;
       }
 
-      // evt-09: Public Disclosure! (Todos descartam vulns na mesa e recebem indenização por raridade; se mesa vazia, oponentes descartam 1 carta da mão)
+      // evt-09: Public Disclosure! (Todos descartam vulns na mesa e recebem indenização por raridade; se mesa vazia, whiff/sem efeito)
       case 'evt-09': {
         const parts: string[] = [];
         if (nextExploits.length > 0) {
@@ -1657,21 +1912,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           nextExploits = [];
           summary = `Indenizações pagas: ${parts.join(' | ')}`;
         } else {
-          activeIds.filter(rId => rId !== authorRole).forEach(rId => {
-            const tPlayer = nextPlayers[rId];
-            if (!tPlayer || tPlayer.hand.length === 0) return;
-            const def = checkNegativeEventDefense(rId, false, false);
-            if (def.blocked) {
-              parts.push(def.reason!);
-              return;
-            }
-            const randIdx = Math.floor(Math.random() * tPlayer.hand.length);
-            const dropped = tPlayer.hand[randIdx];
-            nextPlayers[rId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
-            nextDiscard.push(dropped);
-            parts.push(`${tPlayer.name} (sem vuln na mesa) descartou [${dropped.name}] da mão`);
-          });
-          summary = parts.length > 0 ? `Mesa vazia — vazamento atingiu a mão: ${parts.join(' | ')}` : 'Nenhuma vulnerabilidade na mesa nem cartas na mão dos oponentes.';
+          summary = 'Nenhum jogador possuía vulnerabilidades expostas na mesa (Whiff seguro: nenhum descarte).';
+          status = 'BLOCKED';
         }
         break;
       }
@@ -1810,6 +2052,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         };
         nextDiscard.push(...toDrop);
         summary = `🍯 ${tPlayer.name} caiu no Honeypot e descartou ${toDrop.length} carta(s) aleatória(s) da mão: [${toDrop.map(c => c.name).join(', ')}]!`;
+        triggerEventAlert('🍯 Honeypot Triggered!', `${authorPlayer.name} acionou Honeypot!: você descartou [${toDrop.map(c => c.name).join(', ')}] da sua mão!`, targetId, 'alert');
         break;
       }
 
@@ -1856,23 +2099,11 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
             parts.push(`${nextPlayers[rId].name} perdeu [${lowestExp.card.name}] da mesa`);
           });
           nextExploits = kept;
+          summary = parts.length > 0 ? parts.join(' | ') : 'Nenhuma vulnerabilidade foi afetada.';
         } else {
-          activeIds.filter(rId => rId !== authorRole).forEach(rId => {
-            const tPlayer = nextPlayers[rId];
-            if (!tPlayer || tPlayer.hand.length === 0) return;
-            const def = checkNegativeEventDefense(rId, false, false);
-            if (def.blocked) {
-              parts.push(def.reason!);
-              return;
-            }
-            const randIdx = Math.floor(Math.random() * tPlayer.hand.length);
-            const dropped = tPlayer.hand[randIdx];
-            nextPlayers[rId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
-            nextDiscard.push(dropped);
-            parts.push(`${tPlayer.name} (sem vuln na mesa) descartou [${dropped.name}] da mão`);
-          });
+          summary = 'Nenhum jogador possuía vulnerabilidades expostas na mesa (Whiff seguro: nenhum descarte).';
+          status = 'BLOCKED';
         }
-        summary = parts.length > 0 ? parts.join(' | ') : 'Nenhum oponente possuía cartas para descarte.';
         break;
       }
 
@@ -1972,6 +2203,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           nextPlayers[rId] = { ...p, hand: p.hand.filter(c => c.id !== highestCard.id) };
           nextDiscard.push(highestCard);
           parts.push(`${p.name} descartou [${highestCard.name}]`);
+          if (rId !== authorRole) {
+            triggerEventAlert('📅 Auditoria de Segurança (evt-22)!', `${authorPlayer.name} disparou Security Audit!: você revelou sua mão e descartou [${highestCard.name}] (CVSS ${getCardCvssScore(highestCard)})!`, rId, 'alert');
+          }
         });
         summary = parts.length > 0 ? `📅 Auditoria concluída: ${parts.join(' | ')}` : 'Ninguém possuía cartas na mão.';
         break;
@@ -2204,28 +2438,33 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (scopeCheck.badgeLabel.includes('ENDPOINT LAB') || scopeCheck.badgeLabel.includes('INJECTION LAB')) {
       bumpMetric(myRole, m => ({ toolsActivatedOrTriggered: m.toolsActivatedOrTriggered + 1 }));
       recordAudit('TOOL', `Fura-Escopo Passivo (${scopeCheck.badgeLabel})`, `${currentPlayer.name} baixou [${card.name}] fora do escopo original de [${currentPlayer.activeProgram.name}].`, currentPlayer, 'PASSIVE');
-    } else if (currentPlayer.archetype.id === 'red-teamer') {
-      bumpMetric(myRole, m => ({ archetypeTriggers: m.archetypeTriggers + 1 }));
     }
 
     setExploitsPlayedThisTurn(prev => prev + 1);
     setFreeExploitDeploysRemaining(nextFreeDeploys);
 
-    updateCurrentPlayer(p => ({
-      ...p,
-      hand: p.hand.filter(c => c.id !== cardId),
-      actionsRemaining: p.actionsRemaining - apCost
-    }));
+    const updatedPlayers: Record<PlayerRoleId, PlayerState> = {
+      ...players,
+      [myRole]: {
+        ...currentPlayer,
+        hand: currentPlayer.hand.filter(c => c.id !== cardId),
+        actionsRemaining: currentPlayer.actionsRemaining - apCost
+      }
+    };
+    setPlayers(updatedPlayers);
 
     recordAudit(
       'EXPLOIT',
       `Vulnerabilidade Baixada (${apCost} AP): ${card.name}`,
       `Classe: ${card.vulnClass} | Raridade: ${card.rarity} (+$${card.points}) | Escopo: ${scopeCheck.badgeLabel}.`,
-      currentPlayer,
+      updatedPlayers[myRole],
       'EXECUTED'
     );
 
-    supabaseSync.broadcast('STATE_SYNC', { deployedExploits: nextExploits });
+    supabaseSync.broadcast('STATE_SYNC', {
+      players: updatedPlayers,
+      deployedExploits: nextExploits
+    });
   };
 
   const discardCardFromHand = (cardId: string) => {
@@ -2237,9 +2476,15 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       ...players,
       [myRole]: { ...currentPlayer, hand: updatedHand }
     };
+    const nextDisc = [...discardPile, card];
     setPlayers(updatedPlayers);
-    setDiscardPile(prev => [...prev, card]);
-    recordAudit('TURN', `Descarte da Mão: ${card.name}`, `${currentPlayer.name} descartou [${card.name}] (${updatedHand.length}/${dynamicMaxHandSize} na mão).`, currentPlayer, 'EXECUTED');
+    setDiscardPile(nextDisc);
+    recordAudit('TURN', `Descarte da Mão: ${card.name}`, `${currentPlayer.name} descartou [${card.name}] (${updatedHand.length}/${dynamicMaxHandSize} na mão).`, updatedPlayers[myRole], 'EXECUTED');
+
+    supabaseSync.broadcast('STATE_SYNC', {
+      players: updatedPlayers,
+      discardPile: nextDisc
+    });
 
     if (pendingTurnAdvance && updatedHand.length <= dynamicMaxHandSize) {
       setPendingTurnAdvance(false);
@@ -2256,11 +2501,18 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       alert('Regra de Ação Livre: A Reciclagem 2:1 (0 AP) só pode ser utilizada 1 vez por turno!');
       return;
     }
-    soundFx.playScan();
+    if (!cardId1 || !cardId2 || cardId1 === cardId2) {
+      alert('Selecione exatamente 2 cartas distintas da sua mão para reciclar!');
+      return;
+    }
     const c1 = currentPlayer.hand.find(c => c.id === cardId1);
     const c2 = currentPlayer.hand.find(c => c.id === cardId2);
-    let nextDisc = [...discardPile];
-    if (c1 && c2) nextDisc.push(c1, c2);
+    if (!c1 || !c2) {
+      alert('Erro na seleção de cartas: uma das cartas não foi encontrada na mão!');
+      return;
+    }
+    soundFx.playScan();
+    let nextDisc = [...discardPile, c1, c2];
     const popped = popCardsFromMainDeck(1, mainDeck, nextDisc);
     setMainDeck(popped.nextMain);
     setDiscardPile(popped.nextDiscard);
@@ -2278,7 +2530,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       mainDeck: popped.nextMain,
       discardPile: popped.nextDiscard
     });
-    recordAudit('RECON', 'Reciclagem 2:1 (0 AP)', `${currentPlayer.name} reciclou [${c1?.name}, ${c2?.name}] por 0 AP e comprou [${popped.drawn[0]?.name}].`, updatedPlayers[myRole], 'EXECUTED');
+    recordAudit('RECON', 'Reciclagem 2:1 (0 AP)', `${currentPlayer.name} descartou [${c1.name}, ${c2.name}] e comprou [${popped.drawn[0]?.name || 'carta'}] (saldo de mão: -1 carta).`, updatedPlayers[myRole], 'EXECUTED');
   };
 
   const abandonActiveProgram = () => {
@@ -2309,13 +2561,18 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (freeToolInstallAvailable) {
       soundFx.playClick();
       setFreeToolInstallAvailable(false);
-      updateCurrentPlayer(p => ({
-        ...p,
-        hand: p.hand.filter(c => c.id !== card.id),
-        activeTools: [...p.activeTools, card]
-      }));
+      const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
+        ...players,
+        [myRole]: {
+          ...currentPlayer,
+          hand: currentPlayer.hand.filter(c => c.id !== card.id),
+          activeTools: [...currentPlayer.activeTools, card]
+        }
+      };
+      setPlayers(updatedPlayersState);
       bumpMetric(myRole, m => ({ toolsInstalled: m.toolsInstalled + 1 }));
-      recordAudit('TOOL', `Tool Instalada Grátis ($24.5k): ${card.name}`, `${currentPlayer.name} instalou [${card.name}] sem custo de descarte! Efeito: ${card.simpleDescription}`, currentPlayer, 'EXECUTED');
+      recordAudit('TOOL', `Tool Instalada Grátis ($24.5k): ${card.name}`, `${currentPlayer.name} instalou [${card.name}] sem custo de descarte! Efeito: ${card.simpleDescription}`, updatedPlayersState[myRole], 'EXECUTED');
+      supabaseSync.broadcast('STATE_SYNC', { players: updatedPlayersState });
       return;
     }
 
@@ -2332,23 +2589,33 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (!pendingToolInstall) return;
     soundFx.playClick();
     const discardCard = currentPlayer.hand.find(c => c.id === discardCardId);
+    let nextDiscard = [...discardPile];
     if (discardCard) {
-      setDiscardPile(prev => [...prev, discardCard]);
+      nextDiscard.push(discardCard);
+      setDiscardPile(nextDiscard);
     }
-    updateCurrentPlayer(p => ({
-      ...p,
-      hand: p.hand.filter(c => c.id !== pendingToolInstall.id && c.id !== discardCardId),
-      activeTools: [...p.activeTools, pendingToolInstall]
-    }));
+    const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
+      ...players,
+      [myRole]: {
+        ...currentPlayer,
+        hand: currentPlayer.hand.filter(c => c.id !== pendingToolInstall.id && c.id !== discardCardId),
+        activeTools: [...currentPlayer.activeTools, pendingToolInstall]
+      }
+    };
+    setPlayers(updatedPlayersState);
     setToolInstalledThisTurn(true);
     bumpMetric(myRole, m => ({ toolsInstalled: m.toolsInstalled + 1 }));
     recordAudit(
       'TOOL',
       `Tool Instalada: ${pendingToolInstall.name}`,
       `${currentPlayer.name} sacrificou "${discardCard?.name || 'carta'}" da mão para instalar [${pendingToolInstall.name}]. Regra: ${pendingToolInstall.simpleDescription}`,
-      currentPlayer,
+      updatedPlayersState[myRole],
       'EXECUTED'
     );
+    supabaseSync.broadcast('STATE_SYNC', {
+      players: updatedPlayersState,
+      discardPile: nextDiscard
+    });
     setPendingToolInstall(null);
   };
 
@@ -2491,9 +2758,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       if (chosen) {
         updateCurrentPlayer(p => ({ ...p, hand: [...p.hand, chosen] }));
       }
-      setToolDeck(prev => [...orderedTop, ...prev]);
+      // As tools não escolhidas são devolvidas ao FUNDO do Tool Deck (evitando repetição contínua no topo)
+      setToolDeck(prev => [...prev, ...orderedTop]);
       bumpMetric(myRole, m => ({ archetypeTriggers: m.archetypeTriggers + 1 }));
-      recordAudit('ARCHETYPE', 'n00b (Garimpeiro de Ferramentas)', `${currentPlayer.name} inspecionou 3 Tools, escolheu [${chosen?.name}] para a mão e devolveu [${orderedTop.map((t: any) => t.name).join(' ➔ ')}] ao topo do Tool Deck!`, currentPlayer, 'EXECUTED');
+      recordAudit('ARCHETYPE', 'n00b (Garimpeiro de Ferramentas)', `${currentPlayer.name} inspecionou 3 Tools, escolheu [${chosen?.name}] para a mão e colocou as outras no fundo do Tool Deck.`, currentPlayer, 'EXECUTED');
     }
 
     setPendingDeckPeek(null);
@@ -2510,35 +2778,50 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         return;
       }
       soundFx.playClick();
-      updateCurrentPlayer(p => ({
-        ...p,
-        hand: p.hand.filter(c => c.id !== cardId),
-        cveProtection: card
-      }));
-      recordAudit('TURN', 'CVE Protection Equipada', `${currentPlayer.name} alocou [CVE Assignment Protection] no Slot Safeguard.`, currentPlayer, 'EXECUTED');
+      const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
+        ...players,
+        [myRole]: {
+          ...currentPlayer,
+          hand: currentPlayer.hand.filter(c => c.id !== cardId),
+          cveProtection: card
+        }
+      };
+      setPlayers(updatedPlayersState);
+      recordAudit('TURN', 'CVE Protection Equipada', `${currentPlayer.name} alocou [CVE Assignment Protection] no Slot Safeguard.`, updatedPlayersState[myRole], 'EXECUTED');
+      supabaseSync.broadcast('STATE_SYNC', { players: updatedPlayersState });
     } else {
       if (currentPlayer.safeguardSlot) {
         alert('Você já possui um Bypass instalado no Slot Safeguard!');
         return;
       }
       soundFx.playClick();
-      updateCurrentPlayer(p => ({
-        ...p,
-        hand: p.hand.filter(c => c.id !== cardId),
-        safeguardSlot: card
-      }));
-      recordAudit('TURN', 'Bypass Equipado', `${currentPlayer.name} alocou [Bypass] no Slot Safeguard.`, currentPlayer, 'EXECUTED');
+      const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
+        ...players,
+        [myRole]: {
+          ...currentPlayer,
+          hand: currentPlayer.hand.filter(c => c.id !== cardId),
+          safeguardSlot: card
+        }
+      };
+      setPlayers(updatedPlayersState);
+      recordAudit('TURN', 'Bypass Equipado', `${currentPlayer.name} alocou [Bypass] no Slot Safeguard.`, updatedPlayersState[myRole], 'EXECUTED');
+      supabaseSync.broadcast('STATE_SYNC', { players: updatedPlayersState });
     }
   };
 
   const activateCveProtection = () => {
     const cveCard = currentPlayer.hand.find(c => c.name.includes('CVE') || c.technicalReference.includes('CVE'));
     if (!cveCard) return;
-    updateCurrentPlayer(p => ({
-      ...p,
-      hand: p.hand.filter(c => c.id !== cveCard.id),
-      cveProtection: cveCard
-    }));
+    const updatedPlayersState: Record<PlayerRoleId, PlayerState> = {
+      ...players,
+      [myRole]: {
+        ...currentPlayer,
+        hand: currentPlayer.hand.filter(c => c.id !== cveCard.id),
+        cveProtection: cveCard
+      }
+    };
+    setPlayers(updatedPlayersState);
+    supabaseSync.broadcast('STATE_SYNC', { players: updatedPlayersState });
   };
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -2624,10 +2907,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
     }
 
-    // 4. Penalidade de Arquétipo: Red Teamer (-$1.500 custo operacional)
+    // 4. Penalidade de Arquétipo: Red Teamer (-$1.000 custo operacional por Report)
     if (activeCurrentPlayer.archetype.id === 'red-teamer') {
-      archetypeDelta -= 1500;
-      breakdownParts.push('Red Teamer (Custo Op.): -$1500');
+      archetypeDelta -= 1000;
+      breakdownParts.push('Red Teamer (Custo Op.): -$1000');
     }
 
     earnedCash = Math.max(0, earnedCash + archetypeDelta);
@@ -2656,7 +2939,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
 
     // 6. Habilidades Especiais de Vulnerabilidades no Report:
-    // - BÔNUS CRÍTICO (#INJ-13, #BL-8): +$1.000
+    // - BÔNUS CRÍTICO (#INJ-13 Broken Belt, #BL-8 Double Bill): +$1.000
     const criticalBonusCards = eligibleExploits.filter(e => {
       const id = (e.card.canonicalId || e.card.id).toUpperCase();
       return id === 'INJ-13' || id === 'BL-8';
@@ -2681,9 +2964,13 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     // Ganho de Reputação (🐝)
     const hasEpicOrLegendary = eligibleExploits.some(e => e.card.rarity === 'Epic' || e.card.rarity === 'Legendary');
     let repGain = 0;
-    if (hasEpicOrLegendary) repGain += 1;
+    if (hasEpicOrLegendary) {
+      repGain += 1;
+      breakdownParts.push('Reputação (Épica/Lendária): +1🐝');
+    }
     if (activeCurrentPlayer.archetype.id === 'bug-hunter' && eligibleExploits.length === 3) {
       repGain += 1;
+      breakdownParts.push('Reputação Bug Hunter (3 vulns): +1🐝');
       archetypeDelta += 0;
     }
 
@@ -2697,29 +2984,37 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       soundFx.playScan();
       if (hitMilestone.value === 4500) {
         repGain += 1;
+        breakdownParts.push('Casa Especial ($4.500): +1🐝');
       } else if (hitMilestone.value === 9000) {
         specialAlertGain += 1;
+        breakdownParts.push('Casa Especial ($9.000): +1🐞');
       } else if (hitMilestone.value === 13500) {
         repGain += 1;
+        breakdownParts.push('Casa Especial ($13.500): +1🐝 e +1 Carta');
         const popped = popCardsFromMainDeck(1, nextMain, nextDiscard);
         nextMain = popped.nextMain;
         nextDiscard = popped.nextDiscard;
         updatedHand.push(...popped.drawn);
       } else if (hitMilestone.value === 19000) {
         specialAlertGain += 1;
+        breakdownParts.push('Casa Especial ($19.000): +1🐞 e Descarte 1 Carta');
         if (updatedHand.length > 0) {
           const disc = updatedHand.pop()!;
           nextDiscard.push(disc);
         }
       } else if (hitMilestone.value === 24500) {
         setFreeToolInstallAvailable(true);
+        breakdownParts.push('Casa Especial ($24.500): Instalação Grátis de Tool');
       } else if (hitMilestone.value === 29000) {
         repGain += 1;
         specialAlertGain -= 1;
+        breakdownParts.push('Casa Especial ($29.000): +1🐝 e -1🐞');
       } else if (hitMilestone.value === 33500) {
         newScore = 32000;
+        breakdownParts.push('Casa Especial ($33.500): Recuo para $32.000');
       } else if (hitMilestone.value === 38000) {
         specialAlertGain += 1;
+        breakdownParts.push('Casa Especial ($38.000): +1🐞');
       }
       recordAudit('REPORT', `Casa Especial Atingida: ${hitMilestone.label} ${hitMilestone.icon}`, `${activeCurrentPlayer.name} parou em $${hitMilestone.value.toLocaleString('pt-BR')}: ${hitMilestone.effectDescription}!`, activeCurrentPlayer, 'EXECUTED');
     }
@@ -2736,27 +3031,148 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       recordAudit('TOOL', 'Echo Beacon Passiva (+Carta)', `${activeCurrentPlayer.name} reportou SSRF/[NOISY] e comprou [${popped.drawn.map(c => c.name).join(', ')}] do Main Deck!`, activeCurrentPlayer, 'PASSIVE');
     }
 
-    // Habilidades de compra no Report (#INJ-2 compra 3, #INJ-14 compra 1, #INJ-15 Estouro compra 2, #SSRF-8 / #BL-6 resgata Tool)
+    // Habilidades de compra e efeitos especiais no Report:
+    const activeIds: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
     eligibleExploits.forEach(e => {
       const id = (e.card.canonicalId || e.card.id).toUpperCase();
       if (id === 'INJ-2') {
-        const popped = popCardsFromMainDeck(3, nextMain, nextDiscard);
-        nextMain = popped.nextMain;
-        nextDiscard = popped.nextDiscard;
-        updatedHand.push(...popped.drawn);
-        recordAudit('EXPLOIT', 'Habilidade #INJ-2 (Compra Extra)', `${activeCurrentPlayer.name} comprou +3 cartas do Main Deck!`, activeCurrentPlayer, 'PASSIVE');
-      } else if (id === 'INJ-14') {
-        const popped = popCardsFromMainDeck(1, nextMain, nextDiscard);
-        nextMain = popped.nextMain;
-        nextDiscard = popped.nextDiscard;
-        updatedHand.push(...popped.drawn);
-        recordAudit('EXPLOIT', 'Habilidade #INJ-14 (Processo Zumbi)', `${activeCurrentPlayer.name} comprou +1 carta do Main Deck!`, activeCurrentPlayer, 'PASSIVE');
-      } else if (id === 'INJ-15') {
         const popped = popCardsFromMainDeck(2, nextMain, nextDiscard);
         nextMain = popped.nextMain;
         nextDiscard = popped.nextDiscard;
         updatedHand.push(...popped.drawn);
-        recordAudit('EXPLOIT', 'Habilidade #INJ-15 (Estouro)', `${activeCurrentPlayer.name} comprou +2 cartas do Main Deck!`, activeCurrentPlayer, 'PASSIVE');
+        recordAudit('EXPLOIT', 'Habilidade #INJ-2 (Granny Inject)', `${activeCurrentPlayer.name} comprou +2 cartas do Main Deck!`, activeCurrentPlayer, 'PASSIVE');
+      } else if (id === 'INJ-14') {
+        const popped = popCardsFromMainDeck(2, nextMain, nextDiscard);
+        nextMain = popped.nextMain;
+        nextDiscard = popped.nextDiscard;
+        updatedHand.push(...popped.drawn);
+        recordAudit('EXPLOIT', 'Habilidade #INJ-14 (Zombie Worker)', `${activeCurrentPlayer.name} comprou +2 cartas do Main Deck!`, activeCurrentPlayer, 'PASSIVE');
+      } else if (id === 'XSS-12') {
+        // Clear Wire: transfere 1 Alerta seu para o jogador à sua direita (se não tiver alerta, o oponente recebe 1)
+        const myIndex = activeIds.indexOf(myRole);
+        const rightIndex = (myIndex + 1) % activeIds.length;
+        const rightPlayerId = activeIds[rightIndex];
+        if (rightPlayerId && basePlayers[rightPlayerId]) {
+          const target = basePlayers[rightPlayerId];
+          if (activeCurrentPlayer.alertaTokens > 0) {
+            activeCurrentPlayer.alertaTokens = Math.max(0, activeCurrentPlayer.alertaTokens - 1);
+            basePlayers[rightPlayerId] = { ...target, alertaTokens: target.alertaTokens + 1 };
+            recordAudit('EXPLOIT', 'Clear Wire (#XSS-12): Transferência de Alerta', `${activeCurrentPlayer.name} transferiu 1 Token de Alerta para ${target.name}!`, activeCurrentPlayer, 'EXECUTED');
+            triggerEventAlert('⚡ Clear Wire!', `${activeCurrentPlayer.name} transferiu 1 Token de Alerta para você!`, rightPlayerId, 'alert');
+          } else {
+            basePlayers[rightPlayerId] = { ...target, alertaTokens: target.alertaTokens + 1 };
+            recordAudit('EXPLOIT', 'Clear Wire (#XSS-12): Alerta Forçado', `${activeCurrentPlayer.name} aplicou +1 Token de Alerta em ${target.name}!`, activeCurrentPlayer, 'EXECUTED');
+            triggerEventAlert('⚡ Clear Wire!', `${activeCurrentPlayer.name} entregou +1 Token de Alerta para você!`, rightPlayerId, 'alert');
+          }
+        }
+      } else if (id === 'APT-3') {
+        // Spring Doom: Descarta até 3 programas do mercado e renova antes de repor o seu
+        const popped = popProgramsFromDeck(nextMarket.length, nextProgDeck, [...nextProgDiscard, ...nextMarket]);
+        nextProgDeck = popped.nextDeck;
+        nextProgDiscard = popped.nextDiscard;
+        nextMarket = popped.drawn;
+        recordAudit('EXPLOIT', 'Spring Doom (#APT-3): Renovação Total do Mercado', `${activeCurrentPlayer.name} renovou os programas do mercado antes da triagem! Novos: [${nextMarket.map(m => m.name).join(', ')}].`, activeCurrentPlayer, 'EXECUTED');
+      } else if (id === 'INJ-15') {
+        // Burst Pipe: compra 1 carta e força oponente a descartar 1 carta da mão
+        const popped = popCardsFromMainDeck(1, nextMain, nextDiscard);
+        nextMain = popped.nextMain;
+        nextDiscard = popped.nextDiscard;
+        updatedHand.push(...popped.drawn);
+        const victimId = activeIds.find(oId => oId !== myRole && (basePlayers[oId]?.hand.length || 0) > 0);
+        if (victimId && basePlayers[victimId]) {
+          const victim = basePlayers[victimId];
+          const randIdx = Math.floor(Math.random() * victim.hand.length);
+          const droppedCard = victim.hand[randIdx];
+          basePlayers[victimId] = {
+            ...victim,
+            hand: victim.hand.filter((_, idx) => idx !== randIdx)
+          };
+          nextDiscard.push(droppedCard);
+          recordAudit('EXPLOIT', `Burst Pipe (#INJ-15): Injeção Crítica!`, `${activeCurrentPlayer.name} comprou +1 carta e forçou ${victim.name} a descartar [${droppedCard.name}] da mão!`, activeCurrentPlayer, 'EXECUTED');
+          triggerEventAlert('⚡ Burst Pipe: Injeção Crítica!', `${activeCurrentPlayer.name} reportou Burst Pipe e forçou você a descartar [${droppedCard.name}] da mão!`, victimId, 'alert');
+        }
+      } else if (id === 'APT-4') {
+        // Puppet Master: rouba 1 Tool instalada de 1 oponente
+        const victimId = activeIds.find(oId => oId !== myRole && (basePlayers[oId]?.activeTools.length || 0) > 0);
+        if (victimId && basePlayers[victimId]) {
+          const victim = basePlayers[victimId];
+          const stolenTool = victim.activeTools[0];
+          basePlayers[victimId] = {
+            ...victim,
+            activeTools: victim.activeTools.slice(1)
+          };
+          if (activeCurrentPlayer.activeTools.length < 3) {
+            activeCurrentPlayer.activeTools = [...activeCurrentPlayer.activeTools, stolenTool];
+            recordAudit('EXPLOIT', `Puppet Master (#APT-4): Roubo de Tool!`, `${activeCurrentPlayer.name} roubou a Tool [${stolenTool.name}] da bancada de ${victim.name} e instalou em seu rack!`, activeCurrentPlayer, 'EXECUTED');
+          } else {
+            nextToolDiscard.push(stolenTool);
+            recordAudit('EXPLOIT', `Puppet Master (#APT-4): Roubo de Tool!`, `${activeCurrentPlayer.name} roubou [${stolenTool.name}] de ${victim.name} e descartou (rack cheio)!`, activeCurrentPlayer, 'EXECUTED');
+          }
+          triggerEventAlert('⚡ Puppet Master: Ataque Supply Chain!', `${activeCurrentPlayer.name} reportou Puppet Master e roubou sua Tool instalada [${stolenTool.name}]!`, victimId, 'alert');
+        }
+      } else if (id === 'APT-5') {
+        // Marionette: descarta 1 Tool instalada do oponente ou 1 carta da mão
+        const victimId = activeIds.find(oId => oId !== myRole);
+        if (victimId && basePlayers[victimId]) {
+          const victim = basePlayers[victimId];
+          if (victim.activeTools.length > 0) {
+            const droppedTool = victim.activeTools[0];
+            basePlayers[victimId] = {
+              ...victim,
+              activeTools: victim.activeTools.slice(1)
+            };
+            nextToolDiscard.push(droppedTool);
+            recordAudit('EXPLOIT', `Marionette (#APT-5): Sabotagem de Tool!`, `${activeCurrentPlayer.name} forçou ${victim.name} a descartar a Tool instalada [${droppedTool.name}]!`, activeCurrentPlayer, 'EXECUTED');
+            triggerEventAlert('⚡ Marionette: Sabotagem!', `${activeCurrentPlayer.name} forçou você a descartar sua Tool instalada [${droppedTool.name}]!`, victimId, 'alert');
+          } else if (victim.hand.length > 0) {
+            const randIdx = Math.floor(Math.random() * victim.hand.length);
+            const droppedCard = victim.hand[randIdx];
+            basePlayers[victimId] = {
+              ...victim,
+              hand: victim.hand.filter((_, idx) => idx !== randIdx)
+            };
+            nextDiscard.push(droppedCard);
+            recordAudit('EXPLOIT', `Marionette (#APT-5): Descarte Forçado!`, `${activeCurrentPlayer.name} forçou ${victim.name} (sem Tools) a descartar [${droppedCard.name}] da mão!`, activeCurrentPlayer, 'EXECUTED');
+            triggerEventAlert('⚡ Marionette: Descarte Forçado!', `${activeCurrentPlayer.name} forçou você a descartar [${droppedCard.name}] da mão!`, victimId, 'alert');
+          }
+        }
+      } else if (id === 'AUTH-10') {
+        // VIP Double: transfere $1.000 do jogador com maior saldo
+        const otherPlayers = activeIds.filter(oId => oId !== myRole);
+        const richest = otherPlayers.map(oId => basePlayers[oId]).filter(Boolean).sort((a, b) => b.score - a.score)[0];
+        if (richest && richest.score > 0) {
+          const stealAmount = Math.min(1000, richest.score);
+          basePlayers[richest.id] = { ...richest, score: richest.score - stealAmount };
+          newScore += stealAmount;
+          earnedCash += stealAmount;
+          breakdownParts.push(`VIP Double (+$${stealAmount} de ${richest.name})`);
+          recordAudit('EXPLOIT', `VIP Double (#AUTH-10): Transferência de Saldo`, `${activeCurrentPlayer.name} transferiu $${stealAmount} da Bounty Track de ${richest.name} para a sua!`, activeCurrentPlayer, 'EXECUTED');
+          triggerEventAlert('⚡ VIP Double!', `${activeCurrentPlayer.name} reportou VIP Double e transferiu $${stealAmount} da sua pontuação!`, richest.id, 'alert');
+        }
+      } else if (id === 'BAC-14') {
+        // Throne Room: Inspeciona as 3 primeiras cartas do Event Deck
+        let availEvents = [...eventDeck];
+        let availDisc = [...eventDiscard];
+        if (availEvents.length < 3 && availDisc.length > 0) {
+          availEvents = [...availEvents, ...shuffleArray(availDisc)];
+          availDisc = [];
+        }
+        const top3 = availEvents.slice(0, 3);
+        const restEvents = availEvents.slice(3);
+        setEventDeck(restEvents);
+        setEventDiscard(availDisc);
+        setPendingDeckPeek({
+          mode: 'panoptico',
+          title: '👑 Throne Room (#BAC-14): Inspeção do Event Deck',
+          subtitle: 'Escolha até 1 Evento para descartar e ordene os demais no topo do Event Deck',
+          cards: top3.map(ev => ({
+            id: ev.id,
+            name: `🚨 ${ev.name}`,
+            description: ev.simpleDescription,
+            raw: ev
+          }))
+        });
+        recordAudit('EXPLOIT', `Throne Room (#BAC-14): Inspecionando Event Deck`, `${activeCurrentPlayer.name} inspecionou as 3 próximas cartas de Evento.`, activeCurrentPlayer, 'EXECUTED');
       } else if ((id === 'SSRF-8' || id === 'BL-6') && nextToolDiscard.length > 0) {
         const rescued = nextToolDiscard[nextToolDiscard.length - 1];
         nextToolDiscard = nextToolDiscard.slice(0, -1);
@@ -2887,22 +3303,23 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       'EXECUTED'
     );
 
-    // Meta de Vitória Instantânea ($40.000)
-    if (newScore >= 40000) {
-      const winnerTitle = activeCurrentPlayer.name;
-      recordAudit('REPORT', `🏆 VITÓRIA INSTANTÂNEA ($40.000+)!`, `${activeCurrentPlayer.name} atingiu $${newScore.toLocaleString('pt-BR')} e venceu a partida!`, updatedPlayersState[myRole], 'EXECUTED');
-      setGameWinner(winnerTitle);
-      supabaseSync.broadcast('GAME_OVER', {
-        winner: winnerTitle,
-        players: updatedPlayersState,
-        deployedExploits: nextExploits,
-        programMarket: nextMarket,
-        auditLogs: auditLogsRef.current,
-        playerMetrics: playerMetricsRef.current,
-        currentTurn
-      });
-      saveMatchLogToDatabase(winnerTitle).catch(() => {});
-      return;
+    // Meta de $40.000: Ativa a rodada final (EQUAL TURNS)
+    // A rodada atual continuará até que todos os jogadores completem seus turnos!
+    if (newScore >= 40000 && targetHitRound === null) {
+      setTargetHitRound(currentTurn);
+      recordAudit(
+        'REPORT',
+        `🎯 META DE $40.000 ATINGIDA POR ${activeCurrentPlayer.name}!`,
+        `${activeCurrentPlayer.name} atingiu $${newScore.toLocaleString('pt-BR')}! Regra de Equal Turns ativada: a Rodada ${currentTurn} será jogada até o fim para igualdade de turnos.`,
+        updatedPlayersState[myRole],
+        'EXECUTED'
+      );
+      triggerEventAlert(
+        '🎯 Meta de $40.000 Atingida!',
+        `${activeCurrentPlayer.name} atingiu $${newScore.toLocaleString('pt-BR')}! A Rodada ${currentTurn} é a RODADA FINAL: jogue até o fim para definir o grande campeão!`,
+        'all',
+        'alert'
+      );
     }
 
     // Saque e Ativação Imediata de 1 Evento (a menos que tenha reportado ZERO-DAY #APT-6 ou usado Bypass)
@@ -2921,11 +3338,21 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         setActiveEventCard(topEvent);
         setLastEventResolutionSummary(null);
         bumpMetric(myRole, m => ({ eventsDrawn: m.eventsDrawn + 1 }));
-        // Executa o evento sobre o estado JÁ ATUALIZADO do Report!
-        executeEventCardOnState(topEvent, updatedPlayersState, nextExploits, myRole);
+        // Executa o evento sobre o estado JÁ ATUALIZADO do Report com os baralhos atualizados!
+        executeEventCardOnState(topEvent, updatedPlayersState, nextExploits, myRole, undefined, {
+          tools: nextTools,
+          toolDiscard: nextToolDiscard,
+          mainDeck: nextMain,
+          discardPile: nextDiscard,
+          market: nextMarket,
+          programDeck: nextProgDeck,
+          programDiscard: nextProgDiscard
+        });
       }
     } else if (hasZeroDay) {
-      recordAudit('EXPLOIT', 'Habilidade ZERO-DAY (#APT-6)', `${activeCurrentPlayer.name} ignorou o saque de Event Card neste Report!`, updatedPlayersState[myRole], 'PASSIVE');
+      soundFx.playScan();
+      recordAudit('EXPLOIT', 'Habilidade ZERO-DAY (#APT-6: Pandora Box)', `${activeCurrentPlayer.name} ignorou o saque de Event Card neste Report!`, updatedPlayersState[myRole], 'PASSIVE');
+      triggerEventAlert('💎 Pandora Box Ativa!', `${activeCurrentPlayer.name} reportou Pandora Box e ignorou o saque de Event Card!`, 'all', 'positive');
     }
 
     // Obriga a escolha imediata do novo Programa (dos 3 expostos ou surpresa do deck) antes de encerrar o turno
@@ -3000,7 +3427,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     let nextProgDiscard = [...programDiscard];
     if (prevProgram) nextProgDiscard.push(prevProgram);
 
-    const popped = popProgramsFromDeck(1, programDeck, nextProgDiscard);
+    const popped = popProgramsFromDeck(1, programDeck, nextProgDiscard, chosenProgram.name);
     const replacementProg = popped.drawn[0];
     const nextMarket = programMarket.map(slot =>
       slot.id === chosenProgram.id ? (replacementProg || slot) : slot
@@ -3035,7 +3462,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       setProgramPickReason(null);
       setDuelRotationsRemaining(0);
       setPendingTurnAdvance(false);
-      finalizeTurnAdvance(updatedPlayers, nextExploits, nextMarket);
+      finalizeTurnAdvance(updatedPlayers, nextExploits, nextMarket, {
+        programDeck: popped.nextDeck,
+        programDiscard: popped.nextDiscard
+      });
     } else {
       supabaseSync.broadcast('STATE_SYNC', {
         players: updatedPlayers,
@@ -3104,7 +3534,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       setProgramPickReason(null);
       setDuelRotationsRemaining(0);
       setPendingTurnAdvance(false);
-      finalizeTurnAdvance(updatedPlayers, nextExploits, programMarket);
+      finalizeTurnAdvance(updatedPlayers, nextExploits, programMarket, {
+        programDeck: popped.nextDeck,
+        programDiscard: popped.nextDiscard
+      });
     } else {
       supabaseSync.broadcast('STATE_SYNC', {
         players: updatedPlayers,
@@ -3152,8 +3585,20 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       setIsDiceModalOpen(true);
       recordAudit('TURN', `Teste de Patch de Fim de Turno (${hasNoisyExploit ? 'Noisy 2D6' : 'Stealth 3D6'})`, `${currentPlayer.name} encerrou as ações com ${myExploits.length} vuln(s) na mesa.`, currentPlayer, 'EXECUTED');
     } else {
-      removeAlertaToken(1);
-      finalizeTurnAdvance();
+      let updatedPlayersState = { ...players };
+      if (currentPlayer.alertaTokens > 0) {
+        const nextAlert = Math.max(0, currentPlayer.alertaTokens - 1);
+        const updatedMe = {
+          ...currentPlayer,
+          alertaTokens: nextAlert
+        };
+        updatedPlayersState = {
+          ...updatedPlayersState,
+          [myRole]: updatedMe
+        };
+        recordAudit('ALERT', `Modo Furtivo: -1 Token de Alerta`, `${currentPlayer.name} limpou 1 Token de Alerta (${nextAlert}/2 restantes).`, updatedMe, 'EXECUTED');
+      }
+      finalizeTurnAdvance(updatedPlayersState);
     }
   };
 
@@ -3278,14 +3723,14 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setProgramPickReason('💥 PATCH SOFRIDO! Escolha imediatamente seu novo Programa (1 dos 3 expostos OU Surpresa do Deck) antes de passar o turno:');
   };
 
-  // Habilidade Social Engineer: Phishing (1x por turno)
-  const actionSocialPhishing = () => {
+  // Habilidade Social Engineer: Phishing (1x por turno - 1 AP)
+  const actionSocialPhishing = (chosenCardIdToGive?: string, chosenTargetId?: PlayerRoleId) => {
     if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
     if (phishingUsedThisTurn) {
       alert('🎭 A habilidade Phishing do Social Engineer só pode ser usada 1 vez por turno!');
       return;
     }
-    if (currentPlayer.actionsRemaining < 1) { alert('Sem ações restantes!'); return; }
+    if (currentPlayer.actionsRemaining < 1) { alert('Sem ações restantes (1 AP necessário)!'); return; }
     if (currentPlayer.hand.length === 0) { alert('Você precisa ter pelo menos 1 carta na mão para entregar!'); return; }
 
     const activeIds: PlayerRoleId[] = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).slice(0, playerCount);
@@ -3295,11 +3740,12 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       return;
     }
 
+    const target = (chosenTargetId ? players[chosenTargetId] : opponents[0]) || opponents[0];
+    const deliveredCard = (chosenCardIdToGive ? currentPlayer.hand.find(c => c.id === chosenCardIdToGive) : currentPlayer.hand[0]) || currentPlayer.hand[0];
+
     soundFx.playScan();
-    const target = opponents[0];
     const randIdx = Math.floor(Math.random() * target.hand.length);
     const pulledCard = target.hand[randIdx];
-    const deliveredCard = currentPlayer.hand[0];
 
     const updatedPlayers: Record<PlayerRoleId, PlayerState> = {
       ...players,
@@ -3316,14 +3762,41 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setPlayers(updatedPlayers);
     setPhishingUsedThisTurn(true);
     bumpMetric(myRole, m => ({ archetypeTriggers: m.archetypeTriggers + 1 }));
-    recordAudit('ARCHETYPE', `Phishing (Social Engineer) contra ${target.name}`, `${currentPlayer.name} puxou aleatoriamente [${pulledCard.name}] da mão de ${target.name} e entregou [${deliveredCard.name}]!`, currentPlayer, 'EXECUTED');
+    recordAudit(
+      'ARCHETYPE',
+      `Phishing (Social Engineer) contra ${target.name}`,
+      `${currentPlayer.name} infiltrou a rede de ${target.name}: puxou [${pulledCard.name}] e entregou [${deliveredCard.name}]!`,
+      updatedPlayers[myRole],
+      'EXECUTED'
+    );
+    
+    // Notificação visual em tempo real para o próprio Social Engineer (feedback imediato na tela)
+    triggerEventAlert(
+      '🎭 Phishing Realizado com Sucesso!',
+      `Você infiltrou a rede de ${target.name}: puxou [${pulledCard.name}] para a sua mão e entregou [${deliveredCard.name}]!`,
+      myRole,
+      'positive'
+    );
+
+    // Notificação em tempo real para a vítima!
+    triggerEventAlert(
+      '🎭 Phishing Infiltrado!',
+      `${currentPlayer.name} (Social Engineer) infiltrou sua rede: puxou [${pulledCard.name}] da sua mão e lhe entregou [${deliveredCard.name}]!`,
+      target.id,
+      'alert'
+    );
+
     supabaseSync.broadcast('STATE_SYNC', { players: updatedPlayers });
   };
 
   const finalizeTurnAdvance = (
     overridePlayers?: Record<PlayerRoleId, PlayerState>,
     overrideExploits?: DeployedExploit[],
-    overrideMarket?: ProgramCard[]
+    overrideMarket?: ProgramCard[],
+    overrideProgDecks?: {
+      programDeck?: ProgramCard[];
+      programDiscard?: ProgramCard[];
+    }
   ) => {
     const currentPlayersState = overridePlayers || players;
     const endingPlayer = currentPlayersState[activePlayerRole];
@@ -3342,7 +3815,12 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const isNewRound = nextIndex === 0;
     const nextRound = isNewRound ? Math.min(10, currentTurn + 1) : currentTurn;
 
-    if (isNewRound && currentTurn >= 10) {
+    // Condição de Fim de Partida:
+    // 1. A rodada onde alguém bateu $40k completou sua volta inteira (isNewRound === true)
+    // 2. Ou completou a 10ª Rodada (currentTurn >= 10 e isNewRound)
+    const isGameEnding = (isNewRound && targetHitRound !== null) || (isNewRound && currentTurn >= 10);
+
+    if (isGameEnding) {
       const ranked = activeList.map(pId => {
         const p = currentPlayersState[pId];
         const repBonus = (p.reputacaoTokens || 0) * 500;
@@ -3357,16 +3835,16 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       const breakdownStr = ranked
         .map((r, idx) => `${idx + 1}º ${r.p.name}: $${r.total.toLocaleString('pt-BR')} (Bounty $${r.p.score.toLocaleString('pt-BR')} + ${r.p.reputacaoTokens}🐝 [+$${r.repBonus}] - ${r.p.alertaTokens}🐞 [-$${r.alertPenalty}])`)
         .join(' | ');
-      const endTitle = `🏁 Fim da 10ª Rodada! Vencedor: ${winnerNames}`;
-      const endDetails = `Contabilização Final (Bounty + Reputação - Alertas): ${breakdownStr}`;
-      recordAudit('TURN', endTitle, endDetails, winners[0].p, 'EXECUTED', 10);
+      const endTitle = `🏁 Fim de Partida (Rodada ${currentTurn})! Vencedor: ${winnerNames}`;
+      const endDetails = `Contabilização Final com Equal Turns (Bounty + Reputação - Alertas): ${breakdownStr}`;
+      recordAudit('TURN', endTitle, endDetails, winners[0].p, 'EXECUTED', currentTurn);
       setGameWinner(winnerNames);
       supabaseSync.broadcast('GAME_OVER', {
         winner: winnerNames,
         players: currentPlayersState,
         deployedExploits: overrideExploits || deployedExploits,
         programMarket: overrideMarket || programMarket,
-        currentTurn: 10,
+        currentTurn,
         auditLogs: auditLogsRef.current,
         playerMetrics: playerMetricsRef.current
       });
@@ -3417,6 +3895,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setActivePlayerRole(nextRole);
     if (isNewRound) {
       setCurrentTurn(nextRound);
+      // Gravação incremental dos logs a cada rodada concluída
+      saveMatchLogToDatabase().catch(() => {});
     }
 
     if (gameMode === 'hotseat') {
@@ -3437,8 +3917,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       toolDiscard,
       eventDeck,
       eventDiscard,
-      programDeck,
-      programDiscard,
+      programDeck: overrideProgDecks?.programDeck || programDeck,
+      programDiscard: overrideProgDecks?.programDiscard || programDiscard,
       activeRoundEvents: nextRoundEvents,
       auditLogs: auditLogsRef.current,
       playerMetrics: playerMetricsRef.current,
@@ -3562,6 +4042,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
 
         pendingDeckPeek,
         resolveDeckPeek,
+
+        incomingAlertNotification,
+        dismissIncomingAlert,
+        triggerEventAlert,
 
         patchAlertModal,
         alertServerName,

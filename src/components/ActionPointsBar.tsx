@@ -25,7 +25,8 @@ export const ActionPointsBar: React.FC = () => {
     deployedExploits,
     playerSafeguardSlot,
     actionSocialPhishing,
-    gameMode
+    gameMode,
+    roomCode
   } = useBoardGame();
 
   const myExploitsCount = deployedExploits.filter(e => e.playerId === myRole).length;
@@ -75,7 +76,7 @@ export const ActionPointsBar: React.FC = () => {
               ) : (
                 <>
                   <span>⏳ {t('turn.waitingTurn', { name: allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole })}</span>
-                  {gameMode !== 'lan' && (
+                  {gameMode !== 'lan' && !roomCode && (
                     <button
                       onClick={() => {
                         soundFx.playClick();

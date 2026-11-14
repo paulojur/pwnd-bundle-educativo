@@ -91,7 +91,9 @@ const BoardGameContent: React.FC = () => {
     resolveTargetedEvent,
     auditLogs,
     roomCode,
-    setRoomCode
+    setRoomCode,
+    incomingAlertNotification,
+    dismissIncomingAlert
   } = useBoardGame();
 
   const [viewMode, setViewMode] = useState<'myMat' | 'centerTable' | 'fullTable'>('myMat');
@@ -193,8 +195,65 @@ const BoardGameContent: React.FC = () => {
 
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
+  // Cálculo de Payout em Risco para o modal de Patch
+  const myExploitsInRisk = deployedExploits.filter(e => e.playerId === myRole);
+  const vulnValueInRisk = myExploitsInRisk.reduce((sum, e) => sum + (e.card.points > 0 ? e.card.points : 1500), 0);
+  const progBonusInRisk = playerActiveProgram?.flatBountyBonus || 0;
+  const totalBountyInRisk = vulnValueInRisk + progBonusInRisk;
+
   return (
     <div style={{ width: '96%', maxWidth: '1540px', margin: '0 auto', padding: '16px 12px' }}>
+      {/* TOAST / BANNER DE NOTIFICAÇÃO DE EVENTO RECEBIDO EM TEMPO REAL */}
+      {incomingAlertNotification && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '18px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 10001,
+            minWidth: '340px',
+            maxWidth: '560px',
+            background: incomingAlertNotification.type === 'positive' ? '#F0FDF4' : '#FEF2F2',
+            border: `2px solid ${incomingAlertNotification.type === 'positive' ? '#16A34A' : '#DC2626'}`,
+            boxShadow: '0 12px 36px rgba(0,0,0,0.4)',
+            borderRadius: '8px',
+            padding: '14px 18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '14px',
+            fontFamily: 'monospace'
+          }}
+        >
+          <div>
+            <div style={{ fontWeight: '900', fontSize: '13px', color: incomingAlertNotification.type === 'positive' ? '#166534' : '#991B1B' }}>
+              {incomingAlertNotification.title}
+            </div>
+            <div style={{ fontSize: '11px', color: '#1F2937', marginTop: '3px', lineHeight: '1.4' }}>
+              {incomingAlertNotification.message}
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              soundFx.playClick();
+              dismissIncomingAlert();
+            }}
+            style={{
+              padding: '6px 12px',
+              background: incomingAlertNotification.type === 'positive' ? '#16A34A' : '#DC2626',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '4px',
+              fontWeight: '900',
+              fontSize: '11px',
+              cursor: 'pointer'
+            }}
+          >
+            OK
+          </button>
+        </div>
+      )}
 
       {/* COMPACT TABLETOP TOP BAR / MENU */}
       <header
@@ -506,27 +565,27 @@ const BoardGameContent: React.FC = () => {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <label style={{ fontSize: '10.5px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
-                {gameMode === 'lan' ? '🔒' : '👁️'} {t('nav.playerView')}
+                {gameMode === 'lan' || Boolean(roomCode) ? '🔒' : '👁️'} {t('nav.playerView')}
               </label>
               <select
                 value={myRole}
-                disabled={gameMode === 'lan'}
+                disabled={gameMode === 'lan' || Boolean(roomCode)}
                 onChange={(e) => {
                   soundFx.playClick();
                   setMyRole(e.target.value as any);
                 }}
-                title={gameMode === 'lan' ? 'Seu assento é fixo nesta sala online' : 'Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador'}
+                title={gameMode === 'lan' || Boolean(roomCode) ? 'Seu assento é fixo nesta sala online' : 'Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador'}
                 style={{
                   padding: '4px 8px',
-                  background: gameMode === 'lan' ? '#F3F4F6' : '#FFFFFF',
+                  background: gameMode === 'lan' || Boolean(roomCode) ? '#F3F4F6' : '#FFFFFF',
                   color: currentPlayer?.color || '#1E1B18',
                   border: '1.5px solid #2B2620',
                   borderRadius: '5px',
                   fontSize: '11px',
                   fontWeight: '900',
                   fontFamily: 'monospace',
-                  cursor: gameMode === 'lan' ? 'not-allowed' : 'pointer',
-                  opacity: gameMode === 'lan' ? 0.85 : 1,
+                  cursor: gameMode === 'lan' || Boolean(roomCode) ? 'not-allowed' : 'pointer',
+                  opacity: gameMode === 'lan' || Boolean(roomCode) ? 0.85 : 1,
                   outline: 'none'
                 }}
               >
@@ -795,6 +854,12 @@ const BoardGameContent: React.FC = () => {
           diceRollReason={diceRollReason}
           playerReputationTokens={reputacaoTokens}
           hasBypass={playerSafeguardSlot !== null}
+          exploitsAtRisk={myExploitsInRisk.map(e => ({
+            name: e.card.name,
+            vulnClass: e.card.vulnClass,
+            points: e.card.points || 1500
+          }))}
+          programBonusAtRisk={progBonusInRisk}
           onUseReputationReroll={useReputacaoReroll}
           onDefusePatch={defusePatch}
           onAcceptPatch={acceptPatch}
@@ -853,9 +918,46 @@ const BoardGameContent: React.FC = () => {
               ALERTA EM {alertServerName?.toUpperCase() || 'PRODUÇÃO'}!
             </h2>
 
-            <p style={{ fontSize: '12px', color: '#4B4337', marginBottom: '22px', lineHeight: '1.4' }}>
+            <p style={{ fontSize: '12px', color: '#4B4337', marginBottom: '16px', lineHeight: '1.4' }}>
               A soma dos dados de Patch Speed atingiu o limiar de defesa corporativa! A falha foi mitigada pela empresa.
             </p>
+
+            {/* QUADRO DE TELEMETRIA: VALOR DO REPORT EM RISCO */}
+            {myExploitsInRisk.length > 0 && (
+              <div
+                style={{
+                  background: '#FEF2F2',
+                  border: '1.5px solid #F87171',
+                  borderRadius: '8px',
+                  padding: '12px 14px',
+                  marginBottom: '20px',
+                  textAlign: 'left',
+                  fontFamily: 'monospace'
+                }}
+              >
+                <div style={{ fontSize: '11px', fontWeight: '900', color: '#991B1B', marginBottom: '6px' }}>
+                  💰 VALOR DO REPORT EM RISCO (SE ACEITAR O PATCH):
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '11px', color: '#374151' }}>
+                  {myExploitsInRisk.map(e => (
+                    <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span>• {e.card.name} ({e.card.vulnClass || 'EXPLOIT'})</span>
+                      <span style={{ fontWeight: '800', color: '#166534' }}>+${(e.card.points || 1500).toLocaleString('pt-BR')}</span>
+                    </div>
+                  ))}
+                  {progBonusInRisk > 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span>• Bônus Contrato [{playerActiveProgram?.name}]</span>
+                      <span style={{ fontWeight: '800', color: '#166534' }}>+${progBonusInRisk.toLocaleString('pt-BR')}</span>
+                    </div>
+                  )}
+                  <div style={{ borderTop: '1.5px dashed #FECACA', paddingTop: '6px', marginTop: '4px', display: 'flex', justifyContent: 'space-between', fontWeight: '900', fontSize: '13px', color: '#166534' }}>
+                    <span>TOTAL A RECEBER SE USAR BYPASS:</span>
+                    <span>+${totalBountyInRisk.toLocaleString('pt-BR')}</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
               {playerSafeguardSlot && (

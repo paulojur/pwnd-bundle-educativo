@@ -61,15 +61,15 @@ export const getClassBadgeInfo = (id: string = '', techRef: string = '', name: s
     console.warn(`[PWND] Carta ${id}: Classe determinística é ${code}, mas heurística detectou ${keywordCode}.`);
   }
 
-  if (code === 'INJ') return { code: 'INJ', label: 'INJECTION', color: '#f0883e', bg: 'rgba(240, 136, 62, 0.2)' };
-  if (code === 'BAC') return { code: 'BAC', label: 'ACCESS CTRL', color: '#c084fc', bg: 'rgba(192, 132, 252, 0.2)' };
-  if (code === 'XSS') return { code: 'XSS', label: 'XSS', color: '#f472b6', bg: 'rgba(244, 114, 182, 0.2)' };
-  if (code === 'AUTH') return { code: 'AUTH', label: 'AUTHENTICATION', color: '#eab308', bg: 'rgba(234, 179, 8, 0.2)' };
-  if (code === 'SSRF') return { code: 'SSRF', label: 'SSRF / CSRF', color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.2)' };
-  if (code === 'LOGIC') return { code: 'LOGIC', label: 'BIZ LOGIC', color: '#2dd4bf', bg: 'rgba(45, 212, 191, 0.2)' };
-  if (code === 'CRYPTO') return { code: 'CRYPTO', label: 'CRYPTOGRAPHY', color: '#39d353', bg: 'rgba(57, 211, 83, 0.2)' };
+  if (code === 'INJ') return { code: 'INJ', label: 'INJECTION', color: '#C2410C', bg: '#FFEDD5' };
+  if (code === 'BAC') return { code: 'BAC', label: 'ACCESS CTRL', color: '#6B21A8', bg: '#F3E8FF' };
+  if (code === 'XSS') return { code: 'XSS', label: 'XSS', color: '#9D174D', bg: '#FCE7F3' };
+  if (code === 'AUTH') return { code: 'AUTH', label: 'AUTHENTICATION', color: '#92400E', bg: '#FEF3C7' };
+  if (code === 'SSRF') return { code: 'SSRF', label: 'SSRF / CSRF', color: '#0369A1', bg: '#E0F2FE' };
+  if (code === 'LOGIC') return { code: 'LOGIC', label: 'BIZ LOGIC', color: '#0F766E', bg: '#CCFBF1' };
+  if (code === 'CRYPTO') return { code: 'CRYPTO', label: 'CRYPTOGRAPHY', color: '#15803D', bg: '#DCFCE7' };
   
-  return { code: 'LEGENDARY', label: 'LEGENDARY RCE', color: '#a855f7', bg: 'rgba(168, 85, 247, 0.2)' };
+  return { code: 'LEGENDARY', label: 'LEGENDARY RCE', color: '#3730A3', bg: '#E0E7FF' };
 };
 
 // EXPORTAÇÃO DO BARALHO OFICIAL COMPLETO DE 95 CARTAS DE AÇÃO (80 VULNERABILIDADES + 12 TOOLS + 3 DEFUSES)

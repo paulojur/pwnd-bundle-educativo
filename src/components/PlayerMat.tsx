@@ -522,7 +522,9 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '18px' }}>{exploit.icon || '💉'}</span>
+                        <span style={{ fontSize: '10px', fontWeight: '900', color: '#5A5245', fontFamily: 'monospace', background: 'rgba(0,0,0,0.05)', padding: '2px 5px', borderRadius: '3px' }}>
+                          [{exploit.vulnClass || 'EXPLOIT'}]
+                        </span>
                         <span style={{ fontSize: '10.5px', fontWeight: '900', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '2px 6px', borderRadius: '3px', fontFamily: 'monospace' }}>
                           ${exploit.points?.toLocaleString('pt-BR')}
                         </span>
@@ -550,14 +552,14 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                             fontFamily: 'monospace'
                           }}
                         >
-                          {exploit.isNoisy && <span style={{ fontWeight: '900', color: '#B91C1C' }}>⚡ PODER: </span>}
+                          {exploit.isNoisy && <span style={{ fontWeight: '900', color: '#B91C1C' }}>PODER ATIVO: </span>}
                           {exploit.simpleDescription || exploit.ptDescription}
                         </div>
                       )}
 
                       <div style={{ marginTop: '5px', borderTop: '1px solid #E2D7C5', paddingTop: '4px', display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: exploit.isNoisy ? '#B91C1C' : '#047857', fontWeight: '800', fontFamily: 'monospace' }}>
                         <span>{exploit.vulnClass || 'VULN'}</span>
-                        <span>{exploit.isNoisy ? '⚡ NOISY' : '🕶️ STEALTH'}</span>
+                        <span>{exploit.isNoisy ? '[NOISY]' : '[STEALTH]'}</span>
                       </div>
                     </div>
                   ))
@@ -604,7 +606,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                             border: isToolActiveType ? '1px solid #D97706' : '1px solid #166534'
                           }}
                         >
-                          {isReactiveTool ? '🛡️ REATIVA' : isToolActiveType ? '⚡ ATIVA' : '🟢 PASSIVA'}
+                          {isReactiveTool ? 'REATIVA' : isToolActiveType ? 'ATIVA' : 'PASSIVA'}
                         </span>
                       )}
                     </div>
@@ -612,7 +614,6 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                     {tool ? (
                       <div style={{ textAlign: 'center', margin: '6px 0' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-                          <span style={{ fontSize: '18px' }}>{tool.icon || '🛠️'}</span>
                           <div style={{ fontSize: '12.5px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace' }}>
                             {tool.name}
                           </div>

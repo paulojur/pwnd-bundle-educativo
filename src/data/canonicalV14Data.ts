@@ -1814,9 +1814,9 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeed": "Lenta",
     "patchThreshold": 10,
     "patchSpeedRaw": "Lenta (10-12)",
-    "bonusBounty": "$1.500",
-    "bonusBountyValue": 1500,
-    "description": "Especialista em controle de acesso legado (BAC). Patch lento e bônus de +$1.500 no Report!",
+    "bonusBounty": "$1.000",
+    "bonusBountyValue": 1000,
+    "description": "Especialista em controle de acesso legado (BAC). Patch lento e bônus de +$1.000 no Report!",
     "category": "PROGRAM"
   },
   {
@@ -1829,9 +1829,9 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeed": "Lenta",
     "patchThreshold": 10,
     "patchSpeedRaw": "Lenta (10-12)",
-    "bonusBounty": "$1.500",
-    "bonusBountyValue": 1500,
-    "description": "Sistema legado em servidores antigos com escopo exclusivo BAC, ritmo lento e +$1.500 de bônus.",
+    "bonusBounty": "$1.000",
+    "bonusBountyValue": 1000,
+    "description": "Sistema legado em servidores antigos com escopo exclusivo BAC, ritmo lento e +$1.000 de bônus.",
     "category": "PROGRAM"
   },
   {
@@ -2643,7 +2643,7 @@ export const V14_ARCHETYPES: CanonicalArchetypeCard[] = [
     "name": "Red Teamer",
     "title": "Offensive Breaker",
     "abilityName": "Sem Limites",
-    "description": "Ignoro as restrições de escopo dos programas e posso explorar qualquer vulnerabilidade em qualquer alvo, mas por isso, devo subtrair $1.500 do payout total de cada Report.",
+    "description": "Ignoro as restrições de escopo dos programas e posso explorar qualquer vulnerabilidade em qualquer alvo, mas por isso, devo subtrair $1.000 do payout total de cada Report.",
     "category": "ARCHETYPE"
   },
   {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { getLocalizedCardDescription, getLocalizedScopeBadge } from '../i18n/cardTranslations';
@@ -28,11 +28,20 @@ export const BoardHand: React.FC = () => {
     confirmToolInstall,
     dynamicMaxHandSize,
     freeExploitDeploysRemaining,
-    currentScopeOptions
+    currentScopeOptions,
+    actionSocialPhishing,
+    allPlayers,
+    myRole
   } = useBoardGame();
 
   const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
   const [lastActionText, setLastActionText] = useState<string | null>(null);
+  const [phishingModalCardId, setPhishingModalCardId] = useState<string | null>(null);
+
+  // Sanitiza seleção de cartas: se alguma carta selecionada não estiver mais na mão, remove-a
+  useEffect(() => {
+    setSelectedCardIds(prev => prev.filter(id => playerHand.some(c => c.id === id)));
+  }, [playerHand]);
 
   // VALIDAÇÃO CANÔNICA DE ESCOPO V1.4 (com Tools Passivas e Eventos de Rodada)
   const checkScopeStatus = (card: CardV2) =>
@@ -53,7 +62,14 @@ export const BoardHand: React.FC = () => {
 
   const handleRecycleTwoForOne = () => {
     if (selectedCardIds.length !== 2 || recycledThisTurn) return;
-    recycleHandCards(selectedCardIds[0], selectedCardIds[1]);
+    const [id1, id2] = selectedCardIds;
+    const hasCard1 = playerHand.some(c => c.id === id1);
+    const hasCard2 = playerHand.some(c => c.id === id2);
+    if (!hasCard1 || !hasCard2 || id1 === id2) {
+      setSelectedCardIds([]);
+      return;
+    }
+    recycleHandCards(id1, id2);
     setSelectedCardIds([]);
     setLastActionText('♻️ Reciclagem 2:1 realizada (1/1 neste turno)! 2 cartas descartadas e +1 nova comprada.');
   };
@@ -113,8 +129,27 @@ export const BoardHand: React.FC = () => {
         )}
 
         {pendingToolInstall && (
-          <div style={{ fontSize: '11px', color: '#0369A1', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#E0F2FE', border: '1px solid #0369A1', padding: '4px 10px', borderRadius: '4px', fontWeight: '800' }}>
-            🔧 {language === 'en' ? `INSTALLING [${pendingToolInstall.name}]: Click button on another card to sacrifice as payment.` : `INSTALANDO [${pendingToolInstall.name}]: Clique no botão de outra carta para sacrificar como pagamento.`}
+          <div style={{ fontSize: '11px', color: '#0369A1', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '8px', background: '#E0F2FE', border: '1.5px solid #0369A1', padding: '6px 12px', borderRadius: '6px', fontWeight: '800' }}>
+            <span>🔧 {language === 'en' ? `INSTALLING [${pendingToolInstall.name}]: Click button on another card to sacrifice as payment.` : `INSTALANDO [${pendingToolInstall.name}]: Clique no botão de outra carta para sacrificar como pagamento.`}</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                soundFx.playClick();
+                cancelToolInstall();
+              }}
+              style={{
+                padding: '3px 8px',
+                background: '#B91C1C',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '4px',
+                fontWeight: '900',
+                cursor: 'pointer',
+                fontSize: '10px'
+              }}
+            >
+              Cancelar Instalação
+            </button>
           </div>
         )}
 
@@ -226,7 +261,7 @@ export const BoardHand: React.FC = () => {
                   borderRadius: '10px',
                   background: '#FFFFFF',
                   boxShadow: isSelected ? '0 6px 16px rgba(217, 119, 6, 0.35)' : '0 2px 8px rgba(0,0,0,0.08)',
-                  opacity: scopeStatus.inScope ? 1 : 0.65,
+                  opacity: 1,
                   position: 'relative',
                   cursor: 'pointer',
                   transition: 'transform 0.15s ease'
@@ -237,13 +272,13 @@ export const BoardHand: React.FC = () => {
                   <div
                     style={{
                       fontSize: '10px',
-                      fontWeight: '800',
-                      color: scopeStatus.badgeColor,
+                      fontWeight: '900',
+                      color: scopeStatus.inScope ? '#166534' : '#991B1B',
                       fontFamily: 'monospace',
-                      background: '#FAF6EE',
+                      background: scopeStatus.inScope ? '#DCFCE7' : '#FEE2E2',
                       padding: '4px 6px',
                       borderRadius: '4px',
-                      border: `1.5px solid ${scopeStatus.badgeColor}`,
+                      border: `1.5px solid ${scopeStatus.inScope ? '#166534' : '#DC2626'}`,
                       textAlign: 'center'
                     }}
                   >
@@ -256,25 +291,46 @@ export const BoardHand: React.FC = () => {
                         fontSize: '9.5px',
                         fontWeight: '800',
                         color: classInfo.color,
-                        background: '#FAF6EE',
-                        border: `1px solid ${classInfo.color}`,
+                        background: classInfo.bg,
+                        border: `1.5px solid ${classInfo.color}`,
                         borderRadius: '4px',
                         padding: '3px 5px',
                         textAlign: 'center',
                         fontFamily: 'monospace'
                       }}
                     >
-                      {classInfo.label} {card.isNoisy ? '⚡ NOISY' : '🕶️ STEALTH'}
+                      <span style={{ color: classInfo.color, fontWeight: '900' }}>{classInfo.label}</span> • <span style={{ color: card.isNoisy ? '#991B1B' : '#166534', fontWeight: '900' }}>{card.isNoisy ? '[NOISY]' : '[STEALTH]'}</span>
                     </div>
                   )}
                 </div>
 
-                {/* ÍCONE E PONTOS */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '6px 0' }}>
-                  <span style={{ fontSize: '28px' }}>{card.icon}</span>
-                  {card.points > 0 && (
-                    <span style={{ fontSize: '14px', fontWeight: '900', color: '#166534', fontFamily: 'monospace' }}>
+                {/* CABEÇALHO TÉCNICO E PONTOS (SEM EMOJIS INFANTIS) */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0' }}>
+                  <span
+                    style={{
+                      fontSize: '10px',
+                      fontWeight: '900',
+                      fontFamily: 'monospace',
+                      color: card.type === 'tool' ? '#0369A1' : card.type === 'defuse' ? '#166534' : classInfo.color,
+                      background: card.type === 'tool' ? '#E0F2FE' : card.type === 'defuse' ? '#DCFCE7' : classInfo.bg,
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      border: `1.5px solid ${card.type === 'tool' ? '#0369A1' : card.type === 'defuse' ? '#166534' : classInfo.color}`
+                    }}
+                  >
+                    {card.type === 'tool'
+                      ? `TOOL • ${card.toolType || 'PASSIVA'}`
+                      : card.type === 'defuse'
+                        ? (card.name.includes('CVE') ? 'SAFEGUARD • CVE' : 'SAFEGUARD • BYPASS')
+                        : `${card.vulnClass || 'EXPLOIT'} • ${(card.rarity || 'Common').toUpperCase()}`}
+                  </span>
+                  {card.points > 0 ? (
+                    <span style={{ fontSize: '15px', fontWeight: '900', color: '#166534', fontFamily: 'monospace' }}>
                       +${card.points.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}
+                    </span>
+                  ) : (
+                    <span style={{ fontSize: '10px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
+                      {card.type === 'tool' ? (card.toolMoment || 'SUPORTE') : 'DEFESA'}
                     </span>
                   )}
                 </div>
@@ -304,14 +360,14 @@ export const BoardHand: React.FC = () => {
                 >
                   {card.isNoisy && (
                     <div style={{ fontWeight: '900', color: '#B91C1C', marginBottom: '4px', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      ⚡ PODER ATIVO:
+                      PODER ATIVO NO REPORT:
                     </div>
                   )}
                   {getLocalizedCardDescription(card, language)}
                 </div>
 
                 {/* BOTÕES DE AÇÃO NA CARTA */}
-                <div style={{ display: 'flex', gap: '4px', marginTop: '6px' }}>
+                <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
                   {pendingToolInstall ? (
                     card.id === pendingToolInstall.id ? (
                       <button
@@ -320,9 +376,9 @@ export const BoardHand: React.FC = () => {
                           soundFx.playClick();
                           cancelToolInstall();
                         }}
-                        style={{ flex: 1, padding: '5px', background: '#FEE2E2', color: '#B91C1C', border: '1px solid #B91C1C', borderRadius: '3px', fontSize: '8.5px', fontWeight: '800', fontFamily: 'monospace', cursor: 'pointer' }}
+                        style={{ flex: 1, padding: '7px 5px', background: '#FEE2E2', color: '#B91C1C', border: '1.5px solid #B91C1C', borderRadius: '4px', fontSize: '9px', fontWeight: '900', fontFamily: 'monospace', cursor: 'pointer' }}
                       >
-                        ❌ CANCELAR
+                        ✕ CANCELAR
                       </button>
                     ) : (
                       <button
@@ -330,9 +386,9 @@ export const BoardHand: React.FC = () => {
                           e.stopPropagation();
                           confirmToolInstall(card.id);
                         }}
-                        style={{ flex: 1, padding: '5px', background: '#16A34A', color: '#FFFFFF', border: 'none', borderRadius: '3px', fontSize: '8.5px', fontWeight: '800', fontFamily: 'monospace', cursor: 'pointer' }}
+                        style={{ flex: 1, padding: '7px 5px', background: '#16A34A', color: '#FFFFFF', border: 'none', borderRadius: '4px', fontSize: '9px', fontWeight: '900', fontFamily: 'monospace', cursor: 'pointer' }}
                       >
-                        ✅ PAGAR COM ESTA
+                        ✓ PAGAR COM ESTA
                       </button>
                     )
                   ) : (
@@ -347,18 +403,18 @@ export const BoardHand: React.FC = () => {
                           disabled={!isMyTurn}
                           style={{
                             flex: 2,
-                            padding: '5px',
+                            padding: '6px 4px',
                             background: freeExploitDeploysRemaining > 0 ? '#16A34A' : '#B45309',
                             color: '#FFFFFF',
                             border: 'none',
-                            borderRadius: '3px',
-                            fontSize: '8.5px',
-                            fontWeight: '800',
+                            borderRadius: '4px',
+                            fontSize: '9px',
+                            fontWeight: '900',
                             fontFamily: 'monospace',
                             cursor: isMyTurn ? 'pointer' : 'not-allowed'
                           }}
                         >
-                          {freeExploitDeploysRemaining > 0 ? '⚡ EXPLOIT (0 AP)' : 'EXPLOIT (1 AP)'}
+                          {freeExploitDeploysRemaining > 0 ? 'EXPLOIT (0 AP)' : 'EXPLOIT (1 AP)'}
                         </button>
                       )}
 
@@ -372,18 +428,18 @@ export const BoardHand: React.FC = () => {
                           disabled={!isMyTurn}
                           style={{
                             flex: 2,
-                            padding: '5px',
+                            padding: '6px 4px',
                             background: '#0369A1',
                             color: '#FFFFFF',
                             border: 'none',
-                            borderRadius: '3px',
-                            fontSize: '8.5px',
-                            fontWeight: '800',
+                            borderRadius: '4px',
+                            fontSize: '9px',
+                            fontWeight: '900',
                             fontFamily: 'monospace',
                             cursor: isMyTurn ? 'pointer' : 'not-allowed'
                           }}
                         >
-                          MOVER P/ TOOLS
+                          INSTALAR TOOL
                         </button>
                       )}
 
@@ -397,22 +453,54 @@ export const BoardHand: React.FC = () => {
                           disabled={!isMyTurn}
                           style={{
                             flex: 2,
-                            padding: '5px',
-                            background: '#166534',
+                            padding: '6px 4px',
+                            background: '#15803D',
                             color: '#FFFFFF',
                             border: 'none',
-                            borderRadius: '3px',
-                            fontSize: '8.5px',
-                            fontWeight: '800',
+                            borderRadius: '4px',
+                            fontSize: '9px',
+                            fontWeight: '900',
                             fontFamily: 'monospace',
                             cursor: isMyTurn ? 'pointer' : 'not-allowed'
                           }}
                         >
-                          SAFEGUARD
+                          ALOCAR SAFEGUARD
                         </button>
                       )}
 
-                      {/* Botão de Descarte */}
+                      {playerArchetype?.id === 'social-engineer' && isMyTurn && actionSocialPhishing && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            soundFx.playClick();
+                            const availableOpponents = allPlayers.filter(p => p.id !== myRole && p.hand.length > 0);
+                            if (availableOpponents.length === 0) {
+                              alert('Nenhum oponente possui cartas na mão para o Phishing!');
+                              return;
+                            }
+                            if (availableOpponents.length === 1) {
+                              actionSocialPhishing(card.id, availableOpponents[0].id);
+                            } else {
+                              setPhishingModalCardId(card.id);
+                            }
+                          }}
+                          style={{
+                            padding: '6px 6px',
+                            background: '#BE185D',
+                            color: '#FFFFFF',
+                            border: 'none',
+                            borderRadius: '4px',
+                            fontSize: '8.5px',
+                            fontWeight: '900',
+                            fontFamily: 'monospace',
+                            cursor: 'pointer'
+                          }}
+                          title="Usa Phishing (1 AP): entrega esta carta e puxa 1 carta aleatória do oponente à sua escolha!"
+                        >
+                          PHISHING
+                        </button>
+                      )}
+
                       {!pendingToolInstall && (
                         <button
                           onClick={(e) => {
@@ -422,22 +510,18 @@ export const BoardHand: React.FC = () => {
                           }}
                           title="Descartar esta carta"
                           style={{
-                            flex: 1,
-                            padding: '5px',
+                            padding: '6px 8px',
                             background: '#FEE2E2',
                             color: '#B91C1C',
                             border: '1px solid #B91C1C',
-                            borderRadius: '3px',
-                            fontSize: '8.5px',
-                            fontWeight: '800',
-                            fontFamily: 'monospace',
+                            borderRadius: '4px',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
                           }}
                         >
-                          <Trash2 size={11} />
+                          <Trash2 size={12} />
                         </button>
                       )}
                     </>
@@ -446,6 +530,104 @@ export const BoardHand: React.FC = () => {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* MODAL DE ESCOLHA DE ALVO DO PHISHING (TRANSPARÊNCIA TOTAL EM 2+ JOGADORES) */}
+      {phishingModalCardId && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.65)',
+            backdropFilter: 'blur(3px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 99999
+          }}
+        >
+          <div
+            style={{
+              maxWidth: '440px',
+              width: '90%',
+              padding: '24px',
+              background: '#FAF6EE',
+              border: '2.5px solid #BE185D',
+              borderRadius: '12px',
+              boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
+              color: '#1E1B18',
+              fontFamily: 'monospace'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '20px' }}>🎭</span>
+              <h3 style={{ fontSize: '15px', fontWeight: '900', color: '#BE185D', margin: 0 }}>
+                PHISHING: ESCOLHA A VÍTIMA
+              </h3>
+            </div>
+            <p style={{ fontSize: '11.5px', color: '#4B4337', marginBottom: '16px', lineHeight: '1.4' }}>
+              Você está oferecendo a carta <strong>[{playerHand.find(c => c.id === phishingModalCardId)?.name}]</strong>. Selecione qual oponente terá sua rede infiltrada para puxar 1 carta aleatória da mão dele:
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '18px' }}>
+              {allPlayers
+                .filter(p => p.id !== myRole && p.hand.length > 0)
+                .map(opp => (
+                  <button
+                    key={opp.id}
+                    onClick={() => {
+                      soundFx.playClick();
+                      if (actionSocialPhishing) {
+                        actionSocialPhishing(phishingModalCardId, opp.id);
+                      }
+                      setPhishingModalCardId(null);
+                    }}
+                    style={{
+                      padding: '10px 14px',
+                      background: '#FFFFFF',
+                      border: `2px solid ${opp.color || '#2B2620'}`,
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: '900', fontSize: '12px', color: opp.color || '#1E1B18' }}>
+                        {opp.name}
+                      </div>
+                      <div style={{ fontSize: '10.5px', color: '#685F53' }}>
+                        {opp.archetype?.name || 'Hacker'} • Alvo: [{opp.activeProgram?.name || 'Sem alvo'}]
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '11px', fontWeight: '900', background: '#F3EFE6', padding: '4px 8px', borderRadius: '4px', border: '1px solid #D6CEBE' }}>
+                      🃏 {opp.hand.length} carta(s)
+                    </div>
+                  </button>
+                ))}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setPhishingModalCardId(null)}
+                style={{
+                  padding: '8px 14px',
+                  background: '#F3EFE6',
+                  color: '#4B4337',
+                  border: '1.5px solid #2B2620',
+                  borderRadius: '6px',
+                  fontWeight: '800',
+                  fontSize: '11px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -131,6 +131,17 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
     const seatInfo = SEATS.find(s => s.id === roleId);
     const nickClean = playerNickname.trim();
     const presenceLabel = nickClean || seatInfo?.label || `Jogador (${roleId})`;
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('pwnd_active_role', roleId);
+        if (presenceLabel) localStorage.setItem(`pwnd_nick_${roleId}`, presenceLabel);
+        if (nickClean) localStorage.setItem('pwnd_player_nickname', nickClean);
+        const url = new URL(window.location.href);
+        url.searchParams.set('room', targetCode);
+        url.searchParams.set('role', roleId);
+        window.history.replaceState({}, '', url.toString());
+      } catch {}
+    }
     supabaseSync.joinRoom(targetCode, roleId, presenceLabel);
     onStartGame('lan', targetCode, roleId, nickClean);
     onClose();
@@ -536,7 +547,21 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
               <button
                 onClick={() => {
                   soundFx.playClick();
-                  onStartGame('lan', createdCode, 'player-1', playerNickname.trim());
+                  const nickClean = playerNickname.trim();
+                  if (typeof window !== 'undefined') {
+                    try {
+                      localStorage.setItem('pwnd_active_role', 'player-1');
+                      if (nickClean) {
+                        localStorage.setItem('pwnd_nick_player-1', nickClean);
+                        localStorage.setItem('pwnd_player_nickname', nickClean);
+                      }
+                      const url = new URL(window.location.href);
+                      url.searchParams.set('room', createdCode);
+                      url.searchParams.set('role', 'player-1');
+                      window.history.replaceState({}, '', url.toString());
+                    } catch {}
+                  }
+                  onStartGame('lan', createdCode, 'player-1', nickClean);
                   onClose();
                 }}
                 style={{ flex: 2, padding: '10px', background: '#00ff66', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '12px', fontWeight: '800' }}
