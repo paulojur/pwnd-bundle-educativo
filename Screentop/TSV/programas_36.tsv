@@ -3,15 +3,15 @@ cloudnine-1	CloudNine Cloud Services	Provedor de Infraestrutura em Nuvem	SSRF, I
 cryptox-1	CryptoX Exchange	Corretora de Criptomoedas	AUTH, CRYPTO, LOGIC, APT	Extrema (7-12)	$4.000	Corretora de ativos digitais sob alto risco de ataques de autenticação e carteira.
 aicore-1	AI Core Systems	Infraestrutura de IA Generativa	INJ, SSRF, APT	Extrema (7-12)	$4.000	Clusters de treinamento de modelos de linguagem vulneráveis a Prompt Injection e RCE.
 veloce-1	Veloce AutoTech	Firmware Automotivo & IoT	INJ, LOGIC, AUTH	Extrema (7-12)	$4.000	Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de elite.
-veloce-2	Veloce AutoTech	Firmware Automotivo & IoT	INJ, LOGIC, AUTH	Extrema (7-12)	$4.000	Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de elite.
+veloce-2	Veloce AutoTech	Firmware Automotivo & IoT	INJ, LOGIC, AUTH	Extrema (7-12)	$4.000	Painel multimídia conectado e destravamento remoto via app. Recompensas altas para falhas que abrem o carro pelo celular.
 aeroorbit-1	AeroOrbit Avionics	Tecnologia Aeroespacial & Satélites	SSRF, AUTH, CRYPTO	Extrema (7-12)	$4.000	Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.
-aeroorbit-2	AeroOrbit Avionics	Tecnologia Aeroespacial & Satélites	SSRF, AUTH, CRYPTO	Extrema (7-12)	$4.000	Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.
-govportal-1	GovPortal Legacy	Sistema Governamental Legado	BAC	Lenta (10-12)	$1.500	Especialista em controle de acesso legado (BAC). Patch lento e bônus de +$1.500 no Report!
-govportal-2	GovPortal Legacy	Sistema Governamental Legado	BAC	Lenta (10-12)	$1.500	Sistema legado em servidores antigos com escopo exclusivo BAC, ritmo lento e +$1.500 de bônus.
+aeroorbit-2	AeroOrbit Avionics	Tecnologia Aeroespacial & Satélites	SSRF, AUTH, CRYPTO	Extrema (7-12)	$4.000	Rede de internet via satélite e Wi-Fi de bordo para aviação comercial. Blindagem pesada e prêmios de elite.
+govportal-1	GovPortal Legacy	Sistema Governamental Legado	BAC	Lenta (10-12)	$1.000	Especialista em controle de acesso legado (BAC). Patch lento e bônus de +$1.000 no Report!
+govportal-2	GovPortal Legacy	Sistema Governamental Legado	BAC	Lenta (10-12)	$1.000	Sistema legado em servidores antigos com escopo exclusivo BAC, ritmo lento e +$1.000 de bônus.
 educonnect-1	EduConnect LMS	Plataforma Educacional	TODAS AS CLASSES (ALL)	Lenta (10-12)	$0	Ambiente seguro para iniciantes praticarem. Quase sem risco de Patch instantâneo.
 educonnect-2	EduConnect LMS	Plataforma Educacional	TODAS AS CLASSES (ALL)	Lenta (10-12)	$0	Sistema acadêmico comunitário com tolerância prolongada de patches.
 voltz-1	Voltz PowerGrid	Infraestrutura Crítica & SCADA	INJ, BAC	Lenta (10-12)	$0	Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.
-voltz-2	Voltz PowerGrid	Infraestrutura Crítica & SCADA	INJ, BAC	Lenta (10-12)	$0	Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.
+voltz-2	Voltz PowerGrid	Infraestrutura Crítica & SCADA	INJ, BAC	Lenta (10-12)	$0	Sistema antigo de leitura de relógios inteligentes e faturamento residencial. Demora para atualizar, ótimo para preparar combos.
 shopall-1	ShopAll Global	E-Commerce Multinacional	TODAS AS CLASSES (ALL)	Moderada (9-12)	$1000	Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.
 shopall-2	ShopAll Global	E-Commerce Multinacional	TODAS AS CLASSES (ALL)	Moderada (9-12)	$1000	Escopo amplo. Aceita todas as classes de vulnerabilidades com triagem padrão.
 shopall-3	ShopAll Global	E-Commerce Multinacional	TODAS AS CLASSES (ALL)	Moderada (9-12)	$1000	Plataforma gigante com alta rotatividade de pesquisadores.
@@ -24,9 +24,9 @@ deliverydash-1	DeliveryDash App	Plataforma Logística e Entregas	LOGIC, BAC, SSR
 deliverydash-2	DeliveryDash App	Plataforma Logística e Entregas	LOGIC, BAC, SSRF	Moderada (9-12)	$1000	Rede logística de entregas rápidas suscetível a manipulação de pedidos e SSRF interno.
 deliverydash-3	DeliveryDash App	Plataforma Logística e Entregas	LOGIC, BAC, SSRF	Moderada (9-12)	$1000	Frequentes vulnerabilidades de lógica em promoções e requisições forjadas de rastreamento.
 pulsestream-1	PulseStream Media	Mídia Digital & Distribuição DRM	XSS, LOGIC, CRYPTO	Moderada (9-12)	$1000	Distribuição de streaming. Foco em falhas de DRM, portal web e validação de assinaturas.
-pulsestream-2	PulseStream Media	Mídia Digital & Distribuição DRM	XSS, LOGIC, CRYPTO	Moderada (9-12)	$1000	Distribuição de streaming. Foco em falhas de DRM, portal web e validação de assinaturas.
+pulsestream-2	PulseStream Media	Mídia Digital & Distribuição DRM	XSS, LOGIC, CRYPTO	Moderada (9-12)	$1000	Aplicativo de música e vídeo para Smart TVs. Cheio de brechas em compartilhamento de senhas e planos familiares.
 taxcore-1	TaxCore Federal	Administração Tributária Pública	LOGIC, BAC, AUTH	Moderada (9-12)	$1000	Sistema fiscal e emissão de notas eletrônicas. Auditoria em regras de cálculo e autorizações.
-taxcore-2	TaxCore Federal	Administração Tributária Pública	LOGIC, BAC, AUTH	Moderada (9-12)	$1000	Sistema fiscal e emissão de notas eletrônicas. Auditoria em regras de cálculo e autorizações.
+taxcore-2	TaxCore Federal	Administração Tributária Pública	LOGIC, BAC, AUTH	Moderada (9-12)	$1000	Portal de restituição de impostos e consulta de contribuintes. Regras confusas que adoram deixar dados alheios à mostra.
 banksafe-1	BankSafe Financial	Instituição Financeira Digital	AUTH, CRYPTO, BAC, INJ	Rápida (8-12)	$2500	Escopo restrito a APIs, Autenticação e Criptografia. Pagamentos elevados!
 banksafe-2	BankSafe Financial	Instituição Financeira Digital	AUTH, CRYPTO, BAC, INJ	Rápida (8-12)	$2500	Escopo restrito a APIs e Autenticação bancária de alta liquidez.
 healthlock-1	HealthLock EHR	Prontuário Médico Digital	CRYPTO, AUTH, SSRF, BAC	Rápida (8-12)	$2500	Focado em sigilo de dados sensíveis e criptografia de registros hospitalares.
@@ -34,4 +34,4 @@ healthlock-2	HealthLock EHR	Prontuário Médico Digital	CRYPTO, AUTH, SSRF, BAC	
 paygateway-1	PayGateway Prime	Processadora de Pagamentos	BAC, AUTH, INJ	Rápida (8-12)	$2500	Gateway financeiro global conectando cartões de crédito e Pix.
 paygateway-2	PayGateway Prime	Processadora de Pagamentos	BAC, AUTH, INJ	Rápida (8-12)	$2500	Processador financeiro com rigorosos controles de auditoria de cartões.
 biogen-1	BioGen Genomics	Biotecnologia & Pesquisa Clínica	CRYPTO, BAC, SSRF	Rápida (8-12)	$2500	Pesquisa genômica confidencial. Foco em servidores internos de sequenciamento e controle de prontuários.
-biogen-2	BioGen Genomics	Biotecnologia & Pesquisa Clínica	CRYPTO, BAC, SSRF	Rápida (8-12)	$2500	Pesquisa genômica confidencial. Foco em servidores internos de sequenciamento e controle de prontuários.
+biogen-2	BioGen Genomics	Biotecnologia & Pesquisa Clínica	CRYPTO, BAC, SSRF	Rápida (8-12)	$2500	Portal de testes de DNA e ancestralidade online. Cofre cheio de segredos biológicos com recompensas generosas.

@@ -1,5 +1,5 @@
 /**
- * PWNED! Bug Bounty Chaos — Canonical Game Rules Engine (Manual V1.4)
+ * PWNED! Bug Bounty Chaos - Game Rules Engine (Manual V1.4)
  */
 import { CardV2 } from '../data/cardsDataV2';
 import { ProgramCard, Archetype } from '../data/cardsData';
@@ -94,21 +94,21 @@ export interface BountyMilestone {
 }
 
 export const BOUNTY_MILESTONES: BountyMilestone[] = [
-  { value: 4500, label: '$4.5k', icon: '🐝', effectDescription: 'Ganhe 1 Token de Reputação (🐝)' },
-  { value: 9000, label: '$9.0k', icon: '🐞', effectDescription: 'Receba 1 Token de Alerta (🐞)' },
-  { value: 13500, label: '$13.5k', icon: '🐝🛒', effectDescription: 'Ganhe 1 Token de Reputação (🐝) e compre 1 carta do Main Deck' },
-  { value: 19000, label: '$19.0k', icon: '🐞🗂️−', effectDescription: 'Receba 1 Token de Alerta (🐞) e descarte 1 carta da mão' },
-  { value: 24500, label: '$24.5k', icon: '🛠️⚡', effectDescription: 'Instale 1 Tool imediatamente sem custo de descarte' },
-  { value: 29000, label: '$29.0k', icon: '🐝🐞−', effectDescription: 'Ganhe 1 Token de Reputação (🐝) e remova 1 Token de Alerta' },
-  { value: 33500, label: '$33.5k', icon: '💸', effectDescription: 'Penalidade: perca $1.500 na Bounty Track' },
-  { value: 38000, label: '$38.0k', icon: '🐞', effectDescription: 'Receba 1 Token de Alerta (🐞)' },
+  { value: 4500, label: '$4.5k', icon: '🐝', effectDescription: 'Primeira Manchete: ganhe 1 Token de Reputação (🐝)' },
+  { value: 9000, label: '$9.0k', icon: '🐞', effectDescription: 'Na Mira da Segurança: receba 1 Token de Alerta (🐞)' },
+  { value: 13500, label: '$13.5k', icon: '🐝🛒', effectDescription: 'Convite VIP: ganhe 1 Token de Reputação (🐝) e compre 1 carta do Main Deck' },
+  { value: 19000, label: '$19.0k', icon: '🐞🗂️−', effectDescription: 'Rastro Descoberto: receba 1 Token de Alerta (🐞) e descarte 1 carta da mão' },
+  { value: 24500, label: '$24.5k', icon: '🛠️⚡', effectDescription: 'Patrocínio de Elite: instale 1 Tool imediatamente sem custo de descarte' },
+  { value: 29000, label: '$29.0k', icon: '🐝🐞−', effectDescription: 'Estrela da Conferência: ganhe 1 Token de Reputação (🐝) e remova 1 Token de Alerta' },
+  { value: 33500, label: '$33.5k', icon: '💸', effectDescription: 'Mordida do Leão: penalidade, perca $1.500 na Bounty Track' },
+  { value: 38000, label: '$38.0k', icon: '🐞', effectDescription: 'Inimigo Público nº 1 dos Bugs: receba 1 Token de Alerta (🐞)' },
   { value: 40000, label: '$40.0k', icon: '🏆', effectDescription: 'Meta de Vitória Atingida!' }
 ];
 
 export const TOTAL_SUPPLY_TOKENS = {
   ALERTA: 18,
   REPUTACAO: 18,
-  MAX_ROUNDS: 8,
+  MAX_ROUNDS: 10,
   WINNING_BOUNTY: 40000
 };
 

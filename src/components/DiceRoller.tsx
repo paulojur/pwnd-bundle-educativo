@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { getLocalizedPatchSpeed } from '../i18n/cardTranslations';
 import { ShieldCheck, ShieldAlert, Dices, RefreshCw } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 import { getPatchThreshold } from '../utils/gameRulesV14';
@@ -229,7 +230,9 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
             fontWeight: 'bold'
           }}
         >
-          {isNoisy ? '⚡ PATCH SPEED CHECK — MODO NOISY (2D6)' : '🥷 PATCH SPEED CHECK — MODO STEALTH (3D6)'}
+          {isNoisy
+            ? (language === 'en' ? '⚡ PATCH SPEED CHECK — NOISY MODE (2D6)' : '⚡ PATCH SPEED CHECK — MODO NOISY (2D6)')
+            : (language === 'en' ? '🥷 PATCH SPEED CHECK — STEALTH MODE (3D6)' : '🥷 PATCH SPEED CHECK — MODO STEALTH (3D6)')}
         </div>
 
         <h3
@@ -257,15 +260,21 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
           }}
         >
           <div>
-            Velocidade: <strong style={{ color: '#fff' }}>{patchSpeed}</strong> | Limiar de Patch:{' '}
-            <strong style={{ color: '#ff334b' }}>{threshold}+</strong> (Soma D6)
+            {language === 'en' ? 'Speed:' : 'Velocidade:'} <strong style={{ color: '#fff' }}>{getLocalizedPatchSpeed(patchSpeed, language)}</strong> | {language === 'en' ? 'Patch Threshold:' : 'Limiar de Patch:'}{' '}
+            <strong style={{ color: '#ff334b' }}>{threshold}+</strong> ({language === 'en' ? 'D6 Sum' : 'Soma D6'})
           </div>
           <div style={{ fontSize: '11px', color: '#bbb', marginTop: '4px' }}>
             {diceRollReason === 'endTurn'
               ? isNoisy
-                ? 'Fim de Turno [NOISY]: Você possui vulns barulhentas na mesa! Rola 2D6 somados. Se a soma for menor que o limiar, seus exploits continuam na mesa.'
-                : 'Fim de Turno [STEALTH]: Rola 3D6, descarta o maior valor e soma os 2 menores. Se passar, seus exploits permanecem na mesa para a próxima rodada!'
-              : 'Ação REPORT [NOISY]: Rola 2D6 e soma os valores. Se a soma for menor que o limiar, seu relatório é aprovado e você recebe o Payout na Bounty Track!'}
+                ? (language === 'en'
+                    ? 'End of Turn [NOISY]: You have noisy vulns on the table! Rolls 2D6 summed. If the sum is below the threshold, your exploits stay on the table.'
+                    : 'Fim de Turno [NOISY]: Você possui vulns barulhentas na mesa! Rola 2D6 somados. Se a soma for menor que o limiar, seus exploits continuam na mesa.')
+                : (language === 'en'
+                    ? 'End of Turn [STEALTH]: Rolls 3D6, discards the highest value and sums the 2 lowest. If you pass, your exploits stay on the table for the next round!'
+                    : 'Fim de Turno [STEALTH]: Rola 3D6, descarta o maior valor e soma os 2 menores. Se passar, seus exploits permanecem na mesa para a próxima rodada!')
+              : (language === 'en'
+                  ? 'REPORT Action [NOISY]: Rolls 2D6 and sums the values. If the sum is below the threshold, your report is approved and you collect the Payout on the Bounty Track!'
+                  : 'Ação REPORT [NOISY]: Rola 2D6 e soma os valores. Se a soma for menor que o limiar, seu relatório é aprovado e você recebe o Payout na Bounty Track!')}
           </div>
         </div>
 
@@ -300,7 +309,7 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                       alignItems: 'center',
                       gap: '3px'
                     }}
-                    title="Gastar 2 Tokens de Reputação (🐝) para rerrolar este dado"
+                    title={language === 'en' ? 'Spend 2 Reputation Tokens (🐝) to reroll this die' : 'Gastar 2 Tokens de Reputação (🐝) para rerrolar este dado'}
                   >
                     <RefreshCw size={10} /> Reroll (2🐝)
                   </button>
@@ -314,9 +323,9 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
         {rolled && (
           <div style={{ margin: '16px 0', padding: '12px', borderRadius: '8px', background: passed ? 'rgba(0, 255, 102, 0.08)' : 'rgba(255, 51, 75, 0.1)', border: `1px solid ${passed ? '#00ff66' : '#ff334b'}` }}>
             <div style={{ fontFamily: 'monospace', fontSize: '14px', color: '#fff', marginBottom: '6px' }}>
-              Soma Avaliada:{' '}
+              {language === 'en' ? 'Evaluated Sum:' : 'Soma Avaliada:'}{' '}
               <strong style={{ fontSize: '18px', color: passed ? '#00ff66' : '#ff334b' }}>{evaluatedSum}</strong>{' '}
-              vs Limiar <strong>{threshold}</strong>
+              {language === 'en' ? 'vs Threshold' : 'vs Limiar'} <strong>{threshold}</strong>
             </div>
 
             <div style={{ fontSize: '13px', fontWeight: 'bold', fontFamily: 'monospace' }}>
@@ -324,22 +333,24 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                 <span style={{ color: '#00ff66', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                   <ShieldCheck size={20} />
                   {diceRollReason === 'endTurn'
-                    ? '✓ SISTEMA VULNERÁVEL! Seus exploits permanecem na mesa para o próximo turno.'
-                    : '✓ REPORT APROVADO! Triagem aceita e Payout liberado.'}
+                    ? (language === 'en' ? '✓ SYSTEM VULNERABLE! Your exploits remain on the table for the next turn.' : '✓ SISTEMA VULNERÁVEL! Seus exploits permanecem na mesa para o próximo turno.')
+                    : (language === 'en' ? '✓ REPORT APPROVED! Triage accepted and Payout released.' : '✓ REPORT APROVADO! Triagem aceita e Payout liberado.')}
                 </span>
               ) : (
                 <span style={{ color: '#ff334b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                   <ShieldAlert size={20} />
                   {diceRollReason === 'endTurn'
-                    ? '⚠️ PATCH DEPLOYED NO FIM DO TURNO! Sistemas detectaram a intrusão.'
-                    : '⚠️ PATCH DEPLOYED NO REPORT! Falha corrigida antes do pagamento.'}
+                    ? (language === 'en' ? '⚠️ PATCH DEPLOYED AT END OF TURN! Systems detected the intrusion.' : '⚠️ PATCH DEPLOYED NO FIM DO TURNO! Sistemas detectaram a intrusão.')
+                    : (language === 'en' ? '⚠️ PATCH DEPLOYED ON REPORT! Flaw patched before payout.' : '⚠️ PATCH DEPLOYED NO REPORT! Falha corrigida antes do pagamento.')}
                 </span>
               )}
             </div>
 
             {playerReputationTokens >= 2 && !passed && (
               <div style={{ fontSize: '11px', color: '#ffb800', marginTop: '6px' }}>
-                💡 Você possui {playerReputationTokens} 🐝 Tokens! Pode clicar no botão "Reroll" acima de qualquer dado para tentar escapar do Patch.
+                {language === 'en'
+                  ? `💡 You have ${playerReputationTokens} 🐝 Tokens! You can click the "Reroll" button below any die to try escaping the Patch.`
+                  : `💡 Você possui ${playerReputationTokens} 🐝 Tokens! Pode clicar no botão "Reroll" acima de qualquer dado para tentar escapar do Patch.`}
               </div>
             )}
 
@@ -357,24 +368,24 @@ export const DiceRoller: React.FC<DiceRollerProps> = ({
                 }}
               >
                 <div style={{ fontSize: '10.5px', fontWeight: '900', color: '#ff334b', marginBottom: '6px' }}>
-                  💰 RECURSOS EM RISCO (PERDIDOS SE ACEITAR O PATCH):
+                  {language === 'en' ? '💰 RESOURCES AT RISK (LOST IF YOU ACCEPT PATCH):' : '💰 RECURSOS EM RISCO (PERDIDOS SE ACEITAR O PATCH):'}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '11px', color: '#E0E7FF' }}>
                   {exploitsAtRisk.map((exp, idx) => (
                     <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span>• {exp.name} ({exp.vulnClass || 'EXPLOIT'})</span>
-                      <span style={{ fontWeight: '800', color: '#00ff66' }}>+${exp.points.toLocaleString('pt-BR')}</span>
+                      <span style={{ fontWeight: '800', color: '#00ff66' }}>+${exp.points.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}</span>
                     </div>
                   ))}
                   {programBonusAtRisk > 0 && (
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span>• Bônus Contrato [{programName}]</span>
-                      <span style={{ fontWeight: '800', color: '#00ff66' }}>+${programBonusAtRisk.toLocaleString('pt-BR')}</span>
+                      <span>• {language === 'en' ? 'Contract Bonus' : 'Bônus Contrato'} [{programName}]</span>
+                      <span style={{ fontWeight: '800', color: '#00ff66' }}>+${programBonusAtRisk.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}</span>
                     </div>
                   )}
                   <div style={{ borderTop: '1px dashed #666', paddingTop: '4px', marginTop: '4px', display: 'flex', justifyContent: 'space-between', fontWeight: '900', fontSize: '12px', color: '#00ff66' }}>
-                    <span>TOTAL PRESERVADO SE USAR BYPASS:</span>
-                    <span>+${(exploitsAtRisk.reduce((acc, cur) => acc + cur.points, 0) + programBonusAtRisk).toLocaleString('pt-BR')}</span>
+                    <span>{language === 'en' ? 'TOTAL PRESERVED IF USING BYPASS:' : 'TOTAL PRESERVADO SE USAR BYPASS:'}</span>
+                    <span>+${(exploitsAtRisk.reduce((acc, cur) => acc + cur.points, 0) + programBonusAtRisk).toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}</span>
                   </div>
                 </div>
               </div>

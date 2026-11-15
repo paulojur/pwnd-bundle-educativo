@@ -10,9 +10,10 @@ import { EventCardModal } from './EventCardModal';
 import { PrintAndPlayModal } from './PrintAndPlayModal';
 import { PlayerAidModal } from './PlayerAidModal';
 import { ProgramSelectorModal } from './ProgramSelectorModal';
-import { ObserverMetricsModal, DeckPeekModal } from './ObserverMetricsModal';
+import { ObserverMetricsModal, DeckPeekModal, computeMatchHighlights } from './ObserverMetricsModal';
 import { ARCHETYPES, PROGRAM_CARDS, ProgramCard } from '../data/cardsData';
 import { useLanguage } from '../i18n/LanguageContext';
+import { getLocalizedPlayerName, getLocalizedArchetype, getLocalizedProgram } from '../i18n/cardTranslations';
 import { Layers, RefreshCw, Eye, Users, ShieldAlert, Globe, Printer, BookOpen, Trophy, Home, HelpCircle, ArrowLeft, Activity, LogOut } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 import { supabaseSync } from '../utils/supabaseSync';
@@ -90,10 +91,12 @@ const BoardGameContent: React.FC = () => {
     pendingTargetedEvent,
     resolveTargetedEvent,
     auditLogs,
+    playerMetrics,
     roomCode,
     setRoomCode,
     incomingAlertNotification,
-    dismissIncomingAlert
+    dismissIncomingAlert,
+    submitMatchFeedback
   } = useBoardGame();
 
   const [viewMode, setViewMode] = useState<'myMat' | 'centerTable' | 'fullTable'>('myMat');
@@ -102,6 +105,23 @@ const BoardGameContent: React.FC = () => {
   const [printModalOpen, setPrintModalOpen] = useState<boolean>(false);
   const [observerModalOpen, setObserverModalOpen] = useState<boolean>(false);
   const [voluntaryProgramModalOpen, setVoluntaryProgramModalOpen] = useState<boolean>(false);
+
+  // Estados da enquete rápida de fim de partida (Playtest Feedback)
+  const [fbPacing, setFbPacing] = useState<string>('No tempo certo');
+  const [fbChaos, setFbChaos] = useState<string>('Equilibrado');
+  const [fbClarity, setFbClarity] = useState<string>('Tudo claro');
+  const [fbComment, setFbComment] = useState<string>('');
+  const [fbStatus, setFbStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+  useEffect(() => {
+    if (!gameWinner) {
+      setFbPacing('No tempo certo');
+      setFbChaos('Equilibrado');
+      setFbClarity('Tudo claro');
+      setFbComment('');
+      setFbStatus('idle');
+    }
+  }, [gameWinner]);
 
   // Escutar evento de desistência/troca de programa ativo
   const { abandonActiveProgram } = useBoardGame();
@@ -133,7 +153,7 @@ const BoardGameContent: React.FC = () => {
   // Dados do Jogador Humano no Dispositivo Local
   const humanPlayerData: PlayerMatData = {
     playerId: myRole,
-    playerName: `${currentPlayer?.name || myRole} (Você)`,
+    playerName: `${getLocalizedPlayerName(currentPlayer?.name || myRole, language)} (${language === 'en' ? 'You' : 'Você'})`,
     playerColor: currentPlayer?.color || 'var(--player-1-green)',
     archetype: playerArchetype,
     currentProgram: currentDisplayProgram,
@@ -166,6 +186,9 @@ const BoardGameContent: React.FC = () => {
         setTimeout(() => {
           supabaseSync.broadcast('REQUEST_STATE', { from: role, playerName: formattedName });
         }, 300);
+        setTimeout(() => {
+          supabaseSync.broadcast('UPDATE_PLAYER_NAME', { role, name: formattedName });
+        }, 650);
       }
     }
   };
@@ -179,15 +202,17 @@ const BoardGameContent: React.FC = () => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const roomParam = params.get('room');
-    const roleParam = params.get('role') as PlayerRoleId | null;
 
     if (roomParam) {
       const code = roomParam.toUpperCase().trim();
       setRoomCode(code);
-      if (roleParam) {
-        handleStartGameMode('lan', code, roleParam);
-      } else {
-        // Link neutro recebido: abre modal direto para escolha de assento
+      let savedSeatForRoom: PlayerRoleId | null = null;
+      try {
+        savedSeatForRoom = sessionStorage.getItem(`pwnd_seat_${code}`) as PlayerRoleId | null;
+      } catch {}
+
+      if (!savedSeatForRoom) {
+        // Link de convite recebido por convidado ainda sem assento: abre modal direto na escolha de assento
         setMultiplayerModalOpen(true);
       }
     }
@@ -459,14 +484,16 @@ const BoardGameContent: React.FC = () => {
                 onClick={() => {
                   const isHost = myRole === 'player-1';
                   const msg = isHost
-                    ? 'Deseja realmente encerrar a mesa online para todos os jogadores?'
-                    : 'Deseja realmente sair desta mesa online?';
+                    ? (language === 'en' ? 'Do you really want to end the online table for all players?' : 'Deseja realmente encerrar a mesa online para todos os jogadores?')
+                    : (language === 'en' ? 'Do you really want to leave this online table?' : 'Deseja realmente sair desta mesa online?');
                   if (confirm(msg)) {
                     soundFx.playClick();
                     handleLeaveRoom();
                   }
                 }}
-                title={myRole === 'player-1' ? 'Encerrar mesa online para todos' : 'Sair desta mesa online'}
+                title={myRole === 'player-1'
+                  ? (language === 'en' ? 'End online table for everyone' : 'Encerrar mesa online para todos')
+                  : (language === 'en' ? 'Leave this online table' : 'Sair desta mesa online')}
                 style={{
                   padding: '6px 10px',
                   background: '#DC2626',
@@ -482,14 +509,16 @@ const BoardGameContent: React.FC = () => {
                   gap: '4px'
                 }}
               >
-                <LogOut size={13} /> {myRole === 'player-1' ? 'Encerrar Mesa' : 'Sair da Mesa'}
+                <LogOut size={13} /> {myRole === 'player-1'
+                  ? (language === 'en' ? 'End Table' : 'Encerrar Mesa')
+                  : (language === 'en' ? 'Leave Table' : 'Sair da Mesa')}
               </button>
             )}
 
             <button
               onClick={() => {
                 if (gameMode === 'lan' && myRole !== 'player-1') {
-                  alert('Em partidas online, apenas o anfitrião (Jogador 1) pode reiniciar o jogo.');
+                  alert(language === 'en' ? 'In online matches, only the host (Player 1) can reset the game.' : 'Em partidas online, apenas o anfitrião (Jogador 1) pode reiniciar o jogo.');
                   return;
                 }
                 if (confirm(t('nav.resetConfirm'))) {
@@ -498,7 +527,9 @@ const BoardGameContent: React.FC = () => {
                 }
               }}
               disabled={gameMode === 'lan' && myRole !== 'player-1'}
-              title={gameMode === 'lan' && myRole !== 'player-1' ? 'Reiniciar partida (Apenas o Host pode reiniciar)' : t('nav.resetGame')}
+              title={gameMode === 'lan' && myRole !== 'player-1'
+                ? (language === 'en' ? 'Reset match (Only Host can reset)' : 'Reiniciar partida (Apenas o Host pode reiniciar)')
+                : t('nav.resetGame')}
               style={{
                 padding: '6px 8px',
                 background: gameMode === 'lan' && myRole !== 'player-1' ? '#E5E7EB' : '#FAF6EE',
@@ -574,7 +605,9 @@ const BoardGameContent: React.FC = () => {
                   soundFx.playClick();
                   setMyRole(e.target.value as any);
                 }}
-                title={gameMode === 'lan' || Boolean(roomCode) ? 'Seu assento é fixo nesta sala online' : 'Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador'}
+                title={gameMode === 'lan' || Boolean(roomCode)
+                  ? (language === 'en' ? 'Your seat is locked in this online room' : 'Seu assento é fixo nesta sala online')
+                  : (language === 'en' ? 'Switch perspective to play or inspect each player mat' : 'Alterne a perspectiva para jogar ou inspecionar o tapete de cada jogador')}
                 style={{
                   padding: '4px 8px',
                   background: gameMode === 'lan' || Boolean(roomCode) ? '#F3F4F6' : '#FFFFFF',
@@ -591,7 +624,7 @@ const BoardGameContent: React.FC = () => {
               >
                 {allPlayers.slice(0, playerCount).map(p => (
                   <option key={p.id} value={p.id}>
-                    {p.name} {p.id === activePlayerRole ? `● (${language === 'en' ? 'Your Turn' : 'Sua Vez'})` : ''} — ${p.score.toLocaleString('pt-BR')}
+                    {getLocalizedPlayerName(p.name, language)} {p.id === activePlayerRole ? `● (${language === 'en' ? 'Your Turn' : 'Sua Vez'})` : ''} - ${p.score.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}
                   </option>
                 ))}
               </select>
@@ -602,7 +635,7 @@ const BoardGameContent: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               onClick={() => { soundFx.playClick(); setObserverModalOpen(true); }}
-              title="Métricas do Observador & Log Completo de Telemetria"
+              title={language === 'en' ? 'Observer Metrics & Full Telemetry Log' : 'Métricas do Observador & Log Completo de Telemetria'}
               style={{
                 padding: '5px 10px',
                 background: '#0F172A',
@@ -618,7 +651,7 @@ const BoardGameContent: React.FC = () => {
                 gap: '5px'
               }}
             >
-              <Activity size={13} /> 🔭 Observador ({auditLogs.length})
+              <Activity size={13} /> {language === 'en' ? `🔭 Observer (${auditLogs.length})` : `🔭 Observador (${auditLogs.length})`}
             </button>
 
             <button
@@ -681,16 +714,16 @@ const BoardGameContent: React.FC = () => {
               cursor: 'pointer',
               borderTop: '1px solid #1E293B'
             }}
-            title="Clique para abrir o painel completo de Métricas do Observador"
+            title={language === 'en' ? 'Click to open the full Observer Metrics panel' : 'Clique para abrir o painel completo de Métricas do Observador'}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
               <span style={{ color: '#38BDF8', fontWeight: 900 }}>[LOG R{auditLogs[0].round}]</span>
-              <span style={{ color: '#FACC15', fontWeight: 800 }}>{auditLogs[0].playerName} {auditLogs[0].archetypeName ? `(${auditLogs[0].archetypeName}):` : ':'}</span>
+              <span style={{ color: '#FACC15', fontWeight: 800 }}>{getLocalizedPlayerName(auditLogs[0].playerName || '', language)} {auditLogs[0].archetypeName ? `(${auditLogs[0].archetypeName}):` : ':'}</span>
               <span style={{ color: '#F8FAFC', fontWeight: 700 }}>{auditLogs[0].title}</span>
-              <span style={{ color: '#94A3B8' }}>— {auditLogs[0].details}</span>
+              <span style={{ color: '#94A3B8' }}>- {auditLogs[0].details}</span>
             </div>
             <span style={{ color: '#38BDF8', fontWeight: 800, flexShrink: 0, marginLeft: '10px' }}>
-              Ver Histórico Completo →
+              {language === 'en' ? 'View Full History →' : 'Ver Histórico Completo →'}
             </span>
           </div>
         )}
@@ -723,9 +756,9 @@ const BoardGameContent: React.FC = () => {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '900', fontFamily: 'monospace', color: '#1E1B18' }}>
-              <span>🏛️ TABULEIRO CENTRAL & MERCADO CORPORATIVO</span>
+              <span>{language === 'en' ? '🏛️ CENTRAL BOARD & CORPORATE MARKET' : '🏛️ TABULEIRO CENTRAL & MERCADO CORPORATIVO'}</span>
               <span style={{ fontSize: '10.5px', color: '#685F53', fontWeight: 'normal' }}>
-                (Escolha um programa para alocar ao seu tapete)
+                {language === 'en' ? '(Pick a program to allocate to your mat)' : '(Escolha um programa para alocar ao seu tapete)'}
               </span>
             </div>
             <button
@@ -745,7 +778,7 @@ const BoardGameContent: React.FC = () => {
                 gap: '6px'
               }}
             >
-              <ArrowLeft size={14} /> Voltar ao Meu Tapete
+              <ArrowLeft size={14} /> {t('centerBoard.returnToMyMat')}
             </button>
           </div>
 
@@ -848,7 +881,7 @@ const BoardGameContent: React.FC = () => {
       {/* MODAL OBRIGATÓRIO DO DADO D6 DE PATCH SPEED */}
       {isDiceModalOpen && (
         <DiceRoller
-          programName={currentDisplayProgram.name}
+          programName={getLocalizedProgram(currentDisplayProgram, language).name}
           patchSpeed={currentDisplayProgram.patchSpeed}
           isNoisy={diceRollReason === 'report' || !isStealthMode}
           diceRollReason={diceRollReason}
@@ -915,11 +948,15 @@ const BoardGameContent: React.FC = () => {
             </div>
 
             <h2 style={{ fontSize: '20px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', marginBottom: '8px' }}>
-              ALERTA EM {alertServerName?.toUpperCase() || 'PRODUÇÃO'}!
+              {language === 'en'
+                ? `ALERT ON ${alertServerName?.toUpperCase() || 'PRODUCTION'}!`
+                : `ALERTA EM ${alertServerName?.toUpperCase() || 'PRODUÇÃO'}!`}
             </h2>
 
             <p style={{ fontSize: '12px', color: '#4B4337', marginBottom: '16px', lineHeight: '1.4' }}>
-              A soma dos dados de Patch Speed atingiu o limiar de defesa corporativa! A falha foi mitigada pela empresa.
+              {language === 'en'
+                ? 'The Patch Speed dice sum reached the corporate defense threshold! The flaw was patched by the company.'
+                : 'A soma dos dados de Patch Speed atingiu o limiar de defesa corporativa! A falha foi mitigada pela empresa.'}
             </p>
 
             {/* QUADRO DE TELEMETRIA: VALOR DO REPORT EM RISCO */}
@@ -936,24 +973,26 @@ const BoardGameContent: React.FC = () => {
                 }}
               >
                 <div style={{ fontSize: '11px', fontWeight: '900', color: '#991B1B', marginBottom: '6px' }}>
-                  💰 VALOR DO REPORT EM RISCO (SE ACEITAR O PATCH):
+                  {language === 'en'
+                    ? '💰 REPORT VALUE AT RISK (IF YOU ACCEPT PATCH):'
+                    : '💰 VALOR DO REPORT EM RISCO (SE ACEITAR O PATCH):'}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '11px', color: '#374151' }}>
                   {myExploitsInRisk.map(e => (
                     <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span>• {e.card.name} ({e.card.vulnClass || 'EXPLOIT'})</span>
-                      <span style={{ fontWeight: '800', color: '#166534' }}>+${(e.card.points || 1500).toLocaleString('pt-BR')}</span>
+                      <span style={{ fontWeight: '800', color: '#166534' }}>+${(e.card.points || 1500).toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}</span>
                     </div>
                   ))}
                   {progBonusInRisk > 0 && (
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span>• Bônus Contrato [{playerActiveProgram?.name}]</span>
-                      <span style={{ fontWeight: '800', color: '#166534' }}>+${progBonusInRisk.toLocaleString('pt-BR')}</span>
+                      <span>• {language === 'en' ? 'Contract Bonus' : 'Bônus Contrato'} [{playerActiveProgram?.name}]</span>
+                      <span style={{ fontWeight: '800', color: '#166534' }}>+${progBonusInRisk.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}</span>
                     </div>
                   )}
                   <div style={{ borderTop: '1.5px dashed #FECACA', paddingTop: '6px', marginTop: '4px', display: 'flex', justifyContent: 'space-between', fontWeight: '900', fontSize: '13px', color: '#166534' }}>
-                    <span>TOTAL A RECEBER SE USAR BYPASS:</span>
-                    <span>+${totalBountyInRisk.toLocaleString('pt-BR')}</span>
+                    <span>{language === 'en' ? 'TOTAL TO RECEIVE IF USING BYPASS:' : 'TOTAL A RECEBER SE USAR BYPASS:'}</span>
+                    <span>+${totalBountyInRisk.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}</span>
                   </div>
                 </div>
               </div>
@@ -977,9 +1016,9 @@ const BoardGameContent: React.FC = () => {
                     cursor: 'pointer',
                     boxShadow: '0 2px 6px rgba(22, 163, 74, 0.4)'
                   }}
-                  title="Anula o descarte, garante o Payout e recebe 1 Alerta (descarta o Bypass)"
+                  title={language === 'en' ? 'Cancels discard, guarantees Payout and gains 1 Alert (discards Bypass)' : 'Anula o descarte, garante o Payout e recebe 1 Alerta (descarta o Bypass)'}
                 >
-                  🛡️ Ativar Bypass (Safeguard)
+                  {language === 'en' ? '🛡️ Activate Bypass (Safeguard)' : '🛡️ Ativar Bypass (Safeguard)'}
                 </button>
               )}
 
@@ -999,9 +1038,9 @@ const BoardGameContent: React.FC = () => {
                   cursor: 'pointer',
                   boxShadow: '0 2px 6px rgba(185, 28, 28, 0.4)'
                 }}
-                title="Descarta Exploits e Programa, recebe 1 Alerta e compra 1 consolação"
+                title={language === 'en' ? 'Discards Exploits and Program, gains 1 Alert and draws 1 consolation card' : 'Descarta Exploits e Programa, recebe 1 Alerta e compra 1 consolação'}
               >
-                💥 Aceitar Patch (+1 Alerta 🐞)
+                {language === 'en' ? '💥 Accept Patch (+1 Alert 🐞)' : '💥 Aceitar Patch (+1 Alerta 🐞)'}
               </button>
             </div>
           </div>
@@ -1073,17 +1112,17 @@ const BoardGameContent: React.FC = () => {
               </div>
 
               <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#B45309', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '900', marginBottom: '4px' }}>
-                HALL OF FAME — PÓDIO FINAL
+                {language === 'en' ? 'HALL OF FAME - FINAL PODIUM' : 'HALL OF FAME - PÓDIO FINAL'}
               </div>
 
               <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', marginBottom: '6px' }}>
-                🏆 VENCEDOR: {gameWinner}
+                🏆 {language === 'en' ? 'WINNER:' : 'VENCEDOR:'} {getLocalizedPlayerName(gameWinner, language)}
               </h2>
 
               <p style={{ fontSize: '13px', color: didLocalWin ? '#166534' : '#4B4337', fontWeight: didLocalWin ? '800' : '600', marginBottom: '18px', fontFamily: 'monospace' }}>
                 {didLocalWin
-                  ? '🎉 PARABÉNS! Você conquistou o 1º lugar na trilha de Bug Bounty!'
-                  : `Partida encerrada! Confira a contabilização oficial de Bounty, Reputação (🐝 +$500) e Alertas (🐞 -$500):`}
+                  ? (language === 'en' ? '🎉 CONGRATULATIONS! You took 1st place on the Bug Bounty Track!' : '🎉 PARABÉNS! Você conquistou o 1º lugar na trilha de Bug Bounty!')
+                  : (language === 'en' ? 'Match ended! Check the official tally of Bounty, Reputation (🐝 +$500) and Alerts (🐞 -$500):' : 'Partida encerrada! Confira a contabilização oficial de Bounty, Reputação (🐝 +$500) e Alertas (🐞 -$500):')}
               </p>
 
               {/* TABELA DO PÓDIO */}
@@ -1091,7 +1130,14 @@ const BoardGameContent: React.FC = () => {
                 {activeStandings.map((item, idx) => {
                   const isFirst = idx === 0;
                   const isMe = item.p.id === myRole;
-                  const medal = idx === 0 ? '🥇 1º' : idx === 1 ? '🥈 2º' : idx === 2 ? '🥉 3º' : `${idx + 1}º`;
+                  const medal = idx === 0
+                    ? (language === 'en' ? '🥇 1st' : '🥇 1º')
+                    : idx === 1
+                    ? (language === 'en' ? '🥈 2nd' : '🥈 2º')
+                    : idx === 2
+                    ? (language === 'en' ? '🥉 3rd' : '🥉 3º')
+                    : (language === 'en' ? `${idx + 1}th` : `${idx + 1}º`);
+                  const locArch = getLocalizedArchetype(item.p.archetype, language);
 
                   return (
                     <div
@@ -1111,25 +1157,326 @@ const BoardGameContent: React.FC = () => {
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'monospace', fontSize: '13px', fontWeight: '900', color: '#1E1B18' }}>
                           <span>{medal}</span>
-                          <span style={{ color: item.p.color }}>{item.p.name}</span>
-                          {isMe && <span style={{ fontSize: '10px', background: '#DCFCE7', color: '#166534', padding: '1px 5px', borderRadius: '4px' }}>VOCÊ</span>}
+                          <span style={{ color: item.p.color }}>{getLocalizedPlayerName(item.p.name, language)}</span>
+                          {isMe && (
+                            <span style={{ fontSize: '10px', background: '#DCFCE7', color: '#166534', padding: '1px 5px', borderRadius: '4px' }}>
+                              {language === 'en' ? 'YOU' : 'VOCÊ'}
+                            </span>
+                          )}
                         </div>
                         <div style={{ fontSize: '10.5px', color: '#685F53', fontFamily: 'monospace', marginTop: '2px' }}>
-                          {item.p.archetype?.avatarIcon} {item.p.archetype?.name} • Bounty: ${item.p.score.toLocaleString('pt-BR')} | 🐝 {item.p.reputacaoTokens} (+${item.repBonus}) | 🐞 {item.p.alertaTokens} (-${item.alertPenalty})
+                          {item.p.archetype?.avatarIcon} {locArch.name} • Bounty: ${item.p.score.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')} | 🐝 {item.p.reputacaoTokens} (+${item.repBonus}) | 🐞 {item.p.alertaTokens} (-${item.alertPenalty})
                         </div>
                       </div>
 
                       <div style={{ textAlign: 'right', fontFamily: 'monospace' }}>
                         <div style={{ fontSize: '16px', fontWeight: '900', color: isFirst ? '#B45309' : '#047857' }}>
-                          ${item.finalTotal.toLocaleString('pt-BR')}
+                          ${item.finalTotal.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}
                         </div>
                         <div style={{ fontSize: '9px', color: '#685F53', fontWeight: '700' }}>
-                          TOTAL FINAL
+                          {language === 'en' ? 'FINAL TOTAL' : 'TOTAL FINAL'}
                         </div>
                       </div>
                     </div>
                   );
                 })}
+              </div>
+
+              {/* DESTAQUES DA PARTIDA */}
+              {(() => {
+                const victoryHighlights = computeMatchHighlights(
+                  auditLogs,
+                  activeStandings.map(s => s.p),
+                  playerMetrics,
+                  language
+                );
+                if (!victoryHighlights.biggestHit && !victoryHighlights.worstPatch && victoryHighlights.playerTitles.length === 0) {
+                  return null;
+                }
+                return (
+                  <div
+                    style={{
+                      background: '#F8FAFC',
+                      border: '2px solid #334155',
+                      borderRadius: '10px',
+                      padding: '12px 14px',
+                      marginBottom: '18px',
+                      textAlign: 'left',
+                      fontFamily: 'monospace'
+                    }}
+                  >
+                    <div style={{ fontSize: '12px', fontWeight: '900', color: '#0F172A', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>🏅</span>
+                      <span>{language === 'en' ? 'MATCH HIGHLIGHTS' : 'DESTAQUES DA PARTIDA'}</span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '8px', marginBottom: '10px', fontSize: '10.5px' }}>
+                      {victoryHighlights.biggestHit && (
+                        <div style={{ background: '#FFFFFF', border: '1.5px solid #16A34A', borderRadius: '6px', padding: '7px 9px' }}>
+                          <div style={{ fontWeight: '900', color: '#166534' }}>💰 {language === 'en' ? 'Biggest Hit' : 'Maior Tacada'}</div>
+                          <div style={{ color: '#1E1B18', marginTop: '2px' }}>
+                            <strong>{getLocalizedPlayerName(victoryHighlights.biggestHit.playerName, language)}</strong>: +${victoryHighlights.biggestHit.amount.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')} ({victoryHighlights.biggestHit.programName}, R{victoryHighlights.biggestHit.round})
+                          </div>
+                          {victoryHighlights.biggestHit.combo && (
+                            <div style={{ fontSize: '9.5px', color: '#475569', marginTop: '2px' }}>Combo: {victoryHighlights.biggestHit.combo}</div>
+                          )}
+                        </div>
+                      )}
+
+                      {victoryHighlights.worstPatch && (
+                        <div style={{ background: '#FFFFFF', border: '1.5px solid #DC2626', borderRadius: '6px', padding: '7px 9px' }}>
+                          <div style={{ fontWeight: '900', color: '#991B1B' }}>💥 {language === 'en' ? 'Hardest Patch' : 'Maior Tombo (Patch)'}</div>
+                          <div style={{ color: '#1E1B18', marginTop: '2px' }}>
+                            <strong>{getLocalizedPlayerName(victoryHighlights.worstPatch.playerName, language)}</strong> {language === 'en' ? 'lost the table on' : 'perdeu a mesa em'} {victoryHighlights.worstPatch.programName} (R{victoryHighlights.worstPatch.round})
+                          </div>
+                        </div>
+                      )}
+
+                      {victoryHighlights.cleanRunLeader && (
+                        <div style={{ background: '#FFFFFF', border: '1.5px solid #0284C7', borderRadius: '6px', padding: '7px 9px' }}>
+                          <div style={{ fontWeight: '900', color: '#0369A1' }}>👻 {language === 'en' ? 'Cleanest Run' : 'Operação Mais Limpa'}</div>
+                          <div style={{ color: '#1E1B18', marginTop: '2px' }}>
+                            <strong>{getLocalizedPlayerName(victoryHighlights.cleanRunLeader.playerName, language)}</strong>: {victoryHighlights.cleanRunLeader.reportsCompleted} {language === 'en' ? 'report(s) with 0 alerts' : 'report(s) sem alertas'}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {victoryHighlights.playerTitles.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {victoryHighlights.playerTitles.map(pt => (
+                          <div
+                            key={pt.playerId}
+                            style={{
+                              background: '#FFFFFF',
+                              border: `1.5px solid ${pt.color}`,
+                              borderRadius: '6px',
+                              padding: '4px 8px',
+                              fontSize: '10px',
+                              color: '#1E1B18'
+                            }}
+                          >
+                            <strong style={{ color: pt.color }}>{getLocalizedPlayerName(pt.playerName, language)}</strong> ({pt.badge}): {pt.reason}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* ENQUETE RÁPIDA DE PLAYTEST & AVALIAÇÃO PARA O JOGO FÍSICO */}
+              <div
+                style={{
+                  background: '#FFFBEB',
+                  border: '2px solid #D97706',
+                  borderRadius: '10px',
+                  padding: '14px 16px',
+                  marginBottom: '18px',
+                  textAlign: 'left',
+                  fontFamily: 'monospace'
+                }}
+              >
+                <div style={{ fontSize: '12px', fontWeight: '900', color: '#92400E', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>📦</span>
+                  <span>
+                    {language === 'en'
+                      ? 'PLAYTEST EVALUATION (10s) - HELP BUILD THE PHYSICAL EDITION!'
+                      : 'AVALIAÇÃO DO PLAYTEST (10s) - AJUDE A VIABILIZAR O JOGO FÍSICO!'}
+                  </span>
+                </div>
+                <div style={{ fontSize: '10.5px', color: '#78350F', lineHeight: '1.4', marginBottom: '12px' }}>
+                  {language === 'en'
+                    ? 'Your feedback is crucial to calibrate card balancing and prepare the official physical tabletop edition of PWNED!. Please click below and save to our database:'
+                    : 'Sua resposta é fundamental para calibrarmos o balanceamento final das cartas e viabilizarmos a futura produção e disponibilização do jogo físico! Leva só 10 segundos:'}
+                </div>
+
+                {fbStatus === 'saved' || Boolean(playerMetrics?.[myRole]?.feedback) ? (
+                  <div
+                    style={{
+                      background: '#DCFCE7',
+                      border: '1.5px solid #16A34A',
+                      borderRadius: '8px',
+                      padding: '10px 12px',
+                      color: '#166534',
+                      fontSize: '11.5px',
+                      fontWeight: '800',
+                      textAlign: 'center'
+                    }}
+                  >
+                    {language === 'en'
+                      ? '✓ Evaluation sent & saved to Supabase! Thank you for helping shape the physical edition of PWNED!'
+                      : '✓ Avaliação enviada e gravada no banco com sucesso! Muito obrigado por ajudar a construir a edição física do PWNED!'}
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {/* Pergunta 1: Ritmo / Duração */}
+                    <div>
+                      <div style={{ fontSize: '10.5px', fontWeight: '800', color: '#1E1B18', marginBottom: '4px' }}>
+                        {language === 'en' ? '1. Match Pacing / Duration:' : '1. Ritmo e duração da partida:'}
+                      </div>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        {[
+                          { val: 'Curta demais', labelPt: '⚡ Curta demais', labelEn: '⚡ Too short' },
+                          { val: 'No tempo certo', labelPt: '🎯 No tempo certo', labelEn: '🎯 Just right' },
+                          { val: 'Arrastada', labelPt: '🐢 Arrastada / Longa', labelEn: '🐢 Too long' }
+                        ].map(opt => (
+                          <button
+                            key={opt.val}
+                            type="button"
+                            onClick={() => { soundFx.playClick(); setFbPacing(opt.val); }}
+                            style={{
+                              flex: 1,
+                              minWidth: '110px',
+                              padding: '6px 8px',
+                              fontSize: '10.5px',
+                              fontFamily: 'monospace',
+                              fontWeight: '800',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              background: fbPacing === opt.val ? '#2B2620' : '#FFFFFF',
+                              color: fbPacing === opt.val ? '#FBBF24' : '#374151',
+                              border: fbPacing === opt.val ? '1.5px solid #D97706' : '1px solid #D6CBB8'
+                            }}
+                          >
+                            {language === 'en' ? opt.labelEn : opt.labelPt}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Pergunta 2: Nível de Caos / Punição */}
+                    <div>
+                      <div style={{ fontSize: '10.5px', fontWeight: '800', color: '#1E1B18', marginBottom: '4px' }}>
+                        {language === 'en' ? '2. Chaos & Punishment Level (Patches & Events):' : '2. Nível de caos e punição (Patches & Eventos):'}
+                      </div>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        {[
+                          { val: 'Fraco / Sem tensão', labelPt: '😴 Fraco / Sem tensão', labelEn: '😴 Too weak' },
+                          { val: 'Equilibrado', labelPt: '⚖️ Equilibrado / Divertido', labelEn: '⚖️ Balanced & Fun' },
+                          { val: 'Frustrante / Injusto', labelPt: '🔥 Frustrante / Punitivo', labelEn: '🔥 Too punishing' }
+                        ].map(opt => (
+                          <button
+                            key={opt.val}
+                            type="button"
+                            onClick={() => { soundFx.playClick(); setFbChaos(opt.val); }}
+                            style={{
+                              flex: 1,
+                              minWidth: '110px',
+                              padding: '6px 8px',
+                              fontSize: '10.5px',
+                              fontFamily: 'monospace',
+                              fontWeight: '800',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              background: fbChaos === opt.val ? '#2B2620' : '#FFFFFF',
+                              color: fbChaos === opt.val ? '#FBBF24' : '#374151',
+                              border: fbChaos === opt.val ? '1.5px solid #D97706' : '1px solid #D6CBB8'
+                            }}
+                          >
+                            {language === 'en' ? opt.labelEn : opt.labelPt}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Pergunta 3: Clareza das Regras / UI */}
+                    <div>
+                      <div style={{ fontSize: '10.5px', fontWeight: '800', color: '#1E1B18', marginBottom: '4px' }}>
+                        {language === 'en' ? '3. Did any mechanic feel confusing?' : '3. Alguma mecânica gerou dúvida durante o jogo?'}
+                      </div>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        {[
+                          { val: 'Tudo claro', labelPt: '✓ Tudo claro', labelEn: '✓ All clear' },
+                          { val: 'Escopo / Report', labelPt: '🎯 Escopo / Report', labelEn: '🎯 Scope / Report' },
+                          { val: 'Stealth vs Noisy', labelPt: '🎲 Stealth vs Noisy', labelEn: '🎲 Stealth vs Noisy' },
+                          { val: 'Tools / Poderes', labelPt: '🛠️ Tools / Poderes', labelEn: '🛠️ Tools / Powers' }
+                        ].map(opt => (
+                          <button
+                            key={opt.val}
+                            type="button"
+                            onClick={() => { soundFx.playClick(); setFbClarity(opt.val); }}
+                            style={{
+                              flex: 1,
+                              minWidth: '95px',
+                              padding: '6px 6px',
+                              fontSize: '10px',
+                              fontFamily: 'monospace',
+                              fontWeight: '800',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              background: fbClarity === opt.val ? '#2B2620' : '#FFFFFF',
+                              color: fbClarity === opt.val ? '#FBBF24' : '#374151',
+                              border: fbClarity === opt.val ? '1.5px solid #D97706' : '1px solid #D6CBB8'
+                            }}
+                          >
+                            {language === 'en' ? opt.labelEn : opt.labelPt}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Comentário opcional */}
+                    <div>
+                      <input
+                        type="text"
+                        value={fbComment}
+                        onChange={e => setFbComment(e.target.value)}
+                        placeholder={
+                          language === 'en'
+                            ? 'Optional: Any card/archetype felt OP, stuck, or fun? Tell us...'
+                            : 'Opcional: Algum arquétipo/carta pareceu apelão, travado ou muito bom? Conte aqui...'
+                        }
+                        style={{
+                          width: '100%',
+                          boxSizing: 'border-box',
+                          padding: '8px 10px',
+                          fontSize: '11px',
+                          fontFamily: 'monospace',
+                          borderRadius: '6px',
+                          border: '1px solid #D6CBB8',
+                          background: '#FFFFFF',
+                          color: '#1E1B18'
+                        }}
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={fbStatus === 'saving'}
+                      onClick={async () => {
+                        soundFx.playClick();
+                        setFbStatus('saving');
+                        const res = await submitMatchFeedback({
+                          pacing: fbPacing,
+                          chaosBalance: fbChaos,
+                          rulesClarity: fbClarity,
+                          comment: fbComment
+                        });
+                        setFbStatus(res.success ? 'saved' : 'error');
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        background: '#7C3AED',
+                        color: '#FFFFFF',
+                        border: '2px solid #4C1D95',
+                        borderRadius: '8px',
+                        fontFamily: 'monospace',
+                        fontWeight: '900',
+                        fontSize: '12px',
+                        cursor: fbStatus === 'saving' ? 'wait' : 'pointer',
+                        boxShadow: '0 3px 8px rgba(124, 58, 237, 0.35)'
+                      }}
+                    >
+                      {fbStatus === 'saving'
+                        ? (language === 'en' ? '⏳ Saving Evaluation & Match Log...' : '⏳ Enviando Avaliação & Salvando no Banco...')
+                        : fbStatus === 'error'
+                        ? (language === 'en' ? '⚠️ Retry Sending Evaluation & Save to DB' : '⚠️ Tentar Novamente: Enviar Avaliação & Salvar')
+                        : (language === 'en' ? '✨ Submit Evaluation & Save to Database ☁️' : '✨ Enviar Avaliação & Salvar no Banco ☁️')}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* AÇÕES FINAIS */}
@@ -1156,7 +1503,7 @@ const BoardGameContent: React.FC = () => {
                     gap: '8px'
                   }}
                 >
-                  <Activity size={16} color="#38BDF8" /> 📊 Ver Telemetria & Baixar Log da Partida
+                  <Activity size={16} color="#38BDF8" /> {language === 'en' ? '📊 View Telemetry & Download Match Log' : '📊 Ver Telemetria & Baixar Log da Partida'}
                 </button>
 
                 {canRestart ? (
@@ -1183,11 +1530,13 @@ const BoardGameContent: React.FC = () => {
                       boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)'
                     }}
                   >
-                    <RefreshCw size={16} /> Jogar Nova Partida
+                    <RefreshCw size={16} /> {language === 'en' ? 'Play New Match' : 'Jogar Nova Partida'}
                   </button>
                 ) : (
                   <div style={{ padding: '10px', background: '#F3EFE6', border: '1px dashed #A89D8B', borderRadius: '8px', fontSize: '11.5px', fontFamily: 'monospace', color: '#5A5245', fontWeight: '700' }}>
-                    ⏳ Aguardando o anfitrião (Host) iniciar uma nova partida...
+                    {language === 'en'
+                      ? '⏳ Waiting for the Host to start a new match...'
+                      : '⏳ Aguardando o anfitrião (Host) iniciar uma nova partida...'}
                   </div>
                 )}
               </div>

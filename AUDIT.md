@@ -7,9 +7,15 @@
 - Pasta `.git` existe, mas `git` não está no PATH (não deu para ver último commit). Último mtime de src/: 2026-11-08. AUDITORIA_LIMPEZA_CODIGO.md mtime: 2026-11-10 11:06 (cópia/edição de hoje; não prova que reflete o código).
 
 ## Arquivos ativos
-- Entry: index.html e game.html (vite input) → `/src/main.tsx` → `App.tsx` → `export function App` renderiza só `<LanguageProvider><BoardGameMain/>`.
-- `App.tsx:14` `CardGameContent` (modo cartas legado) é definido mas NUNCA renderizado (grep: só 1 ocorrência). Seus imports (GameContext, Header, ArchetypeSelector, GameBoard, Hand, PatchModal, TerminalLog, e daí CardView, RulebookHelpModal, gameRules.ts) mantêm esses arquivos "alcançáveis" no grafo estático, mas mortos em runtime.
-- Runtime real: BoardGameMain, BoardGameContext, ActionPointsBar, AlertTracker, BoardHand, BoardMap, BountyLedgerModal, CenterMarketMat, FullTableView, PlayerMat, EventCardModal, MultiplayerLobbyModal, PlayerAidModal, ProgramSelectorModal, PrintAndPlayModal, DiceRoller, utils/{audio,gameRulesV14,multiplayerSync,supabaseSync,pnp-dimensions}, i18n/*.
+Entry: index.html e game.html (vite input) → /src/main.tsx → App.tsx → export function App renderiza só <LanguageProvider><BoardGameMain/>.
+App.tsx:14 CardGameContent (modo cartas legado) é definido mas NUNCA renderizado (grep: só 1 ocorrência). Seus imports (GameContext, Header, ArchetypeSelector, GameBoard, Hand, PatchModal, TerminalLog, e daí CardView, RulebookHelpModal, gameRules.ts) mantêm esses arquivos "alcançáveis" no grafo estático, mas mortos em runtime.
+Componentes 100% órfãos (sem imports no projeto todo): AlertTracker.tsx, BoardMap.tsx.
+Runtime real:
+Componentes: BoardGameMain, ActionPointsBar, BoardHand, BountyLedgerModal, CenterMarketMat, FullTableView, PlayerMat, EventCardModal, MultiplayerLobbyModal, PlayerAidModal, ProgramSelectorModal, PrintAndPlayModal, DiceRoller, ObserverMetricsModal (inclui DeckPeekModal).
+Contexto: BoardGameContext.
+Dados: data/{canonicalV14Data, cardsData, cardsDataV2, boardData, full24EventsData, full80DeckData}.
+Utils: utils/{audio, gameRulesV14, supabaseSync, pnp-dimensions} (multiplayerSync é residual/vestigial).
+i18n: i18n/{LanguageContext, translations, cardTranslations}.
 
 ## Divergências relatório × grafo (confirmadas por grep)
 | arquivo | relatório | grafo |

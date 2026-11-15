@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { getLocalizedProgram, getLocalizedMilestone, getLocalizedPlayerName } from '../i18n/cardTranslations';
 import { ProgramCard } from '../data/cardsData';
 import { Layers, ShieldAlert, ArrowRight, Wrench, AlertTriangle, Trophy, Eye, CheckCircle2 } from 'lucide-react';
 import { soundFx } from '../utils/audio';
@@ -211,12 +212,13 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
               }}
             >
               <div style={{ fontSize: '9px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace', textTransform: 'uppercase' }}>
-                🏁 Posições na Trilha Honeycomb:
+                {language === 'en' ? '🏁 Honeycomb Track Positions:' : '🏁 Posições na Trilha Honeycomb:'}
               </div>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {allPlayers.slice(0, playerCount).map(p => {
                   const isTurn = p.id === activePlayerRole;
                   const isCurrent = p.id === myRole;
+                  const localizedPName = getLocalizedPlayerName(p.name, language);
                   return (
                     <div
                       key={p.id}
@@ -231,7 +233,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                         fontSize: '10px',
                         fontFamily: 'monospace'
                       }}
-                      title={`${p.name}: $${p.score.toLocaleString('pt-BR')}`}
+                      title={`${localizedPName}: $${p.score.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}`}
                     >
                       <div
                         style={{
@@ -244,9 +246,9 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                         }}
                       />
                       <span style={{ fontWeight: isCurrent ? '900' : '700', color: '#1E1B18' }}>
-                        {p.name.split(' ')[0]} {p.name.split(' ')[1]}:
+                        {localizedPName.split(' ')[0]} {localizedPName.split(' ')[1]}:
                       </span>
-                      <strong style={{ color: '#047857' }}>${p.score.toLocaleString('pt-BR')}</strong>
+                      <strong style={{ color: '#047857' }}>${p.score.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}</strong>
                       {isTurn && <span style={{ color: '#16A34A', fontSize: '9px' }}>●</span>}
                     </div>
                   );
@@ -258,7 +260,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
           {/* MARCOS ESPECIAIS (MILESTONES) CLICÁVEIS */}
           <div style={{ marginTop: '14px' }}>
             <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'monospace', color: '#685F53', marginBottom: '6px', textTransform: 'uppercase' }}>
-              MARCOS ESPECIAIS DA TRILHA (CLIQUE PARA VER OS EFEITOS):
+              {language === 'en' ? 'SPECIAL TRACK MILESTONES (CLICK TO VIEW EFFECTS):' : 'MARCOS ESPECIAIS DA TRILHA (CLIQUE PARA VER OS EFEITOS):'}
             </div>
             <div
               style={{
@@ -269,6 +271,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
             >
               {BOUNTY_MILESTONES.map(m => {
                 const isReached = currentCash >= m.value;
+                const locMilestone = getLocalizedMilestone(m, language);
                 return (
                   <div
                     key={m.value}
@@ -284,13 +287,15 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                       transition: 'all 0.2s ease',
                       boxShadow: isReached ? '0 1px 4px rgba(22, 101, 52, 0.2)' : 'none'
                     }}
-                    title={m.effectDescription}
+                    title={locMilestone.effectDescription}
                   >
                     <div style={{ fontSize: '11px', fontWeight: '800', color: isReached ? '#166534' : '#1E1B18' }}>
-                      {m.label} {m.icon}
+                      {locMilestone.label} {m.icon}
                     </div>
                     <div style={{ fontSize: '8px', color: '#685F53', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {isReached ? '✓ Atingido' : 'Pendente'}
+                      {isReached
+                        ? (language === 'en' ? '✓ Reached' : '✓ Atingido')
+                        : (language === 'en' ? 'Pending' : 'Pendente')}
                     </div>
                   </div>
                 );
@@ -304,16 +309,18 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <div>
               <div style={{ fontSize: '10px', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#B45309' }}>
-                {isPendingProgram ? '👉 SELEÇÃO DE ALVO OBRIGATÓRIA:' : 'MERCADO CORPORATIVO CENTRAL:'}
+                {isPendingProgram
+                  ? (language === 'en' ? '👉 MANDATORY TARGET SELECTION:' : '👉 SELEÇÃO DE ALVO OBRIGATÓRIA:')
+                  : (language === 'en' ? 'CENTRAL CORPORATE MARKET:' : 'MERCADO CORPORATIVO CENTRAL:')}
               </div>
               <h3 style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'monospace', margin: '2px 0 0 0', color: '#1E1B18' }}>
-                PROGRAM MARKET (3 ALVOS EXPOSTOS + COMPRA SURPRESA DO DECK)
+                {language === 'en' ? 'PROGRAM MARKET (3 EXPOSED TARGETS + SURPRISE DECK DRAW)' : 'PROGRAM MARKET (3 ALVOS EXPOSTOS + COMPRA SURPRESA DO DECK)'}
               </h3>
             </div>
 
             {isPendingProgram && (
               <span style={{ fontSize: '11px', fontWeight: '800', background: '#FEF3C7', color: '#92400E', border: '1px solid #D97706', padding: '4px 10px', borderRadius: '4px', fontFamily: 'monospace' }}>
-                ⚠️ Escolha 1 dos 3 expostos abaixo OU compre do topo do Program Deck!
+                {language === 'en' ? '⚠️ Pick 1 of the 3 exposed below OR draw from the top of the Program Deck!' : '⚠️ Escolha 1 dos 3 expostos abaixo OU compre do topo do Program Deck!'}
               </span>
             )}
           </div>
@@ -327,6 +334,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
           >
             {programMarket.map(program => {
               const isSelected = playerActiveProgram && program.id === playerActiveProgram.id;
+              const locProg = getLocalizedProgram(program, language);
 
               return (
                 <div
@@ -357,7 +365,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                     {/* Linha Superior: Tipo de Empresa e Bônus */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                       <span style={{ fontSize: '10px', fontWeight: '700', color: '#685F53', fontFamily: 'monospace' }}>
-                        {program.companyType}
+                        {locProg.companyType}
                       </span>
                       <span style={{ fontSize: '10px', fontWeight: '900', background: '#FEF3C7', color: '#92400E', border: '1px solid #D97706', padding: '2px 6px', borderRadius: '4px', fontFamily: 'monospace' }}>
                         {program.bountyRange || '+$0'}
@@ -366,14 +374,14 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
 
                     {/* Nome do Programa */}
                     <h4 style={{ fontSize: '15px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', margin: '4px 0 8px 0' }}>
-                      {program.name}
+                      {locProg.name}
                     </h4>
 
                     {/* Classes Permitidas no Escopo */}
                     <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '8px' }}>
                       {program.allowedClasses === 'ALL' || (Array.isArray(program.allowedClasses) && program.allowedClasses.some(c => String(c).includes('ALL'))) ? (
                         <span style={{ fontSize: '8.5px', fontWeight: '800', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '1px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
-                          🌐 ESCOPO AMPLO (TODAS AS CLASSES)
+                          {language === 'en' ? '🌐 BROAD SCOPE (ALL CLASSES)' : '🌐 ESCOPO AMPLO (TODAS AS CLASSES)'}
                         </span>
                       ) : (
                         Array.isArray(program.allowedClasses) && program.allowedClasses.map(cat => (
@@ -386,14 +394,14 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
 
                     {/* Descrição */}
                     <p style={{ fontSize: '11px', color: '#4B4337', lineHeight: '1.4', margin: '0 0 10px 0' }}>
-                      {program.description}
+                      {locProg.description}
                     </p>
                   </div>
 
                   {/* Rodapé da Carta: Velocidade de Patch e Ação */}
                   <div style={{ borderTop: '1px solid #E2D7C5', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: '10px', fontWeight: '800', color: '#B91C1C', fontFamily: 'monospace' }}>
-                      Patch: {program.patchSpeed}
+                      Patch: {locProg.patchSpeed}
                     </span>
                     <button
                       onClick={(e) => {
@@ -420,7 +428,9 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                         gap: '4px'
                       }}
                     >
-                      {isSelected ? '✓ SEU ALVO ATIVO' : 'PEGAR EXPOSTO'} <ArrowRight size={10} />
+                      {isSelected
+                        ? (language === 'en' ? '✓ ACTIVE TARGET' : '✓ SEU ALVO ATIVO')
+                        : (language === 'en' ? 'PICK EXPOSED' : 'PEGAR EXPOSTO')} <ArrowRight size={10} />
                     </button>
                   </div>
                 </div>
@@ -449,22 +459,24 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                   <span style={{ fontSize: '10px', fontWeight: '800', color: '#FCD34D', fontFamily: 'monospace' }}>
-                    PROGRAM DECK (SURPRESA)
+                    {language === 'en' ? 'PROGRAM DECK (SURPRISE)' : 'PROGRAM DECK (SURPRESA)'}
                   </span>
                   <span style={{ fontSize: '10px', fontWeight: '900', background: 'rgba(245, 158, 11, 0.2)', color: '#FCD34D', border: '1px solid #F59E0B', padding: '2px 6px', borderRadius: '4px', fontFamily: 'monospace' }}>
-                    {programDeckCount} restantes
+                    {programDeckCount} {t('centerBoard.remaining')}
                   </span>
                 </div>
                 <h4 style={{ fontSize: '15px', fontWeight: '900', color: '#FFFFFF', fontFamily: 'monospace', margin: '6px 0' }}>
-                  🎲 Puxar do Topo do Deck
+                  {language === 'en' ? '🎲 Draw from Top of Deck' : '🎲 Puxar do Topo do Deck'}
                 </h4>
                 <p style={{ fontSize: '11px', color: '#D6CBB8', lineHeight: '1.4', margin: '0 0 10px 0' }}>
-                  Prefere arriscar um alvo corporativo inédito? Puxe a carta fechada do topo do baralho de programas sem mexer nos 3 expostos!
+                  {language === 'en'
+                    ? 'Prefer to risk a brand-new corporate target? Draw the face-down card from the top of the Program Deck without touching the 3 exposed ones!'
+                    : 'Prefere arriscar um alvo corporativo inédito? Puxe a carta fechada do topo do baralho de programas sem mexer nos 3 expostos!'}
                 </p>
               </div>
               <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '10px', fontWeight: '800', color: '#FCD34D', fontFamily: 'monospace' }}>
-                  Carta Fechada
+                  {language === 'en' ? 'Face-down Card' : 'Carta Fechada'}
                 </span>
                 <button
                   onClick={(e) => {
@@ -487,7 +499,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                     gap: '4px'
                   }}
                 >
-                  PEGAR DO DECK <ArrowRight size={10} />
+                  {language === 'en' ? 'DRAW FROM DECK' : 'PEGAR DO DECK'} <ArrowRight size={10} />
                 </button>
               </div>
             </div>
@@ -529,7 +541,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                 {mainDeckCount}
               </div>
               <div style={{ fontSize: '8px', color: '#7E7362', fontFamily: 'monospace' }}>
-                84 cartas totais
+                {language === 'en' ? '84 total cards' : '84 cartas totais'}
               </div>
             </div>
 
@@ -556,14 +568,14 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                 {toolDeckCount}
               </div>
               <div style={{ fontSize: '8px', color: '#7E7362', fontFamily: 'monospace' }}>
-                48 cartas totais
+                {language === 'en' ? '48 total cards' : '48 cartas totais'}
               </div>
             </div>
 
             {/* EVENT DECK (24 CARTAS) */}
             <div
               onClick={() => { soundFx.playClick(); }}
-              title="O Evento só é sacado e ativado após um Report bem-sucedido (Manual §03)."
+              title={language === 'en' ? 'Events are only drawn and triggered after a successful Report (Rulebook §03).' : 'O Evento só é sacado e ativado após um Report bem-sucedido (Manual §03).'}
               style={{
                 width: '105px',
                 height: '125px',
@@ -587,7 +599,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                 {eventDeckCount}
               </div>
               <div style={{ fontSize: '8px', fontWeight: '800', color: '#B91C1C', fontFamily: 'monospace' }}>
-                Puxar Evento
+                {language === 'en' ? 'Draw Event' : 'Puxar Evento'}
               </div>
             </div>
 
@@ -604,7 +616,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
             }}
           >
             <div style={{ fontSize: '10px', fontWeight: '800', letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '10px' }}>
-              ROUND TRACK (10 RODADAS OFICIAIS)
+              {language === 'en' ? 'ROUND TRACK (10 OFFICIAL ROUNDS)' : 'ROUND TRACK (10 RODADAS OFICIAIS)'}
             </div>
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
               {Array.from({ length: totalRounds }, (_, i) => i + 1).map(round => {
@@ -629,7 +641,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                       fontFamily: 'monospace',
                       boxShadow: isCurrent ? '0 2px 6px rgba(180, 83, 9, 0.4)' : 'none'
                     }}
-                    title={`Rodada ${round}`}
+                    title={language === 'en' ? `Round ${round}` : `Rodada ${round}`}
                   >
                     {round}
                   </div>
@@ -673,10 +685,10 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
               {activeMilestoneModal.icon}
             </div>
             <h3 style={{ fontSize: '18px', fontWeight: '900', fontFamily: 'monospace', color: '#1E1B18', marginBottom: '8px' }}>
-              Marco Especial: {activeMilestoneModal.label}
+              {language === 'en' ? 'Special Milestone:' : 'Marco Especial:'} {getLocalizedMilestone(activeMilestoneModal, language).label}
             </h3>
             <p style={{ fontSize: '13px', color: '#4B4337', lineHeight: '1.5', marginBottom: '18px' }}>
-              {activeMilestoneModal.effectDescription}
+              {getLocalizedMilestone(activeMilestoneModal, language).effectDescription}
             </p>
             <button
               onClick={() => setActiveMilestoneModal(null)}
@@ -692,7 +704,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                 cursor: 'pointer'
               }}
             >
-              Fechar
+              {language === 'en' ? 'Close' : 'Fechar'}
             </button>
           </div>
         </div>

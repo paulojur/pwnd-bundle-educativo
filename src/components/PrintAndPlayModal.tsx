@@ -3,6 +3,7 @@ import { CARDS_V2, CardV2 } from '../data/cardsDataV2';
 import { ARCHETYPES, PROGRAM_CARDS } from '../data/cardsData';
 import { FULL_80_VULNERABILITIES, FULL_12_TOOLS, FULL_3_DEFUSES } from '../data/full80DeckData';
 import { FULL_24_EVENTS, EventCardData } from '../data/full24EventsData';
+import { useLanguage } from '../i18n/LanguageContext';
 import { Printer, X, Filter, FileText } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 import { getCardStyle, getSlotStyle } from '../utils/pnp-dimensions';
@@ -21,6 +22,7 @@ const chunkArray = <T,>(arr: T[], size: number): T[][] => {
 };
 
 export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, onClose }) => {
+  const { language } = useLanguage();
   const getFlatValueLabel = (card: CardV2) => {
     if (card.type === 'tool') return 'FERRAMENTA';
     if (card.type === 'defuse') return 'SAFEGUARD';
@@ -732,10 +734,10 @@ export const PrintAndPlayModal: React.FC<PrintAndPlayModalProps> = ({ isOpen, on
             <Printer size={26} color="var(--terminal-green)" />
             <div>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--terminal-green)', letterSpacing: '3px', textTransform: 'uppercase' }}>
-                KIT OFICIAL PRINT & PLAY — CARTAS PADRONIZADAS (63mm × 88mm)
+                {language === 'en' ? 'OFFICIAL PRINT & PLAY KIT — STANDARDIZED CARDS (63mm × 88mm)' : 'KIT OFICIAL PRINT & PLAY — CARTAS PADRONIZADAS (63mm × 88mm)'}
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)' }}>
-                PWND! — BUG BOUNTY CHAOS (O JOGO INTEIRO EM PAPEL)
+                {language === 'en' ? 'PWND! — BUG BOUNTY CHAOS (FULL PRINTABLE GAME)' : 'PWND! — BUG BOUNTY CHAOS (O JOGO INTEIRO EM PAPEL)'}
               </h2>
             </div>
           </div>

@@ -186,6 +186,14 @@ export interface AuditLogEntry {
   status?: 'EXECUTED' | 'BLOCKED' | 'PASSIVE' | 'PENALTY';
 }
 
+export interface MatchFeedbackData {
+  pacing: string;
+  chaosBalance: string;
+  rulesClarity: string;
+  comment?: string;
+  submittedAt: string;
+}
+
 export interface PlayerMetrics {
   reportsCompleted: number;
   totalBountyEarned: number;
@@ -200,6 +208,7 @@ export interface PlayerMetrics {
   programsPickedMarket: number;
   programsPickedSurpriseDeck: number;
   eventsDrawn: number;
+  feedback?: MatchFeedbackData;
 }
 
 export interface RoundActiveEvent {
@@ -287,7 +296,8 @@ const mergePlayerMetrics = (
       archetypeBountyBonus: Math.abs(b.archetypeBountyBonus) >= Math.abs(a.archetypeBountyBonus) ? b.archetypeBountyBonus : a.archetypeBountyBonus,
       programsPickedMarket: Math.max(a.programsPickedMarket, b.programsPickedMarket),
       programsPickedSurpriseDeck: Math.max(a.programsPickedSurpriseDeck, b.programsPickedSurpriseDeck),
-      eventsDrawn: Math.max(a.eventsDrawn, b.eventsDrawn)
+      eventsDrawn: Math.max(a.eventsDrawn, b.eventsDrawn),
+      feedback: b.feedback || a.feedback
     };
   }
   return result;
@@ -393,7 +403,7 @@ const createInitialGameState = (count: number = 2, customNames?: Partial<Record<
     timestamp: new Date().toLocaleTimeString('pt-BR', { hour12: false }),
     round: 1,
     category: 'SETUP',
-    title: `Partida Iniciada (${count} Jogadores) — Arquétipos e Programas Sorteados`,
+    title: `Partida Iniciada (${count} Jogadores) - Arquétipos e Programas Sorteados`,
     details: `${setupSummary}. Mercado exposto: [${market.map(m => m.name).join(', ')}] (${programDeck.length} no Program Deck).`,
     status: 'EXECUTED'
   };
@@ -539,6 +549,7 @@ interface BoardGameContextType {
   resetBoardGame: () => void;
   actionSocialPhishing?: (chosenCardIdToGive?: string, chosenTargetId?: PlayerRoleId) => void;
   saveMatchLogToDatabase: (winnerOverride?: string) => Promise<{ success: boolean; error?: any; data?: any }>;
+  submitMatchFeedback: (feedback: { pacing: string; chaosBalance: string; rulesClarity: string; comment?: string }) => Promise<{ success: boolean; error?: any }>;
 }
 
 const BoardGameContext = createContext<BoardGameContextType | undefined>(undefined);
@@ -605,6 +616,15 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const auditLogsRef = useRef<AuditLogEntry[]>([initData.initialAuditLog]);
   const playerMetricsRef = useRef<Record<PlayerRoleId, PlayerMetrics>>(createEmptyMetrics());
+  const matchIdRef = useRef<string>(
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+          const r = (Math.random() * 16) | 0;
+          const v = c === 'x' ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        })
+  );
 
   const [bots] = useState<any[]>([]);
   const [gameWinner, setGameWinner] = useState<string | null>(null);
@@ -792,7 +812,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           id: 'pen-' + Date.now(),
           turn: currentTurn,
           type: 'Penalty',
-          description: `Alarme Crítico (2🐞) — ${p.name}`,
+          description: `Alarme Crítico (2🐞) - ${p.name}`,
           amount: -2000,
           mathBreakdown: `Acumulou 2 Tokens de Alerta (-$2.000 e alertas zerados)`
         }
@@ -924,10 +944,6 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   })());
 
   const setMyRole = (role: PlayerRoleId) => {
-    if (gameMode === 'lan' || Boolean(roomCode)) {
-      console.warn('[PWND LAN] Troca de assento bloqueada durante partida online.');
-      return;
-    }
     setMyRoleState(role);
   };
 
@@ -1046,6 +1062,14 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const emptyM = createEmptyMetrics();
     playerMetricsRef.current = emptyM;
     auditLogsRef.current = [fresh.initialAuditLog];
+    matchIdRef.current =
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = (Math.random() * 16) | 0;
+            const v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+          });
     setPlayerMetrics(emptyM);
     setAuditLogs([fresh.initialAuditLog]);
     setLogs([`[SETUP] ${fresh.initialAuditLog.details}`]);
@@ -1053,6 +1077,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     // Se for o Host em LAN, sincroniza o reset com todos na mesa
     if (gameMode === 'lan' && myRole === 'player-1') {
       supabaseSync.broadcast('RESET_GAME', {
+        matchId: matchIdRef.current,
         players: fresh.playersInitial,
         programMarket: fresh.market,
         mainDeck: fresh.remainingMain,
@@ -1066,6 +1091,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   const leaveLanRoom = async () => {
+    const prevCode = roomCode;
     if (gameMode === 'lan' && myRole === 'player-1') {
       try {
         await supabaseSync.broadcastAsync('ROOM_CLOSED', {});
@@ -1077,6 +1103,12 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setGameModeState('solo');
     setMyRoleState('player-1');
     if (typeof window !== 'undefined') {
+      try {
+        if (prevCode) {
+          sessionStorage.removeItem(`pwnd_seat_${prevCode}`);
+          sessionStorage.removeItem(`pwnd_host_${prevCode}`);
+        }
+      } catch {}
       const url = new URL(window.location.href);
       url.searchParams.delete('room');
       url.searchParams.delete('role');
@@ -1149,12 +1181,21 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const emptyM = createEmptyMetrics();
     playerMetricsRef.current = emptyM;
     auditLogsRef.current = [fresh.initialAuditLog];
+    matchIdRef.current =
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = (Math.random() * 16) | 0;
+            const v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+          });
     setPlayerMetrics(emptyM);
     setAuditLogs([fresh.initialAuditLog]);
     setLogs([`[SETUP] ${fresh.initialAuditLog.details}`]);
 
     // Broadcasts the fresh state to any connected guests
     supabaseSync.broadcast('STATE_SYNC', {
+      matchId: matchIdRef.current,
       players: fresh.playersInitial,
       deployedExploits: [],
       programMarket: fresh.market,
@@ -1194,7 +1235,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     activePlayerRole,
     currentTurn,
     playerCount,
-    myRole
+    myRole,
+    roomCode,
+    gameMode,
+    gameWinner
   });
 
   useEffect(() => {
@@ -1216,7 +1260,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       activePlayerRole,
       currentTurn,
       playerCount,
-      myRole
+      myRole,
+      roomCode,
+      gameMode,
+      gameWinner
     };
   }, [
     players,
@@ -1236,43 +1283,46 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     activePlayerRole,
     currentTurn,
     playerCount,
-    myRole
+    myRole,
+    roomCode,
+    gameMode,
+    gameWinner
   ]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const roomParam = params.get('room');
-    let roleParam = params.get('role') as PlayerRoleId | null;
 
     if (roomParam) {
       const code = roomParam.toUpperCase().trim();
       setRoomCode(code);
-      setGameModeState('lan');
 
-      if (!roleParam) {
-        try {
-          const savedRole = localStorage.getItem('pwnd_active_role') as PlayerRoleId | null;
-          if (savedRole) roleParam = savedRole;
-        } catch {}
-      }
+      // Só reconecta automaticamente em um assento se ESTA aba já tiver escolhido assento nesta sala específica.
+      // Quando um convidado abre o link ?room=PWND-XXXX pela primeira vez, savedSeatForRoom é null,
+      // portanto NÃO ativamos gameMode='lan' nem assumimos player-1: o modal abrirá direto na escolha de assentos.
+      let savedSeatForRoom: PlayerRoleId | null = null;
+      try {
+        savedSeatForRoom = sessionStorage.getItem(`pwnd_seat_${code}`) as PlayerRoleId | null;
+      } catch {}
 
-      if (roleParam) {
-        setMyRoleState(roleParam);
+      if (savedSeatForRoom) {
+        setGameModeState('lan');
+        setMyRoleState(savedSeatForRoom);
         let nick = '';
         try {
-          nick = localStorage.getItem(`pwnd_nick_${roleParam}`) || localStorage.getItem('pwnd_player_nickname') || '';
+          nick = localStorage.getItem(`pwnd_nick_${savedSeatForRoom}`) || localStorage.getItem('pwnd_player_nickname') || '';
         } catch {}
-        const finalName = nick ? formatPlayerName(roleParam, nick) : `Jogador (${roleParam})`;
-        customNicknamesRef.current[roleParam] = finalName;
+        const finalName = nick ? formatPlayerName(savedSeatForRoom, nick) : `Jogador (${savedSeatForRoom})`;
+        customNicknamesRef.current[savedSeatForRoom] = finalName;
 
-        supabaseSync.joinRoom(code, roleParam, finalName);
-        if (roleParam !== 'player-1') {
+        supabaseSync.joinRoom(code, savedSeatForRoom, finalName);
+        if (savedSeatForRoom !== 'player-1') {
           setTimeout(() => {
-            supabaseSync.broadcast('REQUEST_STATE', { from: roleParam, playerName: finalName });
+            supabaseSync.broadcast('REQUEST_STATE', { from: savedSeatForRoom, playerName: finalName });
           }, 350);
           setTimeout(() => {
-            supabaseSync.broadcast('UPDATE_PLAYER_NAME', { role: roleParam, name: finalName });
+            supabaseSync.broadcast('UPDATE_PLAYER_NAME', { role: savedSeatForRoom, name: finalName });
           }, 700);
         }
       }
@@ -1280,6 +1330,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     const applyRemoteDecksAndLogs = (payload: any) => {
       if (!payload) return;
+      if (typeof payload.matchId === 'string' && payload.matchId) {
+        matchIdRef.current = payload.matchId;
+      }
       if (Array.isArray(payload.mainDeck)) setMainDeck(payload.mainDeck);
       if (Array.isArray(payload.discardPile)) setDiscardPile(payload.discardPile);
       if (Array.isArray(payload.toolDeck)) setToolDeck(payload.toolDeck);
@@ -1321,6 +1374,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           });
           playerMetricsRef.current = mergedM;
           setPlayerMetrics(mergedM);
+          if (metrics.feedback && latestStateRef.current.myRole === 'player-1') {
+            saveMatchLogToDatabase().catch(() => {});
+          }
         }
       } else if (msg.actionType === 'END_TURN') {
         if (msg.payload.activePlayerRole) setActivePlayerRole(msg.payload.activePlayerRole);
@@ -1397,7 +1453,10 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           setAuditLogs(merged);
         }
         if (latestStateRef.current.myRole === 'player-1') {
-          saveMatchLogToDatabase(msg.payload.winner).catch(() => {});
+          saveMatchLogToDatabase(msg.payload.winner, {
+            players: msg.payload.players || latestStateRef.current.players,
+            round: msg.payload.currentTurn || latestStateRef.current.currentTurn
+          }).catch(() => {});
         }
       } else if (msg.actionType === 'REQUEST_STATE') {
         const currentRef = latestStateRef.current;
@@ -1414,6 +1473,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
             setPlayers(playersToSend);
           }
           supabaseSync.broadcast('STATE_SYNC', {
+            matchId: matchIdRef.current,
             players: playersToSend,
             deployedExploits: currentRef.deployedExploits,
             programMarket: currentRef.programMarket,
@@ -1434,6 +1494,9 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           });
         }
       } else if (msg.actionType === 'RESET_GAME') {
+        if (typeof msg.payload.matchId === 'string' && msg.payload.matchId) {
+          matchIdRef.current = msg.payload.matchId;
+        }
         const count = typeof msg.payload.playerCount === 'number' ? msg.payload.playerCount : latestStateRef.current.playerCount;
         
         // Reidrata apelido local do convidado
@@ -1521,15 +1584,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
     });
 
-    const handleBeforeUnload = () => {
-      if (auditLogsRef.current.length > 5 && latestStateRef.current.myRole === 'player-1') {
-        saveMatchLogToDatabase('Aba fechada').catch(() => {});
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
       unsubscribe();
     };
   }, []);
@@ -1695,7 +1750,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     let status: AuditLogEntry['status'] = 'EXECUTED';
 
     switch (eId) {
-      // evt-01: Blue Team Hunt! (Todos descartam a vuln de maior CVSS na mesa; se ninguém tiver vuln na mesa, oponentes descartam 1 carta da mão)
+      // evt-01: Blue Team Hunt! (Todos descartam a vuln de maior CVSS na mesa; quem estiver com a mesa vazia não sofre efeito)
       case 'evt-01': {
         const logsParts: string[] = [];
         const keptExploits: DeployedExploit[] = [];
@@ -1727,34 +1782,21 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
             }
           });
           nextExploits = keptExploits;
+          summary = logsParts.length > 0 ? logsParts.join(' | ') : 'Nenhuma vulnerabilidade foi afetada.';
         } else {
-          activeIds.filter(rId => rId !== authorRole).forEach(rId => {
-            const tPlayer = nextPlayers[rId];
-            if (!tPlayer || tPlayer.hand.length === 0) return;
-            const def = checkNegativeEventDefense(rId, false, false);
-            if (def.blocked) {
-              logsParts.push(def.reason!);
-              return;
-            }
-            const randIdx = Math.floor(Math.random() * tPlayer.hand.length);
-            const dropped = tPlayer.hand[randIdx];
-            nextPlayers[rId] = { ...tPlayer, hand: tPlayer.hand.filter((_, i) => i !== randIdx) };
-            nextDiscard.push(dropped);
-            logsParts.push(`${tPlayer.name} (sem vuln na mesa) descartou [${dropped.name}] da mão`);
-            triggerEventAlert('🚨 Blue Team Hunt!', `${authorPlayer.name} disparou Blue Team Hunt!: você descartou [${dropped.name}] da sua mão!`, rId, 'alert');
-          });
+          summary = 'Nenhum jogador possuía vulnerabilidades expostas na mesa (Passou em branco: nenhuma carta descartada).';
+          status = 'BLOCKED';
         }
-        summary = logsParts.length > 0 ? logsParts.join(' | ') : 'Nenhum oponente possuía cartas para descarte.';
         break;
       }
 
-      // evt-02: Duplicate Report! (Escolha 1 oponente: descarta a vuln de maior CVSS na mesa; se mesa vazia, whiff/sem efeito)
+      // evt-02: Duplicate Report! (Escolha 1 oponente: descarta a vuln de maior CVSS na mesa; se mesa vazia, passa em branco)
       case 'evt-02': {
         let targetId =
           explicitTargetId ||
           activeIds.find(id => id !== authorRole && nextExploits.some(e => e.playerId === id));
         if (!targetId) {
-          summary = 'Nenhum oponente possuía vulnerabilidades expostas na mesa (Whiff seguro: nenhum exploit descartado).';
+          summary = 'Nenhum oponente possuía vulnerabilidades expostas na mesa (Passou em branco: mesa vazia, nenhuma carta descartada).';
           status = 'BLOCKED';
           break;
         }
@@ -1774,7 +1816,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           summary = `${nextPlayers[targetId].name} descartou a vulnerabilidade de maior CVSS [${toRemove.card.name}] da mesa!`;
           triggerEventAlert('📋 Duplicate Report!', `${authorPlayer.name} direcionou Duplicate Report! contra você: sua vulnerabilidade [${toRemove.card.name}] na mesa foi descartada!`, targetId, 'alert');
         } else {
-          summary = `${nextPlayers[targetId].name} não possuía vulnerabilidades vulneráveis na mesa (Whiff: nenhum descarte).`;
+          summary = `${nextPlayers[targetId].name} não possuía vulnerabilidades desprotegidas na mesa (Passou em branco: nenhuma carta descartada).`;
           status = 'BLOCKED';
         }
         break;
@@ -1888,7 +1930,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         break;
       }
 
-      // evt-09: Public Disclosure! (Todos descartam vulns na mesa e recebem indenização por raridade; se mesa vazia, whiff/sem efeito)
+      // evt-09: Public Disclosure! (Todos descartam vulns na mesa e recebem indenização por raridade; quem estiver com a mesa vazia não sofre efeito)
       case 'evt-09': {
         const parts: string[] = [];
         if (nextExploits.length > 0) {
@@ -1912,7 +1954,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           nextExploits = [];
           summary = `Indenizações pagas: ${parts.join(' | ')}`;
         } else {
-          summary = 'Nenhum jogador possuía vulnerabilidades expostas na mesa (Whiff seguro: nenhum descarte).';
+          summary = 'Nenhum jogador possuía vulnerabilidades expostas na mesa (Passou em branco: mesa vazia, nenhuma carta descartada).';
           status = 'BLOCKED';
         }
         break;
@@ -2072,7 +2114,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         break;
       }
 
-      // evt-16: Bug Collision! (Todos descartam a vulnerabilidade de menor CVSS exposta na mesa; se mesa vazia, oponentes descartam 1 carta da mão)
+      // evt-16: Bug Collision! (Todos descartam a vulnerabilidade de menor CVSS exposta na mesa; quem estiver com a mesa vazia não sofre efeito)
       case 'evt-16': {
         const parts: string[] = [];
         const kept: DeployedExploit[] = [];
@@ -2101,7 +2143,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           nextExploits = kept;
           summary = parts.length > 0 ? parts.join(' | ') : 'Nenhuma vulnerabilidade foi afetada.';
         } else {
-          summary = 'Nenhum jogador possuía vulnerabilidades expostas na mesa (Whiff seguro: nenhum descarte).';
+          summary = 'Nenhum jogador possuía vulnerabilidades expostas na mesa (Passou em branco: mesa vazia, nenhuma carta descartada).';
           status = 'BLOCKED';
         }
         break;
@@ -2825,7 +2867,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // 3. REPORT (Custa 2 AP — Sempre a última ação do turno)
+  // 3. REPORT (Custa 2 AP - Sempre a última ação do turno)
   // ─────────────────────────────────────────────────────────────────────────────
   const actionReportar = () => {
     if (!isMyTurn) { alert('Aguarde a sua vez!'); return; }
@@ -3295,10 +3337,11 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
     ]);
 
+    const comboList = eligibleExploits.map(e => `${e.card.name}${e.card.vulnClass ? ` (${e.card.vulnClass})` : ''}`).join(' + ');
     recordAudit(
       'REPORT',
       `Report Concluído (+$${earnedCash.toLocaleString('pt-BR')}) em [${program.name}]`,
-      `Detalhamento: ${breakdownParts.join(' | ')}. Novo Saldo: $${newScore.toLocaleString('pt-BR')}.`,
+      `Combo: [${comboList}] -> Detalhamento: ${breakdownParts.join(' | ')}. Novo Saldo: $${newScore.toLocaleString('pt-BR')}.`,
       updatedPlayersState[myRole],
       'EXECUTED'
     );
@@ -3492,7 +3535,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     const popped = popProgramsFromDeck(1, programDeck, nextProgDiscard);
     const surpriseProgram = popped.drawn[0];
     if (!surpriseProgram) {
-      alert('O Program Deck não possui mais cartas para compra surpresa — escolha um dos programas expostos!');
+      alert('O Program Deck não possui mais cartas para compra surpresa - escolha um dos programas expostos!');
       return;
     }
 
@@ -3623,7 +3666,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
           id: 'pen-' + Date.now(),
           turn: currentTurn,
           type: 'Penalty',
-          description: `Alarme Crítico (2🐞 no Bypass) — ${currentPlayer.name}`,
+          description: `Alarme Crítico (2🐞 no Bypass) - ${currentPlayer.name}`,
           amount: -2000,
           mathBreakdown: `2 Tokens de Alerta acumulados (-$2.000)`
         }
@@ -3840,6 +3883,7 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
       recordAudit('TURN', endTitle, endDetails, winners[0].p, 'EXECUTED', currentTurn);
       setGameWinner(winnerNames);
       supabaseSync.broadcast('GAME_OVER', {
+        matchId: matchIdRef.current,
         winner: winnerNames,
         players: currentPlayersState,
         deployedExploits: overrideExploits || deployedExploits,
@@ -3848,7 +3892,21 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         auditLogs: auditLogsRef.current,
         playerMetrics: playerMetricsRef.current
       });
-      saveMatchLogToDatabase(winnerNames).catch(() => {});
+
+      // Em partida online (LAN), evita gravação duplicada: apenas o Host (player-1) grava no banco ao receber GAME_OVER
+      // (ou o próprio jogador atual caso seja solo/hotseat, seja o próprio player-1, ou o Host tenha desconectado).
+      const onlineUsers = supabaseSync.getPresenceUsers();
+      const shouldSaveHere =
+        gameMode !== 'lan' ||
+        myRole === 'player-1' ||
+        (onlineUsers.length > 0 && !onlineUsers.includes('player-1'));
+
+      if (shouldSaveHere) {
+        saveMatchLogToDatabase(winnerNames, {
+          players: currentPlayersState,
+          round: currentTurn
+        }).catch(() => {});
+      }
       return;
     }
 
@@ -3895,8 +3953,6 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     setActivePlayerRole(nextRole);
     if (isNewRound) {
       setCurrentTurn(nextRound);
-      // Gravação incremental dos logs a cada rodada concluída
-      saveMatchLogToDatabase().catch(() => {});
     }
 
     if (gameMode === 'hotseat') {
@@ -3905,7 +3961,16 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     recordAudit('TURN', `Vez de ${updatedPlayersState[nextRole]?.name}`, `Iniciando turno na Rodada ${nextRound}/10 com 3 APs. Alvo ativo: [${updatedPlayersState[nextRole]?.activeProgram?.name || 'Nenhum'}].`, updatedPlayersState[nextRole], 'EXECUTED', nextRound);
 
+    if (isNewRound) {
+      saveMatchLogToDatabase(undefined, {
+        players: updatedPlayersState,
+        round: nextRound,
+        isCheckpoint: true
+      }).catch(() => {});
+    }
+
     const syncPayload = {
+      matchId: matchIdRef.current,
       activePlayerRole: nextRole,
       currentTurn: nextRound,
       players: updatedPlayersState,
@@ -3928,36 +3993,95 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     supabaseSync.broadcast('END_TURN', syncPayload);
   };
 
-  const generateAuditMarkdownReport = (winnerOverride?: string): string => {
+  const generateAuditMarkdownReport = (
+    winnerOverride?: string,
+    stateOverrides?: {
+      players?: Record<PlayerRoleId, PlayerState>;
+      round?: number;
+      roomCode?: string | null;
+      gameMode?: string;
+      playerCount?: number;
+    }
+  ): string => {
+    const live = latestStateRef.current;
+    const effPlayers = stateOverrides?.players || live.players || players;
+    const effRound = stateOverrides?.round ?? live.currentTurn ?? currentTurn;
+    const effRoom = stateOverrides?.roomCode !== undefined ? stateOverrides.roomCode : (live.roomCode ?? roomCode);
+    const effMode = stateOverrides?.gameMode || live.gameMode || gameMode;
+    const effCount = stateOverrides?.playerCount ?? live.playerCount ?? playerCount;
     const nowStr = new Date().toLocaleString('pt-BR');
-    const winnerDisplay = winnerOverride || gameWinner || 'Partida em Andamento';
+    const winnerDisplay = winnerOverride || live.gameWinner || gameWinner || 'Partida em Andamento';
     const activeList = (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[])
-      .slice(0, playerCount)
-      .map(id => players[id]);
+      .slice(0, effCount)
+      .map(id => effPlayers[id])
+      .filter(Boolean);
+
+    const sortedStandings = [...activeList]
+      .map(p => {
+        const repBonus = (p.reputacaoTokens || 0) * 500;
+        const alertPenalty = (p.alertaTokens || 0) * 500;
+        return { p, repBonus, alertPenalty, finalTotal: p.score + repBonus - alertPenalty };
+      })
+      .sort((a, b) => (b.finalTotal - a.finalTotal) || (b.p.reputacaoTokens - a.p.reputacaoTokens) || (a.p.alertaTokens - b.p.alertaTokens));
 
     const lines: string[] = [];
     lines.push(`# 📊 PWNED! Relatório Oficial de Playtest & Telemetria`);
     lines.push(`- **Data / Hora**: ${nowStr}`);
-    lines.push(`- **Sala**: ${roomCode || 'SOLO / LOCAL'}`);
-    lines.push(`- **Modo**: ${gameMode.toUpperCase()}`);
-    lines.push(`- **Rodada**: ${currentTurn}/10`);
-    lines.push(`- **Jogadores**: ${playerCount}`);
+    lines.push(`- **Sala**: ${effRoom || 'SOLO / LOCAL'}`);
+    lines.push(`- **Modo**: ${effMode.toUpperCase()}`);
+    lines.push(`- **Rodada**: ${effRound}/10`);
+    lines.push(`- **Jogadores na Mesa**: ${effCount}`);
     lines.push(`- **Vencedor**: ${winnerDisplay}`);
-    lines.push(`- **Eventos Auditados**: ${auditLogsRef.current.length}`);
+    lines.push(`- **Total de Eventos Auditados**: ${auditLogsRef.current.length}`);
     lines.push(``);
-    lines.push(`## 📈 Desempenho dos Jogadores`);
-    lines.push(`| Jogador | Arquétipo | Score | Reputação | Alertas | Reports OK | Patches / Bypass | Multas 2🐞 |`);
-    lines.push(`| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |`);
-    activeList.forEach(p => {
-      const m = playerMetricsRef.current[p.id] || { reportsCompleted: 0, patchesSuffered: 0, bypassUsed: 0, criticalAlarmPenalties: 0, alertsReceived: 0 };
-      lines.push(`| **${p.name}** | ${p.archetype.name} | $${p.score.toLocaleString('pt-BR')} | ${p.reputacaoTokens}🐝 | ${p.alertaTokens}🐞 | ${m.reportsCompleted} | ${m.patchesSuffered} / ${m.bypassUsed} | ${m.criticalAlarmPenalties}x |`);
+    lines.push(`## 🏆 Classificação & Contabilização Final`);
+    lines.push(`| Pos | Jogador | Arquétipo | Bounty Base | Reputação (🐝 +$500) | Alertas (🐞 -$500) | Total Final |`);
+    lines.push(`| :--- | :--- | :--- | :--- | :--- | :--- | :--- |`);
+    sortedStandings.forEach((s, idx) => {
+      const medal = idx === 0 ? '🥇 1º' : idx === 1 ? '🥈 2º' : idx === 2 ? '🥉 3º' : `${idx + 1}º`;
+      lines.push(`| ${medal} | **${s.p.name}** | ${s.p.archetype.name} | $${s.p.score.toLocaleString('pt-BR')} | ${s.p.reputacaoTokens} (+$${s.repBonus}) | ${s.p.alertaTokens} (-$${s.alertPenalty}) | **$${s.finalTotal.toLocaleString('pt-BR')}** |`);
     });
     lines.push(``);
+    lines.push(`## 📈 Telemetria Detalhada por Jogador`);
+    lines.push(`| Jogador | Arquétipo | Reports OK | Bounty Bruto | Patches / Bypass | Multas 2🐞 (-$2k) | Tools Inst./Ativ. | Poder Arq. | Progs (Market/Deck) |`);
+    lines.push(`| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |`);
+    activeList.forEach(p => {
+      const m = playerMetricsRef.current[p.id] || {
+        reportsCompleted: 0,
+        totalBountyEarned: 0,
+        patchesSuffered: 0,
+        bypassUsed: 0,
+        criticalAlarmPenalties: 0,
+        alertsReceived: 0,
+        toolsInstalled: 0,
+        toolsActivatedOrTriggered: 0,
+        archetypeTriggers: 0,
+        archetypeBountyBonus: 0,
+        programsPickedMarket: 0,
+        programsPickedSurpriseDeck: 0
+      };
+      lines.push(`| **${p.name}** | ${p.archetype.name} | ${m.reportsCompleted} | $${m.totalBountyEarned.toLocaleString('pt-BR')} | ${m.patchesSuffered} / ${m.bypassUsed} | ${m.criticalAlarmPenalties}x (${m.alertsReceived}🐞 total) | ${m.toolsInstalled} / ${m.toolsActivatedOrTriggered}x | ${m.archetypeTriggers}x (+$${m.archetypeBountyBonus}) | ${m.programsPickedMarket} / ${m.programsPickedSurpriseDeck} |`);
+    });
+    lines.push(``);
+
+    const playersWithFeedback = activeList.filter(p => playerMetricsRef.current[p.id]?.feedback);
+    if (playersWithFeedback.length > 0) {
+      lines.push(`## 💬 Avaliação dos Jogadores (Feedback de Playtest)`);
+      lines.push(`| Jogador | Arquétipo | Ritmo / Duração | Caos / Punição | Clareza das Regras | Comentário / Observação |`);
+      lines.push(`| :--- | :--- | :--- | :--- | :--- | :--- |`);
+      playersWithFeedback.forEach(p => {
+        const fb = playerMetricsRef.current[p.id]?.feedback!;
+        lines.push(`| **${p.name}** | ${p.archetype.name} | ${fb.pacing} | ${fb.chaosBalance} | ${fb.rulesClarity} | ${fb.comment || '-'} |`);
+      });
+      lines.push(``);
+    }
+
     lines.push(`## 📜 Log Cronológico de Auditoria (${auditLogsRef.current.length} eventos)`);
     lines.push(``);
     [...auditLogsRef.current].reverse().forEach((entry, i) => {
-      lines.push(`### ${i + 1}. [${entry.category}] Rodada ${entry.round} • ${entry.timestamp} — ${entry.title}`);
-      lines.push(`- **Autor**: ${entry.playerName || 'Sistema'} | **Status**: \`${entry.status}\``);
+      const who = entry.playerName ? `${entry.playerName}${entry.archetypeName ? ` (${entry.archetypeName})` : ''}` : 'Sistema';
+      lines.push(`### ${i + 1}. [${entry.category}] Rodada ${entry.round} • ${entry.timestamp} - ${entry.title}`);
+      lines.push(`- **Autor**: ${who} | **Status**: \`${entry.status}\``);
       lines.push(`- **Detalhes**: ${entry.details}`);
       lines.push(``);
     });
@@ -3965,18 +4089,84 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
     return lines.join('\n');
   };
 
-  const saveMatchLogToDatabase = async (winnerOverride?: string) => {
-    const md = generateAuditMarkdownReport(winnerOverride);
+  const saveMatchLogToDatabase = async (
+    winnerOverride?: string,
+    stateOverrides?: {
+      players?: Record<PlayerRoleId, PlayerState>;
+      round?: number;
+      isCheckpoint?: boolean;
+    }
+  ) => {
+    const live = latestStateRef.current;
+    const effPlayers = stateOverrides?.players || live.players || players;
+    const effRound = stateOverrides?.round ?? live.currentTurn ?? currentTurn;
+    const effRoom = live.roomCode ?? roomCode;
+    const effMode = live.gameMode || gameMode;
+    const effCount = live.playerCount ?? playerCount;
+    const effWinner = winnerOverride || live.gameWinner || gameWinner || 'Em andamento';
+
+    const md = generateAuditMarkdownReport(effWinner, {
+      players: effPlayers,
+      round: effRound,
+      roomCode: effRoom,
+      gameMode: effMode,
+      playerCount: effCount
+    });
+
+    const enrichedMetrics: Record<string, any> = {};
+    (['player-1', 'player-2', 'player-3', 'player-4', 'player-5', 'player-6'] as PlayerRoleId[]).forEach(rId => {
+      const p = effPlayers[rId];
+      enrichedMetrics[rId] = {
+        ...(playerMetricsRef.current[rId] || {}),
+        playerName: p?.name,
+        archetypeName: p?.archetype?.name,
+        score: p?.score ?? 0,
+        reputacaoTokens: p?.reputacaoTokens ?? 0,
+        alertaTokens: p?.alertaTokens ?? 0
+      };
+    });
+
     return await supabaseSync.saveMatchLog({
-      roomCode: roomCode || 'SOLO_LOCAL',
-      gameMode,
-      playerCount,
-      round: currentTurn,
-      winner: winnerOverride || gameWinner || 'Em andamento',
-      metrics: playerMetricsRef.current,
+      matchId: matchIdRef.current,
+      isCheckpoint: stateOverrides?.isCheckpoint,
+      roomCode: effRoom || 'SOLO_LOCAL',
+      gameMode: effMode,
+      playerCount: effCount,
+      round: effRound,
+      winner: effWinner,
+      metrics: enrichedMetrics,
       auditLogs: auditLogsRef.current,
       markdownReport: md
     });
+  };
+
+  const submitMatchFeedback = async (feedback: {
+    pacing: string;
+    chaosBalance: string;
+    rulesClarity: string;
+    comment?: string;
+  }) => {
+    const cleanComment = (feedback.comment || '').trim();
+    const fbObj: MatchFeedbackData = {
+      pacing: feedback.pacing,
+      chaosBalance: feedback.chaosBalance,
+      rulesClarity: feedback.rulesClarity,
+      comment: cleanComment || undefined,
+      submittedAt: new Date().toLocaleTimeString('pt-BR', { hour12: false })
+    };
+
+    bumpMetric(myRole, () => ({ feedback: fbObj }));
+
+    recordAudit(
+      'SETUP',
+      `💬 Avaliação de Playtest - ${currentPlayer.name}`,
+      `Ritmo: [${fbObj.pacing}] | Caos/Patch: [${fbObj.chaosBalance}] | Clareza/Regras: [${fbObj.rulesClarity}]${cleanComment ? ` | Comentário: "${cleanComment}"` : ''}`,
+      currentPlayer,
+      'EXECUTED'
+    );
+
+    const res = await saveMatchLogToDatabase();
+    return { success: res.success, error: res.error };
   };
 
   return (
@@ -4088,7 +4278,8 @@ export const BoardGameProvider: React.FC<{ children: ReactNode }> = ({ children 
         endTurn,
         resetBoardGame,
         actionSocialPhishing,
-        saveMatchLogToDatabase
+        saveMatchLogToDatabase,
+        submitMatchFeedback
       }}
     >
       {children}

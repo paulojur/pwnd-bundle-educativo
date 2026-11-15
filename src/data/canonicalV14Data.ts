@@ -88,7 +88,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.9",
     "isNoisy": false,
-    "description": "Modifica o valor admin=false para admin=true no cookie do navegador sem assinatura.",
+    "description": "O crachá digital do site vem escrito a lápis: você apaga admin=não, escreve admin=sim no navegador e entra como chefe.",
     "shortDesc": "Cookie sem assinatura: admin=false vira true",
     "category": "VULNERABILITY"
   },
@@ -102,7 +102,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 5.0",
     "isNoisy": false,
-    "description": "O token de redefinição de senha usa a hora exata em segundos e é facilmente adivinhado.",
+    "description": "O código de \"Esqueci minha senha\" é só o horário exato do relógio. Você olha os segundos e adivinha o código de qualquer conta.",
     "shortDesc": "Reset token previsível baseado na hora exata",
     "category": "VULNERABILITY"
   },
@@ -116,7 +116,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 5.1",
     "isNoisy": false,
-    "description": "O token de \"Lembrar de Mim\" nunca expira e permite reuso infinito de sessão.",
+    "description": "O botão \"Lembrar de Mim\" do PulseStream funciona até demais: mesmo depois de trocar a senha, a porta dos fundos continua destrancada para sempre.",
     "shortDesc": "Sessão perpétua: lembrar de mim nunca expira",
     "category": "VULNERABILITY"
   },
@@ -144,7 +144,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.9",
     "isNoisy": false,
-    "description": "Estagiário altera parâmetro de perfil no request e vira administrador do sistema.",
+    "description": "Ao salvar seu cadastro no EduConnect, você inclui uma linha escondida dizendo cargo=diretor e o sistema promove você na hora.",
     "shortDesc": "Escalada de privilégio via parâmetro de perfil",
     "category": "VULNERABILITY"
   },
@@ -158,7 +158,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 5.0",
     "isNoisy": false,
-    "description": "Usa ../../../etc/passwd no parâmetro de imagem para baixar arquivos do servidor.",
+    "description": "Em vez de pedir a foto do produto, você pede para o site voltar três pastas para trás (../../../) e baixar a lista de senhas do servidor.",
     "shortDesc": "Directory traversal com ../../../ até o etc/passwd",
     "category": "VULNERABILITY"
   },
@@ -172,7 +172,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 5.1",
     "isNoisy": false,
-    "description": "Configuração Access-Control-Allow- Origin: * vazando dados privados de usuários.",
+    "description": "O servidor esqueceu as janelas abertas para a rua: qualquer página da internet consegue pedir e ler os dados privados da sua conta.",
     "shortDesc": "CORS aberto com Access-Control-Allow-Origin: *",
     "category": "VULNERABILITY"
   },
@@ -186,7 +186,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 5.2",
     "isNoisy": false,
-    "description": "URLs de download de faturas em PDF expostas publicamente sem chave de checagem.",
+    "description": "Os recibos médicos do HealthLock ficam num link público sem cadeado: basta saber o endereço para baixar o PDF de qualquer cliente.",
     "shortDesc": "URLs de faturas em PDF expostas sem checagem",
     "category": "VULNERABILITY"
   },
@@ -214,7 +214,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.1",
     "isNoisy": false,
-    "description": "Adiciona quantidade -5 de um produto no carrinho de compras e faz a loja pagar você.",
+    "description": "Você coloca -5 produtos no carrinho da ShopAll e o sistema calcula uma dívida ao contrário, depositando dinheiro na sua conta.",
     "shortDesc": "Quantidade negativa no carrinho: a loja paga você",
     "category": "VULNERABILITY"
   },
@@ -228,7 +228,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.2",
     "isNoisy": false,
-    "description": "Aplica o cupom de 10% de desconto 10 vezes seguidas até o produto sair de graça.",
+    "description": "Você cola o mesmo cupom de 10% dez vezes seguidas no DeliveryDash até a comida sair totalmente de graça.",
     "shortDesc": "Cupom aplicado 10 vezes até o grátis total",
     "category": "VULNERABILITY"
   },
@@ -256,7 +256,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.8",
     "isNoisy": false,
-    "description": "Senhas salvas em tabela MD5 sem salt que são encontradas instantaneamente na internet.",
+    "description": "As senhas foram embaralhadas com uma receita tão velha que basta jogar o código no buscador para descobrir a senha original em 1 segundo.",
     "shortDesc": "MD5 sem salt rachado em segundos",
     "category": "VULNERABILITY"
   },
@@ -284,7 +284,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.9",
     "isNoisy": false,
-    "description": "Carrega bibliotecas DLL maliciosas no caminho de execução do software legado.",
+    "description": "O programa antigo procura uma peça de apoio na pasta antes de abrir; você deixa uma peça falsa com o mesmo nome ali e ele engole sem checar.",
     "shortDesc": "DLL hijacking no caminho de execução do legado",
     "category": "VULNERABILITY"
   },
@@ -298,7 +298,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 5.7",
     "isNoisy": false,
-    "description": "Insere comandos de sistema operacional em campos de formulários desprotegidos.",
+    "description": "No campo \"Teste sua conexão\", você escreve um ponto-e-vírgula seguido de uma ordem direta e o servidor obedece como se fosse o dono.",
     "shortDesc": "Execução de comandos do sistema via formulários",
     "category": "VULNERABILITY"
   },
@@ -312,7 +312,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 5.8",
     "isNoisy": false,
-    "description": "O parser XML lê arquivos do servidor local ao processar notas fiscais digitais.",
+    "description": "Você envia uma nota fiscal para o TaxCore com um atalho escondido no texto; ao ler a nota, o sistema preenche o recibo com os segredos do servidor.",
     "shortDesc": "XXE: parser XML lê arquivos locais do servidor",
     "category": "VULNERABILITY"
   },
@@ -326,7 +326,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 5.9",
     "isNoisy": false,
-    "description": "Comandos executados através de variáveis no motor de templates de e- mail.",
+    "description": "No campo \"Seu Nome\" do cadastro, você digita {{7*7}}. Quando o e-mail de boas-vindas chega \"Olá, 49!\", você sabe que controla o servidor.",
     "shortDesc": "SSTI: comandos injetados no motor de templates",
     "category": "VULNERABILITY"
   },
@@ -340,7 +340,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.0",
     "isNoisy": false,
-    "description": "Manipula cabeçalhos HTTP para injetar respostas falsas no navegador do usuário.",
+    "description": "Você falsifica o remetente do envelope digital para fazer o navegador do usuário confiar numa ordem que a empresa nunca deu.",
     "shortDesc": "Injeção via cabeçalhos HTTP manipulados",
     "category": "VULNERABILITY"
   },
@@ -382,7 +382,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.2",
     "isNoisy": false,
-    "description": "Usa o campo de upload de avatar para mapear portas abertas na rede interna da empresa.",
+    "description": "Em vez de mandar uma foto de perfil, você manda o link da rede interna da empresa e descobre quais salas secretas estão abertas pelo tempo de resposta.",
     "shortDesc": "Mapeamento de portas internas via upload de avatar",
     "category": "VULNERABILITY"
   },
@@ -410,7 +410,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.5",
     "isNoisy": false,
-    "description": "DOM-based XSS encadeado em rotas dinâmicas do Single Page App.",
+    "description": "Você esconde uma armadilha no próprio link compartilhado: quando a vítima abre a página, o navegador dela mesma executa o seu comando.",
     "shortDesc": "DOM-based XSS em rotas dinâmicas do SPA",
     "category": "VULNERABILITY"
   },
@@ -424,7 +424,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.6",
     "isNoisy": false,
-    "description": "Injeta script malicioso no campo de busca que é refletido sem sanitização na página.",
+    "description": "O site repete na tela tudo o que você pesquisa. Você pesquisa um comando disfarçado e a página executa a ordem de volta como um eco.",
     "shortDesc": "Script injetado no campo de busca refletido na página",
     "category": "VULNERABILITY"
   },
@@ -438,7 +438,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.7",
     "isNoisy": false,
-    "description": "Manipula window.location.hash para executar código JavaScript na leitura do elemento.",
+    "description": "Você esconde um comando depois do símbolo # no endereço do site; o servidor nem vê passar, mas o navegador da vítima cai na armadilha.",
     "shortDesc": "Manipulação do window.location.hash",
     "category": "VULNERABILITY"
   },
@@ -452,7 +452,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 1500,
     "cvss": "CVSS 4.8",
     "isNoisy": false,
-    "description": "Injeta tags <h1> e <iframe> falsas na tela de login de usuários leigos.",
+    "description": "Você cola uma janela falsa de \"Sessão Expirada, digite sua senha\" por cima da página verdadeira da empresa e espera o usuário digitar.",
     "shortDesc": "HTML injection com tags falsas na tela de login",
     "category": "VULNERABILITY"
   },
@@ -676,7 +676,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 4000,
     "cvss": "CVSS 7.3",
     "isNoisy": false,
-    "description": "Encadeia um SSRF local para acessar o console interno de gerenciamento de contêineres.",
+    "description": "Você usa uma brecha simples de entrega de arquivos como trampolim para pular o muro e assumir a sala de controle dos servidores.",
     "shortDesc": "SSRF local até o console interno de contêineres",
     "category": "VULNERABILITY"
   },
@@ -690,7 +690,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 4000,
     "cvss": "CVSS 7.7",
     "isNoisy": false,
-    "description": "Bypassa a verificação de código SMS de 2 fatores enviando requisições em paralelo.",
+    "description": "O sistema bloqueia na 3ª tentativa errada de SMS, mas se você mandar 1.000 chutes exatamente no mesmo milissegundo, ele deixa passar todos.",
     "shortDesc": "MFA bypass com requisições em paralelo",
     "category": "VULNERABILITY"
   },
@@ -718,7 +718,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 4000,
     "cvss": "CVSS 7.8",
     "isNoisy": false,
-    "description": "Altera o campo \"role\": \"user\" para \"role\": \"superadmin\" no token assinado fracamente.",
+    "description": "Você descobre a palavra-passe fraca que assina os crachás digitais e falsifica um passe de superadmin perfeito.",
     "shortDesc": "Manipulação de role no JWT mal assinado",
     "category": "VULNERABILITY"
   },
@@ -746,7 +746,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 4000,
     "cvss": "CVSS 7.9",
     "isNoisy": false,
-    "description": "Baixa a lista de exportação completa de relatórios financeiros de todas as empresas.",
+    "description": "O botão \"Exportar Meus Dados\" do PayGateway não filtra quem pediu e entrega a planilha financeira de todas as empresas cadastradas.",
     "shortDesc": "Bulk export IDOR: exportação completa exposta",
     "category": "VULNERABILITY"
   },
@@ -774,7 +774,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 4000,
     "cvss": "CVSS 7.3",
     "isNoisy": false,
-    "description": "Estoura o número inteiro de itens no carrinho fazendo o valor total virar negativo.",
+    "description": "Você adiciona 2 bilhões de espadas mágicas no GameVerse MMO até o contador do jogo dar a volta e o preço virar negativo.",
     "shortDesc": "Integer overflow virando o total negativo",
     "category": "VULNERABILITY"
   },
@@ -788,7 +788,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 4000,
     "cvss": "CVSS 7.5",
     "isNoisy": false,
-    "description": "Decodifica mensagens cifradas analisando as respostas de erro de padding do servidor.",
+    "description": "O cofre é mudo, mas o guarda é fofoqueiro: pela cara que o servidor faz quando dá erro, você adivinha a mensagem secreta letra por letra.",
     "shortDesc": "Padding oracle decifrando mensagens por erro",
     "category": "VULNERABILITY"
   },
@@ -802,7 +802,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 4000,
     "cvss": "CVSS 7.2",
     "isNoisy": false,
-    "description": "Força o banco a pausar por 10 segundos para extrair caracteres de senhas hash.",
+    "description": "O banco não mostra erros, então você manda: \"Se a 1ª letra da senha for A, espere 10 segundos\". O relógio trava e entrega o segredo.",
     "shortDesc": "Blind SQLi time-based: extrai dados por atraso",
     "category": "VULNERABILITY"
   },
@@ -844,7 +844,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 4000,
     "cvss": "CVSS 7.2",
     "isNoisy": false,
-    "description": "Altera o IP de resposta do servidor DNS para bypassar a lista negra de IPs locais.",
+    "description": "O segurança confere seu endereço na entrada e libera; um milésimo de segundo depois, você troca a placa da rua para apontar para o cofre interno.",
     "shortDesc": "DNS rebinding burlando a lista negra de IPs",
     "category": "VULNERABILITY"
   },
@@ -900,7 +900,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.6",
     "isNoisy": false,
-    "description": "Altera o algoritmo do cabeçalho JWT para \"none\" e entra sem digitar senha.",
+    "description": "Você entrega um crachá em branco dizendo que \"não precisa de conferência\" e o porteiro do sistema deixa você passar sem senha.",
     "shortDesc": "JWT alg none: entrada sem senha nenhuma",
     "category": "VULNERABILITY"
   },
@@ -914,7 +914,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.6",
     "isNoisy": false,
-    "description": "Testa vazamentos de senhas conhecidas em massa contra a tela de login.",
+    "description": "Como todo mundo repete a mesma senha em tudo, você testa uma lista de senhas vazadas na internet e abre dezenas de contas no SocialHive.",
     "shortDesc": "Credential stuffing em massa na tela de login",
     "category": "VULNERABILITY"
   },
@@ -928,7 +928,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.7",
     "isNoisy": false,
-    "description": "Omite o parâmetro state no login via redes sociais para vincular a conta da vítima.",
+    "description": "No botão \"Entrar com Rede Social\", você embaralha o pedido de confirmação e cola a conta da vítima direto no seu perfil.",
     "shortDesc": "OAuth sem state: vinculação de conta à força",
     "category": "VULNERABILITY"
   },
@@ -942,7 +942,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.6",
     "isNoisy": false,
-    "description": "Troca o ID do objeto na chamada REST da API mobile para consultar dados de terceiros.",
+    "description": "No aplicativo do DeliveryDash, você troca o número do seu pedido pelo do vizinho e vê o endereço, o telefone e o jantar dele.",
     "shortDesc": "BOLA: troca o ID do objeto na API REST",
     "category": "VULNERABILITY"
   },
@@ -956,7 +956,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.7",
     "isNoisy": false,
-    "description": "Acessa o botão /admin/delete_all_users que esqueceu de verificar o token de sessão.",
+    "description": "Esconderam o botão de administração da tela, mas esqueceram o elevador de serviço destrancado: quem digita o comando direto executa tudo.",
     "shortDesc": "Rota admin sem verificar o token de sessão",
     "category": "VULNERABILITY"
   },
@@ -970,7 +970,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.7",
     "isNoisy": false,
-    "description": "Bypassa isolamento de empresas na nuvem acessando dados de organizações vizinhas.",
+    "description": "A divisória entre clientes da CloudNine era de papel: do seu servidor alugado, você escuta tudo o que a empresa do lado está fazendo.",
     "shortDesc": "Bypass de isolamento multi-tenant na nuvem",
     "category": "VULNERABILITY"
   },
@@ -984,7 +984,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.8",
     "isNoisy": false,
-    "description": "Rota oculta /management/dashboard disponível sem exigência de login.",
+    "description": "Você digita /painel-secreto depois do endereço do site da Voltz e dá de cara com os controles da usina sem ninguém pedir senha.",
     "shortDesc": "Rota de admin oculta sem exigência de login",
     "category": "VULNERABILITY"
   },
@@ -1012,7 +1012,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.2",
     "isNoisy": false,
-    "description": "Arredondamento de frações de centavos acumuladas em transações bancárias.",
+    "description": "A cada transferência na CryptoX, você desvia os milésimos de centavo que sobram no arredondamento até encher um cofre inteiro.",
     "shortDesc": "Frações de centavo acumuladas nas transações",
     "category": "VULNERABILITY"
   },
@@ -1026,7 +1026,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.4",
     "isNoisy": false,
-    "description": "A chave privada de produção estava salva dentro do código JavaScript do frontend.",
+    "description": "Os programadores da Veloce AutoTech trancaram tudo com cadeado forte, mas deixaram a chave-mestra escondida debaixo do tapete no código do site.",
     "shortDesc": "Chave RSA de produção no JavaScript do frontend",
     "category": "VULNERABILITY"
   },
@@ -1040,7 +1040,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.5",
     "isNoisy": false,
-    "description": "Dados de cartão de crédito trafegando sem criptografia TLS via HTTP puro.",
+    "description": "Os dados do cartão viajam pela rede como um cartão-postal aberto: qualquer um no mesmo Wi-Fi lê os números passando.",
     "shortDesc": "Dados de cartão trafegando em HTTP puro",
     "category": "VULNERABILITY"
   },
@@ -1054,7 +1054,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.1",
     "isNoisy": false,
-    "description": "Bypassa a autenticação do diretório corporativo via filtro wildcard.",
+    "description": "No crachá corporativo do GovPortal, você digita apenas um asterisco (*) como curinga e o sistema entende que você é todo mundo ao mesmo tempo.",
     "shortDesc": "LDAP injection no diretório corporativo via wildcard",
     "category": "VULNERABILITY"
   },
@@ -1068,7 +1068,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.0",
     "isNoisy": false,
-    "description": "Injeta operadores $gt e $ne no banco NoSQL bypassando a autenticação de usuário.",
+    "description": "Em vez de digitar a senha, você envia uma condição matemática dizendo \"qualquer senha diferente de vazio\" e o banco de dados aceita!",
     "shortDesc": "NoSQLi com operadores $gt e $ne",
     "category": "VULNERABILITY"
   },
@@ -1082,7 +1082,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.1",
     "isNoisy": false,
-    "description": "Explora vulnerabilidades de abstração em queries ORM para vazamento de colunas privadas.",
+    "description": "Pela barra de filtro da busca, você pede para ordenar os resultados pelo campo secreto de senhas e descobre tudo pela ordem da lista.",
     "shortDesc": "Injeção em queries ORM que vaza colunas privadas",
     "category": "VULNERABILITY"
   },
@@ -1096,7 +1096,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.1",
     "isNoisy": false,
-    "description": "Navega pela árvore XML de dados bancários manipulando parâmetros de pesquisa.",
+    "description": "Você faz perguntas de \"sim ou não\" na busca do BankSafe e vai tateando no escuro até mapear toda a árvore de contas.",
     "shortDesc": "XPath injection navegando a árvore XML de dados",
     "category": "VULNERABILITY"
   },
@@ -1110,7 +1110,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.1",
     "isNoisy": false,
-    "description": "O webhook de notificação enviou a chave de API interna de volta para você.",
+    "description": "Você cadastra seu próprio endereço no sistema de avisos automáticos e o robô da empresa entrega a chave interna na sua mão.",
     "shortDesc": "Webhook que devolve a chave de API interna",
     "category": "VULNERABILITY"
   },
@@ -1138,7 +1138,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.4",
     "isNoisy": false,
-    "description": "Salva um script no fórum de suporte que infecta qualquer pessoa que leia o post.",
+    "description": "Você posta um comentário invisível no mural do SocialHive: todo curioso que apenas abrir a página entrega a sessão para você sem clicar em nada.",
     "shortDesc": "Stored XSS infectando todo leitor do post",
     "category": "VULNERABILITY"
   },
@@ -1152,7 +1152,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.5",
     "isNoisy": false,
-    "description": "Sobe uma imagem de perfil em formato SVG contendo código JavaScript embutido.",
+    "description": "Você sobe um desenho de avatar que parece uma imagem inocente, mas traz um código escondido dentro do traço que roda quando alguém vê seu perfil.",
     "shortDesc": "SVG malicioso com JavaScript embutido no upload",
     "category": "VULNERABILITY"
   },
@@ -1166,7 +1166,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.5",
     "isNoisy": false,
-    "description": "Escapa da aspa do atributo input com \" onfocus=\"alert(1) e dispara a vulnerabilidade.",
+    "description": "Você digita uma aspa extra no formulário para fechar a frase do programador antes da hora e escrever a sua própria regra logo depois.",
     "shortDesc": "Attribute injection escapando a aspa do input",
     "category": "VULNERABILITY"
   },
@@ -1180,7 +1180,7 @@ export const V14_VULNERABILITIES: CanonicalVulnCard[] = [
     "bountyValue": 2500,
     "cvss": "CVSS 6.6",
     "isNoisy": false,
-    "description": "Explora o interpretador de Markdown na caixa de texto do editor de chamados.",
+    "description": "Na caixa de suporte, você usa a formatação de texto em negrito e links para camuflar um comando que dispara quando o atendente abre o chamado.",
     "shortDesc": "XSS via parser de Markdown do editor",
     "category": "VULNERABILITY"
   },
@@ -1767,7 +1767,7 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeedRaw": "Extrema (7-12)",
     "bonusBounty": "$4.000",
     "bonusBountyValue": 4000,
-    "description": "Telemetria veicular e chaves digitais. Alto risco operacional com remuneração de elite.",
+    "description": "Painel multimídia conectado e destravamento remoto via app. Recompensas altas para falhas que abrem o carro pelo celular.",
     "category": "PROGRAM"
   },
   {
@@ -1801,7 +1801,7 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeedRaw": "Extrema (7-12)",
     "bonusBounty": "$4.000",
     "bonusBountyValue": 4000,
-    "description": "Uplink de satélites e telemetria de solo. Segurança de missão crítica e recompensas máximas.",
+    "description": "Rede de internet via satélite e Wi-Fi de bordo para aviação comercial. Blindagem pesada e prêmios de elite.",
     "category": "PROGRAM"
   },
   {
@@ -1893,7 +1893,7 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeedRaw": "Lenta (10-12)",
     "bonusBounty": "$0",
     "bonusBountyValue": 0,
-    "description": "Rede elétrica industrial legada. Ciclo de patch ultralento, ideal para encadear combos longos.",
+    "description": "Sistema antigo de leitura de relógios inteligentes e faturamento residencial. Demora para atualizar, ótimo para preparar combos.",
     "category": "PROGRAM"
   },
   {
@@ -2108,7 +2108,7 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeedRaw": "Moderada (9-12)",
     "bonusBounty": "$1000",
     "bonusBountyValue": 1000,
-    "description": "Distribuição de streaming. Foco em falhas de DRM, portal web e validação de assinaturas.",
+    "description": "Aplicativo de música e vídeo para Smart TVs. Cheio de brechas em compartilhamento de senhas e planos familiares.",
     "category": "PROGRAM"
   },
   {
@@ -2142,7 +2142,7 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeedRaw": "Moderada (9-12)",
     "bonusBounty": "$1000",
     "bonusBountyValue": 1000,
-    "description": "Sistema fiscal e emissão de notas eletrônicas. Auditoria em regras de cálculo e autorizações.",
+    "description": "Portal de restituição de impostos e consulta de contribuintes. Regras confusas que adoram deixar dados alheios à mostra.",
     "category": "PROGRAM"
   },
   {
@@ -2282,7 +2282,7 @@ export const V14_PROGRAMS: CanonicalProgramCard[] = [
     "patchSpeedRaw": "Rápida (8-12)",
     "bonusBounty": "$2500",
     "bonusBountyValue": 2500,
-    "description": "Pesquisa genômica confidencial. Foco em servidores internos de sequenciamento e controle de prontuários.",
+    "description": "Portal de testes de DNA e ancestralidade online. Cofre cheio de segredos biológicos com recompensas generosas.",
     "category": "PROGRAM"
   }
 ];
@@ -2312,7 +2312,7 @@ export const V14_EVENTS: CanonicalEventCard[] = [
     "subtitle": "Duplicated Vulnerability Submission",
     "moment": "ALVO",
     "type": "DUPLICATE",
-    "description": "Escolha 1 oponente: ele descarta a vulnerabilidade de maior CVSS exposta na mesa (se não tiver nenhuma na mesa, descarta 1 carta aleatória da mão).",
+    "description": "Escolha 1 oponente: ele descarta a vulnerabilidade de maior CVSS exposta na mesa (se a mesa dele estiver vazia, o evento passa em branco).",
     "category": "EVENT"
   },
   {
@@ -2375,7 +2375,7 @@ export const V14_EVENTS: CanonicalEventCard[] = [
     "subtitle": "Public Zero-Day Exfiltration",
     "moment": "TODOS",
     "type": "BOUNTY",
-    "description": "Todos os jogadores descartam suas vulnerabilidades na mesa e recebem indenização por raridade ($1k Comum/Incomum, $2k Rara, $2.5k Épica, $3k Lendária). Oponentes sem mesa descartam 1 carta aleatória da mão.",
+    "description": "Todos os jogadores descartam suas vulnerabilidades na mesa e recebem indenização por raridade ($1k Comum/Incomum, $2k Rara, $2.5k Épica, $3k Lendária). Quem estiver com a mesa vazia não sofre efeito.",
     "category": "EVENT"
   },
   {
@@ -2420,7 +2420,7 @@ export const V14_EVENTS: CanonicalEventCard[] = [
     "subtitle": "Lowest CVSS Discard Event",
     "moment": "TODOS",
     "type": "DUPLICATE",
-    "description": "Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta na mesa (oponentes sem mesa descartam 1 carta aleatória da mão).",
+    "description": "Todos os jogadores descartam a vulnerabilidade de menor CVSS exposta na mesa (quem estiver com a mesa vazia não sofre efeito).",
     "category": "EVENT"
   },
   {
@@ -2483,7 +2483,7 @@ export const V14_EVENTS: CanonicalEventCard[] = [
     "subtitle": "Proactive Threat Hunting",
     "moment": "TODOS",
     "type": "PATCH",
-    "description": "Todos os jogadores descartam a vulnerabilidade de maior CVSS exposta na mesa (oponentes sem mesa descartam 1 carta aleatória da mão).",
+    "description": "Todos os jogadores descartam a vulnerabilidade de maior CVSS exposta na mesa (quem estiver com a mesa vazia não sofre efeito).",
     "category": "EVENT"
   },
   {

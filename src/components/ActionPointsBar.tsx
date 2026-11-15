@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { getLocalizedPlayerName } from '../i18n/cardTranslations';
 import { Search, Send, SkipForward, Award, Dices, UserCheck, Clock, FileText, AlertCircle, Sparkles } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 import { BountyLedgerModal } from './BountyLedgerModal';
@@ -10,6 +11,7 @@ export const ActionPointsBar: React.FC = () => {
   const { language, t } = useLanguage();
   const {
     playerScore,
+    bountyLedger,
     isMyTurn,
     activePlayerRole,
     myRole,
@@ -75,14 +77,14 @@ export const ActionPointsBar: React.FC = () => {
                 `🟢 ${t('turn.yourTurn')}`
               ) : (
                 <>
-                  <span>⏳ {t('turn.waitingTurn', { name: allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole })}</span>
+                  <span>⏳ {t('turn.waitingTurn', { name: getLocalizedPlayerName(allPlayers.find(p => p.id === activePlayerRole)?.name || activePlayerRole, language) })}</span>
                   {gameMode !== 'lan' && !roomCode && (
                     <button
                       onClick={() => {
                         soundFx.playClick();
                         setMyRole(activePlayerRole);
                       }}
-                      title="Alterna sua visão para controlar o jogador da vez"
+                      title={language === 'en' ? 'Switch perspective to control the active turn player' : 'Alterna sua visão para controlar o jogador da vez'}
                       style={{
                         padding: '3px 8px',
                         background: '#2B2620',
@@ -98,7 +100,7 @@ export const ActionPointsBar: React.FC = () => {
                         gap: '4px'
                       }}
                     >
-                      {t('turn.playAs', { name: allPlayers.find(p => p.id === activePlayerRole)?.name.split(' ')[0] || 'Next' })}
+                      {t('turn.playAs', { name: getLocalizedPlayerName(allPlayers.find(p => p.id === activePlayerRole)?.name, language).split(' ')[0] || 'Next' })}
                     </button>
                   )}
                 </>
@@ -137,7 +139,7 @@ export const ActionPointsBar: React.FC = () => {
                       border: '1.5px solid #2B2620',
                       boxShadow: isAvailable ? '0 1px 3px rgba(22, 163, 74, 0.4)' : 'none'
                     }}
-                    title={`Ação ${ap} de 3 ${isAvailable ? '(Disponível)' : '(Gasta)'}`}
+                    title={language === 'en' ? `Action ${ap} of 3 ${isAvailable ? '(Available)' : '(Spent)'}` : `Ação ${ap} de 3 ${isAvailable ? '(Disponível)' : '(Gasta)'}`}
                   />
                 );
               })}
@@ -148,7 +150,7 @@ export const ActionPointsBar: React.FC = () => {
           </div>
 
           <div style={{ fontSize: '11px', color: '#685F53', fontFamily: 'monospace' }}>
-            {t('turn.localSeat')} <strong style={{ color: currentPlayer?.color || '#166534' }}>{currentPlayer?.name || myRole}</strong>
+            {t('turn.localSeat')} <strong style={{ color: currentPlayer?.color || '#166534' }}>{getLocalizedPlayerName(currentPlayer?.name || myRole, language)}</strong>
           </div>
         </div>
       </div>
@@ -188,7 +190,7 @@ export const ActionPointsBar: React.FC = () => {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px', fontWeight: '900', color: '#047857', fontFamily: 'monospace' }}>
-                  ${playerScore.toLocaleString('pt-BR')}
+                  ${playerScore.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}
                 </span>
                 <button
                   onClick={() => { soundFx.playClick(); setIsLedgerOpen(true); }}
@@ -308,7 +310,7 @@ export const ActionPointsBar: React.FC = () => {
             <button
               onClick={() => { soundFx.playClick(); actionSocialPhishing && actionSocialPhishing(); }}
               disabled={!isMyTurn || actionsRemaining < 1 || currentPlayer.hand.length === 0}
-              title="Phishing: Puxe 1 carta aleatória da mão de um oponente e entregue 1 da sua mão para ele"
+              title={language === 'en' ? 'Phishing: Pull 1 random card from an opponent\'s hand and give 1 card from your hand to them' : 'Phishing: Puxe 1 carta aleatória da mão de um oponente e entregue 1 da sua mão para ele'}
               style={{
                 padding: '10px 14px',
                 background: isMyTurn && actionsRemaining >= 1 && currentPlayer.hand.length > 0 ? '#EC4899' : '#E2E8F0',
@@ -381,7 +383,14 @@ export const ActionPointsBar: React.FC = () => {
         </div>
       </div>
 
-      {isLedgerOpen && <BountyLedgerModal onClose={() => setIsLedgerOpen(false)} />}
+      {isLedgerOpen && (
+        <BountyLedgerModal
+          isOpen={isLedgerOpen}
+          onClose={() => setIsLedgerOpen(false)}
+          ledger={bountyLedger}
+          totalCash={playerScore}
+        />
+      )}
     </div>
   );
 };

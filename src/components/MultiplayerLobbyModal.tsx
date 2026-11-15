@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabaseSync } from '../utils/supabaseSync';
 import { PlayerRoleId } from '../context/BoardGameContext';
+import { useLanguage } from '../i18n/LanguageContext';
 import { Users, Globe, Bot, Shield, Key, Copy, Check, ArrowRight, X, Database, Settings, LogOut } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 
@@ -16,13 +17,13 @@ interface MultiplayerLobbyModalProps {
   gameMode?: 'solo' | 'hotseat' | 'lan';
 }
 
-const SEATS: { id: PlayerRoleId; label: string; color: string }[] = [
-  { id: 'player-1', label: 'Jogador 1 (Host)', color: '#16A34A' },
-  { id: 'player-2', label: 'Jogador 2', color: '#2563EB' },
-  { id: 'player-3', label: 'Jogador 3', color: '#DC2626' },
-  { id: 'player-4', label: 'Jogador 4', color: '#D97706' },
-  { id: 'player-5', label: 'Jogador 5', color: '#9333EA' },
-  { id: 'player-6', label: 'Jogador 6', color: '#0D9488' }
+const SEATS: { id: PlayerRoleId; label: string; labelEn: string; color: string }[] = [
+  { id: 'player-1', label: 'Jogador 1 (Host)', labelEn: 'Player 1 (Host)', color: '#16A34A' },
+  { id: 'player-2', label: 'Jogador 2', labelEn: 'Player 2', color: '#2563EB' },
+  { id: 'player-3', label: 'Jogador 3', labelEn: 'Player 3', color: '#DC2626' },
+  { id: 'player-4', label: 'Jogador 4', labelEn: 'Player 4', color: '#D97706' },
+  { id: 'player-5', label: 'Jogador 5', labelEn: 'Player 5', color: '#9333EA' },
+  { id: 'player-6', label: 'Jogador 6', labelEn: 'Player 6', color: '#0D9488' }
 ];
 
 export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
@@ -36,6 +37,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
   currentRole = 'player-1',
   gameMode = 'solo'
 }) => {
+  const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState<'mode' | 'create' | 'join' | 'seats'>('mode');
   const [inputCode, setInputCode] = useState<string>('');
   const [createdCode, setCreatedCode] = useState<string>('');
@@ -66,11 +68,16 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
         setInputCode('');
         setActiveTab('mode');
       } else if (initialRoomCode && gameMode !== 'lan') {
-        // Aberto via link de convite (visitante): conecta ao canal de presença da sala
+        // Aberto via link de convite (visitante): conecta ao canal de presença da sala e vai direto para escolha de assento
         const code = initialRoomCode.toUpperCase().trim();
         setInputCode(code);
         const visitorId = `visitor-${Math.random().toString(36).substring(2, 8)}`;
         supabaseSync.joinRoom(code, visitorId, 'Visitante');
+        setActiveTab('seats');
+      } else if (initialRoomCode && gameMode === 'lan') {
+        // Jogador já sentado na sala online reabrindo o modal para ver vagas/sair
+        const code = initialRoomCode.toUpperCase().trim();
+        setInputCode(code);
         setActiveTab('seats');
       }
     }
@@ -95,14 +102,21 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
   if (!isOpen) return null;
 
   const currentRoomCode = createdCode || inputCode || initialRoomCode || '';
-  // É Host somente se criou a sala neste navegador
-  const isHost = createdCode !== '' && createdCode === currentRoomCode;
+  // É Host somente se criou a sala nesta aba/sessão
+  const isHost =
+    (createdCode !== '' && createdCode === currentRoomCode) ||
+    (typeof window !== 'undefined' && Boolean(currentRoomCode) && sessionStorage.getItem(`pwnd_host_${currentRoomCode}`) === 'true');
 
   const handleCreateRoom = () => {
     soundFx.playClick();
     const code = 'PWND-' + Math.floor(1000 + Math.random() * 9000);
     if (onSetPlayerCount) {
       onSetPlayerCount(selectedSeatsCount);
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem(`pwnd_host_${code}`, 'true');
+      } catch {}
     }
     const hostDisplay = playerNickname.trim() ? `${playerNickname.trim()} (Host)` : 'Jogador 1 (Host)';
     supabaseSync.joinRoom(code, 'player-1', hostDisplay);
@@ -123,7 +137,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
   const handleSelectSeat = (roleId: PlayerRoleId) => {
     // Regra rígida: Visitante NUNCA assume a vaga do Host (player-1)
     if (roleId === 'player-1' && !isHost) {
-      alert('O assento de Jogador 1 pertence exclusivamente ao criador da sala.');
+      alert(language === 'en' ? 'Player 1 seat belongs exclusively to the room creator.' : 'O assento de Jogador 1 pertence exclusivamente ao criador da sala.');
       return;
     }
     soundFx.playClick();
@@ -133,12 +147,12 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
     const presenceLabel = nickClean || seatInfo?.label || `Jogador (${roleId})`;
     if (typeof window !== 'undefined') {
       try {
-        localStorage.setItem('pwnd_active_role', roleId);
+        sessionStorage.setItem(`pwnd_seat_${targetCode}`, roleId);
         if (presenceLabel) localStorage.setItem(`pwnd_nick_${roleId}`, presenceLabel);
         if (nickClean) localStorage.setItem('pwnd_player_nickname', nickClean);
         const url = new URL(window.location.href);
         url.searchParams.set('room', targetCode);
-        url.searchParams.set('role', roleId);
+        url.searchParams.delete('role');
         window.history.replaceState({}, '', url.toString());
       } catch {}
     }
@@ -189,10 +203,10 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
             <Users size={24} color="#00e5ff" />
             <div>
               <div style={{ fontFamily: 'monospace', fontSize: '10px', color: '#00e5ff', letterSpacing: '3px', textTransform: 'uppercase' }}>
-                LOBBY DE PLAYTEST ONLINE (V1.4)
+                {language === 'en' ? 'ONLINE PLAYTEST LOBBY (V1.4)' : 'LOBBY DE PLAYTEST ONLINE (V1.4)'}
               </div>
               <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#fff', fontFamily: 'monospace', margin: 0 }}>
-                Mesa Remota Multijogador
+                {language === 'en' ? 'Remote Multiplayer Table' : 'Mesa Remota Multijogador'}
               </h2>
             </div>
           </div>
@@ -204,7 +218,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
         {/* Status Conectado */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', background: 'rgba(0, 255, 102, 0.08)', border: '1px solid rgba(0, 255, 102, 0.3)', padding: '8px 12px', borderRadius: '6px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#00ff66', fontSize: '11px', fontFamily: 'monospace', fontWeight: 'bold' }}>
-            <span style={{ fontSize: '14px' }}>🟢</span> Servidor Realtime Ativo & Conectado
+            <span style={{ fontSize: '14px' }}>🟢</span> {language === 'en' ? 'Realtime Server Active & Connected' : 'Servidor Realtime Ativo & Conectado'}
           </div>
           <span style={{ fontSize: '10px', color: '#9ca3af', fontFamily: 'monospace' }}>Supabase Broadcast & Presence</span>
         </div>
@@ -214,20 +228,22 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', padding: '10px 14px', borderRadius: '8px' }}>
             <div>
               <div style={{ color: '#f87171', fontWeight: 'bold', fontSize: '11px', fontFamily: 'monospace' }}>
-                MESA ATIVA: {currentRoomCode} ({currentRole === 'player-1' ? '👑 Você é o Host' : `💺 Você está no assento ${currentRole}`})
+                {language === 'en'
+                  ? `ACTIVE TABLE: ${currentRoomCode} (${currentRole === 'player-1' ? '👑 You are Host' : `💺 You are in seat ${currentRole}`})`
+                  : `MESA ATIVA: ${currentRoomCode} (${currentRole === 'player-1' ? '👑 Você é o Host' : `💺 Você está no assento ${currentRole}`})`}
               </div>
               <div style={{ color: '#9ca3af', fontSize: '10px', marginTop: '2px' }}>
                 {currentRole === 'player-1'
-                  ? 'Como anfitrião, você pode encerrar a partida para todos os participantes.'
-                  : 'Você pode desconectar e sair da mesa a qualquer momento.'}
+                  ? (language === 'en' ? 'As host, you can end the match for all participants.' : 'Como anfitrião, você pode encerrar a partida para todos os participantes.')
+                  : (language === 'en' ? 'You can disconnect and leave the table at any time.' : 'Você pode desconectar e sair da mesa a qualquer momento.')}
               </div>
             </div>
             <button
               onClick={() => {
                 const isHostRole = currentRole === 'player-1';
                 const msg = isHostRole
-                  ? 'Deseja realmente encerrar a mesa online para todos os jogadores?'
-                  : 'Deseja realmente sair desta mesa online?';
+                  ? (language === 'en' ? 'Do you really want to end the online table for all players?' : 'Deseja realmente encerrar a mesa online para todos os jogadores?')
+                  : (language === 'en' ? 'Do you really want to leave this online table?' : 'Deseja realmente sair desta mesa online?');
                 if (confirm(msg)) {
                   soundFx.playClick();
                   handleLeaveAndReset();
@@ -248,7 +264,9 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                 cursor: 'pointer'
               }}
             >
-              <LogOut size={13} /> {currentRole === 'player-1' ? 'Encerrar Mesa' : 'Sair da Mesa'}
+              <LogOut size={13} /> {currentRole === 'player-1'
+                ? (language === 'en' ? 'End Table' : 'Encerrar Mesa')
+                : (language === 'en' ? 'Leave Table' : 'Sair da Mesa')}
             </button>
           </div>
         )}
@@ -274,10 +292,12 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                 </div>
                 <div>
                   <h4 style={{ fontSize: '14px', fontWeight: '800', color: '#00e5ff', fontFamily: 'monospace', margin: 0 }}>
-                    Mesa Remota Online (2 a 6 Jogadores)
+                    {language === 'en' ? 'Remote Online Table (2 to 6 Players)' : 'Mesa Remota Online (2 a 6 Jogadores)'}
                   </h4>
                   <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>
-                    Envie o link da sala para qualquer pessoa jogar no computador ou celular em tempo real!
+                    {language === 'en'
+                      ? 'Send the room link to anyone to play on desktop or mobile in real time!'
+                      : 'Envie o link da sala para qualquer pessoa jogar no computador ou celular em tempo real!'}
                   </div>
                 </div>
               </div>
@@ -285,11 +305,11 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
               {/* Campo de Nickname do Jogador */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', background: 'rgba(0,0,0,0.3)', padding: '8px 12px', borderRadius: '6px' }}>
                 <span style={{ fontSize: '11px', color: '#fff', fontFamily: 'monospace', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
-                  👤 Seu Nome / Nick:
+                  {language === 'en' ? '👤 Your Name / Nick:' : '👤 Seu Nome / Nick:'}
                 </span>
                 <input
                   type="text"
-                  placeholder="Ex: Paulo, CyberFox..."
+                  placeholder={language === 'en' ? 'E.g. Paulo, CyberFox...' : 'Ex: Paulo, CyberFox...'}
                   value={playerNickname}
                   onChange={(e) => handleNicknameChange(e.target.value)}
                   maxLength={20}
@@ -310,7 +330,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
               {/* Seletor de vagas para a nova mesa */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(0,0,0,0.3)', padding: '8px 12px', borderRadius: '6px' }}>
                 <span style={{ fontSize: '11px', color: '#fff', fontFamily: 'monospace', fontWeight: 'bold' }}>
-                  Vagas na Mesa:
+                  {language === 'en' ? 'Table Seats:' : 'Vagas na Mesa:'}
                 </span>
                 <div style={{ display: 'flex', gap: '6px' }}>
                   {[2, 3, 4, 5, 6].map(num => (
@@ -352,7 +372,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                     cursor: 'pointer'
                   }}
                 >
-                  ➕ Criar Sala ({selectedSeatsCount}P)
+                  {language === 'en' ? `➕ Create Room (${selectedSeatsCount}P)` : `➕ Criar Sala (${selectedSeatsCount}P)`}
                 </button>
 
                 <button
@@ -370,7 +390,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                     cursor: 'pointer'
                   }}
                 >
-                  🔗 Entrar com Código
+                  {language === 'en' ? '🔗 Join with Code' : '🔗 Entrar com Código'}
                 </button>
               </div>
             </div>
@@ -399,10 +419,12 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
               </div>
               <div>
                 <h4 style={{ fontSize: '13px', fontWeight: '800', color: '#fff', fontFamily: 'monospace', margin: 0 }}>
-                  Playtest Solo / Sandbox Completo
+                  {language === 'en' ? 'Solo Playtest / Full Sandbox' : 'Playtest Solo / Sandbox Completo'}
                 </h4>
                 <div style={{ fontSize: '11px', color: '#9ca3af' }}>
-                  Explore a mesa, compre cartas, monte combos e teste a probabilidade do Patch sozinho.
+                  {language === 'en'
+                    ? 'Explore the table, draw cards, build combos and test Patch probabilities solo.'
+                    : 'Explore a mesa, compre cartas, monte combos e teste a probabilidade do Patch sozinho.'}
                 </div>
               </div>
             </div>
@@ -431,10 +453,12 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
               </div>
               <div>
                 <h4 style={{ fontSize: '13px', fontWeight: '800', color: '#00ff66', fontFamily: 'monospace', margin: 0 }}>
-                  2 Jogadores na Mesma Tela (Hotseat)
+                  {language === 'en' ? '2 Players on Same Screen (Hotseat)' : '2 Jogadores na Mesma Tela (Hotseat)'}
                 </h4>
                 <div style={{ fontSize: '11px', color: '#9ca3af' }}>
-                  Dois jogadores no mesmo monitor alternando turnos entre os tabuleiros.
+                  {language === 'en'
+                    ? 'Two players on the same monitor alternating turns between player mats.'
+                    : 'Dois jogadores no mesmo monitor alternando turnos entre os tabuleiros.'}
                 </div>
               </div>
             </div>
@@ -445,7 +469,11 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
         {activeTab === 'create' && (
           <div style={{ textAlign: 'center', padding: '10px 0' }}>
             <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '8px' }}>
-              Sala Criada para <strong style={{ color: '#00e5ff' }}>{selectedSeatsCount} Jogadores</strong>! Compartilhe o link com seus colegas:
+              {language === 'en' ? (
+                <>Room Created for <strong style={{ color: '#00e5ff' }}>{selectedSeatsCount} Players</strong>! Share the link with your friends:</>
+              ) : (
+                <>Sala Criada para <strong style={{ color: '#00e5ff' }}>{selectedSeatsCount} Jogadores</strong>! Compartilhe o link com seus colegas:</>
+              )}
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', margin: '14px 0' }}>
@@ -455,7 +483,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
 
               <button
                 onClick={copyRoomCode}
-                title="Copiar Código"
+                title={language === 'en' ? 'Copy Code' : 'Copiar Código'}
                 style={{
                   padding: '10px',
                   background: 'rgba(255,255,255,0.1)',
@@ -490,13 +518,15 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
               }}
             >
               {copiedLink ? <Check size={18} /> : <Globe size={18} />}
-              {copiedLink ? 'Link Copiado! Envie aos participantes' : 'Copiar Link de Convite da Sala'}
+              {copiedLink
+                ? (language === 'en' ? 'Link Copied! Send to participants' : 'Link Copiado! Envie aos participantes')
+                : (language === 'en' ? 'Copy Room Invite Link' : 'Copiar Link de Convite da Sala')}
             </button>
 
             {/* Vagas e Presença em Tempo Real */}
             <div style={{ textAlign: 'left', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
               <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#9ca3af', marginBottom: '8px', fontWeight: 'bold' }}>
-                VAGAS NA MESA ({selectedSeatsCount} JOGADORES):
+                {language === 'en' ? `TABLE SEATS (${selectedSeatsCount} PLAYERS):` : `VAGAS NA MESA (${selectedSeatsCount} JOGADORES):`}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {SEATS.slice(0, selectedSeatsCount).map((seat) => {
@@ -519,14 +549,14 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: isOccupied ? '#00ff66' : '#6b7280' }} />
-                        <span style={{ color: '#fff', fontWeight: 'bold' }}>{seat.label}</span>
+                        <span style={{ color: '#fff', fontWeight: 'bold' }}>{language === 'en' ? seat.labelEn : seat.label}</span>
                       </div>
                       <span style={{ color: isHostSeat ? '#00ff66' : isOccupied ? '#00e5ff' : '#9ca3af', fontSize: '10px' }}>
                         {isHostSeat
-                          ? `👑 ${playerNickname.trim() || 'Você'} (Host)`
+                          ? `👑 ${playerNickname.trim() || (language === 'en' ? 'You' : 'Você')} (Host)`
                           : isOccupied
-                          ? `🟢 ${occupantName || 'Conectado'}`
-                          : 'Aguardando jogador...'}
+                          ? `🟢 ${occupantName || (language === 'en' ? 'Connected' : 'Conectado')}`
+                          : (language === 'en' ? 'Waiting for player...' : 'Aguardando jogador...')}
                       </span>
                     </div>
                   );
@@ -542,7 +572,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                 }}
                 style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.06)', color: '#9ca3af', border: 'none', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '12px' }}
               >
-                ← Voltar
+                {language === 'en' ? '← Back' : '← Voltar'}
               </button>
               <button
                 onClick={() => {
@@ -550,14 +580,15 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                   const nickClean = playerNickname.trim();
                   if (typeof window !== 'undefined') {
                     try {
-                      localStorage.setItem('pwnd_active_role', 'player-1');
+                      sessionStorage.setItem(`pwnd_seat_${createdCode}`, 'player-1');
+                      sessionStorage.setItem(`pwnd_host_${createdCode}`, 'true');
                       if (nickClean) {
                         localStorage.setItem('pwnd_nick_player-1', nickClean);
                         localStorage.setItem('pwnd_player_nickname', nickClean);
                       }
                       const url = new URL(window.location.href);
                       url.searchParams.set('room', createdCode);
-                      url.searchParams.set('role', 'player-1');
+                      url.searchParams.delete('role');
                       window.history.replaceState({}, '', url.toString());
                     } catch {}
                   }
@@ -566,7 +597,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                 }}
                 style={{ flex: 2, padding: '10px', background: '#00ff66', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '12px', fontWeight: '800' }}
               >
-                Iniciar Partida na Mesa 🚀
+                {language === 'en' ? 'Start Match at Table 🚀' : 'Iniciar Partida na Mesa 🚀'}
               </button>
             </div>
           </div>
@@ -576,7 +607,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
         {activeTab === 'join' && (
           <div style={{ textAlign: 'center', padding: '10px 0' }}>
             <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '14px' }}>
-              Digite o Código da Sala recebido do anfitrião:
+              {language === 'en' ? 'Enter the Room Code received from the host:' : 'Digite o Código da Sala recebido do anfitrião:'}
             </div>
 
             <input
@@ -607,7 +638,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                 }}
                 style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.06)', color: '#9ca3af', border: 'none', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '12px' }}
               >
-                ← Cancelar
+                {language === 'en' ? '← Cancel' : '← Cancelar'}
               </button>
               <button
                 onClick={handleGoToSeats}
@@ -625,7 +656,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                   fontWeight: '800'
                 }}
               >
-                Ver Vagas na Mesa →
+                {language === 'en' ? 'View Table Seats →' : 'Ver Vagas na Mesa →'}
               </button>
             </div>
           </div>
@@ -636,24 +667,26 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
           <div style={{ padding: '8px 0' }}>
             <div style={{ textAlign: 'center', marginBottom: '12px' }}>
               <div style={{ fontSize: '11px', color: '#9ca3af', fontFamily: 'monospace' }}>
-                SALA ONLINE: <strong style={{ color: '#ffb800', letterSpacing: '2px' }}>{currentRoomCode}</strong>
+                {language === 'en' ? 'ONLINE ROOM:' : 'SALA ONLINE:'} <strong style={{ color: '#ffb800', letterSpacing: '2px' }}>{currentRoomCode}</strong>
               </div>
               <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#fff', fontFamily: 'monospace', margin: '4px 0 2px' }}>
-                Escolha seu Assento na Mesa
+                {language === 'en' ? 'Choose Your Seat at the Table' : 'Escolha seu Assento na Mesa'}
               </h3>
               <p style={{ fontSize: '11px', color: '#9ca3af', margin: 0, fontFamily: 'monospace' }}>
-                Informe seu nome/nickname e clique em uma das vagas disponíveis abaixo:
+                {language === 'en'
+                  ? 'Enter your name/nickname and click on one of the available seats below:'
+                  : 'Informe seu nome/nickname e clique em uma das vagas disponíveis abaixo:'}
               </p>
             </div>
 
             {/* Campo de Nickname na seleção de assento */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(0, 229, 255, 0.08)', border: '1px solid #00e5ff', padding: '8px 12px', borderRadius: '8px', marginBottom: '14px' }}>
               <span style={{ fontSize: '11px', color: '#00e5ff', fontFamily: 'monospace', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
-                👤 Seu Nickname:
+                {language === 'en' ? '👤 Your Nickname:' : '👤 Seu Nickname:'}
               </span>
               <input
                 type="text"
-                placeholder="Digite seu nome ou apelido..."
+                placeholder={language === 'en' ? 'Enter your name or nickname...' : 'Digite seu nome ou apelido...'}
                 value={playerNickname}
                 onChange={(e) => handleNicknameChange(e.target.value)}
                 maxLength={20}
@@ -708,7 +741,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '4px' }}>
                       <span style={{ fontWeight: '800', color: isSelf ? '#00ff66' : isOccupied ? '#9ca3af' : '#fff', fontFamily: 'monospace', fontSize: '13px' }}>
-                        {seat.label}
+                        {language === 'en' ? seat.labelEn : seat.label}
                       </span>
                       <span
                         style={{
@@ -721,17 +754,23 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                           fontFamily: 'monospace'
                         }}
                       >
-                        {isSelf ? 'Seu Assento' : isHostSeat ? 'Host (Ocupado)' : isOccupied ? 'Ocupado' : 'Disponível'}
+                        {isSelf
+                          ? (language === 'en' ? 'Your Seat' : 'Seu Assento')
+                          : isHostSeat
+                          ? (language === 'en' ? 'Host (Occupied)' : 'Host (Ocupado)')
+                          : isOccupied
+                          ? (language === 'en' ? 'Occupied' : 'Ocupado')
+                          : (language === 'en' ? 'Available' : 'Disponível')}
                       </span>
                     </div>
                     <span style={{ fontSize: '11px', color: isSelf ? '#00ff66' : isOccupied ? '#6b7280' : '#00e5ff', fontFamily: 'monospace' }}>
                       {isSelf
-                        ? '🟢 Você já está jogando neste assento'
+                        ? (language === 'en' ? '🟢 You are already playing in this seat' : '🟢 Você já está jogando neste assento')
                         : isHostSeat
-                        ? `🔒 Anfitrião (${occupantName || 'Host'})`
+                        ? `🔒 ${language === 'en' ? 'Host' : 'Anfitrião'} (${occupantName || 'Host'})`
                         : isOccupied
-                        ? `🔴 Ocupado por: ${occupantName || 'Outro jogador'}`
-                        : '👉 Clicar para sentar nesta vaga'}
+                        ? `🔴 ${language === 'en' ? 'Occupied by:' : 'Ocupado por:'} ${occupantName || (language === 'en' ? 'Another player' : 'Outro jogador')}`
+                        : (language === 'en' ? '👉 Click to take this seat' : '👉 Clicar para sentar nesta vaga')}
                     </span>
                   </button>
                 );
@@ -756,7 +795,7 @@ export const MultiplayerLobbyModal: React.FC<MultiplayerLobbyModalProps> = ({
                   fontSize: '12px'
                 }}
               >
-                ← Voltar ao Menu
+                {language === 'en' ? '← Back to Menu' : '← Voltar ao Menu'}
               </button>
             </div>
           </div>

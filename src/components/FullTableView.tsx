@@ -1,6 +1,7 @@
 import React from 'react';
 import { useBoardGame, PlayerState, PlayerRoleId } from '../context/BoardGameContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { getLocalizedArchetype, getLocalizedProgram, getLocalizedPlayerName } from '../i18n/cardTranslations';
 import { PlayerMatData } from './PlayerMat';
 import { CenterMarketMat } from './CenterMarketMat';
 import { Users, Eye, ArrowLeft, ShieldCheck, Bug, Award, Sparkles, UserCheck } from 'lucide-react';
@@ -96,10 +97,10 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
             </div>
             <div>
               <div style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'monospace', color: '#1E1B18' }}>
-                {player.name}
+                {getLocalizedPlayerName(player.name, language)}
               </div>
               <div style={{ fontSize: '9px', color: '#685F53', fontFamily: 'monospace', fontWeight: '700' }}>
-                {player.archetype.name} {player.archetype.avatarIcon || ''}
+                {getLocalizedArchetype(player.archetype, language).name} {player.archetype.avatarIcon || ''}
               </div>
             </div>
           </div>
@@ -116,7 +117,7 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
               border: '1px solid #166534'
             }}
           >
-            ${player.score.toLocaleString('pt-BR')}
+            ${player.score.toLocaleString(language === 'en' ? 'en-US' : 'pt-BR')}
           </div>
         </div>
 
@@ -136,8 +137,10 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
             alignItems: 'center'
           }}
         >
-          <span style={{ color: '#685F53' }}>Alvo Corporativo:</span>
-          <strong style={{ color: '#0369A1' }}>{player.activeProgram?.name || 'Nenhum'}</strong>
+          <span style={{ color: '#685F53' }}>{t('fullTable.corporateTarget')}</span>
+          <strong style={{ color: '#0369A1' }}>
+            {player.activeProgram ? getLocalizedProgram(player.activeProgram, language).name : t('fullTable.noneTarget')}
+          </strong>
         </div>
 
         {/* STATUS RÁPIDO DO JOGADOR NA MESA */}
@@ -165,10 +168,10 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
         {/* TOKENS E BOTÃO DE ASSUMIR */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '8px', fontSize: '9.5px', fontFamily: 'monospace' }}>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{ color: '#B91C1C', fontWeight: '800' }} title="Tokens de Alerta (Ao atingir 2, perde -$2.000)">
+            <span style={{ color: '#B91C1C', fontWeight: '800' }} title={t('playerMat.tokensAlert')}>
               🐞 {player.alertaTokens}/2
             </span>
-            <span style={{ color: '#B45309', fontWeight: '800' }} title="Tokens de Reputação (2 tokens permitem rolar novamente um dado de Patch)">
+            <span style={{ color: '#B45309', fontWeight: '800' }} title={t('playerMat.tokensReputation')}>
               🐝 {player.reputacaoTokens}
             </span>
             {isCurrentTurnActive && (
@@ -313,11 +316,11 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
         {/* LINHA SUPERIOR DA MESA: JOGADOR 1 & JOGADOR 2 */}
         <div>
           <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '8px' }}>
-            ▲ CABECEIRA NORTE DA MESA (JOGADORES 1 & 2) ▲
+            {t('fullTable.northHead')}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', maxWidth: '1080px', margin: '0 auto' }}>
-            {renderPlayerCardSeat(p1, 'Jogador 1')}
-            {renderPlayerCardSeat(p2, 'Jogador 2')}
+            {renderPlayerCardSeat(p1, language === 'en' ? 'Player 1' : 'Jogador 1')}
+            {renderPlayerCardSeat(p2, language === 'en' ? 'Player 2' : 'Jogador 2')}
           </div>
         </div>
 
@@ -326,39 +329,39 @@ export const FullTableView: React.FC<FullTableViewProps> = ({
           {/* LADO OESTE: JOGADOR 6 */}
           <div>
             <div style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '6px', textAlign: 'center' }}>
-              ◀ OESTE (JOGADOR 6)
+              {t('fullTable.westSeat')}
             </div>
-            {renderPlayerCardSeat(p6, 'Jogador 6')}
+            {renderPlayerCardSeat(p6, language === 'en' ? 'Player 6' : 'Jogador 6')}
           </div>
 
           {/* MIOLO: O TABULEIRO CENTRAL OFICIAL */}
           <div>
-            <CenterMarketMat totalRounds={8} />
+            <CenterMarketMat totalRounds={10} />
           </div>
 
           {/* LADO LESTE: JOGADOR 3 */}
           <div>
             <div style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '6px', textAlign: 'center' }}>
-              (JOGADOR 3) LESTE ▶
+              {t('fullTable.eastSeat')}
             </div>
-            {renderPlayerCardSeat(p3, 'Jogador 3')}
+            {renderPlayerCardSeat(p3, language === 'en' ? 'Player 3' : 'Jogador 3')}
           </div>
         </div>
 
         {/* LINHA INFERIOR DA MESA: JOGADOR 5 & JOGADOR 4 */}
         <div>
           <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#685F53', marginBottom: '8px' }}>
-            ▼ CABECEIRA SUL DA MESA (JOGADORES 5 & 4) ▼
+            {t('fullTable.southHead')}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', maxWidth: '1080px', margin: '0 auto' }}>
-            {renderPlayerCardSeat(p5, 'Jogador 5')}
-            {renderPlayerCardSeat(p4, 'Jogador 4')}
+            {renderPlayerCardSeat(p5, language === 'en' ? 'Player 5' : 'Jogador 5')}
+            {renderPlayerCardSeat(p4, language === 'en' ? 'Player 4' : 'Jogador 4')}
           </div>
         </div>
 
         {/* MARCA D'ÁGUA SUTIL DA MESA */}
         <div style={{ textAlign: 'center', fontSize: '9px', fontWeight: '800', letterSpacing: '3px', textTransform: 'uppercase', fontFamily: 'monospace', color: '#9E8E75', marginTop: '4px' }}>
-          PWND! THE BUG BOUNTY CHAOS — ARENA TABLETOP OFICIAL (V1.4)
+          {t('fullTable.tableWatermark')}
         </div>
       </div>
     </div>

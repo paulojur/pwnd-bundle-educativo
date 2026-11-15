@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useBoardGame } from '../context/BoardGameContext';
 import { useLanguage } from '../i18n/LanguageContext';
-import { getLocalizedCardDescription, getLocalizedScopeBadge } from '../i18n/cardTranslations';
+import { getLocalizedCardDescription, getLocalizedScopeBadge, getLocalizedTechnicalReference, getLocalizedPlayerName } from '../i18n/cardTranslations';
 import { CardV2, getClassBadgeInfo } from '../data/cardsDataV2';
 import { ProgramCard, Archetype } from '../data/cardsData';
 import { Zap, Wrench, ShieldCheck, Sparkles, CheckCircle2, Trash2, RefreshCw } from 'lucide-react';
@@ -71,24 +71,40 @@ export const BoardHand: React.FC = () => {
     }
     recycleHandCards(id1, id2);
     setSelectedCardIds([]);
-    setLastActionText('♻️ Reciclagem 2:1 realizada (1/1 neste turno)! 2 cartas descartadas e +1 nova comprada.');
+    setLastActionText(
+      language === 'en'
+        ? '♻️ 2:1 Recycling completed (1/1 this turn)! 2 cards discarded and +1 new card drawn.'
+        : '♻️ Reciclagem 2:1 realizada (1/1 neste turno)! 2 cartas descartadas e +1 nova comprada.'
+    );
   };
 
   const handlePlayCard = (card: CardV2) => {
     if (!isMyTurn) {
-      alert('Aguarde a sua vez para jogar cartas da mão!');
+      alert(language === 'en' ? 'Wait for your turn to play cards from your hand!' : 'Aguarde a sua vez para jogar cartas da mão!');
       return;
     }
 
     if (card.type === 'exploit') {
       actionInfiltrar(card.id);
-      setLastActionText(`Ação EXPLOIT: Carta "${card.name}" baixada na mesa! (1 AP gasto)`);
+      setLastActionText(
+        language === 'en'
+          ? `EXPLOIT Action: Card "${card.name}" deployed onto the table! (1 AP spent)`
+          : `Ação EXPLOIT: Carta "${card.name}" baixada na mesa! (1 AP gasto)`
+      );
     } else if (card.type === 'tool') {
       moveCardToToolsRack(card.id);
-      setLastActionText(`Ferramenta "${card.name}" alocada no Tools Rack!`);
+      setLastActionText(
+        language === 'en'
+          ? `Tool "${card.name}" installed in the Tools Rack!`
+          : `Ferramenta "${card.name}" alocada no Tools Rack!`
+      );
     } else if (card.type === 'defuse') {
       moveCardToDefuseSlot(card.id);
-      setLastActionText(`Safeguard "${card.name}" alocada no Safeguard Slot!`);
+      setLastActionText(
+        language === 'en'
+          ? `Safeguard "${card.name}" allocated in the Safeguard Slot!`
+          : `Safeguard "${card.name}" alocada no Safeguard Slot!`
+      );
     }
     setSelectedCardIds([]);
   };
@@ -117,7 +133,9 @@ export const BoardHand: React.FC = () => {
 
         {freeExploitDeploysRemaining > 0 && (
           <div style={{ fontSize: '11px', color: '#166534', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '6px', background: '#DCFCE7', border: '1.5px solid #166534', padding: '4px 10px', borderRadius: '4px', fontWeight: '900' }}>
-            ⚡ BÔNUS ATIVO (SpiderScan / Efeito Dominó): Você pode descer +{freeExploitDeploysRemaining} vulnerabilidade(s) na mesa por 0 AP!
+            ⚡ {language === 'en'
+              ? `ACTIVE BONUS (SpiderScan / Domino Effect): You may deploy +${freeExploitDeploysRemaining} vulnerability(ies) onto the table for 0 AP!`
+              : `BÔNUS ATIVO (SpiderScan / Efeito Dominó): Você pode descer +${freeExploitDeploysRemaining} vulnerabilidade(s) na mesa por 0 AP!`}
           </div>
         )}
 
@@ -148,7 +166,7 @@ export const BoardHand: React.FC = () => {
                 fontSize: '10px'
               }}
             >
-              Cancelar Instalação
+              {language === 'en' ? 'Cancel Install' : 'Cancelar Instalação'}
             </button>
           </div>
         )}
@@ -319,7 +337,7 @@ export const BoardHand: React.FC = () => {
                     }}
                   >
                     {card.type === 'tool'
-                      ? `TOOL • ${card.toolType || 'PASSIVA'}`
+                      ? `TOOL • ${language === 'en' ? ((card.toolType || 'PASSIVA') === 'ATIVA' ? 'ACTIVE' : 'PASSIVE') : (card.toolType || 'PASSIVA')}`
                       : card.type === 'defuse'
                         ? (card.name.includes('CVE') ? 'SAFEGUARD • CVE' : 'SAFEGUARD • BYPASS')
                         : `${card.vulnClass || 'EXPLOIT'} • ${(card.rarity || 'Common').toUpperCase()}`}
@@ -330,7 +348,11 @@ export const BoardHand: React.FC = () => {
                     </span>
                   ) : (
                     <span style={{ fontSize: '10px', fontWeight: '800', color: '#685F53', fontFamily: 'monospace' }}>
-                      {card.type === 'tool' ? (card.toolMoment || 'SUPORTE') : 'DEFESA'}
+                      {card.type === 'tool'
+                        ? (language === 'en'
+                            ? ((card.toolMoment || 'SUPORTE').replace('SEMPRE', 'ALWAYS').replace('TURNO', 'TURN').replace('REATIVA', 'REACTIVE').replace('SUPORTE', 'SUPPORT'))
+                            : (card.toolMoment || 'SUPORTE'))
+                        : (language === 'en' ? 'DEFENSE' : 'DEFESA')}
                     </span>
                   )}
                 </div>
@@ -341,7 +363,7 @@ export const BoardHand: React.FC = () => {
                     {card.name}
                   </h4>
                   <div style={{ fontSize: '11px', color: '#5A5245', fontFamily: 'monospace', marginTop: '3px' }}>
-                    {card.technicalReference}
+                    {getLocalizedTechnicalReference(card, language)}
                   </div>
                 </div>
 
@@ -360,7 +382,7 @@ export const BoardHand: React.FC = () => {
                 >
                   {card.isNoisy && (
                     <div style={{ fontWeight: '900', color: '#B91C1C', marginBottom: '4px', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      PODER ATIVO NO REPORT:
+                      {language === 'en' ? 'ACTIVE REPORT POWER:' : 'PODER ATIVO NO REPORT:'}
                     </div>
                   )}
                   {getLocalizedCardDescription(card, language)}
@@ -378,7 +400,7 @@ export const BoardHand: React.FC = () => {
                         }}
                         style={{ flex: 1, padding: '7px 5px', background: '#FEE2E2', color: '#B91C1C', border: '1.5px solid #B91C1C', borderRadius: '4px', fontSize: '9px', fontWeight: '900', fontFamily: 'monospace', cursor: 'pointer' }}
                       >
-                        ✕ CANCELAR
+                        {language === 'en' ? '✕ CANCEL' : '✕ CANCELAR'}
                       </button>
                     ) : (
                       <button
@@ -388,7 +410,7 @@ export const BoardHand: React.FC = () => {
                         }}
                         style={{ flex: 1, padding: '7px 5px', background: '#16A34A', color: '#FFFFFF', border: 'none', borderRadius: '4px', fontSize: '9px', fontWeight: '900', fontFamily: 'monospace', cursor: 'pointer' }}
                       >
-                        ✓ PAGAR COM ESTA
+                        {language === 'en' ? '✓ PAY WITH THIS' : '✓ PAGAR COM ESTA'}
                       </button>
                     )
                   ) : (
@@ -439,7 +461,7 @@ export const BoardHand: React.FC = () => {
                             cursor: isMyTurn ? 'pointer' : 'not-allowed'
                           }}
                         >
-                          INSTALAR TOOL
+                          {language === 'en' ? 'INSTALL TOOL' : 'INSTALAR TOOL'}
                         </button>
                       )}
 
@@ -464,7 +486,7 @@ export const BoardHand: React.FC = () => {
                             cursor: isMyTurn ? 'pointer' : 'not-allowed'
                           }}
                         >
-                          ALOCAR SAFEGUARD
+                          {language === 'en' ? 'ALLOCATE SAFEGUARD' : 'ALOCAR SAFEGUARD'}
                         </button>
                       )}
 
@@ -475,7 +497,7 @@ export const BoardHand: React.FC = () => {
                             soundFx.playClick();
                             const availableOpponents = allPlayers.filter(p => p.id !== myRole && p.hand.length > 0);
                             if (availableOpponents.length === 0) {
-                              alert('Nenhum oponente possui cartas na mão para o Phishing!');
+                              alert(language === 'en' ? 'No opponent has cards in hand for Phishing!' : 'Nenhum oponente possui cartas na mão para o Phishing!');
                               return;
                             }
                             if (availableOpponents.length === 1) {
@@ -495,7 +517,7 @@ export const BoardHand: React.FC = () => {
                             fontFamily: 'monospace',
                             cursor: 'pointer'
                           }}
-                          title="Usa Phishing (1 AP): entrega esta carta e puxa 1 carta aleatória do oponente à sua escolha!"
+                          title={language === 'en' ? 'Use Phishing (1 AP): give this card and pull 1 random card from the opponent of your choice!' : 'Usa Phishing (1 AP): entrega esta carta e puxa 1 carta aleatória do oponente à sua escolha!'}
                         >
                           PHISHING
                         </button>
@@ -508,7 +530,7 @@ export const BoardHand: React.FC = () => {
                             soundFx.playClick();
                             discardCardFromHand(card.id);
                           }}
-                          title="Descartar esta carta"
+                          title={language === 'en' ? 'Discard this card' : 'Descartar esta carta'}
                           style={{
                             padding: '6px 8px',
                             background: '#FEE2E2',
@@ -563,11 +585,15 @@ export const BoardHand: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <span style={{ fontSize: '20px' }}>🎭</span>
               <h3 style={{ fontSize: '15px', fontWeight: '900', color: '#BE185D', margin: 0 }}>
-                PHISHING: ESCOLHA A VÍTIMA
+                {language === 'en' ? 'PHISHING: CHOOSE YOUR VICTIM' : 'PHISHING: ESCOLHA A VÍTIMA'}
               </h3>
             </div>
             <p style={{ fontSize: '11.5px', color: '#4B4337', marginBottom: '16px', lineHeight: '1.4' }}>
-              Você está oferecendo a carta <strong>[{playerHand.find(c => c.id === phishingModalCardId)?.name}]</strong>. Selecione qual oponente terá sua rede infiltrada para puxar 1 carta aleatória da mão dele:
+              {language === 'en' ? (
+                <>You are offering card <strong>[{playerHand.find(c => c.id === phishingModalCardId)?.name}]</strong>. Select which opponent to infiltrate and pull 1 random card from their hand:</>
+              ) : (
+                <>Você está oferecendo a carta <strong>[{playerHand.find(c => c.id === phishingModalCardId)?.name}]</strong>. Selecione qual oponente terá sua rede infiltrada para puxar 1 carta aleatória da mão dele:</>
+              )}
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '18px' }}>
@@ -597,14 +623,14 @@ export const BoardHand: React.FC = () => {
                   >
                     <div>
                       <div style={{ fontWeight: '900', fontSize: '12px', color: opp.color || '#1E1B18' }}>
-                        {opp.name}
+                        {getLocalizedPlayerName(opp.name, language)}
                       </div>
                       <div style={{ fontSize: '10.5px', color: '#685F53' }}>
-                        {opp.archetype?.name || 'Hacker'} • Alvo: [{opp.activeProgram?.name || 'Sem alvo'}]
+                        {opp.archetype?.name || 'Hacker'} • {language === 'en' ? 'Target:' : 'Alvo:'} [{opp.activeProgram?.name || (language === 'en' ? 'No target' : 'Sem alvo')}]
                       </div>
                     </div>
                     <div style={{ fontSize: '11px', fontWeight: '900', background: '#F3EFE6', padding: '4px 8px', borderRadius: '4px', border: '1px solid #D6CEBE' }}>
-                      🃏 {opp.hand.length} carta(s)
+                      🃏 {opp.hand.length} {language === 'en' ? 'card(s)' : 'carta(s)'}
                     </div>
                   </button>
                 ))}
@@ -624,7 +650,7 @@ export const BoardHand: React.FC = () => {
                   cursor: 'pointer'
                 }}
               >
-                Cancelar
+                {language === 'en' ? 'Cancel' : 'Cancelar'}
               </button>
             </div>
           </div>

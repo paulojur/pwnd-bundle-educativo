@@ -236,6 +236,8 @@ class SupabaseSyncManager {
   }
 
   public async saveMatchLog(payload: {
+    matchId?: string;
+    isCheckpoint?: boolean;
     roomCode?: string | null;
     gameMode?: string;
     playerCount: number;
@@ -265,7 +267,7 @@ class SupabaseSyncManager {
         status: String(entry.status || 'EXECUTED')
       }));
 
-      const row = {
+      const row: Record<string, any> = {
         room_code: payload.roomCode || 'SOLO_LOCAL',
         player_count: payload.playerCount,
         round: payload.round,
@@ -275,6 +277,27 @@ class SupabaseSyncManager {
         markdown_report: payload.markdownReport || '',
         created_at: new Date().toISOString()
       };
+
+      if (payload.matchId) {
+        const upsertRow = { id: payload.matchId, ...row };
+        const { data: upData, error: upError } = await this.client
+          .from('match_logs')
+          .upsert([upsertRow], { onConflict: 'id' });
+
+        if (!upError) {
+          console.log(`[PWND Supabase] Log da partida atualizado/gravado com sucesso via upsert! (${sanitizedLogs.length} eventos, Rodada ${payload.round}, Vencedor: ${payload.winner || 'Em andamento'})`);
+          return { success: true, data: upData };
+        }
+
+        // Se for apenas checkpoint intermediário de rodada e o banco não tiver policy de UPDATE,
+        // NÃO faz insert com novo ID para não picotar a partida em dezenas de linhas.
+        if (payload.isCheckpoint) {
+          console.warn('[PWND Supabase] Checkpoint intermediário ignorado (adicione policy FOR UPDATE na tabela match_logs para habilitar atualização por rodada na mesma linha):', upError.message);
+          return { success: false, error: upError };
+        }
+
+        console.warn('[PWND Supabase] Upsert recusado no salvamento final (provável falta de policy UPDATE no RLS), realizando insert final único:', upError.message);
+      }
 
       const { data, error } = await this.client
         .from('match_logs')

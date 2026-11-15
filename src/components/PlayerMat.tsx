@@ -2,6 +2,14 @@ import React from 'react';
 import { CardV2 } from '../data/cardsDataV2';
 import { ProgramCard, Archetype } from '../data/cardsData';
 import { useLanguage } from '../i18n/LanguageContext';
+import {
+  getLocalizedCardDescription,
+  getLocalizedTechnicalReference,
+  getLocalizedArchetype,
+  getLocalizedProgram,
+  getLocalizedEvent,
+  getLocalizedPlayerName
+} from '../i18n/cardTranslations';
 import { BoardHand } from './BoardHand';
 import { ShieldCheck, Wrench, Zap, DollarSign, AlertCircle, Sparkles, AlertTriangle, Bug } from 'lucide-react';
 import { soundFx } from '../utils/audio';
@@ -62,6 +70,10 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
   } = playerData;
 
   const isPendingProgram = !currentProgram || currentProgram.id === 'pending';
+  const locArch = getLocalizedArchetype(archetype, language);
+  const locProg = getLocalizedProgram(currentProgram, language);
+  const locPlayerName = getLocalizedPlayerName(playerName, language);
+  const locale = language === 'en' ? 'en-US' : 'pt-BR';
 
   return (
     <div style={{ width: '100%', maxWidth: '1540px', margin: '0 auto 28px' }}>
@@ -112,14 +124,16 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                   border: '2px solid #2B2620',
                   boxShadow: '0 2px 5px rgba(0,0,0,0.3)'
                 }}
-                title={playerName}
+                title={locPlayerName}
               />
               <div>
                 <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                  {playerName}
+                  {locPlayerName}
                 </div>
                 <div style={{ fontSize: '10px', color: '#685F53', fontFamily: 'monospace' }}>
-                  {isCurrentTurnPlayer ? '🟢 SUA VEZ DE JOGAR' : 'Aguardando oponente'}
+                  {isCurrentTurnPlayer
+                    ? (language === 'en' ? '🟢 YOUR TURN TO PLAY' : '🟢 SUA VEZ DE JOGAR')
+                    : (language === 'en' ? 'Waiting for opponent' : 'Aguardando oponente')}
                 </div>
               </div>
             </div>
@@ -130,7 +144,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
             {/* TOKENS DE ALERTA 🐞 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '11px', fontWeight: '800', fontFamily: 'monospace', color: '#B91C1C' }}>
-                ALERTA:
+                {language === 'en' ? 'ALERT:' : 'ALERTA:'}
               </span>
               <div style={{ display: 'flex', gap: '6px' }}>
                 {[1, 2].map(slot => {
@@ -150,7 +164,9 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                         fontSize: '14px',
                         boxShadow: hasToken ? '0 1px 3px rgba(185, 28, 28, 0.3)' : 'none'
                       }}
-                      title={hasToken ? '1 Token de Alerta ativo' : 'Slot de Alerta livre'}
+                      title={hasToken
+                        ? (language === 'en' ? '1 active Alert Token' : '1 Token de Alerta ativo')
+                        : (language === 'en' ? 'Empty Alert Slot' : 'Slot de Alerta livre')}
                     >
                       {hasToken ? '🐞' : ''}
                     </div>
@@ -159,7 +175,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
               </div>
               {alertaTokens >= 2 && (
                 <span style={{ fontSize: '10px', fontWeight: '800', color: '#B91C1C', fontFamily: 'monospace' }}>
-                  ⚠️ PENALIDADE (-$2.000)
+                  {language === 'en' ? '⚠️ PENALTY (-$2,000)' : '⚠️ PENALIDADE (-$2.000)'}
                 </span>
               )}
             </div>
@@ -170,7 +186,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
             {/* TOKENS DE REPUTAÇÃO 🐝 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '11px', fontWeight: '800', fontFamily: 'monospace', color: '#B45309' }}>
-                REPUTAÇÃO:
+                {language === 'en' ? 'REPUTATION:' : 'REPUTAÇÃO:'}
               </span>
               <div
                 style={{
@@ -189,7 +205,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 </span>
               </div>
               <span style={{ fontSize: '10px', color: '#685F53', fontFamily: 'monospace' }}>
-                (2🐝 = Reroll D6 | +$500 fim)
+                {language === 'en' ? '(2🐝 = Reroll D6 | +$500 end)' : '(2🐝 = Reroll D6 | +$500 fim)'}
               </span>
             </div>
           </div>
@@ -243,19 +259,19 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
               <div style={{ textAlign: 'center', margin: '4px 0' }}>
                 <div style={{ fontSize: '26px', lineHeight: '1' }}>{archetype.avatarIcon || '🌱'}</div>
                 <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'monospace', color: '#1E1B18', marginTop: '4px' }}>
-                  {archetype.name}
+                  {locArch.name}
                 </div>
-                {archetype.specialPowers?.[0] && (
+                {locArch.power && (
                   <div style={{ fontSize: '10.5px', fontWeight: '800', color: '#B45309', fontFamily: 'monospace', marginTop: '2px' }}>
-                    ★ {archetype.specialPowers[0]}
+                    ★ {locArch.power}
                   </div>
                 )}
                 <div style={{ fontSize: '10px', color: '#2B2620', fontWeight: '600', lineHeight: '1.35', marginTop: '5px', textAlign: 'left', background: '#FFFFFF', padding: '5px 7px', borderRadius: '4px', border: '1px solid #D6CBB8' }}>
-                  {archetype.presentation}
+                  {locArch.presentation}
                 </div>
               </div>
               <div style={{ fontSize: '10px', fontWeight: '800', color: '#4B4337', fontFamily: 'monospace', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '4px' }}>
-                Mão Máx: {(archetype.maxHandSize || 6) + activeTools.filter(t => (t.toolId || t.id).startsWith('T-01') || t.name.includes('Browser DevTools')).length}
+                {language === 'en' ? 'Max Hand:' : 'Mão Máx:'} {(archetype.maxHandSize || 6) + activeTools.filter(t => (t.toolId || t.id).startsWith('T-01') || t.name.includes('Browser DevTools')).length}
                 {activeTools.some(t => (t.toolId || t.id).startsWith('T-01') || t.name.includes('Browser DevTools')) ? ' (+DevTools)' : ''}
               </div>
             </div>
@@ -280,7 +296,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                 </span>
                 {!isPendingProgram && (
                   <span style={{ fontSize: '10px', fontWeight: '900', background: '#D97706', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontFamily: 'monospace' }}>
-                    {currentProgram.bountyRange || '+$0'}
+                    {locProg.bountyRange}
                   </span>
                 )}
               </div>
@@ -288,10 +304,10 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
               {isPendingProgram ? (
                 <div style={{ textAlign: 'center', margin: 'auto 0' }}>
                   <div style={{ fontSize: '12px', fontWeight: '800', color: '#B45309', fontFamily: 'monospace' }}>
-                    [ NENHUM PROGRAMA ]
+                    {language === 'en' ? '[ NO PROGRAM ]' : '[ NENHUM PROGRAMA ]'}
                   </div>
                   <div style={{ fontSize: '10px', color: '#78350F', fontWeight: '600', margin: '4px 0 8px 0' }}>
-                    Escolha 1 dos 3 expostos ou compre surpresa do Deck!
+                    {language === 'en' ? 'Choose 1 of the 3 exposed or draw surprise from Deck!' : 'Escolha 1 dos 3 expostos ou compre surpresa do Deck!'}
                   </div>
                   {(onOpenProgramSelector || onOpenCenterTable) && (
                     <button
@@ -313,24 +329,24 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                         boxShadow: '0 2px 5px rgba(180, 83, 9, 0.3)'
                       }}
                     >
-                      🛒 Escolher Programa ➔
+                      {language === 'en' ? '🛒 Choose Program ➔' : '🛒 Escolher Programa ➔'}
                     </button>
                   )}
                 </div>
               ) : (
                 <div>
                   <div style={{ fontSize: '13.5px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', margin: '4px 0 2px' }}>
-                    {currentProgram.name}
+                    {locProg.name}
                   </div>
                   <div style={{ fontSize: '10.5px', color: '#3A332A', fontWeight: '600', marginBottom: '6px' }}>
-                    {currentProgram.companyType}
+                    {locProg.companyType}
                   </div>
 
                   {/* Escopo de Classes Permitidas */}
                   <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', margin: '4px 0' }}>
                     {currentProgram.allowedClasses === 'ALL' || (Array.isArray(currentProgram.allowedClasses) && currentProgram.allowedClasses.some(c => String(c).includes('ALL'))) ? (
                       <span style={{ fontSize: '9.5px', fontWeight: '800', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '2px 5px', borderRadius: '3px', fontFamily: 'monospace' }}>
-                        ESCOPO AMPLO
+                        {language === 'en' ? 'ALL CLASSES' : 'ESCOPO AMPLO'}
                       </span>
                     ) : (
                       Array.isArray(currentProgram.allowedClasses) && currentProgram.allowedClasses.map(c => (
@@ -345,7 +361,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '5px', fontSize: '10px', fontFamily: 'monospace' }}>
                 <span style={{ color: '#B91C1C', fontWeight: '800' }}>
-                  Patch: {currentProgram?.patchSpeed || 'Moderada'}
+                  Patch: {locProg.patchSpeed}
                 </span>
                 {!isPendingProgram && (
                   <button
@@ -368,9 +384,9 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                       fontWeight: '800',
                       fontFamily: 'monospace'
                     }}
-                    title="RECON (1 AP): Trocar programa por 1 dos 3 expostos ou 1 surpresa do deck"
+                    title={language === 'en' ? 'RECON (1 AP): Switch program for 1 of the 3 exposed or 1 surprise from deck' : 'RECON (1 AP): Trocar programa por 1 dos 3 expostos ou 1 surpresa do deck'}
                   >
-                    🔄 Trocar (1 AP)
+                    {language === 'en' ? '🔄 Switch (1 AP)' : '🔄 Trocar (1 AP)'}
                   </button>
                 )}
               </div>
@@ -395,7 +411,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                   SAFEGUARD
                 </span>
                 <span style={{ fontSize: '9px', color: '#5A5245', fontWeight: '700', fontFamily: 'monospace' }}>
-                  (Empilhável)
+                  ({t('playerMat.stackable')})
                 </span>
               </div>
 
@@ -415,10 +431,14 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                   <ShieldCheck size={19} color={hasDefuse ? '#059669' : '#A89D8B'} />
                   <div>
                     <div style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'monospace', color: hasDefuse ? '#065F46' : '#6B7280' }}>
-                      {hasDefuse ? '🛡️ Bypass Pronto' : '🛡️ Bypass [Vazio]'}
+                      {hasDefuse
+                        ? (language === 'en' ? '🛡️ Bypass Ready' : '🛡️ Bypass Pronto')
+                        : (language === 'en' ? '🛡️ Bypass [Empty]' : '🛡️ Bypass [Vazio]')}
                     </div>
                     <div style={{ fontSize: '9.5px', color: '#3A332A', fontWeight: '600' }}>
-                      {hasDefuse ? 'Anula 1 Patch (+1 Alerta)' : 'Descartado'}
+                      {hasDefuse
+                        ? (language === 'en' ? 'Cancels 1 Patch (+1 Alert)' : 'Anula 1 Patch (+1 Alerta)')
+                        : (language === 'en' ? 'Discarded' : 'Descartado')}
                     </div>
                   </div>
                 </div>
@@ -438,17 +458,21 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                   <span style={{ fontSize: '15px' }}>📜</span>
                   <div>
                     <div style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'monospace', color: hasCve ? '#0369A1' : '#6B7280' }}>
-                      {hasCve ? 'CVE Protection Ativa' : 'CVE Protection [Livre]'}
+                      {hasCve
+                        ? (language === 'en' ? 'CVE Protection Active' : 'CVE Protection Ativa')
+                        : (language === 'en' ? 'CVE Protection [Empty]' : 'CVE Protection [Livre]')}
                     </div>
                     <div style={{ fontSize: '9.5px', color: '#3A332A', fontWeight: '600' }}>
-                      {hasCve ? 'Anula Eventos adversários' : 'Slot adicional'}
+                      {hasCve
+                        ? (language === 'en' ? 'Cancels negative Events' : 'Anula Eventos adversários')
+                        : (language === 'en' ? 'Extra slot' : 'Slot adicional')}
                     </div>
                   </div>
                 </div>
               </div>
 
               <div style={{ fontSize: '9.5px', color: '#4B4337', fontWeight: '600', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '4px' }}>
-                Até 1 Bypass + 1 CVE empilhados
+                {t('playerMat.safeguardStackHint')}
               </div>
             </div>
 
@@ -526,14 +550,14 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                           [{exploit.vulnClass || 'EXPLOIT'}]
                         </span>
                         <span style={{ fontSize: '10.5px', fontWeight: '900', background: '#DCFCE7', color: '#166534', border: '1px solid #166534', padding: '2px 6px', borderRadius: '3px', fontFamily: 'monospace' }}>
-                          ${exploit.points?.toLocaleString('pt-BR')}
+                          ${exploit.points?.toLocaleString(locale)}
                         </span>
                       </div>
                       <div style={{ fontSize: '12.5px', fontWeight: '900', color: '#1E1B18', fontFamily: 'monospace', margin: '4px 0 2px' }}>
                         {exploit.name}
                       </div>
                       <div style={{ fontSize: '10px', color: '#3A332A', fontWeight: '600', lineHeight: '1.25' }}>
-                        {exploit.technicalReference}
+                        {getLocalizedTechnicalReference(exploit, language)}
                       </div>
 
                       {/* PODER DA CARTA (ESPECIALMENTE NOISY) */}
@@ -552,8 +576,8 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                             fontFamily: 'monospace'
                           }}
                         >
-                          {exploit.isNoisy && <span style={{ fontWeight: '900', color: '#B91C1C' }}>PODER ATIVO: </span>}
-                          {exploit.simpleDescription || exploit.ptDescription}
+                          {exploit.isNoisy && <span style={{ fontWeight: '900', color: '#B91C1C' }}>{language === 'en' ? 'ACTIVE POWER: ' : 'PODER ATIVO: '}</span>}
+                          {getLocalizedCardDescription(exploit, language)}
                         </div>
                       )}
 
@@ -606,7 +630,11 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                             border: isToolActiveType ? '1px solid #D97706' : '1px solid #166534'
                           }}
                         >
-                          {isReactiveTool ? 'REATIVA' : isToolActiveType ? 'ATIVA' : 'PASSIVA'}
+                          {isReactiveTool
+                            ? (language === 'en' ? 'REACTIVE' : 'REATIVA')
+                            : isToolActiveType
+                              ? (language === 'en' ? 'ACTIVE' : 'ATIVA')
+                              : (language === 'en' ? 'PASSIVE' : 'PASSIVA')}
                         </span>
                       )}
                     </div>
@@ -619,7 +647,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                           </div>
                         </div>
                         <div style={{ fontSize: '10px', color: '#1E1B18', fontWeight: '600', marginTop: '5px', lineHeight: '1.35', textAlign: 'left', background: 'rgba(255,255,255,0.85)', padding: '6px 7px', borderRadius: '4px', border: '1px solid #D6CBB8' }}>
-                          {tool.simpleDescription || tool.ptDescription || tool.technicalReference}
+                          {getLocalizedCardDescription(tool, language)}
                         </div>
                       </div>
                     ) : (
@@ -649,14 +677,18 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                               fontFamily: 'monospace',
                               cursor: isCurrentTurnPlayer ? 'pointer' : 'not-allowed'
                             }}
-                            title="Ativar o efeito desta Tool agora e descartá-la para a pilha de descarte"
+                            title={language === 'en' ? 'Activate this Tool\'s effect now and discard it to the discard pile' : 'Ativar o efeito desta Tool agora e descartá-la para a pilha de descarte'}
                           >
-                            ⚡ ATIVAR TOOL (DESCARTA)
+                            {language === 'en' ? '⚡ ACTIVATE TOOL (DISCARDS)' : '⚡ ATIVAR TOOL (DESCARTA)'}
                           </button>
                         ) : isReactiveTool ? (
-                          <span style={{ color: '#0369A1', fontWeight: '800' }}>🛡️ Dispara automático contra Evento negativo</span>
+                          <span style={{ color: '#0369A1', fontWeight: '800' }}>
+                            {language === 'en' ? '🛡️ Triggers automatically vs negative Event' : '🛡️ Dispara automático contra Evento negativo'}
+                          </span>
                         ) : (
-                          <span style={{ color: '#166534', fontWeight: '800' }}>✓ Efeito Passivo Ativo na Mesa</span>
+                          <span style={{ color: '#166534', fontWeight: '800' }}>
+                            {language === 'en' ? '✓ Passive Effect Active on Table' : '✓ Efeito Passivo Ativo na Mesa'}
+                          </span>
                         )
                       ) : (
                         t('playerMat.empty')
@@ -675,6 +707,7 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {['EVENT 1', 'EVENT 2'].map((eventSlot, idx) => {
               const activeEvent = activeEvents[idx];
+              const locEv = activeEvent ? getLocalizedEvent(activeEvent, language) : null;
 
               return (
                 <div
@@ -695,23 +728,25 @@ export const PlayerMat: React.FC<PlayerMatProps> = ({
                     {eventSlot}
                   </div>
 
-                  {activeEvent ? (
+                  {activeEvent && locEv ? (
                     <div style={{ margin: 'auto 0' }}>
                       <div style={{ fontSize: '12.5px', fontWeight: '900', color: '#991B1B', fontFamily: 'monospace' }}>
-                        {activeEvent.name}
+                        {locEv.name}
                       </div>
                       <div style={{ fontSize: '10px', color: '#2B2620', fontWeight: '600', marginTop: '5px', lineHeight: '1.35', background: '#FFFFFF', padding: '5px 7px', borderRadius: '4px', border: '1px solid #FCA5A5' }}>
-                        {activeEvent.simpleDescription}
+                        {locEv.description}
                       </div>
                     </div>
                   ) : (
                     <div style={{ margin: 'auto', textAlign: 'center', color: '#7E7362', fontSize: '10.5px', fontWeight: '600', fontFamily: 'monospace' }}>
-                      [ Sem Evento Ativo ]
+                      [ {language === 'en' ? 'No Active Event' : 'Sem Evento Ativo'} ]
                     </div>
                   )}
 
                   <div style={{ fontSize: '9.5px', color: activeEvent ? '#991B1B' : '#5A5245', fontWeight: activeEvent ? '800' : '600', textAlign: 'center', borderTop: '1px solid #E2D7C5', paddingTop: '4px', fontFamily: 'monospace' }}>
-                    {activeEvent ? '🚨 Efeito Ativo na Rodada/Turno' : 'Slot Livre'}
+                    {activeEvent
+                      ? (language === 'en' ? '🚨 Active Effect in Round/Turn' : '🚨 Efeito Ativo na Rodada/Turno')
+                      : (language === 'en' ? 'Empty Slot' : 'Slot Livre')}
                   </div>
                 </div>
               );
