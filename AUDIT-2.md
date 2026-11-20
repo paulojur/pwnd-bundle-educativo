@@ -68,3 +68,22 @@ Ordem de execução seguida: **TSVs -> Manual HTML -> Player Aids -> Código e D
    - Exibição discreta do painel **Destaques da Partida** (**Match Highlights**) no modal final de vitória, logo abaixo do pódio e antes da enquete de playtest, permitindo leitura rápida opcional no fim do jogo.
    - Limpeza de travessões longos no cabeçalho, barra de log e modal de vitória.
 
+---
+
+## 5. Padronização Gráfica da Caixa (216 Cartas) & Reestruturação da Seção 02
+
+1. **Meta Gráfica de Produção: 4 Baralhos de 54 Cartas = 216 Cartas**
+   - Removidas as 2 cartas de variantes físicas (`variant-hackathon` e `variant-nightmare`) do arquivo `Screentop/TSV/jokers_e_creditos_6.tsv` (mantidas 4 cartas: 3 Coringas customizáveis + 1 Carta de Créditos Oficiais). Criado também `jokers_e_creditos_4.tsv`.
+   - Total de cartas físicas na caixa perfeitamente cravado em **216 cartas**: 80 Vulnerabilidades + 48 Ferramentas + 36 Programas + 24 Eventos + 12 Safeguards (8 Bypass + 4 CVE) + 6 Arquétipos + 6 Player Aids + 4 Especiais (3 Coringas + 1 Créditos).
+
+2. **Alinhamento do Main Deck (86 Cartas)**
+   - Confirmada a inclusão das **4 cartas CVE Assignment Protection** no Main Deck (aumentando a probabilidade de compra de 2,3% para 4,6% num baralho de compra ativo).
+   - Main Deck montado: **80 Vulnerabilidades + 2 Bypass + 4 CVE Assignment Protection = 86 cartas**.
+   - Atualizados `src/data/canonicalV14Data.ts` (`cveInDeck.slice(0, 4)`), `src/components/CenterMarketMat.tsx` (rótulo 86 cartas) e `src/context/BoardGameContext.tsx` (`canonicalMainDeck`).
+
+3. **Reestruturação Completa da Seção 02 nos Manuais HTML**
+   - Atualizados [`public/pwned-manual-sucesso-v1.html`](file:///f:/PWND%20Bundle%20Educativo%20-%20Copia/public/pwned-manual-sucesso-v1.html) e [`Screentop/pwned-manual-sucesso-v1.html`](file:///f:/PWND%20Bundle%20Educativo%20-%20Copia/Screentop/pwned-manual-sucesso-v1.html).
+   - **Subseção 1 (Conteúdo da Caixa)**: Inventário completo, claro e isolado dos 216 componentes e acessórios físicos.
+   - **Subseção 2 (Setup Rápido da Mesa)**: Passo a passo claro para 2 a 6 jogadores, explicitando a montagem do Main Deck com 86 cartas, a entrega de 1 Bypass e 5 cartas a cada jogador, e o que retorna para a caixa.
+   - **Variantes de Regra**: As regras do *Modo Hackathon Blitz* e *Modo Nightmare Ops* foram incorporadas como variantes opcionais em destaque no texto da Seção 02, sem ocupar cartas físicas da caixa.
+

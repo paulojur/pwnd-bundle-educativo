@@ -518,7 +518,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
           {/* BARALHOS DA MESA */}
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
 
-            {/* MAIN DECK (84 CARTAS) */}
+            {/* MAIN DECK (86 CARTAS) */}
             <div
               style={{
                 width: '100px',
@@ -541,7 +541,7 @@ export const CenterMarketMat: React.FC<CenterMarketMatProps> = ({
                 {mainDeckCount}
               </div>
               <div style={{ fontSize: '8px', color: '#7E7362', fontFamily: 'monospace' }}>
-                {language === 'en' ? '84 total cards' : '84 cartas totais'}
+                {language === 'en' ? '86 total cards' : '86 cartas totais'}
               </div>
             </div>
 

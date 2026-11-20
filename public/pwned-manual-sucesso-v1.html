@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -320,7 +319,7 @@
       </div>
       <ul class="toc-list">
         <li><a href="#intro" class="toc-link"><span class="toc-num">01</span><span>O Jogo & Objetivo</span></a></li>
-        <li><a href="#setup" class="toc-link"><span class="toc-num">02</span><span>Setup Rápido & Decks</span></a></li>
+        <li><a href="#setup" class="toc-link"><span class="toc-num">02</span><span>Componentes & Setup</span></a></li>
         <li><a href="#loop" class="toc-link"><span class="toc-num">03</span><span>Turno (As 3 Ações)</span></a></li>
         <li><a href="#patch" class="toc-link"><span class="toc-num">04</span><span>Noisy, Stealth & Patch</span></a>
         </li>
@@ -344,72 +343,104 @@
         <h2 class="sec"><span class="num">01</span> O Jogo & Objetivo</h2>
         <p>Os jogadores assumem o papel de pesquisadores de segurança cibernética em uma disputa de bug bounty:
           encontram brechas no código, submetem relatórios à triagem e recebem recompensas em dinheiro.</p>
-        <p>Em <strong>PWND!</strong>, gigantes da tecnologia abriram programas milionários de recompensa (<strong>Bug Bounty</strong>) prometendo pagar caro para quem encontrar brechas em seus sistemas. Mas há um detalhe: <strong>as empresas odeiam abrir a carteira</strong>. Enquanto você investiga e junta provas para dar uma tacada milionária, a equipe de segurança delas (<strong>Blue Team</strong>) monitora a rede. Se você fizer barulho demais ou demorar, eles consertam a falha na surdina (<strong>Patch Deployed!</strong>) antes do seu relatório ser aprovado, e você fica sem um centavo!</p>
+        <p>Em <strong>PWNED!</strong>, gigantes da tecnologia abriram programas milionários de recompensa (<strong>Bug
+            Bounty</strong>) prometendo pagar caro para quem encontrar brechas em seus sistemas. Mas há um detalhe:
+          <strong>as empresas odeiam abrir a carteira</strong>. Enquanto você investiga e junta provas para dar uma
+          tacada milionária, a equipe de segurança delas (<strong>Blue Team</strong>) monitora a rede. Se você fizer
+          barulho demais ou demorar, eles consertam a falha na surdina (<strong>Patch Deployed!</strong>) antes do seu
+          relatório ser aprovado, e você fica sem um centavo!
+        </p>
 
         <div class="callout">
           <span class="label">O Objetivo de Vitória</span>
-          <p>Quando um jogador alcança <strong>$40.000</strong> na Bounty Track, a rodada atual se torna a <strong>rodada final</strong> (todos os jogadores completam seu turno naquela rodada para que todos joguem o mesmo número de vezes). Se ninguém atingir $40k até o fim da <strong>10ª rodada</strong>, a partida também se encerra. Ao final, somam-se as recompensas de prestígio (+ $500 por <strong>Token de Reputação</strong> 🐝) e desconta-se a penalidade defensiva (- $500 por <strong>Token de Alerta</strong> 🐞 restante na mesa). O maior saldo total leva a vitória!</p>
+          <p>Quando um jogador alcança <strong>$40.000</strong> na Bounty Track, a rodada atual se torna a
+            <strong>rodada final</strong> (todos os jogadores completam seu turno naquela rodada para que todos joguem o
+            mesmo número de vezes). Se ninguém atingir $40k até o fim da <strong>10ª rodada</strong>, a partida também
+            se encerra. Ao final, somam-se as recompensas de prestígio (+ $500 por <strong>Token de Reputação</strong>
+            🐝) e desconta-se a penalidade defensiva (- $500 por <strong>Token de Alerta</strong> 🐞 restante na mesa).
+            O maior saldo total leva a vitória!
+          </p>
         </div>
 
         <p><strong>Regra de Arredondamento:</strong> Todos os bônus, divisões ou cálculos fora da grade
           arredondam para o múltiplo de $500 mais próximo; em caso de empate exato, arredonda-se para baixo.</p>
       </section>
 
-      <!-- ================= 02 SETUP ================= -->
+      <!-- ================= 02 COMPONENTES & SETUP ================= -->
       <section id="setup">
-        <h2 class="sec"><span class="num">02</span> Setup Rápido & Decks</h2>
-        <p>Arrume a mesa rapidamente seguindo esse esquema de componentes:</p>
+        <h2 class="sec"><span class="num">02</span> Componentes da Caixa & Setup da Mesa</h2>
+
+        <h3>1. Conteúdo da Caixa (216 Cartas & Componentes)</h3>
+        <p>A edição física de <strong>PWNED!</strong> é composta por <strong>216 cartas, divididas em 5 Decks
+          </strong>, acompanhada de tabuleiros, dados e tokens:</p>
 
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Componente</th>
-                <th>Qtd na Mesa</th>
-                <th>Especificação & Regras de Setup</th>
+                <th>Qtd na Caixa</th>
+                <th>Especificação & Detalhes Físicos</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>Main Deck</strong></td>
-                <td>84 cartas</td>
-                <td>80 Vulnerabilidades + 12 Safeguards (8 Bypass + 4 CVE Assignment Protection). Quando esvaziar,
-                  reembaralhe a pilha de descarte para formar um novo baralho.</td>
+                <td><strong>Cartas de Vulnerabilidade</strong></td>
+                <td>80 cartas</td>
+                <td>8 classes ofensivas de falhas técnicas (16 INJ, 14 BAC, 12 XSS, 10 AUTH, 8 LOGIC, 8 SSRF, 6 CRYPTO,
+                  6 APT).</td>
               </tr>
               <tr>
-                <td><strong>Tool Deck</strong></td>
+                <td><strong>Cartas de Ferramenta</strong></td>
                 <td>48 cartas</td>
-                <td>12 tipos de ferramentas táticas × 4 cópias de cada, posicionado ao lado do tabuleiro central. Quando
-                  esvaziar, reembaralhe a pilha de descarte.</td>
+                <td>12 tipos táticos de armas ofensivas × 4 cópias cada (divididas entre Passivas e Ativas).</td>
               </tr>
               <tr>
-                <td><strong>Program Deck</strong></td>
+                <td><strong>Cartas de Programa Corporativo</strong></td>
                 <td>36 cartas</td>
-                <td>18 contratos corporativos × 2 cópias. Revele 3 cartas abertas no Program Market e mantenha o baralho
-                  de compras ao lado.</td>
+                <td>18 empresas contratantes com escopos e velocidades de patch (12 com 2 cópias, 3 com 3 cópias e 3 de
+                  contrato único).</td>
               </tr>
               <tr>
-                <td><strong>Event Deck</strong></td>
+                <td><strong>Cartas de Evento</strong></td>
                 <td>24 cartas</td>
-                <td>24 cartas de eventos de caos únicas posicionadas no tabuleiro central. Quando esvaziar, reembaralhe
-                  a pilha de descarte.</td>
+                <td>24 eventos únicos de reação do Blue Team, incidentes e reviravoltas da mesa.</td>
+              </tr>
+              <tr>
+                <td><strong>Cartas de Defesa (Safeguards)</strong></td>
+                <td>12 cartas</td>
+                <td><strong>8× Bypass</strong> (defesa suprema contra Patch Deployed!) e <strong>4× CVE Assignment
+                    Protection</strong> (escudo contra eventos de triagem/duplicata).</td>
               </tr>
               <tr>
                 <td><strong>Cartas de Arquétipo</strong></td>
                 <td>6 cartas</td>
-                <td>Os 6 personagens com habilidades assimétricas exclusivas (1 sorteada para cada jogador).</td>
+                <td>Os 6 personagens com habilidades assimétricas exclusivas (The Old Guard, Bug Hunter, Pentester, Red
+                  Teamer, Social Engineer, n00b).</td>
               </tr>
               <tr>
-                <td><strong>Safeguards Iniciais (Bypass)</strong></td>
-                <td>até 6 cartas</td>
-                <td>1 carta Bypass entregue a cada jogador no início (instalada no slot SAFEGUARD do seu tabuleiro
-                  individual).</td>
-              </tr>
-              <tr>
-                <td><strong>Cartas de Ajuda (Player Aids)</strong></td>
+                <td><strong>Cartas de Ajuda Rápida</strong></td>
                 <td>6 cartas</td>
-                <td>Cartas de referência rápida frente e verso entregues aos jogadores com resumo de ações, patch e
-                  tabelas.</td>
+                <td>Cartas de referência rápida frente e verso entregues aos jogadores (Resumo de Turno e Patch /
+                  Tabelas e Marcos da Trilha).</td>
+              </tr>
+              <tr>
+                <td><strong>Cartas Especiais (Extras de Apoio)</strong></td>
+                <td>4 cartas</td>
+                <td><strong>3 Coringas Customizáveis</strong> em branco (1 Vuln Zero-Day, 1 Tool, 1 Program para criação
+                  livre e workshops) + <strong>1 Carta de Créditos Oficiais & Autoria</strong>.</td>
+              </tr>
+              <tr>
+                <td><strong>Tabuleiro Central</strong></td>
+                <td>1 tabuleiro</td>
+                <td>Hospeda a Bounty Track ($0 a $40k), o Round Tracker (rodadas 1 a 10) e o Program Market (com 3 slots
+                  de programas expostos).</td>
+              </tr>
+              <tr>
+                <td><strong>Tabuleiros Individuais</strong></td>
+                <td>6 tabuleiros</td>
+                <td>Área de cada jogador contendo PROGRAM, EXPLOITS (máx. 3), SAFEGUARD, TOOLS (1 a 3) e EVENTS (1 e 2).
+                </td>
               </tr>
               <tr>
                 <td><strong>Tokens de Alerta (🐞)</strong></td>
@@ -422,56 +453,113 @@
                 <td>Suprimento central de excelência técnica, prestígio e reroll.</td>
               </tr>
               <tr>
+                <td><strong>Marcadores de Jogador & Rodada</strong></td>
+                <td>7 marcadores</td>
+                <td>6 marcadores nas cores dos jogadores para a Bounty Track + 1 marcador para o Round Tracker.</td>
+              </tr>
+              <tr>
                 <td><strong>Dados D6</strong></td>
                 <td>3 dados</td>
                 <td>Utilizados nos Patch Speed Checks (o modo Stealth rola 3D6 e descarta o maior).</td>
-              </tr>
-              <tr>
-                <td><strong>Tabuleiro Central</strong></td>
-                <td>1 tabuleiro</td>
-                <td>Hospeda a Bounty Track ($0 a $40k), o Round Tracker (rodadas 1 a 10) e o Program Market (com 3 slots
-                  de programas revelados).</td>
-              </tr>
-              <tr>
-                <td><strong>Tabuleiros Individuais</strong></td>
-                <td>2 a 6 tabuleiros</td>
-                <td>Área de cada jogador contendo PROGRAM, EXPLOITS (máx. 3), SAFEGUARD, TOOLS (1 a 3) e EVENTS (1 e 2).
-                </td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div class="callout cyan" style="margin-top: 1rem; margin-bottom: 1.5rem;">
-          <span class="label">ℹ️ Cartas Especiais na Caixa (6 cartas: Uso Opcional)</span>
+          <span class="label">ℹ️ Cartas Especiais na Caixa (4 cartas: Uso Opcional)</span>
           <p style="margin-bottom: 0.5rem; color: #d1d5db;">
-            A caixa traz 6 cartas extras que <strong>não entram no jogo normal</strong> (pode deixar guardado):
+            A caixa traz 4 cartas extras de apoio que <strong>não entram no baralho de jogo padrão</strong>:
           </p>
           <ul style="margin-bottom: 0; font-size: 0.88rem; line-height: 1.5;">
             <li><strong>3 Coringas de Customização (Jokers):</strong> 1x Vulnerabilidade Zero-Day, 1x Ferramenta (Tool)
               e 1x Contrato Corporativo (Program). Cartas com campos em branco para criar regras exclusivas em workshops
-              ou partidas personalizadas.</li>
-            <li><strong>2 Variantes Oficiais de Jogo:</strong> <em>Modo Hackathon Blitz</em> (partidas rápidas de 5
-              rodadas com meta de $25k) e <em>Modo Nightmare Ops</em> (partidas hardcore para veteranos).</li>
-            <li><strong>1 Carta de Créditos Oficiais & Autoria:</strong> Registro de concepção, game design e autoria do
-              jogo.</li>
+              corporativos ou partidas personalizadas.</li>
+            <li><strong>1 Carta de Créditos Oficiais & Autoria:</strong> Registro de concepção, game design e autoria de
+              <em>PWNED! The Bug Bounty Chaos</em>.
+            </li>
           </ul>
         </div>
 
-        <h3>Mão Inicial & Preparação dos Jogadores</h3>
-        <ol>
-          <li>Distribua 1 <strong>Carta de Arquétipo</strong> para cada jogador (sorteada aleatoriamente).</li>
-          <li>Cada jogador recebe <strong>5 cartas do Main Deck + 1 carta Bypass</strong> (posicionada no slot
-            <strong>SAFEGUARD</strong> do seu tabuleiro individual).
+        <h3>2. Setup Rápido da Mesa (2 a 6 Jogadores)</h3>
+        <p>Siga este passo a passo para colocar o jogo na mesa em menos de 5 minutos:</p>
+
+        <ol style="line-height: 1.6; color: #d1d5db;">
+          <li><strong>Posicionamento Central:</strong> Coloque o <strong>Tabuleiro Central</strong> no centro da mesa
+            com o marcador de rodadas na casa <strong>1</strong>. Disponibilize os suprimentos de <strong>Tokens de
+              Alerta (🐞)</strong>, <strong>Tokens de Reputação (🐝)</strong> e os <strong>3 Dados D6</strong> ao
+            alcance de todos.</li>
+          <li><strong>Montagem do Main Deck (Baralho Principal — 86 cartas):</strong>
+            <ul style="margin-top: 0.3rem;">
+              <li>Junte as <strong>80 Vulnerabilidades</strong> + exatamente <strong>2 cartas Bypass</strong> + todas as
+                <strong>4 cartas CVE Assignment Protection</strong> (totalizando exatamente <strong>86 cartas</strong>).
+              </li>
+              <li>Embaralhe bem e posicione a pilha de compras virada para baixo ao lado do tabuleiro central. Quando o
+                baralho esvaziar, reembaralhe a pilha de descarte para formar um novo baralho de compras.</li>
+            </ul>
           </li>
-          <li><strong>Montagem do Main Deck:</strong> Embaralhe no Main Deck exatamente <strong>2 cartas Bypass
-              adicionais</strong> e as <strong>2 cartas CVE Assignment Protection</strong>. Quaisquer cartas Bypass
-            excedentes ao número de jogadores retornam para a caixa do jogo.</li>
-          <li><strong>Limite de Mão:</strong> O limite padrão de cartas na mão é de <strong>6 cartas</strong> para todos
-            os jogadores, exceto <strong>The Old Guard</strong> (que possui limite expandido para 8 cartas).</li>
-          <li>Revele <strong>3 Program Cards</strong> no Program Market. No seu primeiro turno,
-            cada jogador seleciona 1 programa disponível gratuitamente.</li>
+          <li><strong>Montagem dos Demais Baralhos:</strong>
+            <ul style="margin-top: 0.3rem;">
+              <li><strong>Tool Deck (48 cartas):</strong> Embaralhe as 48 ferramentas e posicione a pilha de compras ao
+                lado do tabuleiro central.</li>
+              <li><strong>Event Deck (24 cartas):</strong> Embaralhe os 24 eventos de caos e posicione no slot indicado
+                do tabuleiro central.</li>
+              <li><strong>Program Deck & Mercado (36 cartas):</strong> Embaralhe os 36 programas corporativos. Revele
+                <strong>3 cartas abertas no Program Market</strong> do tabuleiro central; as demais cartas formam a
+                pilha fechada de compras de novos contratos ao lado.
+              </li>
+            </ul>
+          </li>
+          <li><strong>Preparação de Cada Jogador Ativo:</strong>
+            <ul style="margin-top: 0.3rem;">
+              <li>Recebe <strong>1 Tabuleiro Individual</strong> e coloca seu marcador de cor na posição
+                <strong>$0k</strong> da Bounty Track.
+              </li>
+              <li>Recebe <strong>1 Carta de Ajuda (Player Aid)</strong> para consulta imediata de regras e marcos.</li>
+              <li>Sorteia aleatoriamente <strong>1 Carta de Arquétipo</strong> (habilidade exclusiva).</li>
+              <li>Recebe <strong>1 Carta Bypass</strong> da reserva de Safeguards e instala diretamente no slot
+                <strong>SAFEGUARD</strong> do seu tabuleiro individual.
+              </li>
+              <li>Compra <strong>5 cartas do Main Deck</strong> para compor sua mão inicial secreta.</li>
+              <li>No seu primeiro turno, seleciona gratuitamente <strong>1 programa aberto</strong> do Program Market
+                para colocar no seu slot de PROGRAM (repondo o mercado imediatamente com uma nova carta do topo do
+                baralho).</li>
+            </ul>
+          </li>
+          <li><strong>Limite de Mão:</strong> O limite padrão de cartas na mão é de <strong>6 cartas</strong> ao final
+            do turno para todos os jogadores, exceto <strong>The Old Guard</strong> (que possui limite expandido para
+            <strong>8 cartas</strong>).
+          </li>
+          <li><strong>Retorno à Caixa (Componentes Fora da Partida):</strong>
+            <ul style="margin-top: 0.3rem;">
+              <li>As cartas <strong>Bypass excedentes</strong> (não distribuídas aos jogadores ativos) voltam para a
+                caixa.</li>
+              <li>As cartas de Arquétipos, Player Aids e Tabuleiros dos jogadores não utilizados retornam para a caixa.
+              </li>
+              <li>As <strong>4 Cartas Especiais</strong> (3 Coringas e 1 Carta de Créditos) permanecem guardadas na
+                caixa durante partidas padrão.</li>
+            </ul>
+          </li>
         </ol>
+
+        <div class="callout cyan" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+          <span class="label">🎮 Modos Opcionais de Jogo (Variantes Oficiais)</span>
+          <p style="margin-bottom: 0.5rem; color: #d1d5db;">
+            Para grupos que buscam partidas alternativas sem necessidade de cartas físicas dedicadas, utilize estas
+            variantes oficiais de regra:
+          </p>
+          <ul style="margin-bottom: 0; font-size: 0.88rem; line-height: 1.5;">
+            <li><strong>Modo Hackathon Blitz (Partida Rápida — 25 a 35 min):</strong> A partida dura exatamente
+              <strong>5 rodadas</strong>. A meta de vitória instantânea cai para <strong>$25.000</strong>. No início de
+              cada rodada, todos os jogadores realizam 1 ação de Recon gratuita adicional. Ideal para dinâmicas curtas
+              ou demonstrações.
+            </li>
+            <li><strong>Modo Nightmare Ops (Hardcore / Veteranos):</strong> O Blue Team opera com IA preditiva
+              agressiva: em todos os Patch Checks em modo <strong>[NOISY]</strong>, some <strong>+1</strong> ao
+              resultado final da soma dos dados. Além disso, cada par de Tokens de Alerta (2/2🐞) gera uma multa severa
+              de <strong>-$3.000</strong> (em vez de -$2.000).</li>
+          </ul>
+        </div>
       </section>
 
       <!-- ================= 03 LOOP DO TURNO ================= -->
@@ -499,7 +587,9 @@
         </div>
 
         <h3>Ação Livre (não desconta das ações)</h3>
-        <p><strong>Reciclagem Tática 2:1 (0 Ações):</strong> Uma vez por turno, a qualquer momento antes de realizar o Report, você pode descartar <strong>2 cartas quaisquer da sua mão</strong> para comprar <strong>1 carta nova do Main Deck</strong> sem gastar ações.</p>
+        <p><strong>Reciclagem Tática 2:1 (0 Ações):</strong> Uma vez por turno, a qualquer momento antes de realizar o
+          Report, você pode descartar <strong>2 cartas quaisquer da sua mão</strong> para comprar <strong>1 carta nova
+            do Main Deck</strong> sem gastar ações.</p>
         <p><strong>Instalar Tool Card:</strong> Uma vez por turno, você pode instalar 1 Tool da sua mão em 1 dos
           3 slots de ferramentas do seu tabuleiro pagando, como custo, <strong>1 carta qualquer da sua mão</strong>
           (limite de 3 Tools instaladas simultaneamente). Isso pode ser feito em qualquer momento ANTES de realizar a
@@ -602,10 +692,18 @@
           <ul>
             <li><strong>Perda de Ativos:</strong> O jogador descarta todas as vulnerabilidades da sua Zona de Exploits e
               o seu programa.</li>
-            <li><strong>Alerta & Consolação:</strong> Receba <strong>+1 Token de Alerta (🐞)</strong> apenas se estiver com 0🐞 (aceitar um Patch normal estaciona em 1/2🐞 sem multa) e compre
+            <li><strong>Alerta & Consolação:</strong> Receba <strong>+1 Token de Alerta (🐞)</strong> apenas se estiver
+              com 0🐞 (aceitar um Patch normal estaciona em 1/2🐞 sem multa) e compre
               <strong>1 carta de consolação</strong> do Main Deck.
             </li>
-            <li><strong>A Defesa do Bypass:</strong> Quando a empresa aplica um Patch de última hora para tentar anular o seu relatório, usar a carta <strong>Bypass</strong> (instalada no slot Safeguard) significa provar na hora que o remendo apressado deles continua furado. O Bypass anula o descarte e permite concluir o Report normalmente, garantindo o Payout integral (ou preservando seus exploits e programa no modo Stealth). <em>Atenção:</em> A equipe de segurança fica furiosa e você sempre recebe <strong>+1 Token de Alerta</strong> (mesmo se já tiver 1🐞, disparando a multa de -$2.000 ao atingir 2/2🐞). Descarte o Bypass após o uso; você <strong>não recebe Tool Card nem carta de consolação</strong>.</li>
+            <li><strong>A Defesa do Bypass:</strong> Quando a empresa aplica um Patch de última hora para tentar anular
+              o seu relatório, usar a carta <strong>Bypass</strong> (instalada no slot Safeguard) significa provar na
+              hora que o remendo apressado deles continua furado. O Bypass anula o descarte e permite concluir o Report
+              normalmente, garantindo o Payout integral (ou preservando seus exploits e programa no modo Stealth).
+              <em>Atenção:</em> A equipe de segurança fica furiosa e você sempre recebe <strong>+1 Token de
+                Alerta</strong> (mesmo se já tiver 1🐞, disparando a multa de -$2.000 ao atingir 2/2🐞). Descarte o
+              Bypass após o uso; você <strong>não recebe Tool Card nem carta de consolação</strong>.
+            </li>
           </ul>
         </div>
       </section>
@@ -616,12 +714,15 @@
 
         <div class="callout warn">
           <span class="label">🐞 Sistema de Alerta (Atenção do Blue Team)</span>
-          <p>Mandar mal nos dados ou causar muito barulho joga um holofote na sua cabeça. O Blue Team da empresa tá de olho.</p>
+          <p>Mandar mal nos dados ou causar muito barulho joga um holofote na sua cabeça. O Blue Team da empresa tá de
+            olho.</p>
           <ul>
-            <li><strong>Alarme Crítico (2 Tokens de Alerta):</strong> Ao acumular 2 Tokens de Alerta na mesa (via Bypass ou cartas/eventos), o Blue
+            <li><strong>Alarme Crítico (2 Tokens de Alerta):</strong> Ao acumular 2 Tokens de Alerta na mesa (via Bypass
+              ou cartas/eventos), o Blue
               Team fecha o
               cerco: perca <strong>$2.000</strong> na Bounty Track imediatamente (o saldo nunca fica abaixo de zero) e
-              devolva os 2 Tokens de Alerta ao suprimento central. <em>Nota:</em> Aceitar um Patch normal sem Bypass estaciona no máximo em 1/2🐞 e não dispara a multa de $2.000.</li>
+              devolva os 2 Tokens de Alerta ao suprimento central. <em>Nota:</em> Aceitar um Patch normal sem Bypass
+              estaciona no máximo em 1/2🐞 e não dispara a multa de $2.000.</li>
             <li><strong>Penalidade de Fim de Jogo:</strong> Se o jogador terminar a 10ª rodada com 1 Token de Alerta
               restante na
               mesa, desconte <strong>-$500</strong> do seu saldo final.</li>
@@ -706,7 +807,8 @@
                     style="color: #9ca3af;">High-Volume Bounty Hunter</span></div>
               </div>
               <div style="font-size: 0.88rem; line-height: 1.5; color: #e5e7eb;">
-                <strong>Volume Puro:</strong> Você ganha na força bruta, mas o prêmio é menor: só tem permissão pra reportar cartas Comuns e Incomuns.<br>
+                <strong>Volume Puro:</strong> Você ganha na força bruta, mas o prêmio é menor: só tem permissão pra
+                reportar cartas Comuns e Incomuns.<br>
                 <strong>Caçador em Escala:</strong> Cada vulnerabilidade além da primeira no mesmo Report soma +$500 ao
                 payout.<br>
                 <strong>Eficiência:</strong> Concluir um Report com 3 vulnerabilidades concede 1 Token de Reputação
@@ -751,7 +853,8 @@
               <div style="font-size: 0.88rem; line-height: 1.5; color: #e5e7eb;">
                 <strong>Sem Limites:</strong> Suas vulnerabilidades ignoram qualquer restrição de escopo dos programas
                 (podem ser exploradas em qualquer alvo).<br>
-                <strong>Custo Operacional:</strong> A ousadia tem seu preço: abater multas. Desconte <strong>-$1.000</strong> do dinheiro ganho em cada Report.
+                <strong>Custo Operacional:</strong> A ousadia tem seu preço: abater multas. Desconte
+                <strong>-$1.000</strong> do dinheiro ganho em cada Report.
               </div>
             </div>
           </div>
@@ -990,7 +1093,8 @@
                 </div>
               </div>
               <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                PASSIVA: Fura-escopo: você ganha passe livre para descer cartas da classe BAC em qualquer programa que estiver atacando.
+                PASSIVA: Fura-escopo: você ganha passe livre para descer cartas da classe BAC em qualquer programa que
+                estiver atacando.
               </div>
             </div>
             <div
@@ -1367,7 +1471,8 @@
               </div>
               <div style="font-size: 0.84rem; color: #e5e7eb; line-height: 1.4;">
                 <strong>Efeito:</strong> Ao reportar com sucesso esta vulnerabilidade, o vazamento transborda: compre
-                <strong>1 carta do Main Deck</strong> e force 1 oponente à escolha a <strong>descartar 1 carta da mão</strong>.
+                <strong>1 carta do Main Deck</strong> e force 1 oponente à escolha a <strong>descartar 1 carta da
+                  mão</strong>.
               </div>
               <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.4rem; font-style: italic;">
                 Presente em: O Tubo Estourado (#INJ-15).
@@ -1421,7 +1526,9 @@
                   (REPORT)</span>
               </div>
               <div style="font-size: 0.84rem; color: #e5e7eb; line-height: 1.4;">
-                <strong>Efeito:</strong> Ao reportar com sucesso esta vulnerabilidade, roube <strong>1 Tool Card instalada</strong> de 1 oponente à sua escolha e instale-a na sua bancada (se não houver slot livre, descarte-a).
+                <strong>Efeito:</strong> Ao reportar com sucesso esta vulnerabilidade, roube <strong>1 Tool Card
+                  instalada</strong> de 1 oponente à sua escolha e instale-a na sua bancada (se não houver slot livre,
+                descarte-a).
               </div>
               <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.4rem; font-style: italic;">
                 Presente em: O Mestre dos Títeres (#APT-4).
@@ -1453,9 +1560,12 @@
               <p>Além das 14 habilidades catalogadas acima, 3 cartas do baralho de vulnerabilidades possuem efeitos
                 técnicos próprios descritos diretamente no texto da sua face:</p>
               <ul style="margin-bottom: 0;">
-                <li><strong>#INJ-2 (A Injeção da Vovó):</strong> <em>Compra Extra:</em> Quando reportada com sucesso, compre 2 cartas do Main Deck imediatamente.</li>
-                <li><strong>#INJ-14 (O Operário Zumbi):</strong> <em>[NOISY] PROCESSO ZUMBI:</em> Ao reportar com sucesso, compre 2 cartas do Main Deck imediatamente.</li>
-                <li><strong>#XSS-10 (O Espelho Narcisista):</strong> <em>Sinergia DevTools:</em> Se jogada com a ferramenta Browser DevTools instalada e ativa, duplica a compra de cartas na ação Recon.</li>
+                <li><strong>#INJ-2 (A Injeção da Vovó):</strong> <em>Compra Extra:</em> Quando reportada com sucesso,
+                  compre 2 cartas do Main Deck imediatamente.</li>
+                <li><strong>#INJ-14 (O Operário Zumbi):</strong> <em>[NOISY] PROCESSO ZUMBI:</em> Ao reportar com
+                  sucesso, compre 2 cartas do Main Deck imediatamente.</li>
+                <li><strong>#XSS-10 (O Espelho Narcisista):</strong> <em>Sinergia DevTools:</em> Se jogada com a
+                  ferramenta Browser DevTools instalada e ativa, duplica a compra de cartas na ação Recon.</li>
               </ul>
             </div>
 
@@ -1478,8 +1588,10 @@
               <li><strong>EXPLOIT (1 ação):</strong> Baixe 1 Vulnerabilidade na mesa (escopo permitido, máx. 3).</li>
               <li><strong>REPORT (2 ações):</strong> Teste de Patch (Noisy 2D6) + Payout + compre 1 Tool + saque 1
                 Evento + novo programa. <em>Sempre encerra o turno imediatamente!</em></li>
-              <li><strong>RECICLAGEM 2:1 (Ação Livre - 1x/turno):</strong> Descarte 2 cartas da mão para comprar 1 carta nova do Main Deck.</li>
-              <li><strong>INSTALAR TOOL (Ação Livre - 1x/turno):</strong> Descarte 1 carta da mão para equipar 1 Tool (máx. 3).
+              <li><strong>RECICLAGEM 2:1 (Ação Livre - 1x/turno):</strong> Descarte 2 cartas da mão para comprar 1 carta
+                nova do Main Deck.</li>
+              <li><strong>INSTALAR TOOL (Ação Livre - 1x/turno):</strong> Descarte 1 carta da mão para equipar 1 Tool
+                (máx. 3).
               </li>
               <li><strong>ATIVAR TOOL (Ação Livre):</strong> Ative o efeito e descarte a carta (precisa estar no slot).
               </li>
@@ -1495,7 +1607,8 @@
             <ul style="font-size: 0.85rem; line-height: 1.5; color: #d1d5db; padding-left: 1.2rem; margin-bottom: 0;">
               <li><strong>DADOS:</strong> Stealth = 3D6 (some os 2 menores); Noisy = 2D6 somados.</li>
               <li><strong>LIMIAR DE PATCH:</strong> Lenta = 10+ | Moderada = 9+ | Rápida = 8+ | Extrema = 7+.</li>
-              <li><strong>PATCH DEPLOYED:</strong> Descarte mesa e programa; recebe +1 🐞 Alerta apenas se estiver com 0🐞 (estaciona em 1/2🐞) e compra consolação.
+              <li><strong>PATCH DEPLOYED:</strong> Descarte mesa e programa; recebe +1 🐞 Alerta apenas se estiver com
+                0🐞 (estaciona em 1/2🐞) e compra consolação.
                 <em>Bypass anula o descarte, garante payout e sempre soma +1🐞 (pode atingir 2/2🐞)!</em>
               </li>
               <li><strong>PAYOUT:</strong> Comum +$1.5k | Incomum +$2.5k | Rara +$4.0k | Épica +$5.0k | Lendária +$6.0k.
@@ -1504,7 +1617,8 @@
                 tokens = -$2.000 multa; -$500 endgame).</li>
               <li><strong>CASAS ESPECIAIS (ao parar):</strong> $4.5k (🐝+) | $9k (🐞+) | $13.5k (🐝+ 🛒) | $19k (🐞+
                 🗂️−) | $24.5k (🛠️⚡) | $29k (🐝+ 🐞−) | $33.5k (💸 -$1.5k) | $38k (🐞+).</li>
-              <li><strong>VITÓRIA:</strong> $40.000 (completa-se a rodada atual para igualdade de turnos) ou maior saldo após 10 rodadas.</li>
+              <li><strong>VITÓRIA:</strong> $40.000 (completa-se a rodada atual para igualdade de turnos) ou maior saldo
+                após 10 rodadas.</li>
             </ul>
           </div>
         </div>
@@ -1563,7 +1677,8 @@
               </div>
               <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
                 Alguém reportou a vulnerabilidade minutos antes! Escolha 1 oponente: ele
-                descarta a vulnerabilidade de maior CVSS exposta na mesa (se a mesa dele estiver vazia, o evento passa em branco).
+                descarta a vulnerabilidade de maior CVSS exposta na mesa (se a mesa dele estiver vazia, o evento passa
+                em branco).
               </div>
             </div>
             <div
@@ -1644,7 +1759,8 @@
                 </span>
               </div>
               <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                A triagem virou bagunça e o backlog explodiu! Você tá proibido de instalar ou ativar Tools no seu próximo turno.
+                A triagem virou bagunça e o backlog explodiu! Você tá proibido de instalar ou ativar Tools no seu
+                próximo turno.
               </div>
             </div>
             <div
@@ -2102,7 +2218,8 @@
                 </span>
               </div>
               <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                Auditoria tensa pra cima de todo mundo! Abre a mão na mesa agora e atira no lixo a carta com o maior CVSS.
+                Auditoria tensa pra cima de todo mundo! Abre a mão na mesa agora e atira no lixo a carta com o maior
+                CVSS.
               </div>
             </div>
             <div
@@ -2176,8 +2293,11 @@
 
         <h3>Disparo de Fim de Jogo & Critérios de Desempate</h3>
         <ul>
-          <li><strong>Disparo de Fim de Jogo ($40.000):</strong> Quando um jogador alcança <strong>$40.000</strong>, a rodada atual é concluída até o último jogador da mesa para garantir igualdade de turnos, e em seguida calcula-se o vencedor.</li>
-          <li><strong>Encerramento na 10ª Rodada:</strong> Se a 10ª rodada acabar e ninguém tiver chegado lá, a gente vai pro desempate suado:
+          <li><strong>Disparo de Fim de Jogo ($40.000):</strong> Quando um jogador alcança <strong>$40.000</strong>, a
+            rodada atual é concluída até o último jogador da mesa para garantir igualdade de turnos, e em seguida
+            calcula-se o vencedor.</li>
+          <li><strong>Encerramento na 10ª Rodada:</strong> Se a 10ª rodada acabar e ninguém tiver chegado lá, a gente
+            vai pro desempate suado:
             <ul>
               <li>Some <strong>+$500 por cada Token de Reputação (🐝)</strong> presente na mesa.</li>
               <li>Subtraia <strong>-$500 por cada Token de Alerta (🐞)</strong> restante na mesa.</li>
@@ -2204,81 +2324,91 @@
           <div
             style="background: rgba(255,255,255,0.03); border: 1px solid #22c55e44; border-radius: 6px; padding: 0.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-              <strong
-                style="color: #22c55e; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$4.500 - Primeira Manchete</strong>
+              <strong style="color: #22c55e; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$4.500 -
+                Primeira Manchete</strong>
               <span style="font-size: 0.8rem; font-weight: bold; color: #22c55e;">🐝+</span>
             </div>
-            <div style="font-size: 0.85rem; color: #d1d5db;">Seu primeiro bug famoso viraliza. Ganhe <strong>1 Token de Reputação (🐝)</strong> do suprimento central.</div>
+            <div style="font-size: 0.85rem; color: #d1d5db;">Seu primeiro bug famoso viraliza. Ganhe <strong>1 Token de
+                Reputação (🐝)</strong> do suprimento central.</div>
           </div>
 
           <div
             style="background: rgba(255,255,255,0.03); border: 1px solid #ef444444; border-radius: 6px; padding: 0.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-              <strong
-                style="color: #ef4444; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$9.000 - Na Mira da Segurança</strong>
+              <strong style="color: #ef4444; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$9.000 - Na
+                Mira da Segurança</strong>
               <span style="font-size: 0.8rem; font-weight: bold; color: #ef4444;">🐞+</span>
             </div>
-            <div style="font-size: 0.85rem; color: #d1d5db;">Você deixou de ser anônimo e entrou no radar corporativo. Ganhe <strong>1 Token de Alerta (🐞)</strong> do suprimento central.</div>
+            <div style="font-size: 0.85rem; color: #d1d5db;">Você deixou de ser anônimo e entrou no radar corporativo.
+              Ganhe <strong>1 Token de Alerta (🐞)</strong> do suprimento central.</div>
           </div>
 
           <div
             style="background: rgba(255,255,255,0.03); border: 1px solid #22c55e44; border-radius: 6px; padding: 0.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-              <strong
-                style="color: #22c55e; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$13.500 - Convite VIP</strong>
+              <strong style="color: #22c55e; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$13.500 -
+                Convite VIP</strong>
               <span style="font-size: 0.8rem; font-weight: bold; color: #22c55e;">🐝+ 🛒</span>
             </div>
-            <div style="font-size: 0.85rem; color: #d1d5db;">Sua fama abre portas para contatos exclusivos. Ganhe <strong>1 Token de Reputação (🐝)</strong> e compre <strong>1 carta do Main Deck</strong>.</div>
+            <div style="font-size: 0.85rem; color: #d1d5db;">Sua fama abre portas para contatos exclusivos. Ganhe
+              <strong>1 Token de Reputação (🐝)</strong> e compre <strong>1 carta do Main Deck</strong>.
+            </div>
           </div>
 
           <div
             style="background: rgba(255,255,255,0.03); border: 1px solid #ef444444; border-radius: 6px; padding: 0.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-              <strong
-                style="color: #ef4444; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$19.000 - Rastro Descoberto</strong>
+              <strong style="color: #ef4444; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$19.000 -
+                Rastro Descoberto</strong>
               <span style="font-size: 0.8rem; font-weight: bold; color: #ef4444;">🐞+ 🗂️-</span>
             </div>
-            <div style="font-size: 0.85rem; color: #d1d5db;">A vigilância aperta. Ganhe <strong>1 Token de Alerta (🐞)</strong> e descarte <strong>1 carta da sua mão</strong> à sua escolha para limpar rastros.</div>
+            <div style="font-size: 0.85rem; color: #d1d5db;">A vigilância aperta. Ganhe <strong>1 Token de Alerta
+                (🐞)</strong> e descarte <strong>1 carta da sua mão</strong> à sua escolha para limpar rastros.</div>
           </div>
 
           <div
             style="background: rgba(255,255,255,0.03); border: 1px solid #00e5ff44; border-radius: 6px; padding: 0.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-              <strong
-                style="color: #00e5ff; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$24.500 - Patrocínio de Elite</strong>
+              <strong style="color: #00e5ff; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$24.500 -
+                Patrocínio de Elite</strong>
               <span style="font-size: 0.8rem; font-weight: bold; color: #00e5ff;">🛠️⚡</span>
             </div>
-            <div style="font-size: 0.85rem; color: #d1d5db;">Você ganha equipamento de ponta sem custo: equipe <strong>1 Tool da sua mão</strong> em um slot livre <strong>sem pagar o custo de descarte</strong>.</div>
+            <div style="font-size: 0.85rem; color: #d1d5db;">Você ganha equipamento de ponta sem custo: equipe <strong>1
+                Tool da sua mão</strong> em um slot livre <strong>sem pagar o custo de descarte</strong>.</div>
           </div>
 
           <div
             style="background: rgba(255,255,255,0.03); border: 1px solid #22c55e44; border-radius: 6px; padding: 0.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-              <strong
-                style="color: #22c55e; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$29.000 - Estrela da Conferência</strong>
+              <strong style="color: #22c55e; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$29.000 -
+                Estrela da Conferência</strong>
               <span style="font-size: 0.8rem; font-weight: bold; color: #22c55e;">🐝+ 🐞-</span>
             </div>
-            <div style="font-size: 0.85rem; color: #d1d5db;">Convidado de honra no palco principal. Ganhe <strong>1 Token de Reputação (🐝)</strong> e <strong>remova 1 Token de Alerta (🐞)</strong> da sua mesa.</div>
+            <div style="font-size: 0.85rem; color: #d1d5db;">Convidado de honra no palco principal. Ganhe <strong>1
+                Token de Reputação (🐝)</strong> e <strong>remova 1 Token de Alerta (🐞)</strong> da sua mesa.</div>
           </div>
 
           <div
             style="background: rgba(255,255,255,0.03); border: 1px solid #ef444444; border-radius: 6px; padding: 0.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-              <strong
-                style="color: #ef4444; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$33.500 - Mordida do Leão</strong>
+              <strong style="color: #ef4444; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$33.500 -
+                Mordida do Leão</strong>
               <span style="font-size: 0.8rem; font-weight: bold; color: #ef4444;">💸</span>
             </div>
-            <div style="font-size: 0.85rem; color: #d1d5db;">O fisco e os advogados cobram sua parte. Perca <strong>$1.500</strong> na Bounty Track (o marcador recua para $32.000, sem re-disparo).</div>
+            <div style="font-size: 0.85rem; color: #d1d5db;">O fisco e os advogados cobram sua parte. Perca
+              <strong>$1.500</strong> na Bounty Track (o marcador recua para $32.000, sem re-disparo).
+            </div>
           </div>
 
           <div
             style="background: rgba(255,255,255,0.03); border: 1px solid #ef444444; border-radius: 6px; padding: 0.8rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-              <strong
-                style="color: #ef4444; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$38.000 - Inimigo Público nº 1 dos Bugs</strong>
+              <strong style="color: #ef4444; font-size: 1.1rem; font-family: 'Share Tech Mono', monospace;">$38.000 -
+                Inimigo Público nº 1 dos Bugs</strong>
               <span style="font-size: 0.8rem; font-weight: bold; color: #ef4444;">🐞+</span>
             </div>
-            <div style="font-size: 0.85rem; color: #d1d5db;">A um passo dos $40k, todos os alarmes corporativos disparam quando você entra na rede. Ganhe <strong>1 Token de Alerta (🐞)</strong> do suprimento central.</div>
+            <div style="font-size: 0.85rem; color: #d1d5db;">A um passo dos $40k, todos os alarmes corporativos disparam
+              quando você entra na rede. Ganhe <strong>1 Token de Alerta (🐞)</strong> do suprimento central.</div>
           </div>
         </div>
 
@@ -2291,7 +2421,8 @@
         <div class="callout">
 
           <ul>
-            <li><strong>Objetivo:</strong> Alcançar $40k na Bounty Track (dispara a rodada final para igualdade de turnos) ou terminar a 10ª rodada com o maior saldo.</li>
+            <li><strong>Objetivo:</strong> Alcançar $40k na Bounty Track (dispara a rodada final para igualdade de
+              turnos) ou terminar a 10ª rodada com o maior saldo.</li>
             <li><strong>Seu Turno (3 Ações):</strong>
               <ul>
                 <li><em>RECON (1 ação):</em> Compra 2 cartas do Main Deck ou troca de programa (limpe sua zona de
@@ -2300,16 +2431,19 @@
                   mesa).</li>
                 <li><em>REPORT (2 ações):</em> Submete a invasão (sempre a última ação do turno, que encerra
                   imediatamente).</li>
-                <li><em>Ação Livre: Reciclagem 2:1 (0 ações, 1x/turno):</em> Uma vez por turno, descarte 2 cartas quaisquer da mão para comprar 1 carta nova do Main Deck.</li>
+                <li><em>Ação Livre: Reciclagem 2:1 (0 ações, 1x/turno):</em> Uma vez por turno, descarte 2 cartas
+                  quaisquer da mão para comprar 1 carta nova do Main Deck.</li>
               </ul>
             </li>
             <li><strong>Risco & Patch Check (D6):</strong> Reportou = Noisy (role 2D6 somados). Só baixou
               vulnerabilidades e esperou = Stealth (role 3D6, descarte o maior, some os 2 menores). Se a soma for igual
               ou maior que a velocidade do programa (Lenta 10+, Moderada 9+, Rápida 8+, Extrema 7+), ocorreu PATCH
               DEPLOYED!</li>
-            <li><strong>Sofreu Patch Deployed?</strong> Use o Bypass instalado para finalizar o report sem receber tool (sempre soma +1 Token de Alerta).
+            <li><strong>Sofreu Patch Deployed?</strong> Use o Bypass instalado para finalizar o report sem receber tool
+              (sempre soma +1 Token de Alerta).
               Se não tiver bypass, perde os exploits
-              da mesa e o programa, ganha +1 Token de Alerta apenas se estiver com 0🐞 (estaciona em 1/2🐞 sem multa) e 1
+              da mesa e o programa, ganha +1 Token de Alerta apenas se estiver com 0🐞 (estaciona em 1/2🐞 sem multa) e
+              1
               carta de consolação. 2 Tokens de Alerta custam -$2.000 imediatos. Operar em Modo Furtivo (sem report, sem
               patch e com mesa
               limpa) remove 1 Token de Alerta.</li>
@@ -2865,7 +2999,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  No campo "Teste sua conexão", você escreve um ponto-e-vírgula seguido de uma ordem direta e o servidor obedece como se fosse o dono.
+                  No campo "Teste sua conexão", você escreve um ponto-e-vírgula seguido de uma ordem direta e o servidor
+                  obedece como se fosse o dono.
                 </div>
               </div>
               <div
@@ -2899,7 +3034,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você envia uma nota fiscal para o TaxCore com um atalho escondido no texto; ao ler a nota, o sistema preenche o recibo com os segredos do servidor.
+                  Você envia uma nota fiscal para o TaxCore com um atalho escondido no texto; ao ler a nota, o sistema
+                  preenche o recibo com os segredos do servidor.
                 </div>
               </div>
               <div
@@ -2934,7 +3070,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  No campo "Seu Nome" do cadastro, você digita {{7*7}}. Quando o e-mail de boas-vindas chega "Olá, 49!", você sabe que controla o servidor.
+                  No campo "Seu Nome" do cadastro, você digita {{7*7}}. Quando o e-mail de boas-vindas chega "Olá, 49!",
+                  você sabe que controla o servidor.
                 </div>
               </div>
               <div
@@ -2968,7 +3105,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você falsifica o remetente do envelope digital para fazer o navegador do usuário confiar numa ordem que a empresa nunca deu.
+                  Você falsifica o remetente do envelope digital para fazer o navegador do usuário confiar numa ordem
+                  que a empresa nunca deu.
                 </div>
               </div>
               <div
@@ -3002,7 +3140,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Em vez de digitar a senha, você envia uma condição matemática dizendo "qualquer senha diferente de vazio" e o banco de dados aceita!
+                  Em vez de digitar a senha, você envia uma condição matemática dizendo "qualquer senha diferente de
+                  vazio" e o banco de dados aceita!
                 </div>
               </div>
               <div
@@ -3036,7 +3175,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Pela barra de filtro da busca, você pede para ordenar os resultados pelo campo secreto de senhas e descobre tudo pela ordem da lista.
+                  Pela barra de filtro da busca, você pede para ordenar os resultados pelo campo secreto de senhas e
+                  descobre tudo pela ordem da lista.
                 </div>
               </div>
               <div
@@ -3070,7 +3210,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você faz perguntas de "sim ou não" na busca do BankSafe e vai tateando no escuro até mapear toda a árvore de contas.
+                  Você faz perguntas de "sim ou não" na busca do BankSafe e vai tateando no escuro até mapear toda a
+                  árvore de contas.
                 </div>
               </div>
               <div
@@ -3104,7 +3245,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  No crachá corporativo do GovPortal, você digita apenas um asterisco (*) como curinga e o sistema entende que você é todo mundo ao mesmo tempo.
+                  No crachá corporativo do GovPortal, você digita apenas um asterisco (*) como curinga e o sistema
+                  entende que você é todo mundo ao mesmo tempo.
                 </div>
               </div>
               <div
@@ -3138,7 +3280,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O banco não mostra erros, então você manda: "Se a 1ª letra da senha for A, espere 10 segundos". O relógio trava e entrega o segredo.
+                  O banco não mostra erros, então você manda: "Se a 1ª letra da senha for A, espere 10 segundos". O
+                  relógio trava e entrega o segredo.
                 </div>
               </div>
               <div
@@ -3271,7 +3414,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  [NOISY] ESTOURO: Ao reportar com sucesso, compre 1 carta do Main Deck e escolha 1 oponente para descartar 1 carta da mão.
+                  [NOISY] ESTOURO: Ao reportar com sucesso, compre 1 carta do Main Deck e escolha 1 oponente para
+                  descartar 1 carta da mão.
                 </div>
               </div>
               <div
@@ -3303,7 +3447,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O programa antigo procura uma peça de apoio na pasta antes de abrir; você deixa uma peça falsa com o mesmo nome ali e ele engole sem checar.
+                  O programa antigo procura uma peça de apoio na pasta antes de abrir; você deixa uma peça falsa com o
+                  mesmo nome ali e ele engole sem checar.
                 </div>
               </div>
               <div
@@ -3387,7 +3532,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Ao salvar seu cadastro no EduConnect, você inclui uma linha escondida dizendo cargo=diretor e o sistema promove você na hora.
+                  Ao salvar seu cadastro no EduConnect, você inclui uma linha escondida dizendo cargo=diretor e o
+                  sistema promove você na hora.
                 </div>
               </div>
               <div
@@ -3421,7 +3567,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Em vez de pedir a foto do produto, você pede para o site voltar três pastas para trás (../../../) e baixar a lista de senhas do servidor.
+                  Em vez de pedir a foto do produto, você pede para o site voltar três pastas para trás (../../../) e
+                  baixar a lista de senhas do servidor.
                 </div>
               </div>
               <div
@@ -3456,7 +3603,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O servidor esqueceu as janelas abertas para a rua: qualquer página da internet consegue pedir e ler os dados privados da sua conta.
+                  O servidor esqueceu as janelas abertas para a rua: qualquer página da internet consegue pedir e ler os
+                  dados privados da sua conta.
                 </div>
               </div>
               <div
@@ -3490,7 +3638,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Os recibos médicos do HealthLock ficam num link público sem cadeado: basta saber o endereço para baixar o PDF de qualquer cliente.
+                  Os recibos médicos do HealthLock ficam num link público sem cadeado: basta saber o endereço para
+                  baixar o PDF de qualquer cliente.
                 </div>
               </div>
               <div
@@ -3525,7 +3674,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  No aplicativo do DeliveryDash, você troca o número do seu pedido pelo do vizinho e vê o endereço, o telefone e o jantar dele.
+                  No aplicativo do DeliveryDash, você troca o número do seu pedido pelo do vizinho e vê o endereço, o
+                  telefone e o jantar dele.
                 </div>
               </div>
               <div
@@ -3560,7 +3710,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Esconderam o botão de administração da tela, mas esqueceram o elevador de serviço destrancado: quem digita o comando direto executa tudo.
+                  Esconderam o botão de administração da tela, mas esqueceram o elevador de serviço destrancado: quem
+                  digita o comando direto executa tudo.
                 </div>
               </div>
               <div
@@ -3595,7 +3746,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  A divisória entre clientes da CloudNine era de papel: do seu servidor alugado, você escuta tudo o que a empresa do lado está fazendo.
+                  A divisória entre clientes da CloudNine era de papel: do seu servidor alugado, você escuta tudo o que
+                  a empresa do lado está fazendo.
                 </div>
               </div>
               <div
@@ -3629,7 +3781,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você digita /painel-secreto depois do endereço do site da Voltz e dá de cara com os controles da usina sem ninguém pedir senha.
+                  Você digita /painel-secreto depois do endereço do site da Voltz e dá de cara com os controles da usina
+                  sem ninguém pedir senha.
                 </div>
               </div>
               <div
@@ -3663,7 +3816,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você descobre a palavra-passe fraca que assina os crachás digitais e falsifica um passe de superadmin perfeito.
+                  Você descobre a palavra-passe fraca que assina os crachás digitais e falsifica um passe de superadmin
+                  perfeito.
                 </div>
               </div>
               <div
@@ -3732,7 +3886,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O botão "Exportar Meus Dados" do PayGateway não filtra quem pediu e entrega a planilha financeira de todas as empresas cadastradas.
+                  O botão "Exportar Meus Dados" do PayGateway não filtra quem pediu e entrega a planilha financeira de
+                  todas as empresas cadastradas.
                 </div>
               </div>
               <div
@@ -3883,7 +4038,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você esconde uma armadilha no próprio link compartilhado: quando a vítima abre a página, o navegador dela mesma executa o seu comando.
+                  Você esconde uma armadilha no próprio link compartilhado: quando a vítima abre a página, o navegador
+                  dela mesma executa o seu comando.
                 </div>
               </div>
               <div
@@ -3917,7 +4073,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O site repete na tela tudo o que você pesquisa. Você pesquisa um comando disfarçado e a página executa a ordem de volta como um eco.
+                  O site repete na tela tudo o que você pesquisa. Você pesquisa um comando disfarçado e a página executa
+                  a ordem de volta como um eco.
                 </div>
               </div>
               <div
@@ -3951,7 +4108,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você esconde um comando depois do símbolo # no endereço do site; o servidor nem vê passar, mas o navegador da vítima cai na armadilha.
+                  Você esconde um comando depois do símbolo # no endereço do site; o servidor nem vê passar, mas o
+                  navegador da vítima cai na armadilha.
                 </div>
               </div>
               <div
@@ -3985,7 +4143,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você cola uma janela falsa de "Sessão Expirada, digite sua senha" por cima da página verdadeira da empresa e espera o usuário digitar.
+                  Você cola uma janela falsa de "Sessão Expirada, digite sua senha" por cima da página verdadeira da
+                  empresa e espera o usuário digitar.
                 </div>
               </div>
               <div
@@ -4019,7 +4178,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você posta um comentário invisível no mural do SocialHive: todo curioso que apenas abrir a página entrega a sessão para você sem clicar em nada.
+                  Você posta um comentário invisível no mural do SocialHive: todo curioso que apenas abrir a página
+                  entrega a sessão para você sem clicar em nada.
                 </div>
               </div>
               <div
@@ -4053,7 +4213,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você sobe um desenho de avatar que parece uma imagem inocente, mas traz um código escondido dentro do traço que roda quando alguém vê seu perfil.
+                  Você sobe um desenho de avatar que parece uma imagem inocente, mas traz um código escondido dentro do
+                  traço que roda quando alguém vê seu perfil.
                 </div>
               </div>
               <div
@@ -4087,7 +4248,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você digita uma aspa extra no formulário para fechar a frase do programador antes da hora e escrever a sua própria regra logo depois.
+                  Você digita uma aspa extra no formulário para fechar a frase do programador antes da hora e escrever a
+                  sua própria regra logo depois.
                 </div>
               </div>
               <div
@@ -4121,7 +4283,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Na caixa de suporte, você usa a formatação de texto em negrito e links para camuflar um comando que dispara quando o atendente abre o chamado.
+                  Na caixa de suporte, você usa a formatação de texto em negrito e links para camuflar um comando que
+                  dispara quando o atendente abre o chamado.
                 </div>
               </div>
               <div
@@ -4304,7 +4467,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O crachá digital do site vem escrito a lápis: você apaga admin=não, escreve admin=sim no navegador e entra como chefe.
+                  O crachá digital do site vem escrito a lápis: você apaga admin=não, escreve admin=sim no navegador e
+                  entra como chefe.
                 </div>
               </div>
               <div
@@ -4338,7 +4502,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O código de "Esqueci minha senha" é só o horário exato do relógio. Você olha os segundos e adivinha o código de qualquer conta.
+                  O código de "Esqueci minha senha" é só o horário exato do relógio. Você olha os segundos e adivinha o
+                  código de qualquer conta.
                 </div>
               </div>
               <div
@@ -4372,7 +4537,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O botão "Lembrar de Mim" do PulseStream funciona até demais: mesmo depois de trocar a senha, a porta dos fundos continua destrancada para sempre.
+                  O botão "Lembrar de Mim" do PulseStream funciona até demais: mesmo depois de trocar a senha, a porta
+                  dos fundos continua destrancada para sempre.
                 </div>
               </div>
               <div
@@ -4407,7 +4573,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você entrega um crachá em branco dizendo que "não precisa de conferência" e o porteiro do sistema deixa você passar sem senha.
+                  Você entrega um crachá em branco dizendo que "não precisa de conferência" e o porteiro do sistema
+                  deixa você passar sem senha.
                 </div>
               </div>
               <div
@@ -4442,7 +4609,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Como todo mundo repete a mesma senha em tudo, você testa uma lista de senhas vazadas na internet e abre dezenas de contas no SocialHive.
+                  Como todo mundo repete a mesma senha em tudo, você testa uma lista de senhas vazadas na internet e
+                  abre dezenas de contas no SocialHive.
                 </div>
               </div>
               <div
@@ -4477,7 +4645,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  No botão "Entrar com Rede Social", você embaralha o pedido de confirmação e cola a conta da vítima direto no seu perfil.
+                  No botão "Entrar com Rede Social", você embaralha o pedido de confirmação e cola a conta da vítima
+                  direto no seu perfil.
                 </div>
               </div>
               <div
@@ -4511,7 +4680,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O sistema bloqueia na 3ª tentativa errada de SMS, mas se você mandar 1.000 chutes exatamente no mesmo milissegundo, ele deixa passar todos.
+                  O sistema bloqueia na 3ª tentativa errada de SMS, mas se você mandar 1.000 chutes exatamente no mesmo
+                  milissegundo, ele deixa passar todos.
                 </div>
               </div>
               <div
@@ -4577,7 +4747,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  [NOISY] DESVIO DE PAGAMENTO: Ao reportar com sucesso e ANTES do payout, transfira $1.000 do jogador com o maior saldo para a sua Bounty Track.
+                  [NOISY] DESVIO DE PAGAMENTO: Ao reportar com sucesso e ANTES do payout, transfira $1.000 do jogador
+                  com o maior saldo para a sua Bounty Track.
                 </div>
               </div>
               <div
@@ -4691,7 +4862,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Em vez de mandar uma foto de perfil, você manda o link da rede interna da empresa e descobre quais salas secretas estão abertas pelo tempo de resposta.
+                  Em vez de mandar uma foto de perfil, você manda o link da rede interna da empresa e descobre quais
+                  salas secretas estão abertas pelo tempo de resposta.
                 </div>
               </div>
               <div
@@ -4726,7 +4898,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você cadastra seu próprio endereço no sistema de avisos automáticos e o robô da empresa entrega a chave interna na sua mão.
+                  Você cadastra seu próprio endereço no sistema de avisos automáticos e o robô da empresa entrega a
+                  chave interna na sua mão.
                 </div>
               </div>
               <div
@@ -4796,7 +4969,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O segurança confere seu endereço na entrada e libera; um milésimo de segundo depois, você troca a placa da rua para apontar para o cofre interno.
+                  O segurança confere seu endereço na entrada e libera; um milésimo de segundo depois, você troca a
+                  placa da rua para apontar para o cofre interno.
                 </div>
               </div>
               <div
@@ -4941,7 +5115,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você coloca -5 produtos no carrinho da ShopAll e o sistema calcula uma dívida ao contrário, depositando dinheiro na sua conta.
+                  Você coloca -5 produtos no carrinho da ShopAll e o sistema calcula uma dívida ao contrário,
+                  depositando dinheiro na sua conta.
                 </div>
               </div>
               <div
@@ -4975,7 +5150,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você cola o mesmo cupom de 10% dez vezes seguidas no DeliveryDash até a comida sair totalmente de graça.
+                  Você cola o mesmo cupom de 10% dez vezes seguidas no DeliveryDash até a comida sair totalmente de
+                  graça.
                 </div>
               </div>
               <div
@@ -5044,7 +5220,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  A cada transferência na CryptoX, você desvia os milésimos de centavo que sobram no arredondamento até encher um cofre inteiro.
+                  A cada transferência na CryptoX, você desvia os milésimos de centavo que sobram no arredondamento até
+                  encher um cofre inteiro.
                 </div>
               </div>
               <div
@@ -5114,7 +5291,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você adiciona 2 bilhões de espadas mágicas no GameVerse MMO até o contador do jogo dar a volta e o preço virar negativo.
+                  Você adiciona 2 bilhões de espadas mágicas no GameVerse MMO até o contador do jogo dar a volta e o
+                  preço virar negativo.
                 </div>
               </div>
               <div
@@ -5227,7 +5405,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  As senhas foram embaralhadas com uma receita tão velha que basta jogar o código no buscador para descobrir a senha original em 1 segundo.
+                  As senhas foram embaralhadas com uma receita tão velha que basta jogar o código no buscador para
+                  descobrir a senha original em 1 segundo.
                 </div>
               </div>
               <div
@@ -5262,7 +5441,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Os programadores da Veloce AutoTech trancaram tudo com cadeado forte, mas deixaram a chave-mestra escondida debaixo do tapete no código do site.
+                  Os programadores da Veloce AutoTech trancaram tudo com cadeado forte, mas deixaram a chave-mestra
+                  escondida debaixo do tapete no código do site.
                 </div>
               </div>
               <div
@@ -5296,7 +5476,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Os dados do cartão viajam pela rede como um cartão-postal aberto: qualquer um no mesmo Wi-Fi lê os números passando.
+                  Os dados do cartão viajam pela rede como um cartão-postal aberto: qualquer um no mesmo Wi-Fi lê os
+                  números passando.
                 </div>
               </div>
               <div
@@ -5330,7 +5511,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  O cofre é mudo, mas o guarda é fofoqueiro: pela cara que o servidor faz quando dá erro, você adivinha a mensagem secreta letra por letra.
+                  O cofre é mudo, mas o guarda é fofoqueiro: pela cara que o servidor faz quando dá erro, você adivinha
+                  a mensagem secreta letra por letra.
                 </div>
               </div>
               <div
@@ -5417,7 +5599,8 @@
               <div
                 style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 0.5rem; margin-top: 0.5rem; font-size: 0.8rem;">
                 <div><span class="badge-noisy">[NOISY]</span> <span
-                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡ APT</span></div>
+                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡
+                    APT</span></div>
                 <span style="color: #ffb800; font-family: 'Share Tech Mono', monospace;">CVSS 6.3</span>
               </div>
             </div>
@@ -5444,7 +5627,8 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  Você usa uma brecha simples de entrega de arquivos como trampolim para pular o muro e assumir a sala de controle dos servidores.
+                  Você usa uma brecha simples de entrega de arquivos como trampolim para pular o muro e assumir a sala
+                  de controle dos servidores.
                 </div>
               </div>
               <div
@@ -5452,7 +5636,8 @@
                 <div><span
                     style="color: #22c55e; font-size: 0.75rem; border: 1px solid #22c55e44; padding: 1px 6px; border-radius: 4px; margin-right: 4px;">[STEALTH]</span>
                   <span
-                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡ APT</span>
+                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡
+                    APT</span>
                 </div>
                 <span style="color: #ffb800; font-family: 'Share Tech Mono', monospace;">CVSS 7.3</span>
               </div>
@@ -5487,7 +5672,8 @@
               <div
                 style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 0.5rem; margin-top: 0.5rem; font-size: 0.8rem;">
                 <div><span class="badge-noisy">[NOISY]</span> <span
-                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡ APT</span></div>
+                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡
+                    APT</span></div>
                 <span style="color: #ffb800; font-family: 'Share Tech Mono', monospace;">CVSS 8.4</span>
               </div>
             </div>
@@ -5513,13 +5699,15 @@
                   </div>
                 </div>
                 <div style="margin: 0.5rem 0; font-size: 0.88rem; line-height: 1.45; color: #d1d5db;">
-                  [NOISY] TÍTERE: Ao reportar com sucesso, roube 1 Tool Card instalada de 1 oponente à sua escolha e instale-a na sua bancada (se não houver slot livre, descarte-a).
+                  [NOISY] TÍTERE: Ao reportar com sucesso, roube 1 Tool Card instalada de 1 oponente à sua escolha e
+                  instale-a na sua bancada (se não houver slot livre, descarte-a).
                 </div>
               </div>
               <div
                 style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 0.5rem; margin-top: 0.5rem; font-size: 0.8rem;">
                 <div><span class="badge-noisy">[NOISY]</span> <span
-                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡ APT</span></div>
+                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡
+                    APT</span></div>
                 <span style="color: #ffb800; font-family: 'Share Tech Mono', monospace;">CVSS 9.5</span>
               </div>
             </div>
@@ -5553,7 +5741,8 @@
               <div
                 style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 0.5rem; margin-top: 0.5rem; font-size: 0.8rem;">
                 <div><span class="badge-noisy">[NOISY]</span> <span
-                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡ APT</span></div>
+                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡
+                    APT</span></div>
                 <span style="color: #ffb800; font-family: 'Share Tech Mono', monospace;">CVSS 9.5</span>
               </div>
             </div>
@@ -5586,7 +5775,8 @@
               <div
                 style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 0.5rem; margin-top: 0.5rem; font-size: 0.8rem;">
                 <div><span class="badge-noisy">[NOISY]</span> <span
-                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡ APT</span></div>
+                    style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #B39DDB22; color: #B39DDB; border: 1px solid #B39DDB66;">⚡
+                    APT</span></div>
                 <span style="color: #ffb800; font-family: 'Share Tech Mono', monospace;">CVSS 9.6</span>
               </div>
             </div>

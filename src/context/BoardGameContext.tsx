@@ -324,8 +324,8 @@ export const formatPlayerName = (role: PlayerRoleId, customNick?: string): strin
 // INITIAL GAME FACTORY (Arquétipos e Programas sorteados randomicamente)
 // ─────────────────────────────────────────────────────────────────────────────
 const createInitialGameState = (count: number = 2, customNames?: Partial<Record<PlayerRoleId, string>>) => {
-  const canonical84 = buildCanonicalV14MainDeck().map((c, i) => mapCanonicalToCardV2(c, i));
-  const shuffledMain = shuffleArray(canonical84);
+  const canonicalMainDeck = buildCanonicalV14MainDeck().map((c, i) => mapCanonicalToCardV2(c, i));
+  const shuffledMain = shuffleArray(canonicalMainDeck);
 
   const bypassTemplate = mapCanonicalToCardV2(
     V14_SAFEGUARDS.find(s => s.name.includes('Bypass')) || V14_SAFEGUARDS[0]

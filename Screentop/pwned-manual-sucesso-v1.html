@@ -320,7 +320,7 @@
       </div>
       <ul class="toc-list">
         <li><a href="#intro" class="toc-link"><span class="toc-num">01</span><span>O Jogo & Objetivo</span></a></li>
-        <li><a href="#setup" class="toc-link"><span class="toc-num">02</span><span>Setup Rápido & Decks</span></a></li>
+        <li><a href="#setup" class="toc-link"><span class="toc-num">02</span><span>Componentes & Setup</span></a></li>
         <li><a href="#loop" class="toc-link"><span class="toc-num">03</span><span>Turno (As 3 Ações)</span></a></li>
         <li><a href="#patch" class="toc-link"><span class="toc-num">04</span><span>Noisy, Stealth & Patch</span></a>
         </li>
@@ -355,61 +355,72 @@
           arredondam para o múltiplo de $500 mais próximo; em caso de empate exato, arredonda-se para baixo.</p>
       </section>
 
-      <!-- ================= 02 SETUP ================= -->
+      <!-- ================= 02 COMPONENTES & SETUP ================= -->
       <section id="setup">
-        <h2 class="sec"><span class="num">02</span> Setup Rápido & Decks</h2>
-        <p>Arrume a mesa rapidamente seguindo esse esquema de componentes:</p>
+        <h2 class="sec"><span class="num">02</span> Componentes da Caixa & Setup da Mesa</h2>
+
+        <h3>1. Conteúdo da Caixa (Total: 216 Cartas & Componentes)</h3>
+        <p>A edição física de <strong>PWND!</strong> é projetada na grade padrão de <strong>4 baralhos de 54 cartas (216 cartas no total)</strong>, acompanhada de tabuleiros, dados e tokens:</p>
 
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Componente</th>
-                <th>Qtd na Mesa</th>
-                <th>Especificação & Regras de Setup</th>
+                <th>Qtd na Caixa</th>
+                <th>Especificação & Detalhes Físicos</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>Main Deck</strong></td>
-                <td>84 cartas</td>
-                <td>80 Vulnerabilidades + 12 Safeguards (8 Bypass + 4 CVE Assignment Protection). Quando esvaziar,
-                  reembaralhe a pilha de descarte para formar um novo baralho.</td>
+                <td><strong>Cartas de Vulnerabilidade</strong></td>
+                <td>80 cartas</td>
+                <td>8 classes ofensivas de falhas técnicas (16 INJ, 14 BAC, 12 XSS, 10 AUTH, 8 LOGIC, 8 SSRF, 6 CRYPTO, 6 APT). Verso Main Deck.</td>
               </tr>
               <tr>
-                <td><strong>Tool Deck</strong></td>
+                <td><strong>Cartas de Ferramenta (Tool Cards)</strong></td>
                 <td>48 cartas</td>
-                <td>12 tipos de ferramentas táticas × 4 cópias de cada, posicionado ao lado do tabuleiro central. Quando
-                  esvaziar, reembaralhe a pilha de descarte.</td>
+                <td>12 tipos táticos de armas ofensivas × 4 cópias cada (divididas entre Passivas e Ativas). Verso Tool Deck.</td>
               </tr>
               <tr>
-                <td><strong>Program Deck</strong></td>
+                <td><strong>Cartas de Programa Corporativo</strong></td>
                 <td>36 cartas</td>
-                <td>18 contratos corporativos × 2 cópias. Revele 3 cartas abertas no Program Market e mantenha o baralho
-                  de compras ao lado.</td>
+                <td>18 empresas contratantes com escopos e velocidades de patch (12 com 2 cópias, 3 com 3 cópias e 3 de contrato único). Verso Program Deck.</td>
               </tr>
               <tr>
-                <td><strong>Event Deck</strong></td>
+                <td><strong>Cartas de Evento (Chaos Deck)</strong></td>
                 <td>24 cartas</td>
-                <td>24 cartas de eventos de caos únicas posicionadas no tabuleiro central. Quando esvaziar, reembaralhe
-                  a pilha de descarte.</td>
+                <td>24 eventos únicos de reação do Blue Team, incidentes e reviravoltas da mesa. Verso Event Deck.</td>
+              </tr>
+              <tr>
+                <td><strong>Cartas de Defesa (Safeguards)</strong></td>
+                <td>12 cartas</td>
+                <td><strong>8× Bypass</strong> (defesa suprema contra Patch Deployed!) e <strong>4× CVE Assignment Protection</strong> (escudo contra eventos de triagem/duplicata). Verso Main Deck.</td>
               </tr>
               <tr>
                 <td><strong>Cartas de Arquétipo</strong></td>
                 <td>6 cartas</td>
-                <td>Os 6 personagens com habilidades assimétricas exclusivas (1 sorteada para cada jogador).</td>
+                <td>Os 6 personagens com habilidades assimétricas exclusivas (The Old Guard, Bug Hunter, Pentester, Red Teamer, Social Engineer, n00b).</td>
               </tr>
               <tr>
-                <td><strong>Safeguards Iniciais (Bypass)</strong></td>
-                <td>até 6 cartas</td>
-                <td>1 carta Bypass entregue a cada jogador no início (instalada no slot SAFEGUARD do seu tabuleiro
-                  individual).</td>
-              </tr>
-              <tr>
-                <td><strong>Cartas de Ajuda (Player Aids)</strong></td>
+                <td><strong>Cartas de Ajuda Rápida (Player Aids)</strong></td>
                 <td>6 cartas</td>
-                <td>Cartas de referência rápida frente e verso entregues aos jogadores com resumo de ações, patch e
-                  tabelas.</td>
+                <td>Cartas de referência rápida frente e verso entregues aos jogadores (Resumo de Turno e Patch / Tabelas e Marcos da Trilha).</td>
+              </tr>
+              <tr>
+                <td><strong>Cartas Especiais (Extras de Apoio)</strong></td>
+                <td>4 cartas</td>
+                <td><strong>3 Coringas Customizáveis</strong> em branco (1 Vuln Zero-Day, 1 Tool, 1 Program para criação livre e workshops) + <strong>1 Carta de Créditos Oficiais & Autoria</strong>.</td>
+              </tr>
+              <tr>
+                <td><strong>Tabuleiro Central</strong></td>
+                <td>1 tabuleiro</td>
+                <td>Hospeda a Bounty Track ($0 a $40k), o Round Tracker (rodadas 1 a 10) e o Program Market (com 3 slots de programas expostos).</td>
+              </tr>
+              <tr>
+                <td><strong>Tabuleiros Individuais (Player Mats)</strong></td>
+                <td>6 tabuleiros</td>
+                <td>Área de cada jogador contendo PROGRAM, EXPLOITS (máx. 3), SAFEGUARD, TOOLS (1 a 3) e EVENTS (1 e 2).</td>
               </tr>
               <tr>
                 <td><strong>Tokens de Alerta (🐞)</strong></td>
@@ -422,56 +433,78 @@
                 <td>Suprimento central de excelência técnica, prestígio e reroll.</td>
               </tr>
               <tr>
+                <td><strong>Marcadores de Jogador & Rodada</strong></td>
+                <td>7 marcadores</td>
+                <td>6 marcadores nas cores dos jogadores para a Bounty Track + 1 marcador para o Round Tracker.</td>
+              </tr>
+              <tr>
                 <td><strong>Dados D6</strong></td>
                 <td>3 dados</td>
                 <td>Utilizados nos Patch Speed Checks (o modo Stealth rola 3D6 e descarta o maior).</td>
-              </tr>
-              <tr>
-                <td><strong>Tabuleiro Central</strong></td>
-                <td>1 tabuleiro</td>
-                <td>Hospeda a Bounty Track ($0 a $40k), o Round Tracker (rodadas 1 a 10) e o Program Market (com 3 slots
-                  de programas revelados).</td>
-              </tr>
-              <tr>
-                <td><strong>Tabuleiros Individuais</strong></td>
-                <td>2 a 6 tabuleiros</td>
-                <td>Área de cada jogador contendo PROGRAM, EXPLOITS (máx. 3), SAFEGUARD, TOOLS (1 a 3) e EVENTS (1 e 2).
-                </td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div class="callout cyan" style="margin-top: 1rem; margin-bottom: 1.5rem;">
-          <span class="label">ℹ️ Cartas Especiais na Caixa (6 cartas: Uso Opcional)</span>
+          <span class="label">ℹ️ Cartas Especiais na Caixa (4 cartas: Uso Opcional)</span>
           <p style="margin-bottom: 0.5rem; color: #d1d5db;">
-            A caixa traz 6 cartas extras que <strong>não entram no jogo normal</strong> (pode deixar guardado):
+            A caixa traz 4 cartas extras de apoio que <strong>não entram no baralho de jogo padrão</strong>:
           </p>
           <ul style="margin-bottom: 0; font-size: 0.88rem; line-height: 1.5;">
-            <li><strong>3 Coringas de Customização (Jokers):</strong> 1x Vulnerabilidade Zero-Day, 1x Ferramenta (Tool)
-              e 1x Contrato Corporativo (Program). Cartas com campos em branco para criar regras exclusivas em workshops
-              ou partidas personalizadas.</li>
-            <li><strong>2 Variantes Oficiais de Jogo:</strong> <em>Modo Hackathon Blitz</em> (partidas rápidas de 5
-              rodadas com meta de $25k) e <em>Modo Nightmare Ops</em> (partidas hardcore para veteranos).</li>
-            <li><strong>1 Carta de Créditos Oficiais & Autoria:</strong> Registro de concepção, game design e autoria do
-              jogo.</li>
+            <li><strong>3 Coringas de Customização (Jokers):</strong> 1x Vulnerabilidade Zero-Day, 1x Ferramenta (Tool) e 1x Contrato Corporativo (Program). Cartas com campos em branco para criar regras exclusivas em workshops corporativos ou partidas personalizadas.</li>
+            <li><strong>1 Carta de Créditos Oficiais & Autoria:</strong> Registro de concepção, game design e autoria de <em>PWND! The Bug Bounty Chaos</em>.</li>
           </ul>
         </div>
 
-        <h3>Mão Inicial & Preparação dos Jogadores</h3>
-        <ol>
-          <li>Distribua 1 <strong>Carta de Arquétipo</strong> para cada jogador (sorteada aleatoriamente).</li>
-          <li>Cada jogador recebe <strong>5 cartas do Main Deck + 1 carta Bypass</strong> (posicionada no slot
-            <strong>SAFEGUARD</strong> do seu tabuleiro individual).
+        <h3>2. Setup Rápido da Mesa (2 a 6 Jogadores)</h3>
+        <p>Siga este passo a passo para colocar o jogo na mesa em menos de 5 minutos:</p>
+
+        <ol style="line-height: 1.6; color: #d1d5db;">
+          <li><strong>Posicionamento Central:</strong> Coloque o <strong>Tabuleiro Central</strong> no centro da mesa com o marcador de rodadas na casa <strong>1</strong>. Disponibilize os suprimentos de <strong>Tokens de Alerta (🐞)</strong>, <strong>Tokens de Reputação (🐝)</strong> e os <strong>3 Dados D6</strong> ao alcance de todos.</li>
+          <li><strong>Montagem do Main Deck (Baralho Principal — 86 cartas):</strong>
+            <ul style="margin-top: 0.3rem;">
+              <li>Junte as <strong>80 Vulnerabilidades</strong> + exatamente <strong>2 cartas Bypass</strong> + todas as <strong>4 cartas CVE Assignment Protection</strong> (totalizando exatamente <strong>86 cartas</strong>).</li>
+              <li>Embaralhe bem e posicione a pilha de compras virada para baixo ao lado do tabuleiro central. Quando o baralho esvaziar, reembaralhe a pilha de descarte para formar um novo baralho de compras.</li>
+            </ul>
           </li>
-          <li><strong>Montagem do Main Deck:</strong> Embaralhe no Main Deck exatamente <strong>2 cartas Bypass
-              adicionais</strong> e as <strong>2 cartas CVE Assignment Protection</strong>. Quaisquer cartas Bypass
-            excedentes ao número de jogadores retornam para a caixa do jogo.</li>
-          <li><strong>Limite de Mão:</strong> O limite padrão de cartas na mão é de <strong>6 cartas</strong> para todos
-            os jogadores, exceto <strong>The Old Guard</strong> (que possui limite expandido para 8 cartas).</li>
-          <li>Revele <strong>3 Program Cards</strong> no Program Market. No seu primeiro turno,
-            cada jogador seleciona 1 programa disponível gratuitamente.</li>
+          <li><strong>Montagem dos Demais Baralhos:</strong>
+            <ul style="margin-top: 0.3rem;">
+              <li><strong>Tool Deck (48 cartas):</strong> Embaralhe as 48 ferramentas e posicione a pilha de compras ao lado do tabuleiro central.</li>
+              <li><strong>Event Deck (24 cartas):</strong> Embaralhe os 24 eventos de caos e posicione no slot indicado do tabuleiro central.</li>
+              <li><strong>Program Deck & Mercado (36 cartas):</strong> Embaralhe os 36 programas corporativos. Revele <strong>3 cartas abertas no Program Market</strong> do tabuleiro central; as demais cartas formam a pilha fechada de compras de novos contratos ao lado.</li>
+            </ul>
+          </li>
+          <li><strong>Preparação de Cada Jogador Ativo:</strong>
+            <ul style="margin-top: 0.3rem;">
+              <li>Recebe <strong>1 Tabuleiro Individual</strong> e coloca seu marcador de cor na posição <strong>$0k</strong> da Bounty Track.</li>
+              <li>Recebe <strong>1 Carta de Ajuda (Player Aid)</strong> para consulta imediata de regras e marcos.</li>
+              <li>Sorteia aleatoriamente <strong>1 Carta de Arquétipo</strong> (habilidade exclusiva).</li>
+              <li>Recebe <strong>1 Carta Bypass</strong> da reserva de Safeguards e instala diretamente no slot <strong>SAFEGUARD</strong> do seu tabuleiro individual.</li>
+              <li>Compra <strong>5 cartas do Main Deck</strong> para compor sua mão inicial secreta.</li>
+              <li>No seu primeiro turno, seleciona gratuitamente <strong>1 programa aberto</strong> do Program Market para colocar no seu slot de PROGRAM (repondo o mercado imediatamente com uma nova carta do topo do baralho).</li>
+            </ul>
+          </li>
+          <li><strong>Limite de Mão:</strong> O limite padrão de cartas na mão é de <strong>6 cartas</strong> ao final do turno para todos os jogadores, exceto <strong>The Old Guard</strong> (que possui limite expandido para <strong>8 cartas</strong>).</li>
+          <li><strong>Retorno à Caixa (Componentes Fora da Partida):</strong>
+            <ul style="margin-top: 0.3rem;">
+              <li>As cartas <strong>Bypass excedentes</strong> (não distribuídas aos jogadores ativos) voltam para a caixa.</li>
+              <li>As cartas de Arquétipos, Player Aids e Tabuleiros dos jogadores não utilizados retornam para a caixa.</li>
+              <li>As <strong>4 Cartas Especiais</strong> (3 Coringas e 1 Carta de Créditos) permanecem guardadas na caixa durante partidas padrão.</li>
+            </ul>
+          </li>
         </ol>
+
+        <div class="callout cyan" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+          <span class="label">🎮 Modos Opcionais de Jogo (Variantes Oficiais)</span>
+          <p style="margin-bottom: 0.5rem; color: #d1d5db;">
+            Para grupos que buscam partidas alternativas sem necessidade de cartas físicas dedicadas, utilize estas variantes oficiais de regra:
+          </p>
+          <ul style="margin-bottom: 0; font-size: 0.88rem; line-height: 1.5;">
+            <li><strong>Modo Hackathon Blitz (Partida Rápida — 25 a 35 min):</strong> A partida dura exatamente <strong>5 rodadas</strong>. A meta de vitória instantânea cai para <strong>$25.000</strong>. No início de cada rodada, todos os jogadores realizam 1 ação de Recon gratuita adicional. Ideal para dinâmicas curtas ou demonstrações.</li>
+            <li><strong>Modo Nightmare Ops (Hardcore / Veteranos):</strong> O Blue Team opera com IA preditiva agressiva: em todos os Patch Checks em modo <strong>[NOISY]</strong>, some <strong>+1</strong> ao resultado final da soma dos dados. Além disso, cada par de Tokens de Alerta (2/2🐞) gera uma multa severa de <strong>-$3.000</strong> (em vez de -$2.000).</li>
+          </ul>
+        </div>
       </section>
 
       <!-- ================= 03 LOOP DO TURNO ================= -->

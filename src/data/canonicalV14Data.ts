@@ -2657,12 +2657,12 @@ export const V14_ARCHETYPES: CanonicalArchetypeCard[] = [
 ];
 
 /**
- * Builds canonical 84-card Main Deck according to Section 02 & 04:
- * 80 Vulnerabilities + 2 Bypass Cards + 2 CVE Assignment Protection Cards = 84 cards
+ * Builds canonical 86-card Main Deck according to Section 02 & 04:
+ * 80 Vulnerabilities + 2 Bypass Cards + 4 CVE Assignment Protection Cards = 86 cards
  */
 export const buildCanonicalV14MainDeck = (): (CanonicalVulnCard | CanonicalSafeguardCard)[] => {
   const bypassInDeck = V14_SAFEGUARDS.filter(s => s.name.includes('Bypass')).slice(0, 2);
-  const cveInDeck = V14_SAFEGUARDS.filter(s => s.name.includes('CVE')).slice(0, 2);
+  const cveInDeck = V14_SAFEGUARDS.filter(s => s.name.includes('CVE')).slice(0, 4);
   return [...V14_VULNERABILITIES, ...bypassInDeck, ...cveInDeck];
 };
 
