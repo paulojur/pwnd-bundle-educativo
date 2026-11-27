@@ -7,6 +7,7 @@ import { Hand } from './components/Hand';
 import { PatchModal } from './components/PatchModal';
 import { TerminalLog } from './components/TerminalLog';
 import { BoardGameMain } from './components/BoardGameMain';
+import { PlaytestGate } from './components/PlaytestGate';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { Trophy, RefreshCw, Layers } from 'lucide-react';
 import { soundFx } from './utils/audio';
@@ -109,7 +110,9 @@ const CardGameContent: React.FC<{ onSwitchToBoardGame: () => void }> = ({ onSwit
 export function App() {
   return (
     <LanguageProvider>
-      <BoardGameMain />
+      <PlaytestGate>
+        <BoardGameMain />
+      </PlaytestGate>
     </LanguageProvider>
   );
 }

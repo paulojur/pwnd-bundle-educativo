@@ -236,6 +236,25 @@ body {
   @page {
     margin: 8mm;
   }
+
+  /* Watermark obrigatório em impressões / exportações para PDF */
+  body::before {
+    content: "PWNED! PROTÓTIPO DE PLAYTEST — MATERIAL NÃO COMERCIAL — CÓPIA PROIBIDA";
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    font-size: 28px;
+    font-family: monospace;
+    font-weight: 900;
+    color: rgba(220, 38, 38, 0.25) !important;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transform: rotate(-35deg);
+    pointer-events: none;
+    z-index: 999999;
+  }
 }
 
 /* ================= RESPONSIVE MOBILE OVERRIDES ================= */

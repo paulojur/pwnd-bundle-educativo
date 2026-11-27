@@ -1,6 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <!-- Playtest Access Protection -->
+  <script>
+    (function() {
+      try {
+        if (sessionStorage.getItem('pwnd_playtest_auth_token_v1') !== 'granted') {
+          window.location.replace('/?denied=true');
+        }
+      } catch (e) {
+        window.location.replace('/?denied=true');
+      }
+    })();
+  </script>
+  <noscript>
+    <meta http-equiv="refresh" content="0;url=/?denied=true">
+    <style>body { display: none !important; }</style>
+  </noscript>
+
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <style>
+    /* Playtest Watermark for Print & Display */
+    @media print {
+      body::before {
+        content: "PROTÓTIPO DE PLAYTEST — MATERIAL CONFIDENCIAL NÃO COMERCIAL";
+        position: fixed;
+        top: 45%;
+        left: 5%;
+        right: 5%;
+        font-size: 32px;
+        font-weight: 900;
+        color: rgba(220, 38, 38, 0.25) !important;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        transform: rotate(-35deg);
+        pointer-events: none;
+        z-index: 999999;
+      }
+    }
+  </style>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PWNED! Enterprise Threat Modeling & Adversarial Simulation Framework (Manual Executivo B2B v1.0)</title>
